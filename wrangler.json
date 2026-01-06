@@ -5,12 +5,9 @@
   "compatibility_date": "2025-06-17",
   "compatibility_flags": ["nodejs_compat"],
   "observability": {
-    "enabled": true
+    "enabled": false
   },
   "upload_source_maps": true,
-  "assets": {
-    "not_found_handling": "single-page-application"
-  },
   "d1_databases": [
     {
       "binding": "DB",
@@ -29,6 +26,7 @@
   },
   "vars": {
     "HUME_API_KEY": "tcuE0Oy2KQEvKvm3Ahjw6CEra9Z9hYx55nxGipZhLcWkEBNm",
+    "HUME_SECRET_KEY": "SOMkjbnG6172pZGNjYQmXNbh7PTlhJ3wYgiertAcfA0uIqXXTGm5DNsvHfYGhGw2",
     "POLYGON_RPC_URL": "https://polygon-rpc.com",
     "SBT_CONTRACT_ADDRESS": "",
     "ISSUER_PRIVATE_KEY": ""

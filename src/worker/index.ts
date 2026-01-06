@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import {
   exchangeCodeForSessionToken,
   getOAuthRedirectUrl,
@@ -71,12 +72,17 @@ type Env = {
   OPTIMISM_API_KEY: string;
   TRON_API_KEY: string;
   SOLSCAN_API_KEY: string;
+  HUME_API_KEY: string;
+  HUME_SECRET_KEY: string;
   DB: D1Database;
   R2_BUCKET: R2Bucket;
   AI: any; // Cloudflare Workers AI binding
 };
 
 const app = new Hono<{ Bindings: Env }>();
+
+// Middleware: CORS für alle Routen aktivieren
+app.use("*", cors());
 
 // Obtain redirect URL from the Authentication Service
 app.get('/api/oauth/google/redirect_url', async (c) => {
@@ -899,6 +905,123 @@ app.post('/api/export', authMiddleware, async (c) => {
         'Content-Disposition': 'attachment; filename="tradecircle-export.csv"'
       }
     });
+  }
+});
+
+// Route: User Sync (POST /api/auth/sync)
+// Empfängt { uid, email } vom Frontend und legt User in D1 an
+// Passt sich an das existierende Schema an: google_user_id statt id
+app.post("/api/auth/sync", async (c) => {
+  try {
+    const { uid, email } = await c.req.json<{ uid: string; email: string }>();
+
+    if (!uid || !email) {
+      return c.json({ error: "Missing uid or email" }, 400);
+    }
+
+    // Prüfe, ob settings Spalte existiert, falls nicht wird sie ignoriert
+    try {
+      // Versuche zuerst mit settings (neues Schema)
+      await c.env.DB.prepare(
+        `
+          INSERT OR IGNORE INTO users (google_user_id, email, created_at, settings)
+          VALUES (?, ?, CURRENT_TIMESTAMP, ?)
+        `,
+      )
+        .bind(uid, email, JSON.stringify({}))
+        .run();
+    } catch (settingsError: any) {
+      // Falls settings Spalte nicht existiert, verwende existierendes Schema
+      if (settingsError.message?.includes("no such column: settings")) {
+        await c.env.DB.prepare(
+          `
+            INSERT OR IGNORE INTO users (google_user_id, email, created_at)
+            VALUES (?, ?, CURRENT_TIMESTAMP)
+          `,
+        )
+          .bind(uid, email)
+          .run();
+      } else {
+        throw settingsError;
+      }
+    }
+
+    return c.json({ success: true, message: "User synced successfully" });
+  } catch (error) {
+    console.error("Error in /api/auth/sync:", error);
+    return c.json({ 
+      error: "Database or parsing error",
+      details: error instanceof Error ? error.message : String(error)
+    }, 500);
+  }
+});
+
+// Route: Jarvis Token (GET /api/hume/token)
+// Holt ein Access-Token von der Hume API
+app.get("/api/hume/token", async (c) => {
+  const { HUME_API_KEY, HUME_SECRET_KEY } = c.env;
+
+  if (!HUME_API_KEY || !HUME_SECRET_KEY) {
+    return c.json(
+      { error: "Missing Hume API credentials in environment bindings" },
+      500,
+    );
+  }
+
+  // Hinweis: Prüfe in der aktuellen Hume-Dokumentation, ob dies der korrekte Endpoint ist.
+  const HUME_AUTH_URL = "https://api.hume.ai/v0/evi/configs";
+
+  try {
+    const basicAuth = btoa(`${HUME_API_KEY}:${HUME_SECRET_KEY}`);
+
+    const response = await fetch(HUME_AUTH_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${basicAuth}`,
+      },
+      body: JSON.stringify({}),
+    });
+
+    if (!response.ok) {
+      const text = await response.text().catch(() => "");
+      console.error(
+        "Hume API error response:",
+        response.status,
+        text.slice(0, 200),
+      );
+      return c.json(
+        {
+          error: "Hume API error",
+          status: response.status,
+        },
+        502,
+      );
+    }
+
+    const data: any = await response.json();
+    const accessToken =
+      data.accessToken ?? data.token ?? data.jwt ?? data.access_token ?? null;
+
+    if (!accessToken) {
+      console.error("Hume response missing access token field", data);
+      return c.json(
+        {
+          error: "Hume response did not contain an access token",
+        },
+        502,
+      );
+    }
+
+    return c.json({ accessToken });
+  } catch (error) {
+    console.error("Error calling Hume API:", error);
+    return c.json(
+      {
+        error: "Failed to fetch token from Hume API",
+      },
+      502,
+    );
   }
 });
 
