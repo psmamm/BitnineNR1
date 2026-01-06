@@ -1,0 +1,36 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "01990f45-1b59-711a-a742-26cd7a0e0415",
+  "main": "./src/worker/index.ts",
+  "compatibility_date": "2025-06-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "upload_source_maps": true,
+  "assets": {
+    "not_found_handling": "single-page-application"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "01990f45-1b59-711a-a742-26cd7a0e0415",
+      "database_id": "01990f45-1b59-711a-a742-26cd7a0e0415"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2_BUCKET",
+      "bucket_name": "01990f45-1b59-711a-a742-26cd7a0e0415"
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "vars": {
+    "HUME_API_KEY": "tcuE0Oy2KQEvKvm3Ahjw6CEra9Z9hYx55nxGipZhLcWkEBNm",
+    "POLYGON_RPC_URL": "https://polygon-rpc.com",
+    "SBT_CONTRACT_ADDRESS": "",
+    "ISSUER_PRIVATE_KEY": ""
+  }
+}

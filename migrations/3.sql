@@ -1,0 +1,2 @@
+
+ALTER TABLE trades ADD COLUMN leverage REAL DEFAULT 1.0;
