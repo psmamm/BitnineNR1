@@ -23,6 +23,8 @@
 - ✅ wrangler.json mit Environment Variables erweitert
 - ✅ Deployment Scripts erstellt
 - ✅ Setup-Dokumentation erstellt
+- ✅ .env.example Template erstellt
+- ✅ Migration Scripts erstellt (run-migrations.sh / run-migrations.ps1)
 
 ## ⚠️ Bekannte Probleme
 
@@ -56,7 +58,16 @@
 
 ### 1. Environment Variables setzen
 
-#### Frontend (.env)
+**Schritt 1:** Kopiere `.env.example` zu `.env`:
+```bash
+# Windows PowerShell
+Copy-Item .env.example .env
+
+# Linux/Mac
+cp .env.example .env
+```
+
+**Schritt 2:** Fülle die Werte in `.env` aus:
 ```env
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -78,6 +89,19 @@ VITE_POLYGON_RPC_URL=https://polygon-rpc.com
 
 ### 2. Datenbank-Migrationen ausführen
 
+**Option 1: Mit Scripts (Empfohlen)**
+```bash
+# Windows PowerShell
+.\scripts\run-migrations.ps1 -Mode local
+.\scripts\run-migrations.ps1 -Mode production
+
+# Linux/Mac
+chmod +x scripts/run-migrations.sh
+./scripts/run-migrations.sh local
+./scripts/run-migrations.sh production
+```
+
+**Option 2: Manuell**
 ```bash
 # Lokal testen
 wrangler d1 execute DB --local --file=./migrations/13_emotion_logs.sql
@@ -127,8 +151,11 @@ npm run deploy:sbt:mumbai
 
 - `contracts/TradeCircleSBT.sol` - Smart Contract (bereit für Deployment)
 - `scripts/deploy-sbt.js` - Deployment Script (benötigt Hardhat)
+- `scripts/run-migrations.sh` - Migration Script (Linux/Mac)
+- `scripts/run-migrations.ps1` - Migration Script (Windows)
 - `migrations/13_emotion_logs.sql` - Emotion Logs Tabelle
 - `migrations/14_sbt_badges.sql` - SBT Badges Tabelle
+- `.env.example` - Environment Variables Template
 - `DEPLOYMENT_CHECKLIST.md` - Vollständige Checkliste
 - `scripts/setup.md` - Detailliertes Setup Guide
 
@@ -143,11 +170,13 @@ npm run deploy:sbt:mumbai
 ## 🔧 Empfohlene Reihenfolge
 
 1. ✅ Code ist fertig
-2. ⏭️ Setze Environment Variables
-3. ⏭️ Führe Datenbank-Migrationen aus
-4. ⏭️ Deploye Smart Contract (Remix/Foundry)
-5. ⏭️ Teste alle Features
-6. ⏭️ Deploye zu Production
+2. ✅ Environment Variables Templates erstellt (.env.example)
+3. ✅ Migration Scripts erstellt (run-migrations.sh / run-migrations.ps1)
+4. ⏭️ Setze Environment Variables (kopiere .env.example zu .env)
+5. ⏭️ Führe Datenbank-Migrationen aus (siehe Scripts)
+6. ⏭️ Deploye Smart Contract (Remix/Foundry)
+7. ⏭️ Teste alle Features
+8. ⏭️ Deploye zu Production
 
 ## 💡 Hinweis
 
