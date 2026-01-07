@@ -10,15 +10,6 @@ Write-Host ""
 $env:WRANGLER_SEND_METRICS = "false"
 $env:NO_COLOR = "1"
 
-# Create a temporary script that pipes "n" to wrangler
-$tempScript = @"
-`$input | ForEach-Object {
-    if (`$_ -match "Would you like to report") {
-        Write-Output "n"
-    }
-}
-"@
-
 # Start the server with --local flag
 # The --local flag helps avoid some connection issues
 Write-Host "Starting Wrangler dev server..." -ForegroundColor Green
