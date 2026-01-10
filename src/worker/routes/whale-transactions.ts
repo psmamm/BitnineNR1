@@ -689,7 +689,7 @@ async function fetchSolanaTransactions(
           if (txTimestamp < twentyFourHoursAgo) continue;
 
           console.log(`🟣 SOLANA: Processing tx ${tx.txHash.slice(0, 10)}...`);
-          console.log(`🟣 SOLANA: Transaction meta:`, JSON.stringify(tx.meta, null, 2).slice(0, 300));
+          console.log(`🟣 SOLANA: Transaction meta:`, tx.meta ? JSON.stringify(tx.meta, null, 2).slice(0, 300) : 'No meta');
 
           // Check for SOL transfers in transaction
           let solAmount = 0;
