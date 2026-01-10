@@ -8,7 +8,7 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
-import { createPublicClient, http } from 'viem';
+import { createPublicClient, http, createWalletClient, custom } from 'viem';
 import { polygon } from 'viem/chains';
 
 // SBT Contract ABI (simplified - full ABI would be imported)
@@ -94,10 +94,7 @@ sbtIssuerRouter.post(
   async (c) => {
     try {
       const user = c.get('user');
-      if (!user) {
-        return c.json({ error: 'Unauthorized' }, 401);
-      }
-      const userId = (user as any).google_user_data?.sub || (user as any).firebase_user_id;
+      const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
       
       if (!userId) {
         return c.json({ error: 'Unauthorized' }, 401);
@@ -116,6 +113,11 @@ sbtIssuerRouter.post(
         chain: polygon,
         transport: http(c.env.POLYGON_RPC_URL || 'https://polygon-rpc.com')
       });
+
+      // Create wallet client from issuer private key
+      const issuerAccount = c.env.ISSUER_PRIVATE_KEY.startsWith('0x')
+        ? c.env.ISSUER_PRIVATE_KEY
+        : `0x${c.env.ISSUER_PRIVATE_KEY}`;
 
       // Check if user already has a token
       const hasToken = await publicClient.readContract({

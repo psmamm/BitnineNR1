@@ -43,7 +43,7 @@ export default function RiskFirstDealTicket({
   const [success, setSuccess] = useState<string | null>(null);
 
   const { killSwitch } = useKillSwitch({ calculatedRisk: riskAmount });
-  const { enforceTrade } = useRiskEngine([]);
+  const { snapshot, enforceTrade } = useRiskEngine([]);
 
   // Update prices when currentPrice changes
   useEffect(() => {
@@ -225,7 +225,7 @@ export default function RiskFirstDealTicket({
     }
   };
 
-  const isTradeBlocked = killSwitch.isBlocked || !positionSizeResult.isValid;
+  const isTradeBlocked = killSwitch.isBlocked || !positionSizeResult.isValid || !positionSizeResult.canOpen;
   const canExecute = !isTradeBlocked && !loading && positionSizeResult.positionSize > 0;
 
   return (

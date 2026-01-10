@@ -2,21 +2,7 @@
  * Maps normalized exchange trades to the internal Trade schema
  */
 
-export interface NormalizedTrade {
-  symbol: string;
-  side: 'buy' | 'sell';
-  amount: number;
-  price: number;
-  timestamp: number;
-  fee: { cost: number; currency: string };
-  external_id: string;
-  exchange: string;
-  isClosedPosition?: boolean;
-  exitTimestamp?: number;
-  avgExitPrice?: number;
-  avgEntryPrice?: number;
-  closedPnl?: number;
-}
+import { NormalizedTrade } from './ExchangeImporter';
 
 export interface MappedTrade {
   symbol: string;
@@ -149,4 +135,3 @@ export function mapNormalizedTrades(trades: NormalizedTrade[]): MappedTrade[] {
 export function formatSymbol(exchangeSymbol: string): string {
   return exchangeSymbol.replace('/', '').toUpperCase();
 }
-
