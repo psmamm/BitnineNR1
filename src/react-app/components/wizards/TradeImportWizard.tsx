@@ -48,7 +48,7 @@ function parseSymbol(text: string): string {
     for (const pattern of patterns) {
         const match = text.match(pattern);
         if (match) {
-            return match[0].replace(/[\/\-\s]/g, '').toUpperCase();
+            return match[0].replace(/[/\-\s]/g, '').toUpperCase();
         }
     }
 

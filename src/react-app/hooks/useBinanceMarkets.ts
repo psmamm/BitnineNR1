@@ -495,8 +495,8 @@ export function useBinanceMarkets() {
   // Filter and sort data
   const getFilteredData = useCallback((filters: MarketFilters) => {
     const allData = Object.values(enhancedData);
-    
-    let filtered = allData.filter(item => {
+
+    const filtered = allData.filter(item => {
       // Quote filter
       if (filters.quoteAssets.length > 0 && !filters.quoteAssets.includes(item.quoteAsset)) {
         return false;

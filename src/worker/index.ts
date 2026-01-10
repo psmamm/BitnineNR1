@@ -26,24 +26,31 @@ import type { D1Database, R2Bucket } from "@cloudflare/workers-types";
 
 
 // Combined auth middleware that supports both mocha sessions and Firebase sessions
-const combinedAuthMiddleware = async (c: any, next: any) => {
+const combinedAuthMiddleware = async (c: unknown, next: () => Promise<void>) => {
+  // Type assertion for Hono context
+  const context = c as {
+    get: (key: string) => unknown;
+    set: (key: string, value: unknown) => void;
+    json: (data: unknown, status?: number) => Response;
+  };
+  
   // First try the mocha auth middleware
   try {
-    await authMiddleware(c, async () => { });
-    if (c.get('user')) {
+    await authMiddleware(context as Parameters<typeof authMiddleware>[0], async () => { });
+    if (context.get('user')) {
       return next();
     }
-  } catch (e) {
+  } catch {
     // Mocha auth failed, try Firebase session
   }
 
   // Try Firebase session as fallback
-  const firebaseSession = getCookie(c, 'firebase_session');
+  const firebaseSession = getCookie(context as Parameters<typeof getCookie>[0], 'firebase_session');
   if (firebaseSession) {
     try {
-      const userData = JSON.parse(firebaseSession);
+      const userData = JSON.parse(firebaseSession) as { google_user_id?: string; sub?: string; email?: string; name?: string };
       // Set user in context in the format expected by routes
-      c.set('user', {
+      context.set('user', {
         google_user_data: {
           sub: userData.google_user_id || userData.sub,
           email: userData.email,
@@ -53,13 +60,13 @@ const combinedAuthMiddleware = async (c: any, next: any) => {
         email: userData.email,
       });
       return next();
-    } catch (e) {
-      console.error('Error parsing Firebase session:', e);
+    } catch (error) {
+      console.error('Error parsing Firebase session:', error);
     }
   }
 
   // Both auth methods failed
-  return c.json({ error: 'Unauthorized' }, 401);
+  return context.json({ error: 'Unauthorized' }, 401);
 };
 
 
@@ -80,7 +87,7 @@ type Env = {
   ENCRYPTION_MASTER_KEY: string;
   DB: D1Database;
   R2_BUCKET: R2Bucket;
-  AI: any; // Cloudflare Workers AI binding
+  AI: unknown; // Cloudflare Workers AI binding
 };
 
 const app = new Hono<{ Bindings: Env }>();
@@ -134,7 +141,7 @@ app.get("/api/users/me", combinedAuthMiddleware, async (c) => {
     }
 
     // Extract user_id from token (Firebase UID)
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || (user as { firebase_user_id?: string }).firebase_user_id;
     const userEmail = user.email || user.google_user_data?.email;
     const userName = user.google_user_data?.name || userEmail?.split('@')[0] || 'User';
 
@@ -143,7 +150,15 @@ app.get("/api/users/me", combinedAuthMiddleware, async (c) => {
     }
 
     // Try to fetch user from database
-    let dbUser: any;
+    let dbUser: {
+      username?: string | null;
+      xp?: number | null;
+      rank_tier?: string | null;
+      reputation_score?: number | null;
+      email?: string | null;
+      name?: string | null;
+      lockout_until?: string | null;
+    } | null = null;
     try {
       dbUser = await c.env.DB.prepare(`
         SELECT 
@@ -218,7 +233,7 @@ app.get("/api/users/me", combinedAuthMiddleware, async (c) => {
             'BRONZE', // Default rank tier
             100 // Default reputation score
           ).run();
-        } catch (insertError: any) {
+        } catch (insertError) {
           // If new columns don't exist, try basic insert
           console.log('Full insert failed, trying basic insert:', insertError);
           insertResult = await c.env.DB.prepare(`
@@ -429,7 +444,7 @@ app.put('/api/users/profile', combinedAuthMiddleware, async (c) => {
   const body = await c.req.json();
   const { displayName, avatarIcon } = body;
   // Get userId - support both Mocha and Firebase auth
-  const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+  const userId = user.google_user_data?.sub || (user as { firebase_user_id?: string }).firebase_user_id;
   const userEmail = user.email || user.google_user_data?.email;
 
   console.log('Profile update request:', { displayName, avatarIcon, userId, userEmail });
@@ -465,12 +480,13 @@ app.put('/api/users/profile', combinedAuthMiddleware, async (c) => {
     try {
       await c.env.DB.prepare(`ALTER TABLE users ADD COLUMN avatar_icon TEXT`).run();
       console.log('Added avatar_icon column');
-    } catch (alterError: any) {
+    } catch (alterError) {
       // Column might already exist, which is fine
-      if (alterError.message?.includes('duplicate column name') || alterError.message?.includes('duplicate')) {
+      const errorMessage = alterError instanceof Error ? alterError.message : String(alterError);
+      if (errorMessage?.includes('duplicate column name') || errorMessage?.includes('duplicate')) {
         console.log('avatar_icon column already exists');
       } else {
-        console.log('Note: avatar_icon column may already exist:', alterError.message);
+        console.log('Note: avatar_icon column may already exist:', errorMessage);
       }
     }
 
@@ -483,10 +499,11 @@ app.put('/api/users/profile', combinedAuthMiddleware, async (c) => {
       `).bind(displayName || null, avatarIcon || null, userId).run();
 
       console.log('Profile update result:', result);
-    } catch (updateError: any) {
-      console.error('Update error:', updateError);
+    } catch (updateError) {
+      const errorMessage = updateError instanceof Error ? updateError.message : String(updateError);
+      console.error('Update error:', errorMessage);
       // If avatar_icon update fails, try without it
-      if (updateError.message?.includes('no such column: avatar_icon')) {
+      if (errorMessage?.includes('no such column: avatar_icon')) {
         result = await c.env.DB.prepare(`
           UPDATE users SET name = ?, updated_at = CURRENT_TIMESTAMP
           WHERE google_user_id = ?
@@ -510,9 +527,10 @@ app.put('/api/users/profile', combinedAuthMiddleware, async (c) => {
     console.log('Updated user data:', updatedUser);
 
     return c.json({ success: true, data: updatedUser });
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to update profile';
     console.error('Profile update error:', error);
-    return c.json({ error: error.message || 'Failed to update profile' }, 500);
+    return c.json({ error: errorMessage }, 500);
   }
 });
 
@@ -523,7 +541,7 @@ app.get('/api/users/starting-capital', combinedAuthMiddleware, async (c) => {
     return c.json({ error: 'User not found' }, 401);
   }
 
-  const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+  const userId = user.google_user_data?.sub || (user as { firebase_user_id?: string }).firebase_user_id;
 
   if (!userId) {
     return c.json({ error: 'User ID not found' }, 400);
@@ -533,10 +551,11 @@ app.get('/api/users/starting-capital', combinedAuthMiddleware, async (c) => {
     // Try to add starting_capital column if it doesn't exist
     try {
       await c.env.DB.prepare(`ALTER TABLE users ADD COLUMN starting_capital REAL DEFAULT 10000`).run();
-    } catch (alterError: any) {
+    } catch (alterError) {
       // Column might already exist, which is fine
-      if (!alterError.message?.includes('duplicate column name') && !alterError.message?.includes('duplicate')) {
-        console.log('Note: starting_capital column may already exist:', alterError.message);
+      const errorMessage = alterError instanceof Error ? alterError.message : String(alterError);
+      if (!errorMessage?.includes('duplicate column name') && !errorMessage?.includes('duplicate')) {
+        console.log('Note: starting_capital column may already exist:', errorMessage);
       }
     }
 
@@ -547,7 +566,7 @@ app.get('/api/users/starting-capital', combinedAuthMiddleware, async (c) => {
     const startingCapital = dbUser?.starting_capital || 10000;
 
     return c.json({ success: true, startingCapital });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Failed to get starting capital:', error);
     return c.json({ success: true, startingCapital: 10000 }); // Return default on error
   }
@@ -561,7 +580,7 @@ app.put('/api/users/starting-capital', combinedAuthMiddleware, async (c) => {
   }
 
   const { startingCapital } = await c.req.json();
-  const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+  const userId = user.google_user_data?.sub || (user as { firebase_user_id?: string }).firebase_user_id;
 
   if (!userId) {
     return c.json({ error: 'User ID not found' }, 400);
@@ -575,15 +594,16 @@ app.put('/api/users/starting-capital', combinedAuthMiddleware, async (c) => {
     // Try to add starting_capital column if it doesn't exist
     try {
       await c.env.DB.prepare(`ALTER TABLE users ADD COLUMN starting_capital REAL DEFAULT 10000`).run();
-    } catch (alterError: any) {
+    } catch (alterError) {
       // Column might already exist, which is fine
-      if (!alterError.message?.includes('duplicate column name') && !alterError.message?.includes('duplicate')) {
-        console.log('Note: starting_capital column may already exist:', alterError.message);
+      const errorMessage = alterError instanceof Error ? alterError.message : String(alterError);
+      if (!errorMessage?.includes('duplicate column name') && !errorMessage?.includes('duplicate')) {
+        console.log('Note: starting_capital column may already exist:', errorMessage);
       }
     }
 
     // Check if user exists
-    let userRecord = await c.env.DB.prepare(`
+    const userRecord = await c.env.DB.prepare(`
       SELECT id FROM users WHERE google_user_id = ?
     `).bind(userId).first();
 
@@ -610,9 +630,10 @@ app.put('/api/users/starting-capital', combinedAuthMiddleware, async (c) => {
     }
 
     return c.json({ success: true, startingCapital });
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to update starting capital';
     console.error('Failed to update starting capital:', error);
-    return c.json({ error: error.message || 'Failed to update starting capital' }, 500);
+    return c.json({ error: errorMessage }, 500);
   }
 });
 
@@ -623,7 +644,7 @@ app.get('/api/users/settings', combinedAuthMiddleware, async (c) => {
     return c.json({ error: 'User not found' }, 401);
   }
 
-  const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+  const userId = user.google_user_data?.sub || (user as { firebase_user_id?: string }).firebase_user_id;
   const settings = await c.env.DB.prepare(`
     SELECT notification_settings, theme_preference, risk_lock_enabled, max_daily_loss FROM users WHERE google_user_id = ?
   `).bind(userId).first();
@@ -650,7 +671,7 @@ app.put('/api/users/settings', combinedAuthMiddleware, async (c) => {
   }
 
   const { notifications, theme, riskManagement } = await c.req.json();
-  const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+  const userId = user.google_user_data?.sub || (user as { firebase_user_id?: string }).firebase_user_id;
 
   // Prepare risk management values
   const riskLockEnabled = riskManagement?.risk_lock_enabled ? 1 : 0;
@@ -676,9 +697,10 @@ app.put('/api/users/settings', combinedAuthMiddleware, async (c) => {
       maxDailyLoss,
       userId
     ).run();
-  } catch (updateError: any) {
+  } catch (updateError) {
     // If risk management columns don't exist, update without them
-    if (updateError.message?.includes('no such column')) {
+    const errorMessage = updateError instanceof Error ? updateError.message : String(updateError);
+    if (errorMessage?.includes('no such column')) {
       console.log('Risk management columns not found, updating without them');
       result = await c.env.DB.prepare(`
         UPDATE users SET 
@@ -733,7 +755,7 @@ app.post('/api/auth/firebase-session', async (c) => {
     const name = payload.name;
 
     // Check if user exists in database
-    let userRecord = await c.env.DB.prepare(`
+    const userRecord = await c.env.DB.prepare(`
       SELECT id, google_user_id FROM users WHERE google_user_id = ?
     `).bind(googleUserId).first();
 
@@ -843,7 +865,7 @@ app.post('/api/export', authMiddleware, async (c) => {
   }
   const options = await c.req.json();
 
-  let data: any = {};
+  const data: { trades?: unknown[]; strategies?: unknown[] } = {};
 
   if (options.includeTrades) {
     let query = `
@@ -888,20 +910,35 @@ app.post('/api/export', authMiddleware, async (c) => {
       csv += 'Symbol,Asset Type,Direction,Quantity,Entry Price,Exit Price,Entry Date,Exit Date,P&L,Commission,Strategy,Notes,Tags\n';
 
       for (const trade of data.trades) {
+        const tradeData = trade as {
+          symbol?: string;
+          asset_type?: string;
+          direction?: string;
+          quantity?: number;
+          entry_price?: number;
+          exit_price?: string | number;
+          entry_date?: string;
+          exit_date?: string;
+          pnl?: number;
+          commission?: number;
+          strategy_name?: string;
+          notes?: string;
+          tags?: string;
+        };
         csv += [
-          trade.symbol,
-          trade.asset_type || 'stocks',
-          trade.direction,
-          trade.quantity,
-          trade.entry_price,
-          trade.exit_price || '',
-          trade.entry_date,
-          trade.exit_date || '',
-          trade.pnl || '',
-          trade.commission || '',
-          trade.strategy_name || '',
-          `"${(trade.notes || '').replace(/"/g, '""')}"`,
-          `"${(trade.tags || '').replace(/"/g, '""')}"`
+          tradeData.symbol || '',
+          tradeData.asset_type || 'stocks',
+          tradeData.direction || '',
+          tradeData.quantity || '',
+          tradeData.entry_price || '',
+          tradeData.exit_price || '',
+          tradeData.entry_date || '',
+          tradeData.exit_date || '',
+          tradeData.pnl || '',
+          tradeData.commission || '',
+          tradeData.strategy_name || '',
+          `"${(tradeData.notes || '').replace(/"/g, '""')}"`,
+          `"${(tradeData.tags || '').replace(/"/g, '""')}"`
         ].join(',') + '\n';
       }
     }
@@ -937,9 +974,10 @@ app.post("/api/auth/sync", async (c) => {
       )
         .bind(uid, email, JSON.stringify({}))
         .run();
-    } catch (settingsError: any) {
+    } catch (settingsError) {
       // Falls settings Spalte nicht existiert, verwende existierendes Schema
-      if (settingsError.message?.includes("no such column: settings")) {
+      const errorMessage = settingsError instanceof Error ? settingsError.message : String(settingsError);
+      if (errorMessage?.includes("no such column: settings")) {
         await c.env.DB.prepare(
           `
             INSERT OR IGNORE INTO users (google_user_id, email, created_at)
@@ -1006,7 +1044,7 @@ app.get("/api/hume/token", async (c) => {
       );
     }
 
-    const data: any = await response.json();
+    const data: { accessToken?: string; token?: string; jwt?: string; access_token?: string } = await response.json() as { accessToken?: string; token?: string; jwt?: string; access_token?: string };
     const accessToken =
       data.accessToken ?? data.token ?? data.jwt ?? data.access_token ?? null;
 

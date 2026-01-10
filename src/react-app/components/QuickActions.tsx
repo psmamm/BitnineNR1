@@ -133,7 +133,7 @@ export default function QuickActions() {
             <div className="w-full max-w-4xl relative">
               <TradeImportWizard
                 onClose={() => setShowWizard(false)}
-                onComplete={(data) => {
+                onComplete={() => {
                   setShowWizard(false);
                   // Here we would typically save to the database
                   navigate('/journal');

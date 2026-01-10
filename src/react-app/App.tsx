@@ -127,6 +127,7 @@ const ForgotPasswordPage = lazy(() => import("@/react-app/pages/ForgotPassword")
 const AuthActionPage = lazy(() => import("@/react-app/pages/AuthAction"));
 const TradingPage = lazy(() => import("@/react-app/pages/TradingPage"));
 const TerminalPage = lazy(() => import("@/react-app/pages/Terminal"));
+const ExchangeSettingsPage = lazy(() => import("@/react-app/pages/ExchangeSettings"));
 
 
 export default function App() {
@@ -260,6 +261,11 @@ export default function App() {
                       <Route path="/settings" element={
                         <ProtectedRoute>
                           <SettingsPage />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/settings/exchanges" element={
+                        <ProtectedRoute>
+                          <ExchangeSettingsPage />
                         </ProtectedRoute>
                       } />
 

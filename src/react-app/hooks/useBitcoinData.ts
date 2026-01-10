@@ -37,7 +37,7 @@ export function useBitcoinData() {
   const fetchBitcoinPrice = useCallback(async () => {
     try {
       // Try CoinGecko first
-      let response = await fetch(
+      const response = await fetch(
         'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true',
         { 
           method: 'GET',

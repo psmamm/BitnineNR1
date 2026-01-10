@@ -6,12 +6,13 @@ import { useAuth } from "../contexts/AuthContext";
 import { User, Bell, Download, Upload, Save, Check } from "lucide-react";
 import { useSettings } from "@/react-app/hooks/useSettings";
 import { useDataExport } from "@/react-app/hooks/useDataExport";
-import { useExchangeConnections } from "@/react-app/hooks/useExchangeConnections";
+import { useExchangeConnections, type SyncResult } from "@/react-app/hooks/useExchangeConnections";
 import { buildApiUrl } from "@/react-app/hooks/useApi";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, Plus, Trash2, AlertTriangle, X, ChevronDown } from "lucide-react";
+import { RefreshCw, Plus, Trash2, AlertTriangle, X, ChevronDown, ExternalLink } from "lucide-react";
 import { createPortal } from "react-dom";
+import { Link } from "react-router";
 
 export default function SettingsPage() {
   const { user, refreshUserData } = useAuth();
@@ -191,7 +192,7 @@ export default function SettingsPage() {
         auto_sync_enabled: true,
         sync_interval_hours: 24
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to create exchange connection:', error);
       // The error will be displayed via createError from useExchangeConnections
     }
@@ -202,15 +203,15 @@ export default function SettingsPage() {
       console.log('🔄 Starting sync for connection:', connectionId);
       setSyncStatus(prev => ({ ...prev, [connectionId]: { message: 'Syncing...', type: 'info' } }));
 
-      const result = await sync(connectionId);
+      const result: SyncResult = await sync(connectionId);
       console.log('📊 Sync result:', result);
-      console.log('📊 Sync debug info:', (result as any)?.debug);
+      console.log('📊 Sync debug info:', result?.debug);
 
-      if (result && (result as any).imported !== undefined) {
-        const imported = (result as any).imported || 0;
-        const mapped = (result as any).mapped || 0;
-        const errors = (result as any).errors || [];
-        const debug = (result as any).debug || {};
+      if (result && 'imported' in result) {
+        const imported = result.imported || 0;
+        const mapped = result.mapped || 0;
+        const errors = result.errors || [];
+        const debug = result.debug || {};
 
         console.log(`📈 Sync stats: imported=${imported}, mapped=${mapped}, errors=${errors.length}`);
         console.log(`📈 Debug: normalizedTradesCount=${debug.normalizedTradesCount}, daysBack=${debug.daysBack}, since=${debug.since}`);
@@ -253,16 +254,17 @@ export default function SettingsPage() {
       } else {
         console.warn('⚠️ Unexpected sync result format:', result);
       }
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to sync';
       console.error('❌ Failed to sync:', error);
       console.error('❌ Error details:', JSON.stringify(error, null, 2));
-      setSyncStatus(prev => ({
-        ...prev,
-        [connectionId]: {
-          message: error?.message || 'Failed to sync. Please try again.',
-          type: 'error'
-        }
-      }));
+        setSyncStatus(prev => ({
+          ...prev,
+          [connectionId]: {
+            message: errorMessage || 'Failed to sync. Please try again.',
+            type: 'error'
+          }
+        }));
       setTimeout(() => {
         setSyncStatus(prev => ({ ...prev, [connectionId]: null }));
       }, 8000);
@@ -415,7 +417,7 @@ export default function SettingsPage() {
           setTimeout(() => setImportStatus(''), 5000);
         }
       }
-    } catch (error) {
+    } catch {
       setImportStatus('Import failed. Please check your file format.');
       setTimeout(() => setImportStatus(''), 5000);
     }
@@ -655,15 +657,24 @@ export default function SettingsPage() {
               </div>
             </div>
             {!showExchangeForm && (
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setShowExchangeForm(true)}
-                className="bg-[#6A3DF4] hover:bg-[#8B5CF6] text-white px-5 py-2.5 rounded-xl font-medium transition-all flex items-center space-x-2 shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)]"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Add Exchange</span>
-              </motion.button>
+              <div className="flex items-center space-x-3">
+                <Link
+                  to="/settings/exchanges"
+                  className="text-[#6A3DF4] hover:text-[#8B5CF6] px-4 py-2.5 rounded-xl font-medium transition-all flex items-center space-x-2 border border-[#6A3DF4]/30 hover:border-[#6A3DF4]/50 hover:bg-[#6A3DF4]/10"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  <span>Advanced Settings</span>
+                </Link>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setShowExchangeForm(true)}
+                  className="bg-[#6A3DF4] hover:bg-[#8B5CF6] text-white px-5 py-2.5 rounded-xl font-medium transition-all flex items-center space-x-2 shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)]"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add Exchange</span>
+                </motion.button>
+              </div>
             )}
           </div>
 
@@ -802,13 +813,8 @@ export default function SettingsPage() {
                       <p className="text-[#E74C3C] text-xs">
                         {typeof createError === 'string'
                           ? createError
-                          : (createError as any)?.details || (createError as any)?.message || 'Unknown error occurred'}
+                          : 'Unknown error occurred'}
                       </p>
-                      {(createError as any)?.details && (
-                        <p className="text-[#E74C3C]/80 text-xs mt-1">
-                          {(createError as any).details}
-                        </p>
-                      )}
                     </div>
                   )}
 
@@ -1041,9 +1047,10 @@ export default function SettingsPage() {
                               type: 'error'
                             });
                           }
-                        } catch (error: any) {
+                        } catch (error) {
+                          const errorMessage = error instanceof Error ? error.message : 'Failed to delete imported trades';
                           setDeleteStatus({
-                            message: error.message || 'Failed to delete imported trades',
+                            message: errorMessage,
                             type: 'error'
                           });
                         } finally {

@@ -107,7 +107,7 @@ function TrendingCard({ title, icon, items, color, quoteAssetPrices }: TrendingC
                     className="w-6 h-6 object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      let attemptCount = parseInt(target.dataset.attemptCount || '0');
+                      const attemptCount = parseInt(target.dataset.attemptCount || '0');
                       
                       // Track attempts to prevent infinite loops
                       target.dataset.attemptCount = (attemptCount + 1).toString();

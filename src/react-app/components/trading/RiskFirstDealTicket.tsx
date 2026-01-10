@@ -9,7 +9,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { ChevronDown, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
-import { calculatePositionSize, calculateBybitPositionSize, type PositionSizeResult } from '../../utils/riskCalculator';
+import { calculatePositionSize, calculateBybitPositionSize, type BybitPositionSizeResult } from '../../utils/riskCalculator';
 import { useKillSwitch } from '../../hooks/useKillSwitch';
 import { useRiskEngine } from '../../hooks/useRiskEngine';
 import { buildApiUrl } from '../../hooks/useApi';
@@ -43,7 +43,7 @@ export default function RiskFirstDealTicket({
   const [success, setSuccess] = useState<string | null>(null);
 
   const { killSwitch } = useKillSwitch({ calculatedRisk: riskAmount });
-  const { snapshot, enforceTrade } = useRiskEngine([]);
+  const { enforceTrade } = useRiskEngine([]);
 
   // Update prices when currentPrice changes
   useEffect(() => {
@@ -53,7 +53,7 @@ export default function RiskFirstDealTicket({
   }, [currentPrice]);
 
   // Calculate position size using risk-first formula
-  const positionSizeResult: PositionSizeResult = useMemo(() => {
+  const positionSizeResult: BybitPositionSizeResult = useMemo(() => {
     if (availableBalance > 0 && exchangeConnectionId) {
       return calculateBybitPositionSize({
         riskAmount,
@@ -67,14 +67,21 @@ export default function RiskFirstDealTicket({
         positionMode: 'One-Way'
       });
     }
-    return calculatePositionSize({
-      riskAmount,
-      entryPrice: price,
-      stopLossPrice: stopLoss,
-      pointValue: 1,
-      leverage,
-      marginMode
-    });
+    // Return a default BybitPositionSizeResult when no balance available
+    return {
+      ...calculatePositionSize({
+        riskAmount,
+        entryPrice: price,
+        stopLossPrice: stopLoss,
+        pointValue: 1,
+        leverage,
+        marginMode
+      }),
+      availableBalance: 0,
+      accountType: 'UNIFIED',
+      canOpen: false,
+      reason: 'No balance available'
+    };
   }, [riskAmount, price, stopLoss, leverage, marginMode, availableBalance, exchangeConnectionId]);
 
   // Fetch available balance from Bybit

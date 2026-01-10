@@ -11,7 +11,7 @@ export interface PerformanceMetrics {
   method: string;
   duration: number; // milliseconds
   timestamp: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -19,12 +19,19 @@ export interface PerformanceMetrics {
  * Tracks request duration and logs metrics
  */
 export function performanceMiddleware() {
-  return async (c: any, next: any) => {
+  return async (c: unknown, next: () => Promise<void>) => {
     const startTime = performance.now();
     const requestId = crypto.randomUUID();
     
+    // Type assertion for Hono context
+    const context = c as {
+      set: (key: string, value: string) => void;
+      req: { path: string; method: string };
+      res: { status: number; headers: Headers };
+    };
+    
     // Add request ID to context for tracing
-    c.set('requestId', requestId);
+    context.set('requestId', requestId);
     
     await next();
     
@@ -33,12 +40,12 @@ export function performanceMiddleware() {
     
     const metrics: PerformanceMetrics = {
       requestId,
-      endpoint: c.req.path,
-      method: c.req.method,
+      endpoint: context.req.path,
+      method: context.req.method,
       duration,
       timestamp: Date.now(),
       metadata: {
-        statusCode: c.res.status,
+        statusCode: context.res.status,
       },
     };
     
@@ -52,8 +59,8 @@ export function performanceMiddleware() {
     }
     
     // Add performance header to response
-    c.res.headers.set('X-Request-Duration', duration.toFixed(3));
-    c.res.headers.set('X-Request-Id', requestId);
+    context.res.headers.set('X-Request-Duration', duration.toFixed(3));
+    context.res.headers.set('X-Request-Id', requestId);
   };
 }
 

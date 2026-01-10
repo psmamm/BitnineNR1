@@ -5,6 +5,7 @@ import { authMiddleware } from "@getmocha/users-service/backend";
 import { getCookie } from "hono/cookie";
 import { D1Database } from "@cloudflare/workers-types";
 import { encrypt, decrypt } from "../utils/encryption";
+import { ExchangeFactory, type ExchangeId } from "../utils/exchanges";
 
 type Env = {
     MOCHA_USERS_SERVICE_API_URL: string;
@@ -20,6 +21,14 @@ const CreateConnectionSchema = z.object({
     passphrase: z.string().optional(),
     auto_sync_enabled: z.boolean().optional(),
     sync_interval_hours: z.number().min(1).optional(),
+});
+
+const TestConnectionSchema = z.object({
+    exchange_id: z.string().min(1),
+    api_key: z.string().min(1),
+    api_secret: z.string().min(1),
+    passphrase: z.string().optional(),
+    is_testnet: z.boolean().optional(),
 });
 
 export const exchangeConnectionsRouter = new Hono<{ Bindings: Env; Variables: { user: any } }>();
@@ -83,12 +92,94 @@ exchangeConnectionsRouter.get('/', async (c) => {
 
 // Get supported exchanges
 exchangeConnectionsRouter.get('/supported', async (c) => {
-    return c.json({
-        exchanges: [
-            { id: 'binance', name: 'Binance', logo: 'https://cryptologos.cc/logos/binance-coin-bnb-logo.png' },
-            { id: 'bybit', name: 'Bybit', logo: 'https://cryptologos.cc/logos/bybit-logo.png' },
-        ]
-    });
+    // Get full list of supported exchanges from factory
+    const supportedExchanges = ExchangeFactory.getSupportedExchanges();
+
+    // Filter to only show implemented exchanges for now
+    const implementedExchanges = supportedExchanges.filter(ex =>
+        ['binance', 'bybit', 'coinbase', 'kraken', 'okx'].includes(ex.id)
+    );
+
+    return c.json({ exchanges: implementedExchanges });
+});
+
+// Test connection without storing credentials
+exchangeConnectionsRouter.post('/test', zValidator('json', TestConnectionSchema), async (c) => {
+    const data = c.req.valid('json');
+
+    try {
+        // Validate exchange is supported
+        const supportedExchanges = ExchangeFactory.getSupportedExchanges();
+        const exchangeInfo = supportedExchanges.find(ex => ex.id === data.exchange_id);
+
+        if (!exchangeInfo) {
+            return c.json({
+                success: false,
+                error: `Exchange "${data.exchange_id}" is not supported`,
+            }, 400);
+        }
+
+        // Create exchange instance with provided credentials (not stored)
+        const exchange = ExchangeFactory.create({
+            exchangeId: data.exchange_id as ExchangeId,
+            credentials: {
+                apiKey: data.api_key,
+                apiSecret: data.api_secret,
+                passphrase: data.passphrase,
+            },
+            testnet: data.is_testnet || false,
+        });
+
+        // Test the connection
+        const isConnected = await exchange.testConnection();
+
+        if (isConnected) {
+            // Try to get balance to verify full access
+            try {
+                const balance = await exchange.getBalance();
+                return c.json({
+                    success: true,
+                    message: 'Connection successful',
+                    balance: {
+                        totalEquity: balance.totalEquityUsd,
+                        availableBalance: balance.availableMarginUsd,
+                        accountType: balance.accountType,
+                    },
+                });
+            } catch (balanceError: any) {
+                // Connection works but balance failed - might be read-only key
+                return c.json({
+                    success: true,
+                    message: 'Connection successful (limited permissions)',
+                    warning: 'Could not fetch balance - API key may have limited permissions',
+                });
+            }
+        } else {
+            return c.json({
+                success: false,
+                error: 'Connection test failed - please verify your API credentials',
+            }, 400);
+        }
+    } catch (error: any) {
+        console.error('Connection test error:', error);
+
+        // Provide helpful error messages
+        let errorMessage = 'Connection failed';
+        if (error.message?.includes('Invalid API')) {
+            errorMessage = 'Invalid API key or secret';
+        } else if (error.message?.includes('IP')) {
+            errorMessage = 'IP address not whitelisted';
+        } else if (error.message?.includes('permission')) {
+            errorMessage = 'API key lacks required permissions';
+        } else if (error.message) {
+            errorMessage = error.message;
+        }
+
+        return c.json({
+            success: false,
+            error: errorMessage,
+        }, 400);
+    }
 });
 
 // Create connection

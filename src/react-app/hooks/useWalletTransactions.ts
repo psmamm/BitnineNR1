@@ -96,8 +96,9 @@ export function useWalletTransactions() {
       });
 
       // Get transaction count to determine how many to fetch
-      const transactionCount = await publicClient.getTransactionCount({ address: address as Address });
-      const limit = Math.min(100, transactionCount); // Fetch last 100 transactions
+      // Note: transactionCount reserved for future pagination feature
+      // const transactionCount = await publicClient.getTransactionCount({ address: address as Address });
+      // const limit = Math.min(100, transactionCount); // Fetch last 100 transactions
 
       // Fetch transactions from block explorer API (using Etherscan-like APIs)
       // For now, we'll use a simplified approach - fetch from the last 1000 blocks
@@ -155,20 +156,21 @@ export function useWalletTransactions() {
       // Fetch recent transactions
       const signatures = await connection.getSignaturesForAddress(publicKey, { limit: 100 });
 
-      const txList: BlockchainTransaction[] = await Promise.all(
+      const txList: (BlockchainTransaction | null)[] = await Promise.all(
         signatures.map(async (sig) => {
           try {
             const tx = await connection.getTransaction(sig.signature, {
               maxSupportedTransactionVersion: 0,
             });
 
+            const accountKeys = tx?.transaction.message.getAccountKeys();
             return {
               hash: sig.signature,
               timestamp: sig.blockTime ? sig.blockTime * 1000 : Date.now(),
               from: address,
-              to: tx?.transaction.message.accountKeys[1]?.toString() || '',
+              to: accountKeys?.get(1)?.toString() || '',
               value: '0',
-              type: 'swap',
+              type: 'swap' as const,
               chain: 'solana',
             };
           } catch (e) {

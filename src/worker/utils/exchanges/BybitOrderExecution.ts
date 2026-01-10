@@ -151,7 +151,9 @@ export async function calculateBybitPositionSize(
   entryPrice: number,
   stopLossPrice: number,
   leverage: number,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _marginMode: 'isolated' | 'cross',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _symbol: string
 ): Promise<BybitPositionSizeResult> {
   // Get available balance
@@ -254,7 +256,7 @@ export async function placeBybitOrder(request: BybitOrderRequest): Promise<Bybit
   const recvWindow = '5000';
   
   // Build request body
-  const body: Record<string, any> = {
+  const body: Record<string, string | number | boolean | undefined> = {
     category: request.category,
     symbol: request.symbol,
     side: request.side,

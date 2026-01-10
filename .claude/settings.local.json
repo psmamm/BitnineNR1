@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run build:*)",
+      "Bash(dir \"C:\\\\Users\\\\Leand\\\\Desktop\\\\freey\\\\freey\")",
+      "Bash(dir \"C:\\\\Users\\\\Leand\\\\Desktop\\\\CIRCL\")",
+      "Bash(find:*)",
+      "Bash(xargs:*)",
+      "Bash(ls:*)",
+      "Bash(dir /s /b \"c:\\\\Users\\\\Leand\\\\Desktop\\\\CIRCL\\\\src\")",
+      "Bash(findstr:*)",
+      "Bash(npx eslint:*)",
+      "Bash(grep:*)"
+    ]
+  }
+}

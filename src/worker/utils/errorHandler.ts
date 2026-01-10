@@ -19,7 +19,7 @@ export enum ErrorCode {
 export interface ErrorResponse {
   error: string;
   code: ErrorCode;
-  details?: any;
+  details?: unknown;
   timestamp?: string;
 }
 
@@ -28,9 +28,9 @@ export interface ErrorResponse {
  */
 export class ValidationError extends Error {
   code = ErrorCode.VALIDATION_ERROR;
-  details?: any;
+  details?: unknown;
 
-  constructor(message: string, details?: any) {
+  constructor(message: string, details?: unknown) {
     super(message);
     this.name = 'ValidationError';
     this.details = details;
@@ -39,9 +39,9 @@ export class ValidationError extends Error {
 
 export class AuthError extends Error {
   code = ErrorCode.AUTH_ERROR;
-  details?: any;
+  details?: unknown;
 
-  constructor(message: string, details?: any) {
+  constructor(message: string, details?: unknown) {
     super(message);
     this.name = 'AuthError';
     this.details = details;
@@ -50,9 +50,9 @@ export class AuthError extends Error {
 
 export class DatabaseError extends Error {
   code = ErrorCode.DATABASE_ERROR;
-  details?: any;
+  details?: unknown;
 
-  constructor(message: string, details?: any) {
+  constructor(message: string, details?: unknown) {
     super(message);
     this.name = 'DatabaseError';
     this.details = details;
@@ -61,9 +61,9 @@ export class DatabaseError extends Error {
 
 export class EncryptionError extends Error {
   code = ErrorCode.ENCRYPTION_ERROR;
-  details?: any;
+  details?: unknown;
 
-  constructor(message: string, details?: any) {
+  constructor(message: string, details?: unknown) {
     super(message);
     this.name = 'EncryptionError';
     this.details = details;
@@ -72,9 +72,9 @@ export class EncryptionError extends Error {
 
 export class NotFoundError extends Error {
   code = ErrorCode.NOT_FOUND;
-  details?: any;
+  details?: unknown;
 
-  constructor(message: string, details?: any) {
+  constructor(message: string, details?: unknown) {
     super(message);
     this.name = 'NotFoundError';
     this.details = details;
@@ -92,7 +92,7 @@ export class NotFoundError extends Error {
 export function createErrorResponse(
   error: Error | string,
   code: ErrorCode = ErrorCode.INTERNAL_ERROR,
-  details?: any
+  details?: unknown
 ): ErrorResponse {
   const message = error instanceof Error ? error.message : error;
   
@@ -114,10 +114,10 @@ export function createErrorResponse(
  * @param details - Error details object
  * @returns Sanitized details
  */
-function sanitizeErrorDetails(details: any): any {
+function sanitizeErrorDetails(details: unknown): unknown {
   if (!details) return undefined;
 
-  if (typeof details !== 'object') {
+  if (typeof details !== 'object' || details === null) {
     return details;
   }
 
@@ -136,18 +136,24 @@ function sanitizeErrorDetails(details: any): any {
     'credential',
   ];
 
-  const sanitized: any = Array.isArray(details) ? [] : {};
+  const sanitized: Record<string, unknown> | unknown[] = Array.isArray(details) ? [] : {};
 
-  for (const [key, value] of Object.entries(details)) {
+  for (const [key, value] of Object.entries(details as Record<string, unknown>)) {
     const lowerKey = key.toLowerCase();
     const isSensitive = sensitiveKeys.some(sk => lowerKey.includes(sk));
 
     if (isSensitive) {
-      sanitized[key] = '[REDACTED]';
+      if (!Array.isArray(sanitized)) {
+        sanitized[key] = '[REDACTED]';
+      }
     } else if (typeof value === 'object' && value !== null) {
-      sanitized[key] = sanitizeErrorDetails(value);
+      if (!Array.isArray(sanitized)) {
+        sanitized[key] = sanitizeErrorDetails(value);
+      }
     } else {
-      sanitized[key] = value;
+      if (!Array.isArray(sanitized)) {
+        sanitized[key] = value;
+      }
     }
   }
 
@@ -223,7 +229,7 @@ export function handleError(error: unknown): [number, ErrorResponse] {
  * Catches errors and returns standardized responses
  */
 export function errorHandlerMiddleware() {
-  return async (c: any, next: any) => {
+  return async (c: unknown, next: () => Promise<void>) => {
     try {
       await next();
     } catch (error) {
@@ -235,7 +241,9 @@ export function errorHandlerMiddleware() {
         timestamp: errorResponse.timestamp,
       });
 
-      return c.json(errorResponse, statusCode);
+      // Type assertion for Hono context
+      const context = c as { json: (data: unknown, status: number) => Response };
+      return context.json(errorResponse, statusCode);
     }
   };
 }

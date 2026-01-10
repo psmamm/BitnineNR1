@@ -127,7 +127,7 @@ async function fetchBybitTradesForCategory(
   let data: BybitApiResponse<{ list: BybitTrade[] }>;
   try {
     data = JSON.parse(responseText);
-  } catch (parseError) {
+  } catch {
     if (!response.ok) {
       throw new Error(`Bybit API error (${response.status}): Invalid JSON response - ${responseText.substring(0, 500)}`);
     }
@@ -211,10 +211,11 @@ export async function fetchBybitMyTrades(
             await new Promise(resolve => setTimeout(resolve, 100));
           }
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         // If a category fails (e.g., user doesn't have that type of trades), log and continue
-        if (error.message?.includes('category') || error.message?.includes('Permission')) {
-          console.log(`⚠️ Skipping category ${category}: ${error.message}`);
+        const message = error instanceof Error ? error.message : String(error);
+        if (message?.includes('category') || message?.includes('Permission')) {
+          console.log(`⚠️ Skipping category ${category}: ${message}`);
         } else {
           console.error(`❌ Error fetching ${category} trades:`, error);
           // Re-throw if it's not a category/permission issue
@@ -234,7 +235,7 @@ export async function fetchBybitMyTrades(
     console.log(`✅ Bybit API: Total ${uniqueTrades.length} unique trades fetched across all categories`);
     
     return uniqueTrades;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error fetching Bybit trades:', error);
     throw error;
   }
@@ -291,10 +292,11 @@ export async function testBybitConnection(
       throw new Error(`Connection test failed: ${response.status} - ${responseText.substring(0, 200)}`);
     }
     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let data: BybitApiResponse<any>;
     try {
       data = JSON.parse(responseText);
-    } catch (parseError) {
+    } catch {
       throw new Error(`Invalid JSON response: ${responseText.substring(0, 200)}`);
     }
     
@@ -322,19 +324,20 @@ export async function testBybitConnection(
     
     console.log('✅ Bybit connection test successful');
     return true;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Bybit connection test failed:', error);
-    
+
     // Provide more specific error messages
-    if (error.message?.includes('Invalid signature')) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message?.includes('Invalid signature')) {
       throw new Error('Invalid API secret. Please double-check your API secret key.');
-    } else if (error.message?.includes('Invalid API key')) {
+    } else if (message?.includes('Invalid API key')) {
       throw new Error('Invalid API key. Please double-check your API key.');
-    } else if (error.message?.includes('timeout')) {
+    } else if (message?.includes('timeout')) {
       throw new Error('Connection timeout. Please check your internet connection and try again.');
     }
-    
-    throw new Error(`Connection test failed: ${error.message || 'Unknown error'}`);
+
+    throw new Error(`Connection test failed: ${message || 'Unknown error'}`);
   }
 }
 

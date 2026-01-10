@@ -8,7 +8,7 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
-import { analyzeVoiceEmotion, analyzePositionEmotion, detectTriggerPatterns, type PositionEmotionAnalysis } from '../utils/humeAI';
+import { analyzePositionEmotion, detectTriggerPatterns, type PositionEmotionAnalysis } from '../utils/humeAI';
 
 const EmotionLogSchema = z.object({
   positionId: z.string().uuid(),
@@ -49,7 +49,7 @@ emotionLogsRouter.post(
   async (c) => {
     try {
       const user = c.get('user');
-      const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+      const userId = user?.google_user_data?.sub || (user as any)?.firebase_user_id;
       
       if (!userId) {
         return c.json({ error: 'Unauthorized' }, 401);
@@ -156,7 +156,7 @@ emotionLogsRouter.post(
 emotionLogsRouter.get('/:positionId', async (c) => {
   try {
     const user = c.get('user');
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user?.google_user_data?.sub || (user as any)?.firebase_user_id;
     const positionId = c.req.param('positionId');
 
     const logs = await c.env.DB.prepare(`
@@ -194,7 +194,7 @@ emotionLogsRouter.get('/:positionId', async (c) => {
 emotionLogsRouter.get('/patterns/:positionId', async (c) => {
   try {
     const user = c.get('user');
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user?.google_user_data?.sub || (user as any)?.firebase_user_id;
     const positionId = c.req.param('positionId');
 
     const logs = await c.env.DB.prepare(`

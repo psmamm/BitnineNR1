@@ -40,7 +40,7 @@ export function useMonteCarlo(trades: Trade[]) {
     }
 
     let survived = 0;
-    let endingBalances: number[] = [];
+    const endingBalances: number[] = [];
     let worstDrawdownSeen = 0;
 
     for (let i = 0; i < params.runs; i++) {

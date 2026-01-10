@@ -2,7 +2,15 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 
 interface Bindings {
-  DB: any; // Replace 'any' with the actual type of your database if available
+  DB: {
+    prepare: (statement: string) => {
+      bind: (...args: unknown[]) => {
+        run: () => Promise<{ success: boolean; meta?: { last_row_id?: number } }>;
+        first: <T = unknown>() => Promise<T | null>;
+        all: <T = unknown>() => Promise<{ results: T[] }>;
+      };
+    };
+  };
   HUME_API_KEY: string;
   HUME_SECRET_KEY: string;
 }
@@ -86,7 +94,7 @@ app.get("/api/hume/token", async (c) => {
       );
     }
 
-    const data: any = await response.json();
+    const data: { accessToken?: string; token?: string; jwt?: string; access_token?: string } = await response.json() as { accessToken?: string; token?: string; jwt?: string; access_token?: string };
     const accessToken =
       data.accessToken ?? data.token ?? data.jwt ?? data.access_token ?? null;
 
