@@ -1,13 +1,10 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { authMiddleware } from "@getmocha/users-service/backend";
 import { getCookie } from "hono/cookie";
 import { parseTradesCSV, getSupportedBrokers, detectBroker } from "../utils/brokers";
 
 type Env = {
-  MOCHA_USERS_SERVICE_API_URL: string;
-  MOCHA_USERS_SERVICE_API_KEY: string;
   DB: D1Database;
 };
 
@@ -37,46 +34,53 @@ const TradeSchema = z.object({
   playbook_validation: z.number().int().min(-1).max(1).optional(), // -1 = failed, 0 = not validated, 1 = passed
 });
 
-export const tradesRouter = new Hono<{ Bindings: Env; Variables: { user: any } }>();
+interface UserVariable {
+  google_user_data?: {
+    sub: string;
+    email?: string;
+    name?: string;
+  };
+  firebase_user_id?: string;
+  email?: string;
+}
 
-// Combined auth middleware that supports both mocha sessions and Firebase sessions
-const combinedAuthMiddleware = async (c: any, next: any) => {
-  // First try the mocha auth middleware
-  try {
-    await authMiddleware(c, async () => { });
-    if (c.get('user')) {
-      return next();
-    }
-  } catch (e) {
-    // Mocha auth failed, try Firebase session
-  }
+export const tradesRouter = new Hono<{ Bindings: Env; Variables: { user: UserVariable } }>();
 
-  // Try Firebase session as fallback
-  const firebaseSession = getCookie(c, 'firebase_session');
+// Firebase session auth middleware
+const firebaseAuthMiddleware = async (c: unknown, next: () => Promise<void>) => {
+  const context = c as {
+    get: (key: string) => UserVariable | undefined;
+    set: (key: string, value: UserVariable) => void;
+    json: (data: { error: string }, status: number) => Response;
+  };
+
+  // Try Firebase session
+  const cookieContext = c as { req: { header: (name: string) => string | undefined } };
+  const firebaseSession = getCookie(cookieContext as Parameters<typeof getCookie>[0], 'firebase_session');
   if (firebaseSession) {
     try {
-      const userData = JSON.parse(firebaseSession);
+      const userData = JSON.parse(firebaseSession) as { google_user_id?: string; sub?: string; email?: string; name?: string };
       // Set user in context in the format expected by routes
-      c.set('user', {
+      context.set('user', {
         google_user_data: {
-          sub: userData.google_user_id || userData.sub,
+          sub: userData.google_user_id || userData.sub || '',
           email: userData.email,
           name: userData.name,
         },
         email: userData.email,
       });
       return next();
-    } catch (e) {
-      console.error('Error parsing Firebase session:', e);
+    } catch (error) {
+      console.error('Error parsing Firebase session:', error);
     }
   }
 
-  // Both auth methods failed
-  return c.json({ error: 'Unauthorized' }, 401);
+  // Auth failed
+  return context.json({ error: 'Unauthorized' }, 401);
 };
 
-// Apply combined auth middleware to all routes in this router
-tradesRouter.use('*', combinedAuthMiddleware);
+// Apply Firebase auth middleware to all routes in this router
+tradesRouter.use('*', firebaseAuthMiddleware);
 
 // Get all trades for user
 tradesRouter.get('/', async (c) => {
@@ -96,7 +100,7 @@ tradesRouter.get('/', async (c) => {
     LEFT JOIN strategies s ON t.strategy_id = s.id
     WHERE t.user_id = ?
   `;
-  const params: any[] = [user.google_user_data.sub];
+  const params: (string | number)[] = [user.google_user_data?.sub || ''];
 
   if (symbol) {
     query += ' AND t.symbol = ?';
@@ -133,7 +137,10 @@ tradesRouter.get('/', async (c) => {
 // Get trade statistics
 tradesRouter.get('/stats', async (c) => {
   const user = c.get('user');
-  const userId = user.google_user_data.sub;
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
+  if (!userId) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
 
   // Get basic stats
   const statsQuery = `
@@ -149,7 +156,15 @@ tradesRouter.get('/stats', async (c) => {
     WHERE user_id = ? AND is_closed = 1
   `;
 
-  const stats: any = await c.env.DB.prepare(statsQuery).bind(userId).first();
+  const stats = await c.env.DB.prepare(statsQuery).bind(userId).first<{
+    total_trades: number;
+    winning_trades: number;
+    losing_trades: number;
+    total_pnl: number;
+    avg_pnl: number;
+    best_trade: number;
+    worst_trade: number;
+  }>();
 
   if (!stats || stats.total_trades === 0) {
     return c.json({
@@ -174,9 +189,12 @@ tradesRouter.get('/stats', async (c) => {
     WHERE user_id = ? AND is_closed = 1
   `;
 
-  const profitData: any = await c.env.DB.prepare(profitQuery).bind(userId).first();
-  const profitFactor = profitData && (profitData.gross_loss as number) > 0 ?
-    (profitData.gross_profit as number) / (profitData.gross_loss as number) : 0;
+  const profitData = await c.env.DB.prepare(profitQuery).bind(userId).first<{
+    gross_profit: number;
+    gross_loss: number;
+  }>();
+  const profitFactor = profitData && profitData.gross_loss > 0 ?
+    profitData.gross_profit / profitData.gross_loss : 0;
 
   return c.json({
     totalTrades: stats.total_trades as number,
@@ -192,7 +210,10 @@ tradesRouter.get('/stats', async (c) => {
 // Get aggregated daily stats for calendar
 tradesRouter.get('/daily-stats', async (c) => {
   const user = c.get('user');
-  const userId = user.google_user_data.sub;
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
+  if (!userId) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
 
   // Aggregate pnl by date (using exit_date or entry_date)
   // We strive to use exit_date for closed trades PnL realization
@@ -221,7 +242,7 @@ tradesRouter.post('/', zValidator('json', TradeSchema), async (c) => {
     const user = c.get('user');
     
     // Get user_id from Firebase token (security)
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
     if (!userId) {
       return c.json({ error: 'Unauthorized: User ID not found' }, 401);
     }
@@ -352,9 +373,10 @@ tradesRouter.post('/', zValidator('json', TradeSchema), async (c) => {
         trade.screenshot_url || null,
         trade.playbook_validation || 0
       ).run();
-    } catch (insertError: any) {
+    } catch (insertError) {
       // If new columns don't exist, try basic insert
-      console.log('Full insert failed, trying basic insert:', insertError);
+      const errorMessage = insertError instanceof Error ? insertError.message : String(insertError);
+      console.log('Full insert failed, trying basic insert:', errorMessage);
       try {
         // Calculate quantity from size if quantity is not provided
         const calculatedQuantity = trade.quantity || (positionSize && trade.entry_price ? Math.round(positionSize / trade.entry_price) : null);
@@ -420,7 +442,7 @@ tradesRouter.post('/', zValidator('json', TradeSchema), async (c) => {
           const startOfDayTimestamp = Math.floor(startOfDay.getTime() / 1000);
 
           // Calculate cumulative daily PnL (only losses count)
-          const dailyPnLResult: any = await c.env.DB.prepare(`
+          const dailyPnLResult = await c.env.DB.prepare(`
             SELECT COALESCE(SUM(pnl_net), 0) as daily_loss
             FROM trades
             WHERE user_id = ? 
@@ -431,7 +453,9 @@ tradesRouter.post('/', zValidator('json', TradeSchema), async (c) => {
                 (exit_timestamp IS NULL AND entry_timestamp >= ?) OR
                 (exit_timestamp IS NULL AND entry_timestamp IS NULL AND created_at >= ?)
               )
-          `).bind(userId, startOfDayTimestamp, startOfDayTimestamp, startOfDay.toISOString()).first();
+          `).bind(userId, startOfDayTimestamp, startOfDayTimestamp, startOfDay.toISOString()).first<{
+            daily_loss: number;
+          }>();
 
           const dailyLoss = dailyPnLResult?.daily_loss || 0;
           const maxDailyLoss = riskSettings.max_daily_loss as number;
@@ -482,7 +506,7 @@ tradesRouter.post('/', zValidator('json', TradeSchema), async (c) => {
 
     // Create notification if trade alerts are enabled
     try {
-      const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+      const userId = user.google_user_data?.sub || user.firebase_user_id;
       if (userId) {
         // Ensure notifications table exists
         try {
@@ -502,7 +526,7 @@ tradesRouter.post('/', zValidator('json', TradeSchema), async (c) => {
               updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
           `).run();
-        } catch (e) {
+        } catch {
           // Table might already exist
         }
 
@@ -520,7 +544,7 @@ tradesRouter.post('/', zValidator('json', TradeSchema), async (c) => {
         if (userRecord?.notification_settings) {
           try {
             notificationSettings = JSON.parse(userRecord.notification_settings as string);
-          } catch (e) {
+          } catch {
             // Use defaults
           }
         }
@@ -611,7 +635,7 @@ tradesRouter.put('/:id', zValidator('json', TradeSchema), async (c) => {
   // Get existing trade to determine position size
   const existingTrade = await c.env.DB.prepare(`
     SELECT size, quantity, entry_price, direction, is_closed FROM trades WHERE id = ? AND user_id = ?
-  `).bind(tradeId, user.google_user_data?.sub || (user as any).firebase_user_id).first<{
+  `).bind(tradeId, user.google_user_data?.sub || user.firebase_user_id || '').first<{
     size: number | null;
     quantity: number | null;
     entry_price: number;
@@ -721,7 +745,7 @@ tradesRouter.put('/:id', zValidator('json', TradeSchema), async (c) => {
     trade.screenshot_url || null,
     trade.playbook_validation || null,
     tradeId,
-    user.google_user_data?.sub || (user as any).firebase_user_id
+    user.google_user_data?.sub || user.firebase_user_id || ''
   ).run();
 
   if (!result.success || result.meta.changes === 0) {
@@ -731,7 +755,7 @@ tradesRouter.put('/:id', zValidator('json', TradeSchema), async (c) => {
   // Create notification if trade was just closed and trade alerts are enabled
   if (wasOpen && isNowClosed) {
     try {
-      const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+      const userId = user.google_user_data?.sub || user.firebase_user_id;
       if (userId) {
         // Ensure notifications table exists
         try {
@@ -751,7 +775,7 @@ tradesRouter.put('/:id', zValidator('json', TradeSchema), async (c) => {
               updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
           `).run();
-        } catch (e) {
+        } catch {
           // Table might already exist
         }
 
@@ -769,7 +793,7 @@ tradesRouter.put('/:id', zValidator('json', TradeSchema), async (c) => {
         if (userRecord?.notification_settings) {
           try {
             notificationSettings = JSON.parse(userRecord.notification_settings as string);
-          } catch (e) {
+          } catch {
             // Use defaults
           }
         }
@@ -821,10 +845,14 @@ tradesRouter.put('/:id', zValidator('json', TradeSchema), async (c) => {
 tradesRouter.delete('/:id', async (c) => {
   const user = c.get('user');
   const tradeId = c.req.param('id');
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
+  if (!userId) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
 
   const result = await c.env.DB.prepare(`
     DELETE FROM trades WHERE id = ? AND user_id = ?
-  `).bind(tradeId, user.google_user_data.sub).run();
+  `).bind(tradeId, userId).run();
 
   if (!result.success || result.meta.changes === 0) {
     return c.json({ error: 'Trade not found' }, 404);
@@ -839,13 +867,18 @@ tradesRouter.get('/equity-curve', async (c) => {
   const days = Number(c.req.query('days')) || 365;
 
   // Get portfolio snapshots or calculate from trades
-  let equityData = await c.env.DB.prepare(`
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
+  if (!userId) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  
+  const equityData = await c.env.DB.prepare(`
     SELECT date, total_value, daily_pnl
     FROM portfolio_snapshots 
     WHERE user_id = ? 
     ORDER BY date DESC 
     LIMIT ?
-  `).bind(user.google_user_data.sub, days).all();
+  `).bind(userId, days).all();
 
   if (!equityData.results.length) {
     // Fallback: calculate from trades
@@ -854,16 +887,21 @@ tradesRouter.get('/equity-curve', async (c) => {
       FROM trades 
       WHERE user_id = ? AND is_closed = 1
       ORDER BY entry_date
-    `).bind(user.google_user_data.sub).all();
+    `).bind(userId).all();
 
     const startingBalance = 10000; // Default starting balance
     let runningBalance = startingBalance;
-    const dataPoints: any[] = [];
+    interface DataPoint {
+      date: string;
+      value: number;
+    }
+    const dataPoints: DataPoint[] = [];
 
     for (const trade of trades.results) {
-      runningBalance += (trade.pnl as number) || 0;
+      const tradeData = trade as { pnl?: number; exit_date?: string; entry_date?: string };
+      runningBalance += tradeData.pnl || 0;
       dataPoints.push({
-        date: trade.exit_date || trade.entry_date,
+        date: tradeData.exit_date || tradeData.entry_date || '',
         value: Math.round(runningBalance * 100) / 100
       });
     }
@@ -872,9 +910,195 @@ tradesRouter.get('/equity-curve', async (c) => {
   }
 
   return c.json({
-    data: equityData.results.map((point: any) => ({
-      date: point.date,
-      value: point.total_value
-    }))
+    data: equityData.results.map((point) => {
+      const pointData = point as { date: string; total_value: number };
+      return {
+        date: pointData.date,
+        value: pointData.total_value
+      };
+    })
   });
+});
+
+// ============================================================================
+// CSV Import Routes
+// ============================================================================
+
+// Get supported brokers for import
+tradesRouter.get('/import/brokers', async (c) => {
+  const brokers = getSupportedBrokers();
+  return c.json({ brokers });
+});
+
+// Detect broker from CSV content
+tradesRouter.post('/import/detect', async (c) => {
+  try {
+    const body = await c.req.json();
+    const { csvContent } = body;
+
+    if (!csvContent) {
+      return c.json({ error: 'CSV content is required' }, 400);
+    }
+
+    const detectedBroker = detectBroker(csvContent);
+    return c.json({
+      detected: !!detectedBroker,
+      brokerId: detectedBroker || 'generic'
+    });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to detect broker';
+    return c.json({ error: message }, 400);
+  }
+});
+
+// Preview CSV import (parse without saving)
+tradesRouter.post('/import/preview', async (c) => {
+  try {
+    const body = await c.req.json();
+    const { csvContent, brokerId } = body;
+
+    if (!csvContent) {
+      return c.json({ error: 'CSV content is required' }, 400);
+    }
+
+    const { brokerId: detectedBroker, result } = await parseTradesCSV(csvContent, brokerId);
+
+    return c.json({
+      brokerId: detectedBroker,
+      success: result.success,
+      preview: result.trades.slice(0, 10), // First 10 trades for preview
+      totalTrades: result.trades.length,
+      totalRows: result.totalRows,
+      parsedRows: result.parsedRows,
+      skippedRows: result.skippedRows,
+      warnings: result.warnings.slice(0, 10),
+      errors: result.errors
+    });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to parse CSV';
+    return c.json({ error: message }, 400);
+  }
+});
+
+// Import CSV trades
+const ImportCSVSchema = z.object({
+  csvContent: z.string().min(1),
+  brokerId: z.string().optional(),
+  defaultAssetType: z.enum(['stocks', 'crypto', 'forex', 'futures', 'options']).optional()
+});
+
+tradesRouter.post('/import', zValidator('json', ImportCSVSchema), async (c) => {
+  try {
+    const user = c.get('user');
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
+
+    if (!userId) {
+      return c.json({ error: 'Unauthorized' }, 401);
+    }
+
+    const { csvContent, brokerId, defaultAssetType } = c.req.valid('json');
+
+    // Parse CSV
+    const { brokerId: detectedBroker, result } = await parseTradesCSV(csvContent, brokerId);
+
+    if (!result.success || result.trades.length === 0) {
+      return c.json({
+        success: false,
+        imported: 0,
+        errors: result.errors.length > 0 ? result.errors : ['No valid trades found in CSV']
+      }, 400);
+    }
+
+    // Import trades
+    let importedCount = 0;
+    let skippedCount = 0;
+    const importErrors: string[] = [];
+
+    for (const trade of result.trades) {
+      try {
+        // Normalize direction
+        const direction = (trade.side === 'buy' || trade.side === 'long') ? 'LONG' : 'SHORT';
+
+        // Calculate P&L if we have entry and exit prices
+        let pnl: number | null = null;
+        let isClosed = 0;
+
+        if (trade.exitPrice && trade.entryPrice) {
+          const multiplier = direction === 'LONG' ? 1 : -1;
+          pnl = (trade.exitPrice - trade.entryPrice) * trade.quantity * multiplier;
+          isClosed = 1;
+        }
+
+        if (trade.realizedPnl) {
+          pnl = trade.realizedPnl;
+          isClosed = 1;
+        }
+
+        // Check for duplicate
+        const existingTrade = await c.env.DB.prepare(`
+          SELECT id FROM trades
+          WHERE user_id = ?
+          AND symbol = ?
+          AND entry_date = ?
+          AND direction = ?
+          AND ABS(entry_price - ?) < 0.0001
+          LIMIT 1
+        `).bind(
+          userId,
+          trade.symbol.toUpperCase(),
+          trade.entryDate.toISOString(),
+          direction,
+          trade.entryPrice
+        ).first();
+
+        if (existingTrade) {
+          skippedCount++;
+          continue;
+        }
+
+        // Insert trade
+        await c.env.DB.prepare(`
+          INSERT INTO trades (
+            user_id, symbol, asset_type, direction, quantity,
+            entry_price, exit_price, entry_date, exit_date,
+            commission, pnl, is_closed, notes, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        `).bind(
+          userId,
+          trade.symbol.toUpperCase(),
+          defaultAssetType || trade.assetClass || 'stocks',
+          direction,
+          trade.quantity,
+          trade.entryPrice,
+          trade.exitPrice || null,
+          trade.entryDate.toISOString(),
+          trade.exitDate?.toISOString() || null,
+          trade.fee || 0,
+          pnl,
+          isClosed,
+          `Imported from ${detectedBroker}`
+        ).run();
+
+        importedCount++;
+      } catch (tradeError: unknown) {
+        const message = tradeError instanceof Error ? tradeError.message : 'Unknown error';
+        importErrors.push(`Failed to import ${trade.symbol}: ${message}`);
+      }
+    }
+
+    return c.json({
+      success: true,
+      brokerId: detectedBroker,
+      imported: importedCount,
+      skipped: skippedCount,
+      total: result.trades.length,
+      warnings: result.warnings,
+      errors: importErrors
+    });
+
+  } catch (error: unknown) {
+    console.error('CSV Import Error:', error);
+    const message = error instanceof Error ? error.message : 'Failed to import trades';
+    return c.json({ error: message }, 500);
+  }
 });

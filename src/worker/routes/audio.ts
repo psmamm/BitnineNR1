@@ -1,56 +1,61 @@
 import { Hono } from "hono";
 import { getCookie } from "hono/cookie";
-import { authMiddleware } from "@getmocha/users-service/backend";
-import type { R2Bucket } from "@cloudflare/workers-types";
+import type { D1Database, R2Bucket } from "@cloudflare/workers-types";
+
+interface UserVariable {
+  google_user_data?: {
+    sub: string;
+    email?: string;
+    name?: string;
+  };
+  firebase_user_id?: string;
+  email?: string;
+}
 
 type Env = {
-  MOCHA_USERS_SERVICE_API_URL: string;
-  MOCHA_USERS_SERVICE_API_KEY: string;
   DB: D1Database;
   R2_BUCKET: R2Bucket;
-  AI: any; // Cloudflare Workers AI binding
+  AI: {
+    run: (model: string, input: { audio: Uint8Array }) => Promise<unknown>;
+  };
 };
 
-export const audioRouter = new Hono<{ Bindings: Env; Variables: { user: any } }>();
+export const audioRouter = new Hono<{ Bindings: Env; Variables: { user: UserVariable } }>();
 
-// Combined auth middleware that supports both mocha sessions and Firebase sessions
-const combinedAuthMiddleware = async (c: any, next: any) => {
-  // First try the mocha auth middleware
-  try {
-    await authMiddleware(c, async () => { });
-    if (c.get('user')) {
-      return next();
-    }
-  } catch (e) {
-    // Mocha auth failed, try Firebase session
-  }
+// Firebase session auth middleware
+const firebaseAuthMiddleware = async (c: unknown, next: () => Promise<void>) => {
+  const context = c as {
+    get: (key: string) => UserVariable | undefined;
+    set: (key: string, value: UserVariable) => void;
+    json: (data: { error: string }, status: number) => Response;
+  };
 
-  // Try Firebase session as fallback
-  const firebaseSession = getCookie(c, 'firebase_session');
+  // Try Firebase session
+  const firebaseSession = getCookie(context as Parameters<typeof getCookie>[0], 'firebase_session');
   if (firebaseSession) {
     try {
-      const userData = JSON.parse(firebaseSession);
+      const userData = JSON.parse(firebaseSession) as { google_user_id?: string; sub?: string; email?: string; name?: string };
       // Set user in context in the format expected by routes
-      c.set('user', {
+      context.set('user', {
         google_user_data: {
-          sub: userData.google_user_id || userData.sub,
+          sub: userData.google_user_id || userData.sub || '',
           email: userData.email,
           name: userData.name,
         },
         email: userData.email,
       });
       return next();
-    } catch (e) {
-      console.error('Error parsing Firebase session:', e);
+    } catch (error) {
+      console.error('Error parsing Firebase session:', error);
     }
   }
 
-  // Both auth methods failed
-  return c.json({ error: 'Unauthorized' }, 401);
+  // Auth failed
+  return context.json({ error: 'Unauthorized' }, 401);
 };
 
 // Apply combined auth middleware to all routes in this router
-audioRouter.use('*', combinedAuthMiddleware);
+audioRouter.use('*', firebaseAuthMiddleware);
 
 // Upload audio file and transcribe using AI
 audioRouter.post('/upload', async (c) => {
@@ -61,7 +66,7 @@ audioRouter.post('/upload', async (c) => {
     }
 
     // Get user ID for file organization
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
     if (!userId) {
       return c.json({ error: 'User ID not found' }, 401);
     }
@@ -163,25 +168,26 @@ audioRouter.post('/upload', async (c) => {
       if (transcriptionResponse) {
         if (typeof transcriptionResponse === 'string') {
           transcriptionText = transcriptionResponse;
-        } else if (transcriptionResponse.text) {
-          transcriptionText = transcriptionResponse.text;
-        } else if (transcriptionResponse.transcription) {
-          transcriptionText = transcriptionResponse.transcription;
-        } else if (transcriptionResponse.result) {
-          transcriptionText = transcriptionResponse.result;
         } else {
-          // Try to stringify and parse if it's a complex object
-          try {
-            const responseStr = JSON.stringify(transcriptionResponse);
-            const parsed = JSON.parse(responseStr);
-            transcriptionText = parsed.text || parsed.transcription || parsed.result || '';
-          } catch (parseError) {
-            console.error('Failed to parse transcription response:', parseError);
-            // Try direct access to common properties
-            transcriptionText = (transcriptionResponse as any).text || 
-                               (transcriptionResponse as any).transcription || 
-                               (transcriptionResponse as any).result || 
-                               '';
+          const responseObj = transcriptionResponse as { text?: string; transcription?: string; result?: string } | null;
+          if (responseObj) {
+            if (responseObj.text) {
+              transcriptionText = responseObj.text;
+            } else if (responseObj.transcription) {
+              transcriptionText = responseObj.transcription;
+            } else if (responseObj.result) {
+              transcriptionText = responseObj.result;
+            } else {
+              // Try to stringify and parse if it's a complex object
+              try {
+                const responseStr = JSON.stringify(transcriptionResponse);
+                const parsed = JSON.parse(responseStr) as { text?: string; transcription?: string; result?: string };
+                transcriptionText = parsed.text || parsed.transcription || parsed.result || '';
+              } catch (parseError) {
+                console.error('Failed to parse transcription response:', parseError);
+                transcriptionText = '';
+              }
+            }
           }
         }
         
@@ -230,7 +236,10 @@ audioRouter.get('/play/:key(*)', async (c) => {
       return c.json({ error: 'Unauthorized' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
+    if (!userId) {
+      return c.json({ error: 'User ID not found' }, 401);
+    }
     const key = c.req.param('key');
 
     if (!key) {

@@ -8,14 +8,11 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { authMiddleware } from "@getmocha/users-service/backend";
 import { getCookie } from "hono/cookie";
 import { D1Database } from "@cloudflare/workers-types";
 import { encrypt, decrypt } from "../utils/encryption";
 
 type Env = {
-  MOCHA_USERS_SERVICE_API_URL: string;
-  MOCHA_USERS_SERVICE_API_KEY: string;
   ENCRYPTION_MASTER_KEY: string;
   DB: D1Database;
 };
@@ -39,43 +36,37 @@ type User = {
 
 export const apiKeysRouter = new Hono<{ Bindings: Env; Variables: { user: User | undefined } }>();
 
-// Combined auth middleware
-// Note: Using 'any' for context type is consistent with other routes in this codebase
-// Hono's Context type is complex and varies by middleware chain
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const combinedAuthMiddleware = async (c: any, next: () => Promise<void>) => {
-  try {
-    await authMiddleware(c, async () => { });
-    if (c.get('user')) {
-      return next();
-    }
-  } catch {
-    // Mocha auth failed, try Firebase session
-  }
+// Firebase session auth middleware
+const firebaseAuthMiddleware = async (c: unknown, next: () => Promise<void>) => {
+  const context = c as {
+    get: (key: string) => User | undefined;
+    set: (key: string, value: User) => void;
+    json: (data: { error: string }, status: number) => Response;
+  };
 
-  const firebaseSession = getCookie(c, 'firebase_session');
+  const firebaseSession = getCookie(context as Parameters<typeof getCookie>[0], 'firebase_session');
   if (firebaseSession) {
     try {
-      const userData = JSON.parse(firebaseSession);
-      c.set('user', {
+      const userData = JSON.parse(firebaseSession) as { google_user_id?: string; sub?: string; email?: string; name?: string };
+      context.set('user', {
         google_user_data: {
-          sub: userData.google_user_id || userData.sub,
+          sub: userData.google_user_id || userData.sub || '',
           email: userData.email,
           name: userData.name,
         },
         email: userData.email,
       });
       return next();
-    } catch (e) {
-      console.error('Error parsing Firebase session:', e);
+    } catch (error) {
+      console.error('Error parsing Firebase session:', error);
     }
   }
 
-  return c.json({ error: 'Unauthorized' }, 401);
+  return context.json({ error: 'Unauthorized' }, 401);
 };
 
 // Apply auth to all routes
-apiKeysRouter.use('*', combinedAuthMiddleware);
+apiKeysRouter.use('*', firebaseAuthMiddleware);
 
 /**
  * POST /api/keys/store

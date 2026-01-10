@@ -8,7 +8,25 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
+import { getCookie } from 'hono/cookie';
+import type { D1Database, R2Bucket } from '@cloudflare/workers-types';
 import { analyzePositionEmotion, detectTriggerPatterns, type PositionEmotionAnalysis } from '../utils/humeAI';
+
+interface UserVariable {
+  google_user_data?: {
+    sub: string;
+    email?: string;
+    name?: string;
+  };
+  firebase_user_id?: string;
+  email?: string;
+}
+
+type Env = {
+  DB: D1Database;
+  R2_BUCKET: R2Bucket;
+  HUME_API_KEY: string;
+};
 
 const EmotionLogSchema = z.object({
   positionId: z.string().uuid(),
@@ -21,23 +39,42 @@ const EmotionLogSchema = z.object({
 });
 
 export const emotionLogsRouter = new Hono<{
-  Bindings: {
-    DB: D1Database;
-    R2_BUCKET: R2Bucket;
-    HUME_API_KEY: string;
-  };
+  Bindings: Env;
+  Variables: { user: UserVariable };
 }>();
 
-// Combined auth middleware
-const combinedAuthMiddleware = async (c: any, next: any) => {
-  const user = c.get('user');
-  if (!user) {
-    return c.json({ error: 'Unauthorized' }, 401);
+// Firebase session auth middleware
+const firebaseAuthMiddleware = async (c: unknown, next: () => Promise<void>) => {
+  const context = c as {
+    get: (key: string) => UserVariable | undefined;
+    set: (key: string, value: UserVariable) => void;
+    json: (data: { error: string }, status: number) => Response;
+    env: Env;
+  };
+
+  const firebaseSession = getCookie(context as Parameters<typeof getCookie>[0], 'firebase_session');
+  if (firebaseSession) {
+    try {
+      const userData = JSON.parse(firebaseSession) as { google_user_id?: string; sub?: string; email?: string; name?: string };
+      context.set('user', {
+        google_user_data: {
+          sub: userData.google_user_id || userData.sub || '',
+          email: userData.email,
+          name: userData.name,
+        },
+        firebase_user_id: userData.google_user_id || userData.sub,
+        email: userData.email,
+      });
+      return next();
+    } catch (error) {
+      console.error('Error parsing Firebase session:', error);
+    }
   }
-  await next();
+
+  return context.json({ error: 'Unauthorized' }, 401);
 };
 
-emotionLogsRouter.use('*', combinedAuthMiddleware);
+emotionLogsRouter.use('*', firebaseAuthMiddleware);
 
 /**
  * POST /api/emotion-logs
@@ -156,7 +193,13 @@ emotionLogsRouter.post(
 emotionLogsRouter.get('/:positionId', async (c) => {
   try {
     const user = c.get('user');
-    const userId = user?.google_user_data?.sub || (user as any)?.firebase_user_id;
+    if (!user) {
+      return c.json({ error: 'Unauthorized' }, 401);
+    }
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
+    if (!userId) {
+      return c.json({ error: 'User ID not found' }, 401);
+    }
     const positionId = c.req.param('positionId');
 
     const logs = await c.env.DB.prepare(`
@@ -165,17 +208,42 @@ emotionLogsRouter.get('/:positionId', async (c) => {
       ORDER BY timestamp DESC
     `).bind(userId, positionId).all();
 
-    const analyses: PositionEmotionAnalysis[] = logs.results.map((log: any) => ({
-      emotions: JSON.parse(log.emotions_json || '[]'),
-      prosody: JSON.parse(log.prosody_json || '{}'),
-      timestamp: new Date(log.timestamp).getTime(),
-      audioUrl: log.audio_url,
-      positionId: log.position_id,
-      currentPnL: log.current_pnl,
-      positionSize: log.position_size,
-      entryPrice: log.entry_price,
-      currentPrice: log.current_price
-    }));
+    const analyses: PositionEmotionAnalysis[] = (logs.results as Array<{
+      emotions_json?: string;
+      prosody_json?: string;
+      timestamp?: string;
+      audio_url?: string;
+      position_id?: string;
+      current_pnl?: number;
+      position_size?: number;
+      entry_price?: number;
+      current_price?: number;
+    }>)
+      .filter((log) => log.position_id && log.timestamp && log.current_pnl !== undefined && log.position_size !== undefined && log.entry_price !== undefined && log.current_price !== undefined)
+      .map((log) => {
+        const typedLog = log as {
+          emotions_json: string;
+          prosody_json: string;
+          timestamp: string;
+          audio_url?: string;
+          position_id: string;
+          current_pnl: number;
+          position_size: number;
+          entry_price: number;
+          current_price: number;
+        };
+        return {
+          emotions: JSON.parse(typedLog.emotions_json || '[]'),
+          prosody: JSON.parse(typedLog.prosody_json || '{}'),
+          timestamp: new Date(typedLog.timestamp).getTime(),
+          audioUrl: typedLog.audio_url,
+          positionId: typedLog.position_id,
+          currentPnL: typedLog.current_pnl,
+          positionSize: typedLog.position_size,
+          entryPrice: typedLog.entry_price,
+          currentPrice: typedLog.current_price
+        };
+      });
 
     return c.json({ logs: analyses });
   } catch (error) {
@@ -194,7 +262,13 @@ emotionLogsRouter.get('/:positionId', async (c) => {
 emotionLogsRouter.get('/patterns/:positionId', async (c) => {
   try {
     const user = c.get('user');
-    const userId = user?.google_user_data?.sub || (user as any)?.firebase_user_id;
+    if (!user) {
+      return c.json({ error: 'Unauthorized' }, 401);
+    }
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
+    if (!userId) {
+      return c.json({ error: 'User ID not found' }, 401);
+    }
     const positionId = c.req.param('positionId');
 
     const logs = await c.env.DB.prepare(`
@@ -203,17 +277,42 @@ emotionLogsRouter.get('/patterns/:positionId', async (c) => {
       ORDER BY timestamp ASC
     `).bind(userId, positionId).all();
 
-    const analyses: PositionEmotionAnalysis[] = logs.results.map((log: any) => ({
-      emotions: JSON.parse(log.emotions_json || '[]'),
-      prosody: JSON.parse(log.prosody_json || '{}'),
-      timestamp: new Date(log.timestamp).getTime(),
-      audioUrl: log.audio_url,
-      positionId: log.position_id,
-      currentPnL: log.current_pnl,
-      positionSize: log.position_size,
-      entryPrice: log.entry_price,
-      currentPrice: log.current_price
-    }));
+    const analyses: PositionEmotionAnalysis[] = (logs.results as Array<{
+      emotions_json?: string;
+      prosody_json?: string;
+      timestamp?: string;
+      audio_url?: string;
+      position_id?: string;
+      current_pnl?: number;
+      position_size?: number;
+      entry_price?: number;
+      current_price?: number;
+    }>)
+      .filter((log) => log.position_id && log.timestamp && log.current_pnl !== undefined && log.position_size !== undefined && log.entry_price !== undefined && log.current_price !== undefined)
+      .map((log) => {
+        const typedLog = log as {
+          emotions_json: string;
+          prosody_json: string;
+          timestamp: string;
+          audio_url?: string;
+          position_id: string;
+          current_pnl: number;
+          position_size: number;
+          entry_price: number;
+          current_price: number;
+        };
+        return {
+          emotions: JSON.parse(typedLog.emotions_json || '[]'),
+          prosody: JSON.parse(typedLog.prosody_json || '{}'),
+          timestamp: new Date(typedLog.timestamp).getTime(),
+          audioUrl: typedLog.audio_url,
+          positionId: typedLog.position_id,
+          currentPnL: typedLog.current_pnl,
+          positionSize: typedLog.position_size,
+          entryPrice: typedLog.entry_price,
+          currentPrice: typedLog.current_price
+        };
+      });
 
     const patterns = detectTriggerPatterns(analyses);
 

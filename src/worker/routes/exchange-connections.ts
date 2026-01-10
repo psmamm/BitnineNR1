@@ -1,15 +1,12 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { authMiddleware } from "@getmocha/users-service/backend";
 import { getCookie } from "hono/cookie";
 import { D1Database } from "@cloudflare/workers-types";
 import { encrypt, decrypt } from "../utils/encryption";
 import { ExchangeFactory, type ExchangeId } from "../utils/exchanges";
 
 type Env = {
-    MOCHA_USERS_SERVICE_API_URL: string;
-    MOCHA_USERS_SERVICE_API_KEY: string;
     ENCRYPTION_MASTER_KEY: string;
     DB: D1Database;
 };
@@ -31,47 +28,57 @@ const TestConnectionSchema = z.object({
     is_testnet: z.boolean().optional(),
 });
 
-export const exchangeConnectionsRouter = new Hono<{ Bindings: Env; Variables: { user: any } }>();
+interface UserVariable {
+  google_user_data?: {
+    sub: string;
+    email?: string;
+    name?: string;
+  };
+  firebase_user_id?: string;
+  email?: string;
+}
 
-// Combined auth middleware
-const combinedAuthMiddleware = async (c: any, next: any) => {
-    try {
-        await authMiddleware(c, async () => { });
-        if (c.get('user')) {
-            return next();
-        }
-    } catch (e) {
-        // Mocha auth failed, try Firebase session
-    }
+export const exchangeConnectionsRouter = new Hono<{ Bindings: Env; Variables: { user: UserVariable } }>();
 
-    const firebaseSession = getCookie(c, 'firebase_session');
+// Firebase session auth middleware
+const firebaseAuthMiddleware = async (c: unknown, next: () => Promise<void>) => {
+    const context = c as {
+        get: (key: string) => UserVariable | undefined;
+        set: (key: string, value: UserVariable) => void;
+        json: (data: { error: string }, status: number) => Response;
+    };
+
+    const firebaseSession = getCookie(context as Parameters<typeof getCookie>[0], 'firebase_session');
     if (firebaseSession) {
         try {
-            const userData = JSON.parse(firebaseSession);
-            c.set('user', {
+            const userData = JSON.parse(firebaseSession) as { google_user_id?: string; sub?: string; email?: string; name?: string };
+            context.set('user', {
                 google_user_data: {
-                    sub: userData.google_user_id || userData.sub,
+                    sub: userData.google_user_id || userData.sub || '',
                     email: userData.email,
                     name: userData.name,
                 },
                 email: userData.email,
             });
             return next();
-        } catch (e) {
-            console.error('Error parsing Firebase session:', e);
+        } catch (error) {
+            console.error('Error parsing Firebase session:', error);
         }
     }
 
-    return c.json({ error: 'Unauthorized' }, 401);
+    return context.json({ error: 'Unauthorized' }, 401);
 };
 
 // Apply auth
-exchangeConnectionsRouter.use('*', combinedAuthMiddleware);
+exchangeConnectionsRouter.use('*', firebaseAuthMiddleware);
 
 // Get all connections
 exchangeConnectionsRouter.get('/', async (c) => {
     const user = c.get('user');
-    const userId = user.google_user_data.sub;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
+    if (!userId) {
+        return c.json({ error: 'Unauthorized' }, 401);
+    }
 
     const connections = await c.env.DB.prepare(`
     SELECT * FROM exchange_connections WHERE user_id = ?
@@ -185,7 +192,10 @@ exchangeConnectionsRouter.post('/test', zValidator('json', TestConnectionSchema)
 // Create connection
 exchangeConnectionsRouter.post('/', zValidator('json', CreateConnectionSchema), async (c) => {
     const user = c.get('user');
-    const userId = user.google_user_data.sub;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
+    if (!userId) {
+        return c.json({ error: 'Unauthorized' }, 401);
+    }
     const data = c.req.valid('json');
 
     // Check if connection already exists for this exchange
@@ -249,7 +259,10 @@ exchangeConnectionsRouter.post('/', zValidator('json', CreateConnectionSchema), 
 // Delete connection
 exchangeConnectionsRouter.delete('/:id', async (c) => {
     const user = c.get('user');
-    const userId = user.google_user_data.sub;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
+    if (!userId) {
+        return c.json({ error: 'Unauthorized' }, 401);
+    }
     const id = c.req.param('id');
 
     const result = await c.env.DB.prepare(`
@@ -263,38 +276,13 @@ exchangeConnectionsRouter.delete('/:id', async (c) => {
     return c.json({ success: true });
 });
 
-// Helper to sign Bybit requests
-async function signBybitRequest(apiKey: string, apiSecret: string, params: Record<string, any>) {
-    const timestamp = Date.now().toString();
-    const recvWindow = '5000';
-
-    // Sort params and create query string
-    const queryString = Object.keys(params).sort().map(key => `${key}=${params[key]}`).join('&');
-    const data = timestamp + apiKey + recvWindow + queryString;
-
-    const encoder = new TextEncoder();
-    const key = await crypto.subtle.importKey(
-        'raw',
-        encoder.encode(apiSecret),
-        { name: 'HMAC', hash: 'SHA-256' },
-        false,
-        ['sign']
-    );
-    const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
-    const hexSignature = Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
-
-    return {
-        timestamp,
-        recvWindow,
-        signature: hexSignature,
-        queryString
-    };
-}
-
-// Sync connection
+// Sync connection - Uses unified ExchangeFactory for all supported exchanges
 exchangeConnectionsRouter.post('/:id/sync', async (c) => {
     const user = c.get('user');
-    const userId = user.google_user_data.sub;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
+    if (!userId) {
+        return c.json({ error: 'Unauthorized' }, 401);
+    }
     const id = c.req.param('id');
 
     const connection = await c.env.DB.prepare(`
@@ -310,146 +298,108 @@ exchangeConnectionsRouter.post('/:id/sync', async (c) => {
         UPDATE exchange_connections SET last_sync_at = CURRENT_TIMESTAMP WHERE id = ?
     `).bind(id).run();
 
-    const conn = connection as any;
+    const conn = connection as Record<string, unknown>;
+    const exchangeId = conn.exchange_id as string;
 
-    if (conn.exchange_id === 'bybit') {
-        try {
-            // Decrypt API keys for order execution (only in RAM)
-            const masterKey = c.env.ENCRYPTION_MASTER_KEY;
-            if (!masterKey) {
-                return c.json({ error: 'Encryption service unavailable' }, 500);
-            }
+    // List of exchanges that support sync via unified interface
+    const supportedExchanges = ['bybit', 'binance', 'coinbase', 'kraken', 'okx'];
 
-            const apiKey = await decrypt(conn.api_key_encrypted, masterKey);
-            const apiSecret = await decrypt(conn.api_secret_encrypted, masterKey);
-
-            // Fetch closed PnL from Bybit V5 API (Linear Perps / Futures)
-            // Doc: https://bybit-exchange.github.io/docs/v5/position/close-pnl
-            // category=linear is for USDT Perps which is most common
-            const params = {
-                category: 'linear',
-                limit: '50' // Get last 50 trades
-            };
-
-            const signed = await signBybitRequest(apiKey, apiSecret, params);
-            
-            // Keys are now in RAM - use them immediately and let them go out of scope
-
-            const response = await fetch(`https://api.bybit.com/v5/position/closed-pnl?${signed.queryString}`, {
-                method: 'GET',
-                headers: {
-                    'X-BAPI-API-KEY': apiKey, // Use decrypted key
-                    'X-BAPI-TIMESTAMP': signed.timestamp,
-                    'X-BAPI-RECV-WINDOW': signed.recvWindow,
-                    'X-BAPI-SIGN': signed.signature
-                }
-            });
-            
-            // Keys go out of scope here - they are no longer in RAM
-
-            if (!response.ok) {
-                const text = await response.text();
-                console.error('Bybit API error:', text);
-                return c.json({ imported: 0, mapped: 0, errors: [`Bybit API returned ${response.status}: ${text}`] });
-            }
-
-            const data: any = await response.json();
-
-            if (data.retCode !== 0) {
-                return c.json({ imported: 0, mapped: 0, errors: [`Bybit API error: ${data.retMsg}`] });
-            }
-
-            const trades = data.result.list;
-            let importedCount = 0;
-            let skippedCount = 0;
-
-            for (const trade of trades) {
-                // Map Bybit data to Tradecircle schema
-                const symbol = trade.symbol;
-                const entryDate = new Date(Number(trade.createdTime)).toISOString(); // This is effectively close time in closed-pnl, but serves as date
-                const exitDate = new Date(Number(trade.updatedTime)).toISOString();
-                // Determine direction from trade side
-                // In Closed Pnl:
-                // side: "Buy" -> You BOUGHT to close? Or it was a Long position?
-                // Actually Bybit docs say: "side": "Buy" // Buy side
-                // If I have a closed PnL, and side is Buy, does it mean I went Long?
-                // Usually Closed PnL log records the transaction that closed it.
-                // But let's look at `avgEntryPrice` and `avgExitPrice`.
-                // If avgExitPrice > avgEntryPrice and pnl is positive, it was LONG.
-                // Let's use simple logic: If PnL > 0 and Exit > Entry => LONG.
-                // But safer is to trust the side if we interpret it right.
-                // Let's assume standard mapping for now, refine if user complains.
-                // For Bybit Linear: Side 'Buy' usually means Long position.
-
-                const direction = trade.side === 'Buy' ? 'long' : 'short';
-                const quantity = parseFloat(trade.qty);
-                const entryPrice = parseFloat(trade.avgEntryPrice);
-                const exitPrice = parseFloat(trade.avgExitPrice);
-                const pnl = parseFloat(trade.closedPnl);
-                // Note: Fee is complex to calc from closed-pnl, so we use net PnL directly
-                // closed-pnl has 'execType', 'fillCount'.
-                // It doesn't strictly have commission for the WHOLE trade pair easily calculated here without summing fills.
-                // But we can just use the PnL.
-
-                // Duplicate check: Look for trade with same symbol, close enough entry/exit date (or same timestamps), same quantity/pnl
-                // Using exit_date as the primary unique timestamp check as it matches `updatedTime`
-
-                const existing = await c.env.DB.prepare(`
-                    SELECT id FROM trades 
-                    WHERE user_id = ? 
-                    AND symbol = ? 
-                    AND ABS(pnl - ?) < 0.0001
-                    AND exit_date = ?
-                `).bind(userId, symbol, pnl, exitDate).first();
-
-                if (!existing) {
-                    await c.env.DB.prepare(`
-                        INSERT INTO trades (
-                            user_id, symbol, asset_type, direction, quantity, 
-                            entry_price, exit_price, entry_date, exit_date, 
-                            pnl, is_closed, leverage, created_at, updated_at
-                        ) VALUES (?, ?, 'crypto', ?, ?, ?, ?, ?, ?, ?, 1, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-                    `).bind(
-                        userId,
-                        symbol,
-                        direction,
-                        quantity,
-                        entryPrice,
-                        exitPrice,
-                        entryDate, // Using createdTime as entry approximation, usually it is creation of the log? No, `createdTime` in closedPnl is creation of the record. `updatedTime` is update.
-                        // Better to use updatedTime as the trade date.
-                        exitDate,
-                        pnl,
-                        parseFloat(trade.leverage || '1')
-                    ).run();
-                    importedCount++;
-                } else {
-                    skippedCount++;
-                }
-            }
-
-            return c.json({
-                imported: importedCount,
-                mapped: trades.length,
-                skipped: skippedCount,
-                errors: [],
-                message: `Successfully synced ${importedCount} trades from Bybit.`
-            });
-
-        } catch (error: any) {
-            console.error('Bybit Sync Error:', error);
-            return c.json({
-                imported: 0,
-                mapped: 0,
-                errors: [error.message || 'Unknown error during sync']
-            }, 500);
-        }
+    if (!supportedExchanges.includes(exchangeId)) {
+        return c.json({
+            imported: 0,
+            mapped: 0,
+            errors: [`Exchange ${exchangeId} not yet supported for sync`],
+            message: 'Exchange not supported'
+        });
     }
 
-    return c.json({
-        imported: 0,
-        mapped: 0,
-        errors: [`Exchange ${conn.exchange_id} not yet supported for sync`],
-        message: 'Exchange not supported'
-    });
+    try {
+        // Decrypt API keys
+        const masterKey = c.env.ENCRYPTION_MASTER_KEY;
+        if (!masterKey) {
+            return c.json({ error: 'Encryption service unavailable' }, 500);
+        }
+
+        const apiKey = await decrypt(conn.api_key_encrypted as string, masterKey);
+        const apiSecret = await decrypt(conn.api_secret_encrypted as string, masterKey);
+        const passphrase = conn.passphrase_encrypted
+            ? await decrypt(conn.passphrase_encrypted as string, masterKey)
+            : undefined;
+
+        // Create exchange instance via factory
+        const exchange = ExchangeFactory.create({
+            exchangeId: exchangeId as ExchangeId,
+            credentials: {
+                apiKey,
+                apiSecret,
+                passphrase,
+            },
+            testnet: false,
+        });
+
+        // Fetch trades using unified interface
+        const trades = await exchange.getTrades(undefined, undefined, undefined, 50);
+
+        let importedCount = 0;
+        let skippedCount = 0;
+
+        for (const trade of trades) {
+            // Check for duplicate
+            const exitDate = trade.timestamp.toISOString();
+            const pnl = trade.realizedPnl || 0;
+
+            const existing = await c.env.DB.prepare(`
+                SELECT id FROM trades
+                WHERE user_id = ?
+                AND symbol = ?
+                AND ABS(COALESCE(pnl, 0) - ?) < 0.0001
+                AND exit_date = ?
+            `).bind(userId, trade.symbol, pnl, exitDate).first();
+
+            if (!existing) {
+                // Determine direction from trade side
+                const direction = trade.side === 'buy' ? 'long' : 'short';
+
+                await c.env.DB.prepare(`
+                    INSERT INTO trades (
+                        user_id, symbol, asset_type, direction, quantity,
+                        entry_price, exit_price, entry_date, exit_date,
+                        pnl, commission, is_closed, created_at, updated_at
+                    ) VALUES (?, ?, 'crypto', ?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                `).bind(
+                    userId,
+                    trade.symbol,
+                    direction,
+                    trade.quantity,
+                    trade.price,
+                    trade.price, // Use trade price for both entry/exit (single fill)
+                    exitDate,
+                    exitDate,
+                    pnl,
+                    trade.fee
+                ).run();
+                importedCount++;
+            } else {
+                skippedCount++;
+            }
+        }
+
+        const exchangeName = exchange.getExchangeName();
+        return c.json({
+            imported: importedCount,
+            mapped: trades.length,
+            skipped: skippedCount,
+            errors: [],
+            message: `Successfully synced ${importedCount} trades from ${exchangeName}.`
+        });
+
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Unknown error during sync';
+        console.error(`${exchangeId} Sync Error:`, error);
+        return c.json({
+            imported: 0,
+            mapped: 0,
+            errors: [message]
+        }, 500);
+    }
 });

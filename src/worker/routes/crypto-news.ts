@@ -27,7 +27,18 @@ async function fetchCryptoCompareNews(): Promise<CryptoNewsItem[]> {
             throw new Error(`CryptoCompare API failed: ${response.status}`);
         }
 
-        const data: any = await response.json();
+        const data = await response.json() as {
+            Data?: Array<{
+                id: number;
+                title: string;
+                body: string;
+                published_on: number;
+                source_info?: { name?: string };
+                url?: string;
+                guid?: string;
+                imageurl?: string;
+            }>;
+        };
 
         if (!data.Data || !Array.isArray(data.Data)) {
             console.log('No news data from CryptoCompare');
@@ -35,7 +46,9 @@ async function fetchCryptoCompareNews(): Promise<CryptoNewsItem[]> {
         }
 
         const now = Date.now() / 1000;
-        const news: CryptoNewsItem[] = data.Data.slice(0, 20).map((item: any) => {
+        const news: CryptoNewsItem[] = data.Data.slice(0, 20)
+          .filter((item) => item.url || item.guid) // Only include items with a URL
+          .map((item) => {
             const ageInHours = (now - item.published_on) / 3600;
             const isBreaking = ageInHours < 2; // Mark as breaking if less than 2 hours old
 
@@ -46,10 +59,10 @@ async function fetchCryptoCompareNews(): Promise<CryptoNewsItem[]> {
                 source: item.source_info?.name || 'CryptoCompare',
                 timestamp: new Date(item.published_on * 1000),
                 isBreaking: isBreaking,
-                url: item.url || item.guid,
+                url: item.url || item.guid || '',
                 imageUrl: item.imageurl || undefined
             };
-        });
+          });
 
         return news;
     } catch (error) {
@@ -72,14 +85,25 @@ async function fetchCoinGeckoNews(): Promise<CryptoNewsItem[]> {
             throw new Error(`CoinGecko API failed: ${response.status}`);
         }
 
-        const data: any = await response.json();
+        const data = await response.json() as {
+            data?: Array<{
+                title: string;
+                description?: string;
+                created_at: string;
+                author?: string;
+                url: string;
+                thumb_2x?: string;
+            }>;
+        };
 
         if (!data.data || !Array.isArray(data.data)) {
             console.log('No news data from CoinGecko');
             return [];
         }
 
-        const news: CryptoNewsItem[] = data.data.slice(0, 15).map((item: any, index: number) => {
+        const news: CryptoNewsItem[] = data.data.slice(0, 15)
+          .filter((item) => item.url) // Only include items with a URL
+          .map((item, index: number) => {
             const timestamp = new Date(item.created_at);
             const ageInHours = (Date.now() - timestamp.getTime()) / (1000 * 3600);
             const isBreaking = ageInHours < 2;
@@ -94,7 +118,7 @@ async function fetchCoinGeckoNews(): Promise<CryptoNewsItem[]> {
                 url: item.url,
                 imageUrl: item.thumb_2x || undefined
             };
-        });
+          });
 
         return news;
     } catch (error) {

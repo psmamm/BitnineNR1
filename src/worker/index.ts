@@ -1,12 +1,5 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import {
-  exchangeCodeForSessionToken,
-  getOAuthRedirectUrl,
-  authMiddleware,
-  deleteSession,
-  MOCHA_SESSION_TOKEN_COOKIE_NAME,
-} from "@getmocha/users-service/backend";
 import { getCookie, setCookie } from "hono/cookie";
 import { tradesRouter } from "./routes/trades";
 import { strategiesRouter } from "./routes/strategies";
@@ -25,26 +18,26 @@ import type { D1Database, R2Bucket } from "@cloudflare/workers-types";
 
 
 
-// Combined auth middleware that supports both mocha sessions and Firebase sessions
-const combinedAuthMiddleware = async (c: unknown, next: () => Promise<void>) => {
+interface UserVariable {
+  google_user_data?: {
+    sub: string;
+    email?: string;
+    name?: string;
+  };
+  firebase_user_id?: string;
+  email?: string;
+}
+
+// Firebase session auth middleware
+const firebaseAuthMiddleware = async (c: unknown, next: () => Promise<void>) => {
   // Type assertion for Hono context
   const context = c as {
-    get: (key: string) => unknown;
-    set: (key: string, value: unknown) => void;
+    get: (key: string) => UserVariable | undefined;
+    set: (key: string, value: UserVariable) => void;
     json: (data: unknown, status?: number) => Response;
   };
-  
-  // First try the mocha auth middleware
-  try {
-    await authMiddleware(context as Parameters<typeof authMiddleware>[0], async () => { });
-    if (context.get('user')) {
-      return next();
-    }
-  } catch {
-    // Mocha auth failed, try Firebase session
-  }
 
-  // Try Firebase session as fallback
+  // Try Firebase session
   const firebaseSession = getCookie(context as Parameters<typeof getCookie>[0], 'firebase_session');
   if (firebaseSession) {
     try {
@@ -52,7 +45,7 @@ const combinedAuthMiddleware = async (c: unknown, next: () => Promise<void>) => 
       // Set user in context in the format expected by routes
       context.set('user', {
         google_user_data: {
-          sub: userData.google_user_id || userData.sub,
+          sub: userData.google_user_id || userData.sub || '',
           email: userData.email,
           name: userData.name,
         },
@@ -65,15 +58,13 @@ const combinedAuthMiddleware = async (c: unknown, next: () => Promise<void>) => 
     }
   }
 
-  // Both auth methods failed
+  // Auth failed
   return context.json({ error: 'Unauthorized' }, 401);
 };
 
 
 
 type Env = {
-  MOCHA_USERS_SERVICE_API_URL: string;
-  MOCHA_USERS_SERVICE_API_KEY: string;
   ETHERSCAN_API_KEY: string;
   BSCSCAN_API_KEY: string;
   SNOWTRACE_API_KEY: string;
@@ -90,7 +81,7 @@ type Env = {
   AI: unknown; // Cloudflare Workers AI binding
 };
 
-const app = new Hono<{ Bindings: Env }>();
+const app = new Hono<{ Bindings: Env; Variables: { user?: UserVariable } }>();
 
 // Middleware: CORS für alle Routen aktivieren
 app.use("*", cors());
@@ -98,42 +89,10 @@ app.use("*", cors());
 // Middleware: Centralized error handling
 app.use("*", errorHandlerMiddleware());
 
-// Obtain redirect URL from the Authentication Service
-app.get('/api/oauth/google/redirect_url', async (c) => {
-  const redirectUrl = await getOAuthRedirectUrl('google', {
-    apiUrl: c.env.MOCHA_USERS_SERVICE_API_URL,
-    apiKey: c.env.MOCHA_USERS_SERVICE_API_KEY,
-  });
-
-  return c.json({ redirectUrl }, 200);
-});
-
-// Exchange the code for a session token
-app.post("/api/sessions", async (c) => {
-  const body = await c.req.json();
-
-  if (!body.code) {
-    return c.json({ error: "No authorization code provided" }, 400);
-  }
-
-  const sessionToken = await exchangeCodeForSessionToken(body.code, {
-    apiUrl: c.env.MOCHA_USERS_SERVICE_API_URL,
-    apiKey: c.env.MOCHA_USERS_SERVICE_API_KEY,
-  });
-
-  setCookie(c, MOCHA_SESSION_TOKEN_COOKIE_NAME, sessionToken, {
-    httpOnly: true,
-    path: "/",
-    sameSite: "none",
-    secure: true,
-    maxAge: 60 * 24 * 60 * 60, // 60 days
-  });
-
-  return c.json({ success: true }, 200);
-});
+// OAuth routes removed - using Firebase authentication directly
 
 // Get user performance data
-app.get("/api/users/me", combinedAuthMiddleware, async (c) => {
+app.get("/api/users/me", firebaseAuthMiddleware, async (c) => {
   try {
     const user = c.get("user");
     if (!user) {
@@ -141,7 +100,7 @@ app.get("/api/users/me", combinedAuthMiddleware, async (c) => {
     }
 
     // Extract user_id from token (Firebase UID)
-    const userId = user.google_user_data?.sub || (user as { firebase_user_id?: string }).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
     const userEmail = user.email || user.google_user_data?.email;
     const userName = user.google_user_data?.name || userEmail?.split('@')[0] || 'User';
 
@@ -414,28 +373,14 @@ app.get("/api/users/me", combinedAuthMiddleware, async (c) => {
 
 // Call this from the frontend to log out the user
 app.get('/api/logout', async (c) => {
-  const sessionToken = getCookie(c, MOCHA_SESSION_TOKEN_COOKIE_NAME);
-
-  if (typeof sessionToken === 'string') {
-    await deleteSession(sessionToken, {
-      apiUrl: c.env.MOCHA_USERS_SERVICE_API_URL,
-      apiKey: c.env.MOCHA_USERS_SERVICE_API_KEY,
-    });
-  }
-
-  setCookie(c, MOCHA_SESSION_TOKEN_COOKIE_NAME, '', {
-    httpOnly: true,
-    path: '/',
-    sameSite: 'none',
-    secure: true,
-    maxAge: 0,
-  });
-
+  // Firebase handles logout on the client side
+  // This endpoint is kept for compatibility but doesn't need to do anything
+  // The frontend will clear the Firebase session
   return c.json({ success: true }, 200);
 });
 
 // Update user profile
-app.put('/api/users/profile', combinedAuthMiddleware, async (c) => {
+app.put('/api/users/profile', firebaseAuthMiddleware, async (c) => {
   const user = c.get('user');
   if (!user) {
     return c.json({ error: 'User not found' }, 401);
@@ -443,8 +388,8 @@ app.put('/api/users/profile', combinedAuthMiddleware, async (c) => {
 
   const body = await c.req.json();
   const { displayName, avatarIcon } = body;
-  // Get userId - support both Mocha and Firebase auth
-  const userId = user.google_user_data?.sub || (user as { firebase_user_id?: string }).firebase_user_id;
+  // Get userId from Firebase auth
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
   const userEmail = user.email || user.google_user_data?.email;
 
   console.log('Profile update request:', { displayName, avatarIcon, userId, userEmail });
@@ -535,13 +480,13 @@ app.put('/api/users/profile', combinedAuthMiddleware, async (c) => {
 });
 
 // Get user starting capital
-app.get('/api/users/starting-capital', combinedAuthMiddleware, async (c) => {
+app.get('/api/users/starting-capital', firebaseAuthMiddleware, async (c) => {
   const user = c.get('user');
   if (!user) {
     return c.json({ error: 'User not found' }, 401);
   }
 
-  const userId = user.google_user_data?.sub || (user as { firebase_user_id?: string }).firebase_user_id;
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
 
   if (!userId) {
     return c.json({ error: 'User ID not found' }, 400);
@@ -573,14 +518,14 @@ app.get('/api/users/starting-capital', combinedAuthMiddleware, async (c) => {
 });
 
 // Update user starting capital
-app.put('/api/users/starting-capital', combinedAuthMiddleware, async (c) => {
+app.put('/api/users/starting-capital', firebaseAuthMiddleware, async (c) => {
   const user = c.get('user');
   if (!user) {
     return c.json({ error: 'User not found' }, 401);
   }
 
   const { startingCapital } = await c.req.json();
-  const userId = user.google_user_data?.sub || (user as { firebase_user_id?: string }).firebase_user_id;
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
 
   if (!userId) {
     return c.json({ error: 'User ID not found' }, 400);
@@ -638,13 +583,13 @@ app.put('/api/users/starting-capital', combinedAuthMiddleware, async (c) => {
 });
 
 // Get user settings
-app.get('/api/users/settings', combinedAuthMiddleware, async (c) => {
+app.get('/api/users/settings', firebaseAuthMiddleware, async (c) => {
   const user = c.get('user');
   if (!user) {
     return c.json({ error: 'User not found' }, 401);
   }
 
-  const userId = user.google_user_data?.sub || (user as { firebase_user_id?: string }).firebase_user_id;
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
   const settings = await c.env.DB.prepare(`
     SELECT notification_settings, theme_preference, risk_lock_enabled, max_daily_loss FROM users WHERE google_user_id = ?
   `).bind(userId).first();
@@ -664,14 +609,14 @@ app.get('/api/users/settings', combinedAuthMiddleware, async (c) => {
 });
 
 // Update user settings
-app.put('/api/users/settings', combinedAuthMiddleware, async (c) => {
+app.put('/api/users/settings', firebaseAuthMiddleware, async (c) => {
   const user = c.get('user');
   if (!user) {
     return c.json({ error: 'User not found' }, 401);
   }
 
   const { notifications, theme, riskManagement } = await c.req.json();
-  const userId = user.google_user_data?.sub || (user as { firebase_user_id?: string }).firebase_user_id;
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
 
   // Prepare risk management values
   const riskLockEnabled = riskManagement?.risk_lock_enabled ? 1 : 0;
@@ -796,7 +741,7 @@ app.post('/api/auth/firebase-session', async (c) => {
 });
 
 // Initialize user data on first login
-app.post('/api/users/initialize', authMiddleware, async (c) => {
+app.post('/api/users/initialize', firebaseAuthMiddleware, async (c) => {
   const user = c.get('user');
   if (!user) {
     return c.json({ error: 'User not found' }, 401);
@@ -858,7 +803,7 @@ app.post('/api/users/initialize', authMiddleware, async (c) => {
 });
 
 // Export functionality
-app.post('/api/export', authMiddleware, async (c) => {
+app.post('/api/export', firebaseAuthMiddleware, async (c) => {
   const user = c.get('user');
   if (!user) {
     return c.json({ error: 'User not found' }, 401);
@@ -874,7 +819,11 @@ app.post('/api/export', authMiddleware, async (c) => {
       LEFT JOIN strategies s ON t.strategy_id = s.id
       WHERE t.user_id = ?
     `;
-    const params = [user.google_user_data?.sub];
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
+    if (!userId) {
+      return c.json({ error: 'Unauthorized' }, 401);
+    }
+    const params = [userId];
 
     if (options.dateRange?.start) {
       query += ' AND t.entry_date >= ?';
@@ -893,9 +842,13 @@ app.post('/api/export', authMiddleware, async (c) => {
   }
 
   if (options.includeStrategies) {
+    const strategiesUserId = user.google_user_data?.sub || user.firebase_user_id;
+    if (!strategiesUserId) {
+      return c.json({ error: 'Unauthorized' }, 401);
+    }
     const strategies = await c.env.DB.prepare(`
       SELECT * FROM strategies WHERE user_id = ?
-    `).bind(user.google_user_data?.sub).all();
+    `).bind(strategiesUserId).all();
     data.strategies = strategies.results;
   }
 

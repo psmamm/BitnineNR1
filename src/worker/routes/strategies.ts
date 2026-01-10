@@ -1,12 +1,9 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { authMiddleware } from "@getmocha/users-service/backend";
 import { getCookie } from "hono/cookie";
 
 type Env = {
-  MOCHA_USERS_SERVICE_API_URL: string;
-  MOCHA_USERS_SERVICE_API_KEY: string;
   DB: D1Database;
 };
 
@@ -21,27 +18,33 @@ const StrategySchema = z.object({
   is_active: z.boolean().optional(),
 });
 
-// Combined auth middleware that supports both mocha sessions and Firebase sessions
-const combinedAuthMiddleware = async (c: any, next: any) => {
-  // First try the mocha auth middleware
-  try {
-    await authMiddleware(c, async () => {});
-    if (c.get('user')) {
-      return next();
-    }
-  } catch (e) {
-    // Mocha auth failed, try Firebase session
-  }
+interface UserVariable {
+  google_user_data?: {
+    sub: string;
+    email?: string;
+    name?: string;
+  };
+  firebase_user_id?: string;
+  email?: string;
+}
 
-  // Try Firebase session as fallback
-  const firebaseSession = getCookie(c, 'firebase_session');
+// Firebase session auth middleware
+const firebaseAuthMiddleware = async (c: unknown, next: () => Promise<void>) => {
+  const context = c as {
+    get: (key: string) => UserVariable | undefined;
+    set: (key: string, value: UserVariable) => void;
+    json: (data: { error: string }, status: number) => Response;
+  };
+
+  // Try Firebase session
+  const firebaseSession = getCookie(context as Parameters<typeof getCookie>[0], 'firebase_session');
   if (firebaseSession) {
     try {
-      const userData = JSON.parse(firebaseSession);
+      const userData = JSON.parse(firebaseSession) as { google_user_id?: string; sub?: string; email?: string; name?: string };
       // Set user in context in the format expected by routes
-      c.set('user', {
+      context.set('user', {
         google_user_data: {
-          sub: userData.google_user_id || userData.sub,
+          sub: userData.google_user_id || userData.sub || '',
           email: userData.email,
           name: userData.name,
         },
@@ -49,24 +52,24 @@ const combinedAuthMiddleware = async (c: any, next: any) => {
         email: userData.email,
       });
       return next();
-    } catch (e) {
-      console.error('Error parsing Firebase session:', e);
+    } catch (error) {
+      console.error('Error parsing Firebase session:', error);
     }
   }
 
-  // Both auth methods failed
-  return c.json({ error: 'Unauthorized' }, 401);
+  // Auth failed
+  return context.json({ error: 'Unauthorized' }, 401);
 };
 
-export const strategiesRouter = new Hono<{ Bindings: Env; Variables: { user: any } }>();
+export const strategiesRouter = new Hono<{ Bindings: Env; Variables: { user: UserVariable } }>();
 
-// Apply combined auth middleware to all routes in this router
-strategiesRouter.use('*', combinedAuthMiddleware);
+// Apply Firebase auth middleware to all routes in this router
+strategiesRouter.use('*', firebaseAuthMiddleware);
 
 // Get all strategies for user
 strategiesRouter.get('/', async (c) => {
   const user = c.get('user');
-  const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
 
   const strategies = await c.env.DB.prepare(`
     SELECT s.*, 
@@ -95,7 +98,7 @@ strategiesRouter.get('/', async (c) => {
 // Get strategy performance details
 strategiesRouter.get('/:id/performance', async (c) => {
   const user = c.get('user');
-  const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
   const strategyId = c.req.param('id');
 
   const trades = await c.env.DB.prepare(`
@@ -134,7 +137,7 @@ strategiesRouter.get('/:id/performance', async (c) => {
 // Create new strategy
 strategiesRouter.post('/', zValidator('json', StrategySchema), async (c) => {
   const user = c.get('user');
-  const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
   const strategy = c.req.valid('json');
 
   const result = await c.env.DB.prepare(`
@@ -164,7 +167,7 @@ strategiesRouter.post('/', zValidator('json', StrategySchema), async (c) => {
 // Update strategy
 strategiesRouter.put('/:id', zValidator('json', StrategySchema), async (c) => {
   const user = c.get('user');
-  const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
   const strategyId = c.req.param('id');
   const strategy = c.req.valid('json');
 
@@ -197,7 +200,7 @@ strategiesRouter.put('/:id', zValidator('json', StrategySchema), async (c) => {
 // Delete strategy
 strategiesRouter.delete('/:id', async (c) => {
   const user = c.get('user');
-  const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
   const strategyId = c.req.param('id');
 
   // Check if strategy has trades

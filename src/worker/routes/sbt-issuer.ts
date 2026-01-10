@@ -8,8 +8,27 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
+import { getCookie } from 'hono/cookie';
+import type { D1Database } from '@cloudflare/workers-types';
 import { createPublicClient, http } from 'viem';
 import { polygon } from 'viem/chains';
+
+interface UserVariable {
+  google_user_data?: {
+    sub: string;
+    email?: string;
+    name?: string;
+  };
+  firebase_user_id?: string;
+  email?: string;
+}
+
+type Env = {
+  DB: D1Database;
+  ISSUER_PRIVATE_KEY: string;
+  SBT_CONTRACT_ADDRESS: string;
+  POLYGON_RPC_URL: string;
+};
 
 // SBT Contract ABI (simplified - full ABI would be imported)
 const SBT_ABI = [
@@ -64,21 +83,52 @@ const MintBadgeSchema = z.object({
 });
 
 export const sbtIssuerRouter = new Hono<{
-  Bindings: {
-    DB: D1Database;
-    ISSUER_PRIVATE_KEY: string;
-    SBT_CONTRACT_ADDRESS: string;
-    POLYGON_RPC_URL: string;
-  };
+  Bindings: Env;
+  Variables: { user: UserVariable };
 }>();
+
+// Firebase session auth middleware
+const firebaseAuthMiddleware = async (c: unknown, next: () => Promise<void>) => {
+  const context = c as {
+    get: (key: string) => UserVariable | undefined;
+    set: (key: string, value: UserVariable) => void;
+    json: (data: { error: string }, status: number) => Response;
+    env: Env;
+  };
+
+  const firebaseSession = getCookie(context as Parameters<typeof getCookie>[0], 'firebase_session');
+  if (firebaseSession) {
+    try {
+      const userData = JSON.parse(firebaseSession) as { google_user_id?: string; sub?: string; email?: string; name?: string };
+      context.set('user', {
+        google_user_data: {
+          sub: userData.google_user_id || userData.sub || '',
+          email: userData.email,
+          name: userData.name,
+        },
+        firebase_user_id: userData.google_user_id || userData.sub,
+        email: userData.email,
+      });
+      return next();
+    } catch (error) {
+      console.error('Error parsing Firebase session:', error);
+    }
+  }
+
+  return context.json({ error: 'Unauthorized' }, 401);
+};
 
 // Middleware to check issuer authorization
 // In production, this would verify the request comes from the issuer node
-const issuerAuth = async (c: any, next: any) => {
+const issuerAuth = async (c: unknown, next: () => Promise<void>) => {
+  const context = c as {
+    env: Env;
+    json: (data: { error: string }, status: number) => Response;
+  };
   // TODO: Implement proper issuer authentication
   // For now, we'll use environment variable check
-  if (!c.env.ISSUER_PRIVATE_KEY) {
-    return c.json({ error: 'Issuer not configured' }, 500);
+  if (!context.env.ISSUER_PRIVATE_KEY) {
+    return context.json({ error: 'Issuer not configured' }, 500);
   }
   await next();
 };
@@ -89,15 +139,19 @@ const issuerAuth = async (c: any, next: any) => {
  */
 sbtIssuerRouter.post(
   '/mint',
+  firebaseAuthMiddleware,
   issuerAuth,
   zValidator('json', MintBadgeSchema),
   async (c) => {
     try {
       const user = c.get('user');
-      const userId = user?.google_user_data?.sub || (user as any)?.firebase_user_id;
+      if (!user) {
+        return c.json({ error: 'Unauthorized' }, 401);
+      }
+      const userId = user.google_user_data?.sub || user.firebase_user_id;
       
       if (!userId) {
-        return c.json({ error: 'Unauthorized' }, 401);
+        return c.json({ error: 'User ID not found' }, 401);
       }
 
       const data = c.req.valid('json');
@@ -143,7 +197,7 @@ sbtIssuerRouter.post(
       });
 
       // Store badge request in database
-      await c.env.DB.prepare(`
+      const result = await c.env.DB.prepare(`
         INSERT INTO sbt_badges (user_id, user_address, achievement, max_drawdown, profit_factor, r_multiple, status, created_at)
         VALUES (?, ?, ?, ?, ?, ?, 'pending', CURRENT_TIMESTAMP)
       `).bind(
@@ -154,6 +208,10 @@ sbtIssuerRouter.post(
         profitFactor,
         rMultiple
       ).run();
+
+      if (!result.success) {
+        return c.json({ error: 'Failed to store badge request' }, 500);
+      }
 
       return c.json({
         success: true,

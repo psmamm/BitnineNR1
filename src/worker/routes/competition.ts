@@ -1,30 +1,41 @@
 import { Hono } from "hono";
-import { authMiddleware } from "@getmocha/users-service/backend";
 import { getCookie } from "hono/cookie";
+import type { D1Database } from "@cloudflare/workers-types";
 
-const competitionRouter = new Hono<{ Bindings: any }>();
+interface UserVariable {
+  google_user_data?: {
+    sub: string;
+    email?: string;
+    name?: string;
+  };
+  firebase_user_id?: string;
+  email?: string;
+}
 
-// Combined auth middleware that supports both mocha sessions and Firebase sessions
-const combinedAuthMiddleware = async (c: any, next: any) => {
-    // First try the mocha auth middleware
-    try {
-        await authMiddleware(c, async () => {});
-        if (c.get('user')) {
-            return next();
-        }
-    } catch (e) {
-        // Mocha auth failed, try Firebase session
-    }
+type Env = {
+  DB: D1Database;
+};
 
-    // Try Firebase session as fallback
-    const firebaseSession = getCookie(c, 'firebase_session');
+const competitionRouter = new Hono<{ Bindings: Env; Variables: { user: UserVariable } }>();
+
+// Firebase session auth middleware
+const firebaseAuthMiddleware = async (c: unknown, next: () => Promise<void>) => {
+    const context = c as {
+        get: (key: string) => UserVariable | undefined;
+        set: (key: string, value: UserVariable) => void;
+        json: (data: { error: string }, status: number) => Response;
+        env: Env;
+    };
+
+    // Try Firebase session
+    const firebaseSession = getCookie(context as Parameters<typeof getCookie>[0], 'firebase_session');
     if (firebaseSession) {
         try {
-            const userData = JSON.parse(firebaseSession);
+            const userData = JSON.parse(firebaseSession) as { google_user_id?: string; sub?: string; email?: string; name?: string };
             // Set user in context in the format expected by routes
-            c.set('user', {
+            context.set('user', {
                 google_user_data: {
-                    sub: userData.google_user_id || userData.sub,
+                    sub: userData.google_user_id || userData.sub || '',
                     email: userData.email,
                     name: userData.name,
                 },
@@ -32,17 +43,17 @@ const combinedAuthMiddleware = async (c: any, next: any) => {
                 email: userData.email,
             });
             return next();
-        } catch (e) {
-            console.error('Error parsing Firebase session:', e);
+        } catch (error) {
+            console.error('Error parsing Firebase session:', error);
         }
     }
 
-    // Both auth methods failed
-    return c.json({ error: 'Unauthorized' }, 401);
+    // Auth failed
+    return context.json({ error: 'Unauthorized' }, 401);
 };
 
 // Helper: Get or create player ELO
-async function getOrCreatePlayerELO(db: any, userId: string, username: string) {
+async function getOrCreatePlayerELO(db: D1Database, userId: string, username: string) {
     let player = await db.prepare(`
         SELECT * FROM player_elo WHERE user_id = ?
     `).bind(userId).first();
@@ -88,24 +99,28 @@ function calculateELOChange(playerELO: number, opponentELO: number, won: boolean
 // ==================== ELO SYSTEM ====================
 
 // Get user ELO
-competitionRouter.get('/elo', combinedAuthMiddleware, async (c) => {
+competitionRouter.get('/elo', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
+    if (!userId) {
+        return c.json({ error: 'User ID not found' }, 401);
+    }
     const username = user.google_user_data?.name || user.email?.split('@')[0] || 'Anonymous';
 
     try {
         const player = await getOrCreatePlayerELO(c.env.DB, userId, username);
+        const playerData = player as { elo?: number; division?: string; total_matches?: number; wins?: number; losses?: number; best_elo?: number };
         return c.json({ 
-            elo: player.elo,
-            division: player.division,
-            totalMatches: player.total_matches,
-            wins: player.wins,
-            losses: player.losses,
-            bestElo: player.best_elo
+            elo: playerData.elo || 500,
+            division: playerData.division || 'Bronze',
+            totalMatches: playerData.total_matches || 0,
+            wins: playerData.wins || 0,
+            losses: playerData.losses || 0,
+            bestElo: playerData.best_elo || 500
         });
     } catch (error) {
         console.error('Error fetching ELO:', error);
@@ -145,8 +160,10 @@ competitionRouter.get('/matchmaking/online', async (c) => {
             SELECT COUNT(*) as count FROM matches WHERE status = 'active'
         `).first();
 
+        const countValue = (count as { count?: number })?.count || 0;
+        const activeMatchesValue = (activeMatches as { count?: number })?.count || 0;
         return c.json({ 
-            online: (count?.count || 0) + ((activeMatches?.count || 0) * 2)
+            online: countValue + (activeMatchesValue * 2)
         });
     } catch (error) {
         console.error('Error fetching online count:', error);
@@ -155,19 +172,27 @@ competitionRouter.get('/matchmaking/online', async (c) => {
 });
 
 // Join matchmaking queue
-competitionRouter.post('/matchmaking/join', combinedAuthMiddleware, async (c) => {
+competitionRouter.post('/matchmaking/join', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
+    if (!userId) {
+        return c.json({ error: 'User ID not found' }, 401);
+    }
     const username = user.google_user_data?.name || user.email?.split('@')[0] || 'Anonymous';
     const { matchType, symbol } = await c.req.json();
 
     try {
         // Get player ELO
         const player = await getOrCreatePlayerELO(c.env.DB, userId, username);
+        if (!player) {
+            return c.json({ error: 'Failed to get player ELO' }, 500);
+        }
+        const playerData = player as { elo?: number };
+        const playerElo = playerData.elo || 500;
 
         // Remove from queue if already in
         await c.env.DB.prepare(`
@@ -178,7 +203,7 @@ competitionRouter.post('/matchmaking/join', combinedAuthMiddleware, async (c) =>
         await c.env.DB.prepare(`
             INSERT INTO matchmaking_queue (user_id, username, elo, match_type, symbol)
             VALUES (?, ?, ?, ?, ?)
-        `).bind(userId, username, player.elo, matchType || 'ranked', symbol || 'BTCUSDT').run();
+        `).bind(userId, username, playerElo, matchType || 'ranked', symbol || 'BTCUSDT').run();
 
         // Try to find match
         if (matchType === 'ranked') {
@@ -187,7 +212,7 @@ competitionRouter.post('/matchmaking/join', combinedAuthMiddleware, async (c) =>
                 WHERE user_id != ? AND match_type = 'ranked' AND symbol = ?
                 ORDER BY ABS(elo - ?) ASC
                 LIMIT 1
-            `).bind(userId, symbol || 'BTCUSDT', player.elo).first();
+            `).bind(userId, symbol || 'BTCUSDT', playerElo).first();
 
             if (opponent) {
                 // Create match
@@ -216,13 +241,13 @@ competitionRouter.post('/matchmaking/join', combinedAuthMiddleware, async (c) =>
 });
 
 // Cancel matchmaking
-competitionRouter.post('/matchmaking/cancel', combinedAuthMiddleware, async (c) => {
+competitionRouter.post('/matchmaking/cancel', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
 
     try {
         await c.env.DB.prepare(`
@@ -237,13 +262,13 @@ competitionRouter.post('/matchmaking/cancel', combinedAuthMiddleware, async (c) 
 });
 
 // Get matchmaking status
-competitionRouter.get('/matchmaking/status', combinedAuthMiddleware, async (c) => {
+competitionRouter.get('/matchmaking/status', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
 
     try {
         const queueEntry = await c.env.DB.prepare(`
@@ -254,15 +279,19 @@ competitionRouter.get('/matchmaking/status', combinedAuthMiddleware, async (c) =
             return c.json({ inQueue: false });
         }
 
-        const elapsed = Math.floor((Date.now() - new Date(queueEntry.joined_at).getTime()) / 1000);
+        const queueEntryData = queueEntry as { joined_at?: string; match_type?: string; symbol?: string };
+        if (!queueEntryData.joined_at) {
+            return c.json({ inQueue: false });
+        }
+        const elapsed = Math.floor((Date.now() - new Date(queueEntryData.joined_at).getTime()) / 1000);
         const estimated = 35; // Estimated wait time
 
         return c.json({ 
             inQueue: true,
             elapsed,
             estimated,
-            matchType: queueEntry.match_type,
-            symbol: queueEntry.symbol
+            matchType: queueEntryData.match_type,
+            symbol: queueEntryData.symbol
         });
     } catch (error) {
         console.error('Error fetching matchmaking status:', error);
@@ -273,14 +302,14 @@ competitionRouter.get('/matchmaking/status', combinedAuthMiddleware, async (c) =
 // ==================== MATCHES ====================
 
 // Get match details
-competitionRouter.get('/matches/:id', combinedAuthMiddleware, async (c) => {
+competitionRouter.get('/matches/:id', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
     const matchId = c.req.param('id');
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
 
     try {
         const match = await c.env.DB.prepare(`
@@ -292,7 +321,8 @@ competitionRouter.get('/matches/:id', combinedAuthMiddleware, async (c) => {
         }
 
         // Check if user is part of match
-        if (match.player1_id !== userId && match.player2_id !== userId) {
+        const matchData = match as { player1_id?: string; player2_id?: string };
+        if (matchData.player1_id !== userId && matchData.player2_id !== userId) {
             return c.json({ error: 'Unauthorized' }, 403);
         }
 
@@ -304,7 +334,7 @@ competitionRouter.get('/matches/:id', combinedAuthMiddleware, async (c) => {
 });
 
 // Complete match
-competitionRouter.post('/matches/:id/complete', combinedAuthMiddleware, async (c) => {
+competitionRouter.post('/matches/:id/complete', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
@@ -326,24 +356,35 @@ competitionRouter.post('/matches/:id/complete', combinedAuthMiddleware, async (c
         }
 
         // Determine winner
+        const matchData = match as { player1_id?: string; player2_id?: string; match_type?: string };
         const player1Won = player1PnL > player2PnL;
-        const winnerId = player1Won ? match.player1_id : match.player2_id;
+        const winnerId = player1Won ? matchData.player1_id : matchData.player2_id;
 
         // Calculate ELO changes if ranked match
         let player1EloChange = 0;
         let player2EloChange = 0;
 
-        if (match.match_type === 'ranked' && match.player2_id) {
-            const player1 = await getOrCreatePlayerELO(c.env.DB, match.player1_id, '');
-            const player2 = await getOrCreatePlayerELO(c.env.DB, match.player2_id, '');
+        const matchType = matchData.match_type;
+        if (matchType === 'ranked' && matchData.player2_id) {
+            const player1 = await getOrCreatePlayerELO(c.env.DB, matchData.player1_id || '', '');
+            const player2 = await getOrCreatePlayerELO(c.env.DB, matchData.player2_id || '', '');
+            
+            if (!player1 || !player2) {
+                return c.json({ error: 'Failed to get player ELO' }, 500);
+            }
+            
+            const player1Data = player1 as { elo?: number };
+            const player2Data = player2 as { elo?: number };
+            const player1Elo = player1Data.elo || 500;
+            const player2Elo = player2Data.elo || 500;
             
             const pnlDiff = player1PnL - player2PnL;
-            player1EloChange = calculateELOChange(player1.elo, player2.elo, player1Won, pnlDiff);
-            player2EloChange = calculateELOChange(player2.elo, player1.elo, !player1Won, -pnlDiff);
+            player1EloChange = calculateELOChange(player1Elo, player2Elo, player1Won, pnlDiff);
+            player2EloChange = calculateELOChange(player2Elo, player1Elo, !player1Won, -pnlDiff);
 
             // Update ELO
-            const newPlayer1Elo = Math.max(0, player1.elo + player1EloChange);
-            const newPlayer2Elo = Math.max(0, player2.elo + player2EloChange);
+            const newPlayer1Elo = Math.max(0, player1Elo + player1EloChange);
+            const newPlayer2Elo = Math.max(0, player2Elo + player2EloChange);
 
             await c.env.DB.prepare(`
                 UPDATE player_elo 
@@ -403,21 +444,22 @@ competitionRouter.post('/matches/:id/complete', combinedAuthMiddleware, async (c
 });
 
 // Get match positions (for analytics)
-competitionRouter.get('/matches/:id/positions', combinedAuthMiddleware, async (c) => {
+competitionRouter.get('/matches/:id/positions', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
     const matchId = c.req.param('id');
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
 
     try {
         const match = await c.env.DB.prepare(`
             SELECT * FROM matches WHERE id = ?
         `).bind(matchId).first();
 
-        if (!match || (match.player1_id !== userId && match.player2_id !== userId)) {
+        const matchData = match as { player1_id?: string; player2_id?: string } | null;
+        if (!matchData || (matchData.player1_id !== userId && matchData.player2_id !== userId)) {
             return c.json({ error: 'Unauthorized' }, 403);
         }
 
@@ -457,9 +499,13 @@ competitionRouter.get('/daily-challenge', async (c) => {
         }
 
         // Get participant count
+        const challengeData = challenge as { id?: number };
+        if (!challengeData.id) {
+            return c.json({ error: 'Challenge ID not found' }, 500);
+        }
         const participantCount = await c.env.DB.prepare(`
             SELECT COUNT(*) as count FROM daily_challenge_participants WHERE challenge_id = ?
-        `).bind(challenge.id).first();
+        `).bind(challengeData.id).first<{ count?: number }>();
 
         return c.json({ 
             challenge: {
@@ -474,13 +520,13 @@ competitionRouter.get('/daily-challenge', async (c) => {
 });
 
 // Join daily challenge
-competitionRouter.post('/daily-challenge/join', combinedAuthMiddleware, async (c) => {
+competitionRouter.post('/daily-challenge/join', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
     const username = user.google_user_data?.name || user.email?.split('@')[0] || 'Anonymous';
 
     try {
@@ -494,10 +540,17 @@ competitionRouter.post('/daily-challenge/join', combinedAuthMiddleware, async (c
         }
 
         // Check if already joined
+        const challengeData = challenge as { id?: number } | null;
+        if (!challengeData || !challengeData.id) {
+            return c.json({ error: 'Challenge ID not found' }, 500);
+        }
+        if (!challengeData.id) {
+            return c.json({ error: 'Challenge ID not found' }, 500);
+        }
         const existing = await c.env.DB.prepare(`
             SELECT * FROM daily_challenge_participants 
             WHERE challenge_id = ? AND user_id = ?
-        `).bind(challenge.id, userId).first();
+        `).bind(challengeData.id, userId).first();
 
         if (existing) {
             return c.json({ success: true, alreadyJoined: true });
@@ -507,7 +560,7 @@ competitionRouter.post('/daily-challenge/join', combinedAuthMiddleware, async (c
         await c.env.DB.prepare(`
             INSERT INTO daily_challenge_participants (challenge_id, user_id, username)
             VALUES (?, ?, ?)
-        `).bind(challenge.id, userId, username).run();
+        `).bind(challengeData.id, userId, username).run();
 
         return c.json({ success: true });
     } catch (error) {
@@ -530,6 +583,10 @@ competitionRouter.get('/daily-challenge/leaderboard', async (c) => {
             return c.json({ participants: [] });
         }
 
+        const challengeData = challenge as { id?: number };
+        if (!challengeData.id) {
+            return c.json({ participants: [] });
+        }
         const participants = await c.env.DB.prepare(`
             SELECT p.*, pe.elo
             FROM daily_challenge_participants p
@@ -537,11 +594,11 @@ competitionRouter.get('/daily-challenge/leaderboard', async (c) => {
             WHERE p.challenge_id = ?
             ORDER BY p.pnl DESC
             LIMIT ?
-        `).bind(challenge.id, limit).all();
+        `).bind(challengeData.id, limit).all();
 
         // Update ranks
-        participants.results.forEach((p: any, idx: number) => {
-            p.rank = idx + 1;
+        participants.results.forEach((p: { rank?: number }, idx: number) => {
+            (p as { rank: number }).rank = idx + 1;
         });
 
         return c.json({ participants: participants.results });
@@ -559,7 +616,7 @@ competitionRouter.get('/tournaments', async (c) => {
 
     try {
         let query = 'SELECT * FROM tournaments';
-        const params: any[] = [];
+        const params: (string | number)[] = [];
 
         if (status) {
             query += ' WHERE status = ?';
@@ -574,8 +631,8 @@ competitionRouter.get('/tournaments', async (c) => {
         for (const tournament of tournaments.results) {
             const count = await c.env.DB.prepare(`
                 SELECT COUNT(*) as count FROM tournament_participants WHERE tournament_id = ?
-            `).bind(tournament.id).first();
-            (tournament as any).participantCount = count?.count || 0;
+            `).bind((tournament as { id: number }).id).first<{ count?: number }>();
+            (tournament as { id: number; participantCount?: number }).participantCount = count?.count || 0;
         }
 
         return c.json({ tournaments: tournaments.results });
@@ -586,13 +643,13 @@ competitionRouter.get('/tournaments', async (c) => {
 });
 
 // Create tournament
-competitionRouter.post('/tournaments', combinedAuthMiddleware, async (c) => {
+competitionRouter.post('/tournaments', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
     const { name, symbol, description, timeLimit, maxDrawdown, maxParticipants, entryFee, prizePool, tournamentTier } = await c.req.json();
 
     // Calculate prize pool if not provided: entry_fee * max_participants
@@ -652,13 +709,13 @@ competitionRouter.get('/tournaments/:id', async (c) => {
 });
 
 // Join tournament
-competitionRouter.post('/tournaments/:id/join', combinedAuthMiddleware, async (c) => {
+competitionRouter.post('/tournaments/:id/join', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
     const username = user.google_user_data?.name || user.email?.split('@')[0] || 'Anonymous';
     const tournamentId = c.req.param('id');
 
@@ -685,7 +742,13 @@ competitionRouter.post('/tournaments/:id/join', combinedAuthMiddleware, async (c
             SELECT COUNT(*) as count FROM tournament_participants WHERE tournament_id = ?
         `).bind(tournamentId).first();
 
-        if ((currentCount?.count || 0) >= tournament.max_participants) {
+        const tournamentData = tournament as { max_participants?: number } | null;
+        if (!tournamentData) {
+            return c.json({ error: 'Tournament data not found' }, 500);
+        }
+        const currentCountValue = (currentCount as { count?: number })?.count || 0;
+        const maxParticipantsValue = tournamentData.max_participants || 0;
+        if (currentCountValue >= maxParticipantsValue) {
             return c.json({ error: 'Tournament is full' }, 400);
         }
 
@@ -866,11 +929,12 @@ competitionRouter.post('/tournaments/seed', async (c) => {
                             id: result.meta.last_row_id,
                             ...tournament
                         });
-                    } catch (insertError: any) {
+                    } catch (insertError: unknown) {
                         // If new columns don't exist, try without them
-                        if (insertError.message?.includes('no such column: entry_fee') || 
-                            insertError.message?.includes('no such column: prize_pool') ||
-                            insertError.message?.includes('no such column: tournament_tier')) {
+                        const errorMessage = insertError instanceof Error ? insertError.message : String(insertError);
+                        if (errorMessage?.includes('no such column: entry_fee') || 
+                            errorMessage?.includes('no such column: prize_pool') ||
+                            errorMessage?.includes('no such column: tournament_tier')) {
                             console.log('New columns not found, trying without them...');
                             const result = await c.env.DB.prepare(`
                                 INSERT INTO tournaments (creator_id, name, symbol, description, time_limit, max_participants, status, started_at)
@@ -895,11 +959,11 @@ competitionRouter.post('/tournaments/seed', async (c) => {
                         }
                     }
                 }
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error(`Error creating tournament ${tournament.name}:`, error);
                 errors.push({
                     tournament: tournament.name,
-                    error: error.message || 'Unknown error'
+                    error: error instanceof Error ? error.message : 'Unknown error'
                 });
             }
         }
@@ -918,11 +982,11 @@ competitionRouter.post('/tournaments/seed', async (c) => {
                 ? `Created ${createdTournaments.length} tournaments, ${errors.length} failed. Please run migration 9.sql first.`
                 : `Successfully created ${createdTournaments.length} tournaments`
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error seeding tournaments:', error);
         return c.json({ 
             error: 'Failed to seed tournaments',
-            details: error.message || 'Unknown error',
+            details: error instanceof Error ? error.message : 'Unknown error',
             hint: 'Make sure migration 9.sql has been executed to add entry_fee, prize_pool, and tournament_tier columns'
         }, 500);
     }
@@ -942,8 +1006,8 @@ competitionRouter.get('/tournaments/:id/leaderboard', async (c) => {
         `).bind(tournamentId).all();
 
         // Update ranks
-        participants.results.forEach((p: any, idx: number) => {
-            p.rank = idx + 1;
+        participants.results.forEach((p: { rank?: number }, idx: number) => {
+            (p as { rank: number }).rank = idx + 1;
         });
 
         return c.json({ participants: participants.results });
@@ -974,13 +1038,13 @@ competitionRouter.get('/tournaments/:id/chat', async (c) => {
 });
 
 // Send tournament chat message
-competitionRouter.post('/tournaments/:id/chat', combinedAuthMiddleware, async (c) => {
+competitionRouter.post('/tournaments/:id/chat', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
     const username = user.google_user_data?.name || user.email?.split('@')[0] || 'Anonymous';
     const tournamentId = c.req.param('id');
     const { message } = await c.req.json();
@@ -1001,14 +1065,14 @@ competitionRouter.post('/tournaments/:id/chat', combinedAuthMiddleware, async (c
 // ==================== LEGACY (Keep for backward compatibility) ====================
 
 // Submit a new score
-competitionRouter.post('/score', combinedAuthMiddleware, async (c) => {
+competitionRouter.post('/score', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
     const { finalBalance, pnl, totalTrades, maxDrawdown, gameMode } = await c.req.json();
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
     const username = user.google_user_data?.name || 'Anonymous';
 
     try {
@@ -1059,13 +1123,13 @@ competitionRouter.get('/leaderboard', async (c) => {
 });
 
 // Get user's best score
-competitionRouter.get('/my-best', combinedAuthMiddleware, async (c) => {
+competitionRouter.get('/my-best', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
     const mode = c.req.query('mode') || 'speed';
 
     try {
@@ -1086,13 +1150,13 @@ competitionRouter.get('/my-best', combinedAuthMiddleware, async (c) => {
 // ==================== FRIENDS SYSTEM ====================
 
 // Get friends list
-competitionRouter.get('/friends', combinedAuthMiddleware, async (c) => {
+competitionRouter.get('/friends', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
 
     try {
         // Get accepted friends (both directions)
@@ -1127,13 +1191,13 @@ competitionRouter.get('/friends', combinedAuthMiddleware, async (c) => {
 });
 
 // Send friend request
-competitionRouter.post('/friends/request', combinedAuthMiddleware, async (c) => {
+competitionRouter.post('/friends/request', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
     const { friendId } = await c.req.json();
 
     if (!friendId) {
@@ -1169,13 +1233,13 @@ competitionRouter.post('/friends/request', combinedAuthMiddleware, async (c) => 
 });
 
 // Accept friend request
-competitionRouter.post('/friends/accept', combinedAuthMiddleware, async (c) => {
+competitionRouter.post('/friends/accept', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
     const { friendId } = await c.req.json();
 
     if (!friendId) {
@@ -1202,13 +1266,13 @@ competitionRouter.post('/friends/accept', combinedAuthMiddleware, async (c) => {
 });
 
 // Remove friend
-competitionRouter.post('/friends/remove', combinedAuthMiddleware, async (c) => {
+competitionRouter.post('/friends/remove', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
     const { friendId } = await c.req.json();
 
     if (!friendId) {
@@ -1230,13 +1294,13 @@ competitionRouter.post('/friends/remove', combinedAuthMiddleware, async (c) => {
 });
 
 // Generate invite link
-competitionRouter.get('/friends/invite-link', combinedAuthMiddleware, async (c) => {
+competitionRouter.get('/friends/invite-link', firebaseAuthMiddleware, async (c) => {
     const user = c.get('user');
     if (!user) {
         return c.json({ error: 'User not found' }, 401);
     }
 
-    const userId = user.google_user_data?.sub || (user as any).firebase_user_id;
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
     const baseUrl = c.req.url.split('/api')[0];
     const inviteLink = `${baseUrl}/competition?ref=${userId}`;
 
