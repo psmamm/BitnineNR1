@@ -114,10 +114,12 @@ export const ForgotPasswordForm = () => {
       setMessage('Reset link sent! Check your email inbox.');
       setEmailSent(true);
       setCooldown(RESEND_COOLDOWN);
-    } catch (err: any) {
-      const errorMessage = err.code 
-        ? getErrorMessage(err.code) 
-        : (err?.message || 'Failed to send reset link');
+    } catch (err: unknown) {
+      const errorMessage = err && typeof err === 'object' && 'code' in err && typeof err.code === 'string'
+        ? getErrorMessage(err.code)
+        : (err && typeof err === 'object' && 'message' in err && typeof err.message === 'string')
+        ? err.message
+        : 'Failed to send reset link';
       setError(errorMessage);
     } finally {
       setLoading(false);

@@ -12,7 +12,8 @@
       "Bash(dir /s /b \"c:\\\\Users\\\\Leand\\\\Desktop\\\\CIRCL\\\\src\")",
       "Bash(findstr:*)",
       "Bash(npx eslint:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(dir:*)"
     ]
   }
 }

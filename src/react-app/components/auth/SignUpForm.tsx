@@ -126,10 +126,12 @@ export const SignUpForm = () => {
       const { error } = await signUp(email, password);
       if (error) throw error;
       navigate('/verify-email');
-    } catch (error: any) {
-      const errorMessage = error.code 
-        ? getErrorMessage(error.code) 
-        : (error.message || 'Failed to create an account');
+    } catch (error: unknown) {
+      const errorMessage = error && typeof error === 'object' && 'code' in error && typeof error.code === 'string'
+        ? getErrorMessage(error.code)
+        : (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string')
+        ? error.message
+        : 'Failed to create an account';
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -143,10 +145,12 @@ export const SignUpForm = () => {
       const { error } = await signInWithGoogle();
       if (error) throw error;
       navigate('/dashboard');
-    } catch (error: any) {
-      const errorMessage = error.code 
-        ? getErrorMessage(error.code) 
-        : (error.message || 'Failed to sign up with Google');
+    } catch (error: unknown) {
+      const errorMessage = error && typeof error === 'object' && 'code' in error && typeof error.code === 'string'
+        ? getErrorMessage(error.code)
+        : (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string')
+        ? error.message
+        : 'Failed to sign up with Google';
       setError(errorMessage);
     } finally {
       setLoading(false);

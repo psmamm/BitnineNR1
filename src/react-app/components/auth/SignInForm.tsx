@@ -97,10 +97,12 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
       }
       
       navigate('/dashboard');
-    } catch (error: any) {
-      const errorMessage = error.code 
-        ? getErrorMessage(error.code) 
-        : (error.message || 'Failed to sign in');
+    } catch (error: unknown) {
+      const errorMessage = error && typeof error === 'object' && 'code' in error && typeof error.code === 'string'
+        ? getErrorMessage(error.code)
+        : (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string')
+        ? error.message
+        : 'Failed to sign in';
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -114,10 +116,12 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
       const { error } = await signInWithGoogle();
       if (error) throw error;
       navigate('/dashboard');
-    } catch (error: any) {
-      const errorMessage = error.code 
-        ? getErrorMessage(error.code) 
-        : (error.message || 'Failed to sign in with Google');
+    } catch (error: unknown) {
+      const errorMessage = error && typeof error === 'object' && 'code' in error && typeof error.code === 'string'
+        ? getErrorMessage(error.code)
+        : (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string')
+        ? error.message
+        : 'Failed to sign in with Google';
       setError(errorMessage);
     } finally {
       setLoading(false);
