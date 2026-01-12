@@ -52,24 +52,6 @@ interface BybitWalletCoin {
   cumRealisedPnl: string;
 }
 
-interface BybitExecution {
-  execId: string;
-  symbol: string;
-  execPrice?: string; // Bybit uses execPrice, not price
-  execQty?: string; // Bybit uses execQty, not qty
-  side: 'Buy' | 'Sell';
-  execTime: string;
-  isMaker: boolean;
-  execFee: string;
-  feeRate: string;
-  feeCurrency?: string;
-  orderId: string;
-  orderLinkId?: string;
-  category: string;
-  closedSize?: string;
-  execType?: string; // Trade, Funding, BustTrade, etc.
-}
-
 interface BybitOrder {
   orderId: string;
   orderLinkId: string;
@@ -336,82 +318,6 @@ export class BybitExchangeV2 extends ExchangeInterface {
     uniqueTrades.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
 
     return uniqueTrades;
-  }
-
-  private async fetchTradesForCategory(
-    category: 'spot' | 'linear' | 'inverse' | 'option',
-    symbol: string | undefined,
-    startTime: number,
-    endTime: number,
-    limit: number
-  ): Promise<Trade[]> {
-    const timestamp = Date.now().toString();
-    const params: Record<string, string> = {
-      category,
-      startTime: startTime.toString(),
-      endTime: endTime.toString(),
-      limit: limit.toString()
-    };
-    if (symbol) params.symbol = symbol;
-
-    const signature = await this.createSignature('GET', '/v5/execution/list', timestamp, params);
-
-    const url = new URL('/v5/execution/list', this.getBaseUrl());
-    Object.keys(params).sort().forEach(key => url.searchParams.append(key, params[key]));
-
-    const response = await fetch(url.toString(), {
-      method: 'GET',
-      headers: this.getAuthHeaders(timestamp, signature),
-      signal: AbortSignal.timeout(30000)
-    });
-
-    const data: BybitApiResponse<{ list: BybitExecution[] }> = await response.json();
-
-    if (data.retCode !== 0) {
-      if (data.retCode === 10001 && data.retMsg?.includes('category')) {
-        console.log(`[Bybit] Category ${category} not supported, returning empty`);
-        return [];
-      }
-      this.handleBybitError(data.retCode, data.retMsg);
-    }
-
-    const executions = data.result?.list || [];
-    console.log(`[Bybit] Received ${executions.length} executions for category ${category}`);
-
-    // Log first 3 executions to see what data we get
-    if (executions.length > 0) {
-      console.log('[Bybit] Sample executions:', JSON.stringify(executions.slice(0, 3)));
-    }
-
-    // Filter and map executions - only include actual trades with price/qty
-    const filtered = executions.filter(e => {
-        // Only include executions with valid price and quantity
-        // This filters out funding fees, settlements, etc.
-        const hasPrice = e.execPrice && e.execPrice !== '' && e.execPrice !== '0';
-        const hasQty = e.execQty && e.execQty !== '' && e.execQty !== '0';
-
-        if (!hasPrice || !hasQty) {
-          console.log(`[Bybit] Filtering out execution: execPrice=${e.execPrice}, execQty=${e.execQty}, symbol=${e.symbol}`);
-        }
-
-        return hasPrice && hasQty;
-      });
-
-    console.log(`[Bybit] After filtering: ${filtered.length} valid trades`);
-
-    return filtered.map(e => ({
-        id: e.execId,
-        orderId: e.orderId,
-        symbol: e.symbol,
-        side: e.side.toLowerCase() as OrderSide,
-        price: parseFloat(e.execPrice!),
-        quantity: parseFloat(e.execQty!),
-        fee: parseFloat(e.execFee),
-        feeCurrency: e.feeCurrency || 'USDT',
-        timestamp: new Date(parseInt(e.execTime)),
-        isMaker: e.isMaker,
-        category: e.category
-      }));
   }
 
   private async fetchClosedPnL(
