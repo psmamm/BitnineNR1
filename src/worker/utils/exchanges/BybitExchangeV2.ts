@@ -277,7 +277,7 @@ export class BybitExchangeV2 extends ExchangeInterface {
     symbol?: string,
     startTime?: number,
     endTime?: number,
-    limit: number = 50
+    limit: number = 100
   ): Promise<Trade[]> {
     // For futures (linear), use Closed P&L API for accurate P&L
     // This gives us closed positions with realized P&L instead of individual executions
@@ -285,9 +285,11 @@ export class BybitExchangeV2 extends ExchangeInterface {
     const categories: Array<'spot' | 'linear' | 'inverse' | 'option'> = ['linear'];
 
     const now = Date.now();
-    // Last 30 days for closed positions
-    const since = startTime || (now - (30 * 24 * 60 * 60 * 1000));
+    // Last 90 days for closed positions (increased from 30)
+    const since = startTime || (now - (90 * 24 * 60 * 60 * 1000));
     const until = endTime || now;
+
+    console.log(`[Bybit] getTrades called - fetching from ${new Date(since).toISOString()} to ${new Date(until).toISOString()}`);
 
     for (const category of categories) {
       try {
@@ -349,7 +351,10 @@ export class BybitExchangeV2 extends ExchangeInterface {
 
     const data: BybitApiResponse<{ list: BybitClosedPnL[] }> = await response.json();
 
+    console.log(`[Bybit] Closed P&L API response: retCode=${data.retCode}, retMsg=${data.retMsg}, list length=${data.result?.list?.length || 0}`);
+
     if (data.retCode !== 0) {
+      console.log(`[Bybit] API Error: retCode=${data.retCode}, retMsg=${data.retMsg}`);
       if (data.retCode === 10001 && data.retMsg?.includes('category')) {
         console.log(`[Bybit] Category ${category} not supported for closed P&L, returning empty`);
         return [];

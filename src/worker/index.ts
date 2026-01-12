@@ -93,6 +93,8 @@ const app = new Hono<{ Bindings: Env; Variables: { user?: UserVariable } }>();
 // Middleware: CORS für alle Routen aktivieren
 app.use("*", cors({
   origin: [
+    'https://bf5bdaaf.circl.pages.dev',
+    'https://8bff96d9.circl.pages.dev',
     'https://4da5370f.circl.pages.dev',
     'https://3959e209.circl.pages.dev',
     'https://ee38b538.circl.pages.dev',

@@ -954,6 +954,57 @@ tradesRouter.put('/:id', zValidator('json', TradeSchema), async (c) => {
   });
 });
 
+// Bulk delete all trades for the authenticated user
+// IMPORTANT: This route must be defined BEFORE /:id to avoid "bulk" being treated as an ID
+tradesRouter.delete('/bulk', firebaseAuthMiddleware, async (c) => {
+  try {
+    const user = c.get('user');
+    if (!user) {
+      return c.json({ error: 'User not found' }, 401);
+    }
+
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
+    if (!userId) {
+      return c.json({ error: 'User ID not found' }, 400);
+    }
+
+    console.log(`[Bulk Delete] User ${userId} requesting to delete all trades`);
+
+    // Get count before deletion
+    const countResult = await c.env.DB.prepare(`
+      SELECT COUNT(*) as count FROM trades WHERE user_id = ?
+    `).bind(userId).first<{ count: number }>();
+
+    const tradeCount = countResult?.count || 0;
+
+    if (tradeCount === 0) {
+      return c.json({
+        success: true,
+        deletedCount: 0,
+        message: 'No trades to delete'
+      });
+    }
+
+    // Delete all trades for this user
+    const deleteResult = await c.env.DB.prepare(`
+      DELETE FROM trades WHERE user_id = ?
+    `).bind(userId).run();
+
+    console.log(`[Bulk Delete] Deleted ${tradeCount} trades for user ${userId}`);
+
+    return c.json({
+      success: deleteResult.success,
+      deletedCount: tradeCount,
+      message: `Successfully deleted ${tradeCount} trade${tradeCount !== 1 ? 's' : ''}`
+    });
+
+  } catch (error: unknown) {
+    console.error('[Bulk Delete] Error:', error);
+    const message = error instanceof Error ? error.message : 'Failed to delete trades';
+    return c.json({ error: message }, 500);
+  }
+});
+
 // Delete trade
 tradesRouter.delete('/:id', async (c) => {
   const user = c.get('user');
@@ -1212,56 +1263,6 @@ tradesRouter.post('/import', zValidator('json', ImportCSVSchema), async (c) => {
   } catch (error: unknown) {
     console.error('CSV Import Error:', error);
     const message = error instanceof Error ? error.message : 'Failed to import trades';
-    return c.json({ error: message }, 500);
-  }
-});
-
-// Bulk delete all trades for the authenticated user
-tradesRouter.delete('/bulk', firebaseAuthMiddleware, async (c) => {
-  try {
-    const user = c.get('user');
-    if (!user) {
-      return c.json({ error: 'User not found' }, 401);
-    }
-
-    const userId = user.google_user_data?.sub || user.firebase_user_id;
-    if (!userId) {
-      return c.json({ error: 'User ID not found' }, 400);
-    }
-
-    console.log(`[Bulk Delete] User ${userId} requesting to delete all trades`);
-
-    // Get count before deletion
-    const countResult = await c.env.DB.prepare(`
-      SELECT COUNT(*) as count FROM trades WHERE user_id = ?
-    `).bind(userId).first<{ count: number }>();
-
-    const tradeCount = countResult?.count || 0;
-
-    if (tradeCount === 0) {
-      return c.json({
-        success: true,
-        deletedCount: 0,
-        message: 'No trades to delete'
-      });
-    }
-
-    // Delete all trades for this user
-    const deleteResult = await c.env.DB.prepare(`
-      DELETE FROM trades WHERE user_id = ?
-    `).bind(userId).run();
-
-    console.log(`[Bulk Delete] Deleted ${tradeCount} trades for user ${userId}`);
-
-    return c.json({
-      success: deleteResult.success,
-      deletedCount: tradeCount,
-      message: `Successfully deleted ${tradeCount} trade${tradeCount !== 1 ? 's' : ''}`
-    });
-
-  } catch (error: unknown) {
-    console.error('[Bulk Delete] Error:', error);
-    const message = error instanceof Error ? error.message : 'Failed to delete trades';
     return c.json({ error: message }, 500);
   }
 });

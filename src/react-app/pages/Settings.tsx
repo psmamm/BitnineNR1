@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router";
 import { useAuth } from "../contexts/AuthContext";
+import { buildApiUrl } from "../hooks/useApi";
 import { motion } from "framer-motion";
 import {
   User,
@@ -216,7 +217,7 @@ export default function SettingsPage() {
     setBulkDeleteSuccess(null);
 
     try {
-      const response = await fetch('/api/trades/bulk', {
+      const response = await fetch(buildApiUrl('/api/trades/bulk'), {
         method: 'DELETE',
         credentials: 'include'
       });
