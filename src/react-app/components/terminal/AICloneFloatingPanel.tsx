@@ -16,7 +16,6 @@ import {
   Bot,
   X,
   Minimize2,
-  Maximize2,
   GripVertical,
   TrendingUp,
   TrendingDown,
@@ -53,7 +52,7 @@ export function AICloneFloatingPanel({ isOpen, onClose }: AICloneFloatingPanelPr
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [isMinimized, setIsMinimized] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [, setPosition] = useState({ x: 0, y: 0 });
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

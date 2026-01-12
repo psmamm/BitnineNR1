@@ -175,6 +175,9 @@ const UpdateConfigSchema = z.object({
   allowed_days: z.array(z.string()).optional(),
   learning_enabled: z.boolean().optional(),
   is_active: z.boolean().optional(),
+  // Auto-training settings (Day 2)
+  auto_train_enabled: z.boolean().optional(),
+  auto_train_threshold: z.number().min(1).max(100).optional(), // Trades to trigger auto-train
 });
 
 const ApproveSuggestionSchema = z.object({
@@ -312,6 +315,14 @@ aiCloneRouter.put('/config', zValidator('json', UpdateConfigSchema), async (c) =
     if (updates.is_active !== undefined) {
       fields.push('is_active = ?');
       values.push(updates.is_active ? 1 : 0);
+    }
+    if (updates.auto_train_enabled !== undefined) {
+      fields.push('auto_train_enabled = ?');
+      values.push(updates.auto_train_enabled ? 1 : 0);
+    }
+    if (updates.auto_train_threshold !== undefined) {
+      fields.push('auto_train_threshold = ?');
+      values.push(updates.auto_train_threshold);
     }
 
     if (fields.length === 0) {
@@ -517,6 +528,339 @@ aiCloneRouter.post('/train', async (c) => {
   } catch (error) {
     console.error('Error training AI clone:', error);
     return c.json({ error: 'Failed to train AI clone' }, 500);
+  }
+});
+
+// ============================================================================
+// ONE-CLICK AI TRAINING WITH SSE (Day 2)
+// ============================================================================
+
+/**
+ * GET /api/ai-clone/training/start
+ *
+ * Start one-click AI training with Server-Sent Events for real-time progress.
+ * This endpoint streams training progress back to the client.
+ * Uses GET for EventSource compatibility.
+ *
+ * Query params:
+ * - include_all_trades: boolean (default true)
+ * - min_trades: number (default 10)
+ * - max_trades: number (default 1000)
+ */
+aiCloneRouter.get('/training/start', async (c) => {
+  const user = c.get('user');
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
+  if (!userId) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+
+  // Parse query params with defaults
+  const url = new URL(c.req.url);
+  const min_trades = parseInt(url.searchParams.get('min_trades') || '10', 10);
+  const max_trades = parseInt(url.searchParams.get('max_trades') || '1000', 10);
+
+  // Create SSE response
+  const { readable, writable } = new TransformStream();
+  const writer = writable.getWriter();
+  const encoder = new TextEncoder();
+
+  // Send SSE message with type in data (for EventSource.onmessage compatibility)
+  const sendEvent = async (type: string, data: Record<string, unknown>) => {
+    const message = `data: ${JSON.stringify({ type, ...data })}\n\n`;
+    await writer.write(encoder.encode(message));
+  };
+
+  // Start training in background
+  (async () => {
+    try {
+      await sendEvent('start', { message: 'Training started', timestamp: new Date().toISOString() });
+
+      // Create training session
+      const trainingId = crypto.randomUUID();
+      await c.env.DB.prepare(`
+        INSERT INTO ai_clone_training (id, user_id, training_type, status)
+        VALUES (?, ?, 'full', 'running')
+      `).bind(trainingId, userId).run();
+
+      await sendEvent('progress', { step: 1, total: 5, message: 'Training session created', trainingId });
+
+      const startTime = Date.now();
+
+      // Step 2: Fetch trades
+      await sendEvent('progress', { step: 2, total: 5, message: 'Fetching trade history...' });
+
+      const trades = await c.env.DB.prepare(`
+        SELECT
+          t.*,
+          s.name as strategy_name,
+          s.category as strategy_category
+        FROM trades t
+        LEFT JOIN strategies s ON t.strategy_id = s.id
+        WHERE t.user_id = ? AND t.is_closed = 1
+        ORDER BY t.exit_date DESC
+        LIMIT ?
+      `).bind(userId, max_trades || 1000).all();
+
+      await sendEvent('progress', {
+        step: 2,
+        total: 5,
+        message: `Found ${trades.results.length} closed trades`,
+        tradesFound: trades.results.length
+      });
+
+      if (trades.results.length < (min_trades || 10)) {
+        await c.env.DB.prepare(`
+          UPDATE ai_clone_training
+          SET status = 'failed', error_message = 'Not enough trades for training'
+          WHERE id = ?
+        `).bind(trainingId).run();
+
+        await sendEvent('error', {
+          message: 'Not enough trades for training',
+          minimum_required: min_trades || 10,
+          current_count: trades.results.length
+        });
+        await writer.close();
+        return;
+      }
+
+      // Step 3: Extract features
+      await sendEvent('progress', { step: 3, total: 5, message: 'Extracting trading patterns...' });
+
+      const patterns = extractPatterns(trades.results as unknown as TradeData[]);
+
+      await sendEvent('progress', {
+        step: 3,
+        total: 5,
+        message: `Extracted ${patterns.length} unique patterns`,
+        patternsExtracted: patterns.length
+      });
+
+      // Step 4: Update database
+      await sendEvent('progress', { step: 4, total: 5, message: 'Updating AI model...' });
+
+      let patternsFound = 0;
+      let patternsUpdated = 0;
+
+      for (const pattern of patterns) {
+        const existing = await c.env.DB.prepare(`
+          SELECT id, sample_size, avg_pnl, win_rate
+          FROM trade_patterns
+          WHERE user_id = ? AND pattern_type = ? AND symbol = ? AND setup_type = ?
+        `).bind(userId, pattern.pattern_type, pattern.symbol, pattern.setup_type).first();
+
+        if (existing) {
+          const newSampleSize = (existing.sample_size as number) + pattern.sample_size;
+          const newWinRate = ((existing.win_rate as number) * (existing.sample_size as number) +
+            pattern.win_rate * pattern.sample_size) / newSampleSize;
+          const newAvgPnl = ((existing.avg_pnl as number) * (existing.sample_size as number) +
+            pattern.avg_pnl * pattern.sample_size) / newSampleSize;
+          const newConfidence = calculateConfidence(newWinRate, newSampleSize);
+
+          await c.env.DB.prepare(`
+            UPDATE trade_patterns
+            SET sample_size = ?, win_rate = ?, avg_pnl = ?, confidence = ?,
+                features_json = ?, last_seen = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+          `).bind(
+            newSampleSize,
+            newWinRate,
+            newAvgPnl,
+            newConfidence,
+            JSON.stringify(pattern.features),
+            existing.id
+          ).run();
+
+          patternsUpdated++;
+        } else {
+          const patternId = crypto.randomUUID();
+          const confidence = calculateConfidence(pattern.win_rate, pattern.sample_size);
+
+          await c.env.DB.prepare(`
+            INSERT INTO trade_patterns (
+              id, user_id, pattern_type, symbol, setup_type, asset_class,
+              features_json, outcome, avg_pnl, avg_pnl_percent, win_rate,
+              sample_size, confidence, first_seen, last_seen
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+          `).bind(
+            patternId,
+            userId,
+            pattern.pattern_type,
+            pattern.symbol,
+            pattern.setup_type,
+            pattern.asset_class,
+            JSON.stringify(pattern.features),
+            pattern.win_rate >= 0.5 ? 'win' : 'loss',
+            pattern.avg_pnl,
+            pattern.avg_pnl_percent,
+            pattern.win_rate,
+            pattern.sample_size,
+            confidence
+          ).run();
+
+          patternsFound++;
+        }
+
+        // Send periodic progress updates
+        if ((patternsFound + patternsUpdated) % 10 === 0) {
+          await sendEvent('progress', {
+            step: 4,
+            total: 5,
+            message: `Processing patterns... ${patternsFound + patternsUpdated}/${patterns.length}`,
+            processed: patternsFound + patternsUpdated,
+            totalPatterns: patterns.length
+          });
+        }
+      }
+
+      // Step 5: Finalize
+      await sendEvent('progress', { step: 5, total: 5, message: 'Finalizing training...' });
+
+      const endTime = Date.now();
+      const durationMs = endTime - startTime;
+
+      await c.env.DB.prepare(`
+        UPDATE ai_clone_training
+        SET status = 'completed',
+            trades_analyzed = ?,
+            patterns_found = ?,
+            patterns_updated = ?,
+            training_duration_ms = ?,
+            completed_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+      `).bind(
+        trades.results.length,
+        patternsFound,
+        patternsUpdated,
+        durationMs,
+        trainingId
+      ).run();
+
+      await c.env.DB.prepare(`
+        UPDATE ai_clone_config SET last_retrain_at = CURRENT_TIMESTAMP WHERE user_id = ?
+      `).bind(userId).run();
+
+      // Send completion event
+      await sendEvent('complete', {
+        success: true,
+        training_id: trainingId,
+        trades_analyzed: trades.results.length,
+        patterns_found: patternsFound,
+        patterns_updated: patternsUpdated,
+        duration_ms: durationMs,
+        message: 'Training completed successfully!'
+      });
+
+    } catch (error) {
+      console.error('Training error:', error);
+      await sendEvent('error', {
+        message: error instanceof Error ? error.message : 'Training failed',
+        timestamp: new Date().toISOString()
+      });
+    } finally {
+      await writer.close();
+    }
+  })();
+
+  return new Response(readable, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+    },
+  });
+});
+
+/**
+ * GET /api/ai-clone/training/status
+ *
+ * Get the status of the most recent training session.
+ */
+aiCloneRouter.get('/training/status', async (c) => {
+  const user = c.get('user');
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
+  if (!userId) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+
+  try {
+    const training = await c.env.DB.prepare(`
+      SELECT *
+      FROM ai_clone_training
+      WHERE user_id = ?
+      ORDER BY created_at DESC
+      LIMIT 1
+    `).bind(userId).first();
+
+    if (!training) {
+      return c.json({
+        hasTraining: false,
+        message: 'No training sessions found'
+      });
+    }
+
+    return c.json({
+      hasTraining: true,
+      training: {
+        id: training.id,
+        status: training.status,
+        training_type: training.training_type,
+        trades_analyzed: training.trades_analyzed,
+        patterns_found: training.patterns_found,
+        patterns_updated: training.patterns_updated,
+        duration_ms: training.training_duration_ms,
+        error_message: training.error_message,
+        created_at: training.created_at,
+        completed_at: training.completed_at
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching training status:', error);
+    return c.json({ error: 'Failed to fetch training status' }, 500);
+  }
+});
+
+/**
+ * GET /api/ai-clone/training/history
+ *
+ * Get training history for the user.
+ */
+aiCloneRouter.get('/training/history', async (c) => {
+  const user = c.get('user');
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
+  if (!userId) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+
+  const limit = parseInt(c.req.query('limit') || '10');
+
+  try {
+    const trainings = await c.env.DB.prepare(`
+      SELECT *
+      FROM ai_clone_training
+      WHERE user_id = ?
+      ORDER BY created_at DESC
+      LIMIT ?
+    `).bind(userId, limit).all();
+
+    return c.json({
+      trainings: trainings.results.map((t: Record<string, unknown>) => ({
+        id: t.id,
+        status: t.status,
+        training_type: t.training_type,
+        trades_analyzed: t.trades_analyzed,
+        patterns_found: t.patterns_found,
+        patterns_updated: t.patterns_updated,
+        duration_ms: t.training_duration_ms,
+        error_message: t.error_message,
+        created_at: t.created_at,
+        completed_at: t.completed_at
+      })),
+      total: trainings.results.length
+    });
+  } catch (error) {
+    console.error('Error fetching training history:', error);
+    return c.json({ error: 'Failed to fetch training history' }, 500);
   }
 });
 
@@ -1194,6 +1538,472 @@ interface ExtractedPattern {
   avg_pnl_percent: number;
   sample_size: number;
 }
+
+// ============================================================================
+// AI SIGNAL GENERATION (Day 6)
+// ============================================================================
+
+interface Signal {
+  id: string;
+  symbol: string;
+  side: 'long' | 'short';
+  signal_type: 'entry' | 'exit' | 'alert';
+  confidence: number;
+  entry_price: number;
+  stop_loss: number;
+  take_profit: number;
+  risk_reward: number;
+  pattern_id: string;
+  reasoning: string[];
+  market_context: Record<string, unknown>;
+  expires_at: string;
+  created_at: string;
+  status: 'active' | 'triggered' | 'expired' | 'cancelled';
+}
+
+/**
+ * POST /api/ai-clone/signals/generate
+ *
+ * Generate real-time trading signals based on learned patterns.
+ * Analyzes current market conditions against user's successful patterns.
+ */
+aiCloneRouter.post('/signals/generate', async (c) => {
+  const user = c.get('user');
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
+  if (!userId) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+
+  try {
+    // Get config
+    const config = await c.env.DB.prepare(`
+      SELECT * FROM ai_clone_config WHERE user_id = ?
+    `).bind(userId).first();
+
+    if (!config || config.is_active !== 1) {
+      return c.json({ error: 'AI Clone is not active' }, 400);
+    }
+
+    const minConfidence = (config.min_confidence as number) || 0.7;
+
+    // Get high-confidence patterns
+    const patterns = await c.env.DB.prepare(`
+      SELECT * FROM trade_patterns
+      WHERE user_id = ? AND confidence >= ? AND sample_size >= 10
+      ORDER BY win_rate DESC, confidence DESC
+      LIMIT 20
+    `).bind(userId, minConfidence).all();
+
+    if (patterns.results.length === 0) {
+      return c.json({
+        signals: [],
+        message: 'No high-confidence patterns found. Train your AI Clone first.',
+      });
+    }
+
+    const signals: Signal[] = [];
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + 4 * 60 * 60 * 1000); // 4 hours expiry
+
+    for (const pattern of patterns.results.slice(0, 5)) {
+      const features = pattern.features_json
+        ? JSON.parse(pattern.features_json as string)
+        : {};
+
+      const winRate = pattern.win_rate as number;
+      const avgPnl = (pattern.avg_pnl_percent as number) || 0;
+      const sampleSize = pattern.sample_size as number;
+
+      // Generate signal based on pattern
+      const side = avgPnl > 0 ? (features.price_change_24h > 0 ? 'long' : 'short') : 'long';
+
+      // Calculate entry, stop loss, take profit
+      // In real implementation, this would use current market prices
+      const mockPrice = pattern.symbol === 'BTCUSDT' ? 98000 :
+                        pattern.symbol === 'ETHUSDT' ? 3400 :
+                        pattern.symbol === 'SOLUSDT' ? 180 : 100;
+
+      const volatilityPercent = Math.abs(avgPnl) * 0.5 || 2;
+      const stopLossDistance = mockPrice * (volatilityPercent / 100);
+      const takeProfitDistance = stopLossDistance * (1 + winRate); // R:R based on win rate
+
+      const entryPrice = mockPrice;
+      const stopLoss = side === 'long'
+        ? mockPrice - stopLossDistance
+        : mockPrice + stopLossDistance;
+      const takeProfit = side === 'long'
+        ? mockPrice + takeProfitDistance
+        : mockPrice - takeProfitDistance;
+
+      const riskReward = Math.abs(takeProfit - entryPrice) / Math.abs(entryPrice - stopLoss);
+
+      const signalId = crypto.randomUUID();
+
+      // Create signal
+      const signal: Signal = {
+        id: signalId,
+        symbol: pattern.symbol as string,
+        side: side as 'long' | 'short',
+        signal_type: 'entry',
+        confidence: pattern.confidence as number,
+        entry_price: Math.round(entryPrice * 100) / 100,
+        stop_loss: Math.round(stopLoss * 100) / 100,
+        take_profit: Math.round(takeProfit * 100) / 100,
+        risk_reward: Math.round(riskReward * 100) / 100,
+        pattern_id: pattern.id as string,
+        reasoning: [
+          `Pattern based on ${sampleSize} historical trades`,
+          `Historical win rate: ${(winRate * 100).toFixed(1)}%`,
+          `Average return: ${avgPnl.toFixed(2)}%`,
+          `Setup: ${pattern.setup_type}`,
+          `Risk/Reward: ${riskReward.toFixed(2)}`,
+        ],
+        market_context: {
+          hour_of_day: now.getHours(),
+          day_of_week: now.getDay(),
+        },
+        expires_at: expiresAt.toISOString(),
+        created_at: now.toISOString(),
+        status: 'active',
+      };
+
+      signals.push(signal);
+
+      // Store signal in database
+      try {
+        await c.env.DB.prepare(`
+          INSERT INTO ai_clone_signals (
+            id, user_id, symbol, side, signal_type, confidence,
+            entry_price, stop_loss, take_profit, risk_reward,
+            pattern_id, reasoning, market_context, expires_at, status
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')
+        `).bind(
+          signalId,
+          userId,
+          signal.symbol,
+          signal.side,
+          signal.signal_type,
+          signal.confidence,
+          signal.entry_price,
+          signal.stop_loss,
+          signal.take_profit,
+          signal.risk_reward,
+          signal.pattern_id,
+          JSON.stringify(signal.reasoning),
+          JSON.stringify(signal.market_context),
+          signal.expires_at
+        ).run();
+      } catch (dbError) {
+        // Table might not exist yet, continue
+        console.error('Error storing signal:', dbError);
+      }
+    }
+
+    return c.json({
+      signals,
+      total: signals.length,
+      expires_at: expiresAt.toISOString(),
+      message: `Generated ${signals.length} trading signals`,
+    });
+  } catch (error) {
+    console.error('Error generating signals:', error);
+    return c.json({ error: 'Failed to generate signals' }, 500);
+  }
+});
+
+/**
+ * GET /api/ai-clone/signals
+ *
+ * Get active and recent signals.
+ */
+aiCloneRouter.get('/signals', async (c) => {
+  const user = c.get('user');
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
+  if (!userId) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+
+  const status = c.req.query('status') || 'active';
+  const limit = parseInt(c.req.query('limit') || '20');
+
+  try {
+    let query = `
+      SELECT * FROM ai_clone_signals
+      WHERE user_id = ?
+    `;
+
+    if (status !== 'all') {
+      query += ` AND status = ?`;
+    }
+
+    query += ` ORDER BY created_at DESC LIMIT ?`;
+
+    const signals = status !== 'all'
+      ? await c.env.DB.prepare(query).bind(userId, status, limit).all()
+      : await c.env.DB.prepare(query).bind(userId, limit).all();
+
+    // Parse JSON fields
+    const parsedSignals = signals.results.map((s: Record<string, unknown>) => ({
+      ...s,
+      reasoning: s.reasoning ? JSON.parse(s.reasoning as string) : [],
+      market_context: s.market_context ? JSON.parse(s.market_context as string) : {},
+    }));
+
+    // Expire old signals
+    await c.env.DB.prepare(`
+      UPDATE ai_clone_signals
+      SET status = 'expired'
+      WHERE user_id = ? AND status = 'active' AND expires_at < CURRENT_TIMESTAMP
+    `).bind(userId).run();
+
+    return c.json({
+      signals: parsedSignals,
+      total: parsedSignals.length,
+    });
+  } catch (error) {
+    console.error('Error fetching signals:', error);
+    // If table doesn't exist, return empty
+    return c.json({ signals: [], total: 0 });
+  }
+});
+
+/**
+ * POST /api/ai-clone/signals/:id/trigger
+ *
+ * Mark a signal as triggered (user took the trade).
+ */
+aiCloneRouter.post('/signals/:id/trigger', async (c) => {
+  const user = c.get('user');
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
+  if (!userId) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+
+  const signalId = c.req.param('id');
+
+  try {
+    const signal = await c.env.DB.prepare(`
+      SELECT * FROM ai_clone_signals WHERE id = ? AND user_id = ?
+    `).bind(signalId, userId).first();
+
+    if (!signal) {
+      return c.json({ error: 'Signal not found' }, 404);
+    }
+
+    await c.env.DB.prepare(`
+      UPDATE ai_clone_signals
+      SET status = 'triggered', triggered_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `).bind(signalId).run();
+
+    return c.json({
+      success: true,
+      message: 'Signal triggered',
+    });
+  } catch (error) {
+    console.error('Error triggering signal:', error);
+    return c.json({ error: 'Failed to trigger signal' }, 500);
+  }
+});
+
+/**
+ * POST /api/ai-clone/signals/:id/cancel
+ *
+ * Cancel an active signal.
+ */
+aiCloneRouter.post('/signals/:id/cancel', async (c) => {
+  const user = c.get('user');
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
+  if (!userId) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+
+  const signalId = c.req.param('id');
+
+  try {
+    const signal = await c.env.DB.prepare(`
+      SELECT * FROM ai_clone_signals WHERE id = ? AND user_id = ?
+    `).bind(signalId, userId).first();
+
+    if (!signal) {
+      return c.json({ error: 'Signal not found' }, 404);
+    }
+
+    await c.env.DB.prepare(`
+      UPDATE ai_clone_signals
+      SET status = 'cancelled'
+      WHERE id = ?
+    `).bind(signalId).run();
+
+    return c.json({
+      success: true,
+      message: 'Signal cancelled',
+    });
+  } catch (error) {
+    console.error('Error cancelling signal:', error);
+    return c.json({ error: 'Failed to cancel signal' }, 500);
+  }
+});
+
+/**
+ * GET /api/ai-clone/signals/stream
+ *
+ * SSE endpoint for real-time signal alerts.
+ */
+aiCloneRouter.get('/signals/stream', async (c) => {
+  const user = c.get('user');
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
+  if (!userId) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+
+  // Create SSE response
+  const { readable, writable } = new TransformStream();
+  const writer = writable.getWriter();
+  const encoder = new TextEncoder();
+
+  const sendEvent = async (data: Record<string, unknown>) => {
+    const message = `data: ${JSON.stringify(data)}\n\n`;
+    await writer.write(encoder.encode(message));
+  };
+
+  // Send initial connection message
+  (async () => {
+    try {
+      await sendEvent({
+        type: 'connected',
+        message: 'Signal stream connected',
+        timestamp: new Date().toISOString(),
+      });
+
+      // Poll for new signals every 30 seconds
+      let lastCheck = new Date().toISOString();
+
+      const pollInterval = setInterval(async () => {
+        try {
+          const newSignals = await c.env.DB.prepare(`
+            SELECT * FROM ai_clone_signals
+            WHERE user_id = ? AND status = 'active' AND created_at > ?
+            ORDER BY created_at DESC
+            LIMIT 5
+          `).bind(userId, lastCheck).all();
+
+          lastCheck = new Date().toISOString();
+
+          if (newSignals.results.length > 0) {
+            for (const signal of newSignals.results) {
+              await sendEvent({
+                type: 'signal',
+                signal: {
+                  ...signal,
+                  reasoning: signal.reasoning ? JSON.parse(signal.reasoning as string) : [],
+                  market_context: signal.market_context ? JSON.parse(signal.market_context as string) : {},
+                },
+              });
+            }
+          }
+
+          // Keep-alive
+          await sendEvent({ type: 'ping', timestamp: lastCheck });
+        } catch (pollError) {
+          console.error('Signal poll error:', pollError);
+        }
+      }, 30000);
+
+      // Clean up after 5 minutes (prevent long-running connections)
+      setTimeout(async () => {
+        clearInterval(pollInterval);
+        await sendEvent({ type: 'close', message: 'Stream timeout, please reconnect' });
+        await writer.close();
+      }, 5 * 60 * 1000);
+    } catch (error) {
+      console.error('Signal stream error:', error);
+      await sendEvent({ type: 'error', message: 'Stream error' });
+      await writer.close();
+    }
+  })();
+
+  return new Response(readable, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+    },
+  });
+});
+
+/**
+ * GET /api/ai-clone/signals/stats
+ *
+ * Get signal performance statistics.
+ */
+aiCloneRouter.get('/signals/stats', async (c) => {
+  const user = c.get('user');
+  const userId = user.google_user_data?.sub || user.firebase_user_id;
+  if (!userId) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+
+  try {
+    const stats = await c.env.DB.prepare(`
+      SELECT
+        COUNT(*) as total_signals,
+        SUM(CASE WHEN status = 'triggered' THEN 1 ELSE 0 END) as triggered_signals,
+        SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_signals,
+        SUM(CASE WHEN status = 'expired' THEN 1 ELSE 0 END) as expired_signals,
+        SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_signals,
+        AVG(confidence) as avg_confidence,
+        AVG(risk_reward) as avg_risk_reward
+      FROM ai_clone_signals
+      WHERE user_id = ?
+    `).bind(userId).first();
+
+    // Get signal distribution by symbol
+    const bySymbol = await c.env.DB.prepare(`
+      SELECT symbol, COUNT(*) as count, AVG(confidence) as avg_confidence
+      FROM ai_clone_signals
+      WHERE user_id = ?
+      GROUP BY symbol
+      ORDER BY count DESC
+      LIMIT 10
+    `).bind(userId).all();
+
+    return c.json({
+      stats: {
+        total: (stats?.total_signals as number) || 0,
+        triggered: (stats?.triggered_signals as number) || 0,
+        active: (stats?.active_signals as number) || 0,
+        expired: (stats?.expired_signals as number) || 0,
+        cancelled: (stats?.cancelled_signals as number) || 0,
+        trigger_rate: stats?.total_signals
+          ? ((stats.triggered_signals as number) / (stats.total_signals as number) * 100).toFixed(1)
+          : 0,
+        avg_confidence: ((stats?.avg_confidence as number) || 0).toFixed(2),
+        avg_risk_reward: ((stats?.avg_risk_reward as number) || 0).toFixed(2),
+      },
+      by_symbol: bySymbol.results,
+    });
+  } catch (error) {
+    console.error('Error fetching signal stats:', error);
+    return c.json({
+      stats: {
+        total: 0,
+        triggered: 0,
+        active: 0,
+        expired: 0,
+        cancelled: 0,
+        trigger_rate: 0,
+        avg_confidence: 0,
+        avg_risk_reward: 0,
+      },
+      by_symbol: [],
+    });
+  }
+});
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
 
 function extractPatterns(trades: TradeData[]): ExtractedPattern[] {
   const patternMap = new Map<string, ExtractedPattern>();

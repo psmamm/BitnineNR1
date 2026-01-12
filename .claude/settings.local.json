@@ -14,7 +14,12 @@
       "Bash(npx eslint:*)",
       "Bash(grep:*)",
       "Bash(dir:*)",
-      "Bash(powershell -Command:*)"
+      "Bash(powershell -Command:*)",
+      "Bash(cmd //c \"taskkill //F //PID 21604\")",
+      "Read(//c/Users/Leand/Desktop/CIRCL/**)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\Leand\\Desktop\\CIRCL"
     ]
   }
 }

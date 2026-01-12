@@ -1,13 +1,10 @@
 import path from "path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-// import { cloudflare } from "@cloudflare/vite-plugin";
 
 export default defineConfig({
   plugins: [
     react(),
-    // Temporarily disabled to test if it's causing startup issues
-    // cloudflare()
   ],
   server: {
     allowedHosts: true,
@@ -20,6 +17,26 @@ export default defineConfig({
         target: 'http://localhost:8787',
         changeOrigin: true,
         secure: false,
+        cookieDomainRewrite: 'localhost',
+        cookiePathRewrite: '/',
+        configure: (proxy, _options) => {
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            // Forward cookies from the browser
+            if (req.headers.cookie) {
+              proxyReq.setHeader('Cookie', req.headers.cookie)
+            }
+          })
+          proxy.on('proxyRes', (proxyRes, _req, _res) => {
+            // Allow cookies to be set by the backend
+            const setCookie = proxyRes.headers['set-cookie']
+            if (setCookie) {
+              proxyRes.headers['set-cookie'] = setCookie.map(cookie =>
+                cookie.replace(/Domain=[^;]+;?\s?/gi, 'Domain=localhost; ')
+                      .replace(/SameSite=Strict/gi, 'SameSite=Lax')
+              )
+            }
+          })
+        }
       },
     },
   },

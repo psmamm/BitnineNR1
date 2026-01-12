@@ -420,10 +420,63 @@ tradesRouter.post('/', zValidator('json', TradeSchema), async (c) => {
     console.log('Trade created successfully with ID:', result.meta.last_row_id);
 
     // ============================================================================
+    // DISCIPLINE: Check for 3 consecutive losses (Iron-Fist Rule)
+    // ============================================================================
+    let disciplineLockTriggered = false;
+    if (is_closed === 1 && pnlNet !== null && pnlNet < 0) {
+      try {
+        // Fetch last 3 closed trades for user (including this one)
+        const recentTrades = await c.env.DB.prepare(`
+          SELECT id, pnl
+          FROM trades
+          WHERE user_id = ? AND is_closed = 1 AND pnl IS NOT NULL
+          ORDER BY exit_date DESC, created_at DESC
+          LIMIT 3
+        `).bind(userId).all();
+
+        // Check if all 3 trades are losses
+        if (recentTrades.results && recentTrades.results.length >= 3) {
+          const allLosses = recentTrades.results.every((t: unknown) => {
+            const trade = t as { pnl: number | string | null };
+            return trade.pnl !== null && parseFloat(String(trade.pnl)) < 0;
+          });
+
+          if (allLosses) {
+            // Trigger 8-hour lockout
+            const now = Math.floor(Date.now() / 1000);
+            const lockoutDuration = 8 * 60 * 60; // 8 hours
+            const lockoutUntil = now + lockoutDuration;
+
+            await c.env.DB.prepare(`
+              UPDATE users SET lockout_until = ? WHERE google_user_id = ?
+            `).bind(lockoutUntil, userId).run();
+
+            // Log discipline event
+            try {
+              const eventId = crypto.randomUUID();
+              const triggerTradeIds = recentTrades.results.map((t: unknown) => (t as { id: string }).id).join(',');
+              await c.env.DB.prepare(`
+                INSERT INTO discipline_events (id, user_id, event_type, trigger_trades, lockout_until, created_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+              `).bind(eventId, userId, 'lockout_triggered', triggerTradeIds, lockoutUntil, now).run();
+            } catch (eventError) {
+              console.log('discipline_events table may not exist yet:', eventError);
+            }
+
+            console.log(`Discipline lockout triggered for user ${userId}: 3 consecutive losses detected`);
+            disciplineLockTriggered = true;
+          }
+        }
+      } catch (disciplineError) {
+        console.error('Error checking discipline rule (non-critical):', disciplineError);
+      }
+    }
+
+    // ============================================================================
     // RISK MANAGEMENT: Check daily loss and trigger lockout if limit reached
     // ============================================================================
     let riskLockTriggered = false;
-    if (is_closed === 1 && pnlNet !== null && pnlNet < 0) {
+    if (is_closed === 1 && pnlNet !== null && pnlNet < 0 && !disciplineLockTriggered) {
       try {
         // Get user risk settings
         const riskSettings = await c.env.DB.prepare(`
@@ -597,7 +650,7 @@ tradesRouter.post('/', zValidator('json', TradeSchema), async (c) => {
       // Don't fail the trade creation if notification fails
     }
 
-    return c.json({ 
+    return c.json({
       id: result.meta.last_row_id,
       uuid: uuid,
       success: true,
@@ -607,7 +660,8 @@ tradesRouter.post('/', zValidator('json', TradeSchema), async (c) => {
       isWin: isWin,
       isClosed: is_closed === 1,
       xpAwarded: 10,
-      risk_lock_triggered: riskLockTriggered
+      risk_lock_triggered: riskLockTriggered,
+      discipline_lock_triggered: disciplineLockTriggered
     }, 201);
   } catch (error) {
     console.error('Error in POST /api/trades:', error);
@@ -752,6 +806,62 @@ tradesRouter.put('/:id', zValidator('json', TradeSchema), async (c) => {
     return c.json({ error: 'Trade not found or failed to update' }, 404);
   }
 
+  // ============================================================================
+  // DISCIPLINE: Check for 3 consecutive losses when trade is closed (Iron-Fist Rule)
+  // ============================================================================
+  let disciplineLockTriggered = false;
+  if (wasOpen && isNowClosed && pnl !== null && pnl < 0) {
+    try {
+      const disciplineUserId = user.google_user_data?.sub || user.firebase_user_id;
+      if (disciplineUserId) {
+        // Fetch last 3 closed trades for user (including this one)
+        const recentTrades = await c.env.DB.prepare(`
+          SELECT id, pnl
+          FROM trades
+          WHERE user_id = ? AND is_closed = 1 AND pnl IS NOT NULL
+          ORDER BY exit_date DESC, created_at DESC
+          LIMIT 3
+        `).bind(disciplineUserId).all();
+
+        // Check if all 3 trades are losses
+        if (recentTrades.results && recentTrades.results.length >= 3) {
+          const allLosses = recentTrades.results.every((t: unknown) => {
+            const trade = t as { pnl: number | string | null };
+            return trade.pnl !== null && parseFloat(String(trade.pnl)) < 0;
+          });
+
+          if (allLosses) {
+            // Trigger 8-hour lockout
+            const now = Math.floor(Date.now() / 1000);
+            const lockoutDuration = 8 * 60 * 60; // 8 hours
+            const lockoutUntil = now + lockoutDuration;
+
+            await c.env.DB.prepare(`
+              UPDATE users SET lockout_until = ? WHERE google_user_id = ?
+            `).bind(lockoutUntil, disciplineUserId).run();
+
+            // Log discipline event
+            try {
+              const eventId = crypto.randomUUID();
+              const triggerTradeIds = recentTrades.results.map((t: unknown) => (t as { id: string }).id).join(',');
+              await c.env.DB.prepare(`
+                INSERT INTO discipline_events (id, user_id, event_type, trigger_trades, lockout_until, created_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+              `).bind(eventId, disciplineUserId, 'lockout_triggered', triggerTradeIds, lockoutUntil, now).run();
+            } catch (eventError) {
+              console.log('discipline_events table may not exist yet:', eventError);
+            }
+
+            console.log(`Discipline lockout triggered for user ${disciplineUserId}: 3 consecutive losses detected`);
+            disciplineLockTriggered = true;
+          }
+        }
+      }
+    } catch (disciplineError) {
+      console.error('Error checking discipline rule (non-critical):', disciplineError);
+    }
+  }
+
   // Create notification if trade was just closed and trade alerts are enabled
   if (wasOpen && isNowClosed) {
     try {
@@ -838,7 +948,10 @@ tradesRouter.put('/:id', zValidator('json', TradeSchema), async (c) => {
     }
   }
 
-  return c.json({ success: true });
+  return c.json({
+    success: true,
+    discipline_lock_triggered: disciplineLockTriggered
+  });
 });
 
 // Delete trade
@@ -1099,6 +1212,56 @@ tradesRouter.post('/import', zValidator('json', ImportCSVSchema), async (c) => {
   } catch (error: unknown) {
     console.error('CSV Import Error:', error);
     const message = error instanceof Error ? error.message : 'Failed to import trades';
+    return c.json({ error: message }, 500);
+  }
+});
+
+// Bulk delete all trades for the authenticated user
+tradesRouter.delete('/bulk', firebaseAuthMiddleware, async (c) => {
+  try {
+    const user = c.get('user');
+    if (!user) {
+      return c.json({ error: 'User not found' }, 401);
+    }
+
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
+    if (!userId) {
+      return c.json({ error: 'User ID not found' }, 400);
+    }
+
+    console.log(`[Bulk Delete] User ${userId} requesting to delete all trades`);
+
+    // Get count before deletion
+    const countResult = await c.env.DB.prepare(`
+      SELECT COUNT(*) as count FROM trades WHERE user_id = ?
+    `).bind(userId).first<{ count: number }>();
+
+    const tradeCount = countResult?.count || 0;
+
+    if (tradeCount === 0) {
+      return c.json({
+        success: true,
+        deletedCount: 0,
+        message: 'No trades to delete'
+      });
+    }
+
+    // Delete all trades for this user
+    const deleteResult = await c.env.DB.prepare(`
+      DELETE FROM trades WHERE user_id = ?
+    `).bind(userId).run();
+
+    console.log(`[Bulk Delete] Deleted ${tradeCount} trades for user ${userId}`);
+
+    return c.json({
+      success: deleteResult.success,
+      deletedCount: tradeCount,
+      message: `Successfully deleted ${tradeCount} trade${tradeCount !== 1 ? 's' : ''}`
+    });
+
+  } catch (error: unknown) {
+    console.error('[Bulk Delete] Error:', error);
+    const message = error instanceof Error ? error.message : 'Failed to delete trades';
     return c.json({ error: message }, 500);
   }
 });

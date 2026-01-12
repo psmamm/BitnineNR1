@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bot,
   Brain,
@@ -22,6 +23,14 @@ import {
   BarChart3,
   ArrowUpRight,
   ArrowDownRight,
+  Rocket,
+  Database,
+  Search,
+  Cpu,
+  Save,
+  Check,
+  ToggleLeft,
+  ToggleRight,
 } from 'lucide-react';
 
 // ============================================================================
@@ -39,7 +48,43 @@ interface AICloneConfig {
   allowed_asset_classes: string[];
   allowed_symbols: string[];
   last_retrain_at: string | null;
+  // Auto-training settings (Day 2)
+  auto_train_enabled?: boolean;
+  auto_train_threshold?: number;
+  trades_since_training?: number;
 }
+
+// Training Progress Types (SSE)
+interface TrainingStep {
+  step: number;
+  total: number;
+  name: string;
+  status: 'pending' | 'running' | 'completed' | 'error';
+  progress?: number;
+  message?: string;
+}
+
+interface TrainingProgress {
+  status: 'initializing' | 'running' | 'completed' | 'error';
+  current_step: number;
+  total_steps: number;
+  steps: TrainingStep[];
+  result?: {
+    trades_analyzed: number;
+    patterns_found: number;
+    confidence_avg: number;
+    training_time_ms: number;
+  };
+  error?: string;
+}
+
+const TRAINING_STEPS = [
+  { name: 'Loading Trades', icon: Database },
+  { name: 'Analyzing Patterns', icon: Search },
+  { name: 'Building Model', icon: Cpu },
+  { name: 'Optimizing', icon: Zap },
+  { name: 'Saving Results', icon: Save },
+];
 
 interface Pattern {
   id: string;
@@ -135,6 +180,11 @@ export function AICloneDashboard() {
   const [isTraining, setIsTraining] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
+  // Training Progress State (Day 3: SSE-based)
+  const [trainingProgress, setTrainingProgress] = useState<TrainingProgress | null>(null);
+  const [showTrainingModal, setShowTrainingModal] = useState(false);
+  const eventSourceRef = useRef<EventSource | null>(null);
+
   // ============================================================================
   // DATA FETCHING
   // ============================================================================
@@ -179,27 +229,154 @@ export function AICloneDashboard() {
     }
   };
 
-  const handleTrain = async () => {
+  // SSE-based Training with Real-Time Progress (Day 3)
+  const handleTrainWithSSE = useCallback(() => {
+    // Close any existing connection
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+    }
+
     setIsTraining(true);
+    setShowTrainingModal(true);
+
+    // Initialize progress state
+    const initialProgress: TrainingProgress = {
+      status: 'initializing',
+      current_step: 0,
+      total_steps: 5,
+      steps: TRAINING_STEPS.map((step, i) => ({
+        step: i + 1,
+        total: 5,
+        name: step.name,
+        status: 'pending',
+      })),
+    };
+    setTrainingProgress(initialProgress);
+
+    // Create EventSource for SSE (GET request, cookies sent automatically)
+    const eventSource = new EventSource('/api/ai-clone/training/start');
+    eventSourceRef.current = eventSource;
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+
+        if (data.type === 'start') {
+          setTrainingProgress((prev) => prev ? { ...prev, status: 'running' } : prev);
+        } else if (data.type === 'progress') {
+          setTrainingProgress((prev) => {
+            if (!prev) return prev;
+
+            const updatedSteps = [...prev.steps];
+            // Mark current step as running
+            if (data.step > 0 && data.step <= 5) {
+              // Mark previous steps as completed
+              for (let i = 0; i < data.step - 1; i++) {
+                updatedSteps[i] = { ...updatedSteps[i], status: 'completed' };
+              }
+              // Mark current step as running
+              updatedSteps[data.step - 1] = {
+                ...updatedSteps[data.step - 1],
+                status: 'running',
+                message: data.message,
+              };
+            }
+
+            return {
+              ...prev,
+              status: 'running',
+              current_step: data.step,
+              steps: updatedSteps,
+            };
+          });
+        } else if (data.type === 'complete') {
+          setTrainingProgress((prev) => {
+            if (!prev) return prev;
+
+            // Mark all steps as completed
+            const completedSteps = prev.steps.map((step) => ({
+              ...step,
+              status: 'completed' as const,
+            }));
+
+            return {
+              ...prev,
+              status: 'completed',
+              current_step: 5,
+              steps: completedSteps,
+              result: {
+                trades_analyzed: data.trades_analyzed,
+                patterns_found: data.patterns_found,
+                confidence_avg: data.confidence_avg || 0,
+                training_time_ms: data.duration_ms || 0,
+              },
+            };
+          });
+
+          // Close connection on complete
+          eventSource.close();
+          setIsTraining(false);
+          fetchData(); // Refresh data
+        } else if (data.type === 'error') {
+          setTrainingProgress((prev) => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              status: 'error',
+              error: data.message || 'Training failed',
+            };
+          });
+          eventSource.close();
+          setIsTraining(false);
+        }
+      } catch (e) {
+        console.error('Error parsing SSE data:', e);
+      }
+    };
+
+    eventSource.onerror = (err) => {
+      console.error('EventSource error:', err);
+      setTrainingProgress((prev) => ({
+        ...prev!,
+        status: 'error',
+        error: 'Connection lost. Please try again.',
+      }));
+      eventSource.close();
+      setIsTraining(false);
+    };
+  }, [fetchData]);
+
+  // Cleanup EventSource on unmount
+  useEffect(() => {
+    return () => {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+      }
+    };
+  }, []);
+
+  // Handle Auto-Training Toggle
+  const handleAutoTrainToggle = async () => {
+    if (!config) return;
+
     try {
-      const response = await fetch('/api/ai-clone/train', {
-        method: 'POST',
+      const response = await fetch('/api/ai-clone/config', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
+        body: JSON.stringify({
+          auto_train_enabled: !config.auto_train_enabled,
+        }),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        alert(`Training complete! Analyzed ${data.trades_analyzed} trades, found ${data.patterns_found} new patterns.`);
-        fetchData();
-      } else {
-        const error = await response.json();
-        alert(error.error || 'Training failed');
+        setConfig({
+          ...config,
+          auto_train_enabled: !config.auto_train_enabled,
+        });
       }
     } catch (error) {
-      console.error('Training error:', error);
-      alert('Failed to train AI Clone');
-    } finally {
-      setIsTraining(false);
+      console.error('Error toggling auto-train:', error);
     }
   };
 
@@ -300,6 +477,165 @@ export function AICloneDashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Training Progress Modal */}
+      <AnimatePresence>
+        {showTrainingModal && trainingProgress && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => {
+              if (trainingProgress.status === 'completed' || trainingProgress.status === 'error') {
+                setShowTrainingModal(false);
+              }
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-[#161A1E] border border-[#2B2F36] rounded-2xl p-6 max-w-md w-full shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#00D9C8] to-[#00A89C] flex items-center justify-center">
+                  <Brain className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-[#EAECEF]">
+                    {trainingProgress.status === 'completed'
+                      ? 'Training Complete!'
+                      : trainingProgress.status === 'error'
+                      ? 'Training Failed'
+                      : 'Training Your AI Clone'}
+                  </h3>
+                  <p className="text-sm text-[#848E9C]">
+                    {trainingProgress.status === 'completed'
+                      ? 'Your AI Clone has been updated'
+                      : trainingProgress.status === 'error'
+                      ? trainingProgress.error
+                      : 'Analyzing your trading patterns...'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Progress Steps */}
+              <div className="space-y-3 mb-6">
+                {trainingProgress.steps.map((step, index) => {
+                  const StepIcon = TRAINING_STEPS[index]?.icon || Brain;
+                  const isActive = step.status === 'running';
+                  const isCompleted = step.status === 'completed';
+
+                  return (
+                    <motion.div
+                      key={step.step}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
+                        isActive
+                          ? 'bg-[#00D9C8]/10 border border-[#00D9C8]/30'
+                          : isCompleted
+                          ? 'bg-[#2EAD65]/10 border border-[#2EAD65]/30'
+                          : 'bg-[#0B0E11] border border-[#2B2F36]'
+                      }`}
+                    >
+                      <div
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                          isCompleted
+                            ? 'bg-[#2EAD65]'
+                            : isActive
+                            ? 'bg-[#00D9C8]'
+                            : 'bg-[#2B2F36]'
+                        }`}
+                      >
+                        {isCompleted ? (
+                          <Check className="w-4 h-4 text-white" />
+                        ) : isActive ? (
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                          >
+                            <RefreshCw className="w-4 h-4 text-white" />
+                          </motion.div>
+                        ) : (
+                          <StepIcon className="w-4 h-4 text-[#848E9C]" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <p
+                          className={`text-sm font-medium ${
+                            isActive || isCompleted ? 'text-[#EAECEF]' : 'text-[#848E9C]'
+                          }`}
+                        >
+                          {step.name}
+                        </p>
+                        {isActive && step.message && (
+                          <p className="text-xs text-[#00D9C8]">{step.message}</p>
+                        )}
+                      </div>
+                      <span className="text-xs text-[#848E9C]">{step.step}/5</span>
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              {/* Results */}
+              {trainingProgress.status === 'completed' && trainingProgress.result && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-[#0B0E11] border border-[#2B2F36] rounded-xl p-4 mb-4"
+                >
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-xs text-[#848E9C]">Trades Analyzed</p>
+                      <p className="text-xl font-mono font-semibold text-[#00D9C8]">
+                        {trainingProgress.result.trades_analyzed}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-[#848E9C]">Patterns Found</p>
+                      <p className="text-xl font-mono font-semibold text-[#2EAD65]">
+                        {trainingProgress.result.patterns_found}
+                      </p>
+                    </div>
+                    {trainingProgress.result.confidence_avg > 0 && (
+                      <div>
+                        <p className="text-xs text-[#848E9C]">Avg Confidence</p>
+                        <p className="text-xl font-mono font-semibold text-[#F0B90B]">
+                          {(trainingProgress.result.confidence_avg * 100).toFixed(0)}%
+                        </p>
+                      </div>
+                    )}
+                    {trainingProgress.result.training_time_ms > 0 && (
+                      <div>
+                        <p className="text-xs text-[#848E9C]">Training Time</p>
+                        <p className="text-xl font-mono font-semibold text-[#EAECEF]">
+                          {(trainingProgress.result.training_time_ms / 1000).toFixed(1)}s
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Close Button */}
+              {(trainingProgress.status === 'completed' || trainingProgress.status === 'error') && (
+                <Button
+                  className="w-full bg-[#00D9C8] hover:bg-[#00C4B4] text-black font-medium"
+                  onClick={() => setShowTrainingModal(false)}
+                >
+                  {trainingProgress.status === 'completed' ? 'Done' : 'Close'}
+                </Button>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -334,6 +670,77 @@ export function AICloneDashboard() {
           </Button>
         </div>
       </div>
+
+      {/* PROMINENT: Train My Clone Card (Day 3) */}
+      <Card className="glass border-[#00D9C8]/30 bg-gradient-to-br from-[#00D9C8]/5 to-transparent">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00D9C8] to-[#00A89C] flex items-center justify-center shadow-lg shadow-[#00D9C8]/20">
+                <Rocket className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-[#EAECEF] flex items-center gap-2">
+                  Train My Clone
+                  {config?.auto_train_enabled && (
+                    <span className="px-2 py-0.5 text-[10px] font-medium bg-[#2EAD65]/20 text-[#2EAD65] rounded-full">
+                      AUTO
+                    </span>
+                  )}
+                </h3>
+                <p className="text-sm text-[#848E9C]">
+                  {stats?.patterns.total_samples
+                    ? `${stats.patterns.total_samples} trades available for analysis`
+                    : 'Analyze your trading history to improve AI predictions'}
+                </p>
+                {config?.trades_since_training !== undefined && config.trades_since_training > 0 && (
+                  <p className="text-xs text-[#F0B90B] mt-1">
+                    {config.trades_since_training} new trades since last training
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {/* Auto-Train Toggle */}
+              <button
+                onClick={handleAutoTrainToggle}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all ${
+                  config?.auto_train_enabled
+                    ? 'bg-[#2EAD65]/10 border-[#2EAD65]/50 text-[#2EAD65]'
+                    : 'bg-[#2B2F36]/50 border-[#2B2F36] text-[#848E9C] hover:text-[#EAECEF]'
+                }`}
+              >
+                {config?.auto_train_enabled ? (
+                  <ToggleRight className="w-5 h-5" />
+                ) : (
+                  <ToggleLeft className="w-5 h-5" />
+                )}
+                <span className="text-sm font-medium">Auto-Train</span>
+              </button>
+
+              {/* Train Button */}
+              <Button
+                onClick={handleTrainWithSSE}
+                disabled={isTraining}
+                className="bg-[#00D9C8] hover:bg-[#00C4B4] text-black font-semibold px-6 py-3 h-auto text-base shadow-lg shadow-[#00D9C8]/20 hover:shadow-[#00D9C8]/30 transition-all"
+              >
+                {isTraining ? (
+                  <>
+                    <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                    Training...
+                  </>
+                ) : (
+                  <>
+                    <Brain className="w-5 h-5 mr-2" />
+                    Train Now
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Permission Level Selector */}
       <Card className="glass">
@@ -530,7 +937,7 @@ export function AICloneDashboard() {
             <Button
               variant="premium"
               size="sm"
-              onClick={handleTrain}
+              onClick={handleTrainWithSSE}
               disabled={isTraining}
             >
               {isTraining ? (

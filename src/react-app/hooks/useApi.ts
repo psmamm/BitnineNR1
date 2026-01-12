@@ -2,8 +2,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { auth } from '../lib/firebase';
 
 export function buildApiUrl(path: string): string {
-  // In development, use relative path
-  // In production, this will be handled by the proxy
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
+
+  // If API_BASE_URL is set, use it (production)
+  if (apiBaseUrl) {
+    return `${apiBaseUrl}${path.startsWith('/') ? path : `/${path}`}`;
+  }
+
+  // Otherwise use relative path (local development)
   if (path.startsWith('/')) {
     return path;
   }
@@ -34,10 +40,11 @@ export function useApi<T>(url: string, options?: RequestInit) {
     try {
       setLoading(true);
       setError(null);
-      
+
       const authHeaders = await getAuthHeaders();
-      
-      const response = await fetch(url, {
+      const fullUrl = buildApiUrl(url);
+
+      const response = await fetch(fullUrl, {
         credentials: 'include',
         ...options,
         headers: {
@@ -77,10 +84,11 @@ export function useApiMutation<T = unknown>(
     try {
       setLoading(true);
       setError(null);
-      
+
       const authHeaders = await getAuthHeaders();
-      
-      const response = await fetch(url, {
+      const fullUrl = buildApiUrl(url);
+
+      const response = await fetch(fullUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

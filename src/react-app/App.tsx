@@ -106,6 +106,8 @@ const JournalPage = lazy(() => import("@/react-app/pages/Journal"));
 const ReportsPage = lazy(() => import("@/react-app/pages/Reports"));
 const StrategiesPage = lazy(() => import("@/react-app/pages/Strategies"));
 const SettingsPage = lazy(() => import("@/react-app/pages/Settings"));
+const ProfilePage = lazy(() => import("@/react-app/pages/ProfilePage"));
+const TradingBotsPage = lazy(() => import("@/react-app/pages/TradingBotsPage"));
 const USDebtPage = lazy(() => import("@/react-app/pages/USDebt"));
 const StudyPage = lazy(() => import("@/react-app/pages/Study"));
 const AlphaHubPage = lazy(() => import("@/react-app/pages/AlphaHub"));
@@ -127,6 +129,7 @@ const TradingPage = lazy(() => import("@/react-app/pages/TradingPage"));
 const TerminalPage = lazy(() => import("@/react-app/pages/Terminal"));
 const ExchangeSettingsPage = lazy(() => import("@/react-app/pages/ExchangeSettings"));
 const AIClonePage = lazy(() => import("@/react-app/pages/AIClone"));
+const AIInsightsPage = lazy(() => import("@/react-app/pages/AIInsights"));
 const SubscriptionsPage = lazy(() => import("@/react-app/pages/Subscriptions"));
 const AssetsPage = lazy(() => import("@/react-app/pages/Assets"));
 const DepositPage = lazy(() => import("@/react-app/pages/Deposit"));
@@ -257,6 +260,16 @@ export default function App() {
                           <SettingsPage />
                         </ProtectedRoute>
                       } />
+                      <Route path="/profile" element={
+                        <ProtectedRoute>
+                          <ProfilePage />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/trading-bots" element={
+                        <ProtectedRoute>
+                          <TradingBotsPage />
+                        </ProtectedRoute>
+                      } />
                       <Route path="/settings/exchanges" element={
                         <ProtectedRoute>
                           <ExchangeSettingsPage />
@@ -265,6 +278,11 @@ export default function App() {
                       <Route path="/ai-clone" element={
                         <ProtectedRoute>
                           <AIClonePage />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/ai-insights" element={
+                        <ProtectedRoute>
+                          <AIInsightsPage />
                         </ProtectedRoute>
                       } />
                       <Route path="/subscriptions" element={

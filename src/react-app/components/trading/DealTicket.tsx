@@ -1,14 +1,21 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { fixFloatingPoint, calculateStopLoss, calculateTakeProfit } from '@/react-app/utils/formatNumber';
 
 type OrderType = 'LIMIT' | 'MARKET' | 'CONDITIONAL';
+export type TradingType = 'spot' | 'margin' | 'futures';
 
 interface DealTicketProps {
   currentPrice?: number;
   symbol?: string;
+  tradingType?: TradingType;
 }
 
-export default function DealTicket({ currentPrice = 98500, symbol = 'BTCUSDT' }: DealTicketProps) {
+export default function DealTicket({
+  currentPrice = 98500,
+  symbol = 'BTCUSDT',
+  tradingType = 'futures'
+}: DealTicketProps) {
   const baseAsset = symbol.replace(/USDT$|USD$|BUSD$/, '');
   
   const [orderType, setOrderType] = useState<OrderType>('LIMIT');
@@ -22,10 +29,19 @@ export default function DealTicket({ currentPrice = 98500, symbol = 'BTCUSDT' }:
   const [sliderValue, setSliderValue] = useState<number>(25);
   const [showMarginDropdown, setShowMarginDropdown] = useState(false);
 
+  // Determine max leverage based on trading type
+  const maxLeverage = tradingType === 'spot' ? 1 : tradingType === 'margin' ? 10 : 125;
+
+  // Determine button labels based on trading type
+  const buyLabel = tradingType === 'spot' ? 'Buy' : 'Buy/Long';
+  const sellLabel = tradingType === 'spot' ? 'Sell' : 'Sell/Short';
+
+  console.log(`[Deal Ticket] Trading type: ${tradingType}, Max leverage: ${maxLeverage}x`);
+
   useEffect(() => {
     setPrice(currentPrice);
-    setStopLoss(currentPrice * 0.98);
-    setTakeProfit(currentPrice * 1.04);
+    setStopLoss(calculateStopLoss(currentPrice, 0.02)); // 2% below entry
+    setTakeProfit(calculateTakeProfit(currentPrice, 0.04)); // 4% above entry
   }, [currentPrice]);
 
   useEffect(() => {
@@ -33,7 +49,7 @@ export default function DealTicket({ currentPrice = 98500, symbol = 'BTCUSDT' }:
       const distance = Math.abs(price - stopLoss);
       if (distance > 0) {
         const size = riskAmount / distance;
-        setCalculatedSize(Number(size.toFixed(4)));
+        setCalculatedSize(fixFloatingPoint(size, 4));
       } else {
         setCalculatedSize(0);
       }
@@ -42,7 +58,8 @@ export default function DealTicket({ currentPrice = 98500, symbol = 'BTCUSDT' }:
     }
   }, [riskAmount, price, stopLoss]);
 
-  const totalValue = (calculatedSize * price).toFixed(2);
+  const totalValue = fixFloatingPoint(calculatedSize * price, 2).toFixed(2);
+  const estimatedLiqPrice = fixFloatingPoint(price * 0.9, 2).toFixed(2);
   const sliderMarks = [0, 25, 50, 75, 100];
 
   const handleBuyLong = () => {
@@ -72,54 +89,56 @@ export default function DealTicket({ currentPrice = 98500, symbol = 'BTCUSDT' }:
             </button>
           ))}
         </div>
-        
-        {/* Margin Dropdown */}
-        <div className="relative">
-          <button
-            onClick={() => setShowMarginDropdown(!showMarginDropdown)}
-            className="flex items-center gap-1 text-[#848e9c] hover:text-[#eaecef] bg-[#2b3139] px-2 py-1 rounded text-xs"
-          >
-            <span>{marginMode === 'isolated' ? 'Isolated' : 'Cross'} {leverage}x</span>
-            <ChevronDown className="w-3 h-3" />
-          </button>
-          
-          {showMarginDropdown && (
-            <div className="absolute right-0 top-full mt-1 bg-[#2b3139] rounded shadow-xl z-50 w-36">
-              <div className="p-2 border-b border-[#1e2026]">
-                <div className="flex gap-1 mb-2">
-                  <button
-                    onClick={() => setMarginMode('cross')}
-                    className={`flex-1 text-xs py-1 rounded ${marginMode === 'cross' ? 'bg-[#f0b90b] text-black' : 'bg-[#1e2026] text-[#848e9c]'}`}
-                  >
-                    Cross
-                  </button>
-                  <button
-                    onClick={() => setMarginMode('isolated')}
-                    className={`flex-1 text-xs py-1 rounded ${marginMode === 'isolated' ? 'bg-[#f0b90b] text-black' : 'bg-[#1e2026] text-[#848e9c]'}`}
-                  >
-                    Isolated
-                  </button>
+
+        {/* Margin Dropdown - Hidden for Spot Trading */}
+        {tradingType !== 'spot' && (
+          <div className="relative">
+            <button
+              onClick={() => setShowMarginDropdown(!showMarginDropdown)}
+              className="flex items-center gap-1 text-[#848e9c] hover:text-[#eaecef] bg-[#2b3139] px-2 py-1 rounded text-xs"
+            >
+              <span>{marginMode === 'isolated' ? 'Isolated' : 'Cross'} {leverage}x</span>
+              <ChevronDown className="w-3 h-3" />
+            </button>
+
+            {showMarginDropdown && (
+              <div className="absolute right-0 top-full mt-1 bg-[#2b3139] rounded shadow-xl z-50 w-36">
+                <div className="p-2 border-b border-[#1e2026]">
+                  <div className="flex gap-1 mb-2">
+                    <button
+                      onClick={() => setMarginMode('cross')}
+                      className={`flex-1 text-xs py-1 rounded ${marginMode === 'cross' ? 'bg-[#f0b90b] text-black' : 'bg-[#1e2026] text-[#848e9c]'}`}
+                    >
+                      Cross
+                    </button>
+                    <button
+                      onClick={() => setMarginMode('isolated')}
+                      className={`flex-1 text-xs py-1 rounded ${marginMode === 'isolated' ? 'bg-[#f0b90b] text-black' : 'bg-[#1e2026] text-[#848e9c]'}`}
+                    >
+                      Isolated
+                    </button>
+                  </div>
+                  <input
+                    type="range"
+                    min="1"
+                    max={maxLeverage}
+                    value={Math.min(leverage, maxLeverage)}
+                    onChange={(e) => setLeverage(Number(e.target.value))}
+                    className="w-full h-1 bg-[#1e2026] rounded appearance-none cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[10px] text-[#848e9c] mt-1">
+                    <span>1x</span>
+                    <span className="text-[#f0b90b]">{Math.min(leverage, maxLeverage)}x</span>
+                    <span>{maxLeverage}x</span>
+                  </div>
                 </div>
-                <input
-                  type="range"
-                  min="1"
-                  max="100"
-                  value={leverage}
-                  onChange={(e) => setLeverage(Number(e.target.value))}
-                  className="w-full h-1 bg-[#1e2026] rounded appearance-none cursor-pointer"
-                />
-                <div className="flex justify-between text-[10px] text-[#848e9c] mt-1">
-                  <span>1x</span>
-                  <span className="text-[#f0b90b]">{leverage}x</span>
-                  <span>100x</span>
-                </div>
+                <button onClick={() => setShowMarginDropdown(false)} className="w-full text-xs py-1.5 text-[#f0b90b] hover:bg-[#1e2026]">
+                  Confirm
+                </button>
               </div>
-              <button onClick={() => setShowMarginDropdown(false)} className="w-full text-xs py-1.5 text-[#f0b90b] hover:bg-[#1e2026]">
-                Confirm
-              </button>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Form */}
@@ -237,7 +256,7 @@ export default function DealTicket({ currentPrice = 98500, symbol = 'BTCUSDT' }:
           </div>
           <div className="flex justify-between">
             <span className="text-[#848e9c]">Est. Liq. Price</span>
-            <span className="text-[#f6465d]">${(price * 0.9).toFixed(2)}</span>
+            <span className="text-[#f6465d]">${estimatedLiqPrice}</span>
           </div>
         </div>
       </div>
@@ -246,10 +265,10 @@ export default function DealTicket({ currentPrice = 98500, symbol = 'BTCUSDT' }:
       <div className="p-3 border-t border-[#2b3139]">
         <div className="flex gap-2">
           <button onClick={handleBuyLong} className="flex-1 bg-[#2ead65] hover:bg-[#26965a] text-white font-medium py-2.5 rounded text-sm transition-colors">
-            Buy/Long
+            {buyLabel}
           </button>
           <button onClick={handleSellShort} className="flex-1 bg-[#f6465d] hover:bg-[#d93d52] text-white font-medium py-2.5 rounded text-sm transition-colors">
-            Sell/Short
+            {sellLabel}
           </button>
         </div>
         <div className="flex justify-between text-[#848e9c] mt-2">

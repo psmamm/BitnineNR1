@@ -10,6 +10,7 @@ import {
   X, Link2, Key, Shield, Eye, EyeOff, Check, AlertCircle,
   ChevronRight, Loader2, ExternalLink, HelpCircle, Search
 } from 'lucide-react';
+import { buildApiUrl } from '../../hooks/useApi';
 
 // ============================================================================
 // Types
@@ -283,7 +284,7 @@ export default function ExchangeConnectionModal({
     setError(null);
 
     try {
-      const response = await fetch('/api/exchange-connections/test', {
+      const response = await fetch(buildApiUrl('/api/exchange-connections/test'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

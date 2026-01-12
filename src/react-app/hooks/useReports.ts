@@ -28,8 +28,11 @@ export interface PeriodStats {
 }
 
 export function useReports() {
-  const { trades } = useTrades(1000); // Get all trades
-  const { strategies } = useStrategies();
+  const { trades, loading: tradesLoading, error: tradesError } = useTrades(1000); // Get all trades
+  const { strategies, loading: strategiesLoading, error: strategiesError } = useStrategies();
+
+  const loading = tradesLoading || strategiesLoading;
+  const error = tradesError || strategiesError;
 
   // Calculate monthly performance data
   const monthlyData = useMemo(() => {
@@ -234,6 +237,8 @@ export function useReports() {
     strategyData,
     winLossData,
     periodStats,
-    keyMetrics
+    keyMetrics,
+    loading,
+    error
   };
 }

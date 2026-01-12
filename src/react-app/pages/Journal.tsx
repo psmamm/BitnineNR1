@@ -290,13 +290,27 @@ export default function JournalPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [viewMode, setViewMode] = useState<'card' | 'table'>('card');
   const [activeJournalTab, setActiveJournalTab] = useState<'trades' | 'voice' | 'replay'>('trades');
+  const [loadingTimeout, setLoadingTimeout] = useState(false);
 
   // Dropdown states
   const [assetTypeOpen, setAssetTypeOpen] = useState(false);
   const [strategyOpen, setStrategyOpen] = useState(false);
   const [symbolOpen, setSymbolOpen] = useState(false);
 
-  const { trades: rawTrades, loading, refetch } = useTrades(500, 0, searchTerm, symbolFilter, directionFilter, assetTypeFilter);
+  const { trades: rawTrades, loading, error, refetch } = useTrades(500, 0, searchTerm, symbolFilter, directionFilter, assetTypeFilter);
+
+  // Timeout logic: If loading takes more than 10 seconds, show timeout error
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => {
+        setLoadingTimeout(true);
+        console.warn('[Journal] Loading timeout after 10 seconds');
+      }, 10000); // 10 second timeout
+      return () => clearTimeout(timer);
+    } else {
+      setLoadingTimeout(false);
+    }
+  }, [loading]);
   const { dailyStats } = useDailyStats();
   const { wallet } = useWallet();
   const { trades: walletTrades } = useWalletTransactions();
@@ -946,6 +960,50 @@ export default function JournalPage() {
     }
     return null;
   };
+
+  // Loading state
+  if (loading && !loadingTimeout && rawTrades.length === 0) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <Loader2 className="w-16 h-16 text-[#00D9C8] animate-spin mx-auto mb-4" />
+            <p className="text-white text-lg font-medium">Loading Journal...</p>
+            <p className="text-[#7F8C8D] text-sm mt-2">Fetching your trading data</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Error state (loading timeout or API error)
+  if ((error || loadingTimeout) && rawTrades.length === 0) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center max-w-md">
+            <div className="bg-[#F43F5E]/10 border border-[#F43F5E]/20 rounded-xl p-6 mb-4">
+              <p className="text-[#F43F5E] text-lg font-medium mb-2">
+                {loadingTimeout ? 'Loading Timeout' : 'Failed to Load Journal'}
+              </p>
+              <p className="text-[#AAB0C0] text-sm">
+                {loadingTimeout
+                  ? 'The journal is taking longer than expected to load. Please try again.'
+                  : error || 'Unable to fetch trading data. Please check your connection and try again.'}
+              </p>
+            </div>
+            <Button
+              onClick={() => window.location.reload()}
+              className="flex items-center justify-center space-x-2 bg-[#00D9C8] hover:bg-[#00F5E1] text-white px-6 py-3 rounded-xl font-medium transition-all mx-auto"
+            >
+              <Download className="w-4 h-4" />
+              <span>Retry</span>
+            </Button>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>

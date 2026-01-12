@@ -1,6 +1,22 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { buildApiUrl } from './useApi';
+import { auth } from '../lib/firebase';
+
+// Helper to get auth headers with Firebase token
+async function getAuthHeaders(): Promise<Record<string, string>> {
+  const headers: Record<string, string> = {};
+  const user = auth.currentUser;
+  if (user) {
+    try {
+      const token = await user.getIdToken();
+      headers['Authorization'] = `Bearer ${token}`;
+    } catch (e) {
+      console.error('Failed to get Firebase token:', e);
+    }
+  }
+  return headers;
+}
 
 export interface ExchangeConnection {
   id: number;
@@ -54,8 +70,12 @@ export function useExchangeConnections() {
 
     try {
       setLoading(true);
+      const authHeaders = await getAuthHeaders();
       const response = await fetch(buildApiUrl('/api/exchange-connections'), {
         credentials: 'include',
+        headers: {
+          ...authHeaders,
+        },
       });
 
       if (response.ok) {
@@ -115,10 +135,12 @@ export function useExchangeConnections() {
         setCreating(true);
         setCreateError(null);
 
+        const authHeaders = await getAuthHeaders();
         const response = await fetch(buildApiUrl('/api/exchange-connections'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            ...authHeaders,
           },
           credentials: 'include',
           body: JSON.stringify(data),
@@ -157,9 +179,13 @@ export function useExchangeConnections() {
       }
 
       try {
+        const authHeaders = await getAuthHeaders();
         const response = await fetch(buildApiUrl(`/api/exchange-connections/${connectionId}`), {
           method: 'DELETE',
           credentials: 'include',
+          headers: {
+            ...authHeaders,
+          },
         });
 
         if (!response.ok) {
@@ -184,9 +210,13 @@ export function useExchangeConnections() {
       try {
         setSyncing((prev) => ({ ...prev, [connectionId]: true }));
 
+        const authHeaders = await getAuthHeaders();
         const response = await fetch(buildApiUrl(`/api/exchange-connections/${connectionId}/sync`), {
           method: 'POST',
           credentials: 'include',
+          headers: {
+            ...authHeaders,
+          },
         });
 
         if (!response.ok) {

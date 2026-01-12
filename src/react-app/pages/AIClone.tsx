@@ -4,6 +4,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
 import DashboardLayout from '../components/DashboardLayout';
 import { Button } from '../components/ui/button';
@@ -36,6 +37,7 @@ import {
   Zap,
   ArrowUpRight,
   ArrowDownRight,
+  BarChart3,
 } from 'lucide-react';
 
 // Types
@@ -448,6 +450,15 @@ export default function AIClonePage() {
               </div>
 
               <div className="flex items-center gap-3">
+                <Link to="/ai-insights">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="w-12 h-12 rounded-xl border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800/50 hover:border-[#00D9C8]/50 transition-all"
+                  >
+                    <BarChart3 className="h-5 w-5 text-zinc-400" />
+                  </Button>
+                </Link>
                 <Button
                   variant="outline"
                   size="icon"

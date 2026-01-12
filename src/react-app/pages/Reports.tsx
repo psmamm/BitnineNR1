@@ -10,13 +10,27 @@ import { useState, useEffect } from 'react';
 import { useLanguageCurrency } from '@/react-app/contexts/LanguageCurrencyContext';
 
 export default function ReportsPage() {
-  const { monthlyData, strategyData, winLossData, periodStats, keyMetrics } = useReports();
+  const { monthlyData, strategyData, winLossData, periodStats, keyMetrics, loading, error } = useReports();
   const { exportData } = useDataExport();
   const { trades } = useTrades(500);
   const monteCarlo = useMonteCarlo(trades);
   const { currency, convertCurrency } = useLanguageCurrency();
   const [conversionRate, setConversionRate] = useState<number>(1);
   const currencyCode = currency.split('-')[0];
+  const [loadingTimeout, setLoadingTimeout] = useState(false);
+
+  // Timeout logic: If loading takes more than 10 seconds, show timeout error
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => {
+        setLoadingTimeout(true);
+        console.warn('[Reports] Loading timeout after 10 seconds');
+      }, 10000); // 10 second timeout
+      return () => clearTimeout(timer);
+    } else {
+      setLoadingTimeout(false);
+    }
+  }, [loading]);
 
   useEffect(() => {
     const loadRate = async () => {
@@ -28,7 +42,7 @@ export default function ReportsPage() {
       }
     };
     loadRate();
-  }, [currency, currencyCode]);
+  }, [currency, currencyCode, convertCurrency]);
 
   const formatCurrency = (amount: number): string => {
     const converted = amount * conversionRate;
@@ -79,6 +93,52 @@ export default function ReportsPage() {
     }
     return null;
   };
+
+  // Loading state
+  if (loading && !loadingTimeout) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <RefreshCw className="w-16 h-16 text-[#00D9C8] animate-spin mx-auto mb-4" />
+            <p className="text-white text-lg font-medium">Loading Reports...</p>
+            <p className="text-[#7F8C8D] text-sm mt-2">Analyzing your trading performance</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Error state (loading timeout or API error)
+  if (error || loadingTimeout) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center max-w-md">
+            <div className="bg-[#F43F5E]/10 border border-[#F43F5E]/20 rounded-xl p-6 mb-4">
+              <p className="text-[#F43F5E] text-lg font-medium mb-2">
+                {loadingTimeout ? 'Loading Timeout' : 'Failed to Load Reports'}
+              </p>
+              <p className="text-[#AAB0C0] text-sm">
+                {loadingTimeout
+                  ? 'The reports are taking longer than expected to load. Please try again.'
+                  : error || 'Unable to fetch trading data. Please check your connection and try again.'}
+              </p>
+            </div>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => window.location.reload()}
+              className="flex items-center justify-center space-x-2 bg-[#00D9C8] hover:bg-[#00F5E1] text-white px-6 py-3 rounded-xl font-medium transition-all mx-auto"
+            >
+              <RefreshCw className="w-4 h-4" />
+              <span>Retry</span>
+            </motion.button>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>

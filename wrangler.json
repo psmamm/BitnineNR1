@@ -11,14 +11,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "01990f45-1b59-711a-a742-26cd7a0e0415",
-      "database_id": "01990f45-1b59-711a-a742-26cd7a0e0415"
-    }
-  ],
-  "r2_buckets": [
-    {
-      "binding": "R2_BUCKET",
-      "bucket_name": "01990f45-1b59-711a-a742-26cd7a0e0415"
+      "database_name": "circl-db",
+      "database_id": "0fe4ba85-6023-450b-96ca-b1fea160967d"
     }
   ],
   "ai": {

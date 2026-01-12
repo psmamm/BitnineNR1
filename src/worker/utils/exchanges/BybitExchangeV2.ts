@@ -55,8 +55,8 @@ interface BybitWalletCoin {
 interface BybitExecution {
   execId: string;
   symbol: string;
-  price: string;
-  qty: string;
+  execPrice?: string; // Bybit uses execPrice, not price
+  execQty?: string; // Bybit uses execQty, not qty
   side: 'Buy' | 'Sell';
   execTime: string;
   isMaker: boolean;
@@ -67,6 +67,7 @@ interface BybitExecution {
   orderLinkId?: string;
   category: string;
   closedSize?: string;
+  execType?: string; // Trade, Funding, BustTrade, etc.
 }
 
 interface BybitOrder {
@@ -103,6 +104,26 @@ interface BybitPosition {
   liqPrice: string;
   positionValue: string;
   positionIdx: number;
+  createdTime: string;
+  updatedTime: string;
+}
+
+interface BybitClosedPnL {
+  symbol: string;
+  orderId: string;
+  side: 'Buy' | 'Sell';
+  qty: string;
+  orderPrice: string;
+  orderType: string;
+  execType: string;
+  closedSize: string;
+  cumEntryValue: string;
+  avgEntryPrice: string;
+  cumExitValue: string;
+  avgExitPrice: string;
+  closedPnl: string;
+  fillCount: string;
+  leverage: string;
   createdTime: string;
   updatedTime: string;
 }
@@ -201,7 +222,17 @@ export class BybitExchangeV2 extends ExchangeInterface {
         signal: AbortSignal.timeout(15000)
       });
 
-      const data: BybitApiResponse<unknown> = await response.json();
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => 'Unknown error');
+        throw new Error(`Bybit API error: ${response.status} - ${errorText}`);
+      }
+
+      const responseText = await response.text();
+      if (!responseText || responseText.trim() === '') {
+        throw new Error('Empty response from Bybit API');
+      }
+
+      const data: BybitApiResponse<unknown> = JSON.parse(responseText);
 
       if (data.retCode !== 0) {
         this.handleBybitError(data.retCode, data.retMsg);
@@ -266,38 +297,28 @@ export class BybitExchangeV2 extends ExchangeInterface {
     endTime?: number,
     limit: number = 50
   ): Promise<Trade[]> {
+    // For futures (linear), use Closed P&L API for accurate P&L
+    // This gives us closed positions with realized P&L instead of individual executions
     const allTrades: Trade[] = [];
-    const categories: Array<'spot' | 'linear' | 'inverse' | 'option'> = ['spot', 'linear', 'inverse', 'option'];
+    const categories: Array<'spot' | 'linear' | 'inverse' | 'option'> = ['linear'];
 
     const now = Date.now();
-    const since = startTime || (now - (180 * 24 * 60 * 60 * 1000));
+    // Last 30 days for closed positions
+    const since = startTime || (now - (30 * 24 * 60 * 60 * 1000));
     const until = endTime || now;
-
-    // Bybit API limit: max 7 days per request
-    const MAX_MS_PER_REQUEST = 7 * 24 * 60 * 60 * 1000;
 
     for (const category of categories) {
       try {
-        let currentStart = since;
-
-        while (currentStart < until) {
-          const currentEnd = Math.min(currentStart + MAX_MS_PER_REQUEST, until);
-
-          const trades = await this.fetchTradesForCategory(
-            category,
-            symbol,
-            currentStart,
-            currentEnd,
-            limit
-          );
-
-          allTrades.push(...trades);
-          currentStart = currentEnd + 1;
-
-          if (currentStart < until) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-          }
-        }
+        console.log(`[Bybit] Fetching closed P&L for category ${category}`);
+        const trades = await this.fetchClosedPnL(
+          category,
+          symbol,
+          since,
+          until,
+          limit
+        );
+        console.log(`[Bybit] Received ${trades.length} closed positions for ${category}`);
+        allTrades.push(...trades);
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
         if (message?.includes('category') || message?.includes('Permission')) {
@@ -348,23 +369,110 @@ export class BybitExchangeV2 extends ExchangeInterface {
 
     if (data.retCode !== 0) {
       if (data.retCode === 10001 && data.retMsg?.includes('category')) {
+        console.log(`[Bybit] Category ${category} not supported, returning empty`);
         return [];
       }
       this.handleBybitError(data.retCode, data.retMsg);
     }
 
-    return (data.result?.list || []).map(e => ({
-      id: e.execId,
-      orderId: e.orderId,
-      symbol: e.symbol,
-      side: e.side.toLowerCase() as OrderSide,
-      price: parseFloat(e.price),
-      quantity: parseFloat(e.qty),
-      fee: parseFloat(e.execFee),
-      feeCurrency: e.feeCurrency || 'USDT',
-      timestamp: new Date(parseInt(e.execTime)),
-      isMaker: e.isMaker,
-      category: e.category
+    const executions = data.result?.list || [];
+    console.log(`[Bybit] Received ${executions.length} executions for category ${category}`);
+
+    // Log first 3 executions to see what data we get
+    if (executions.length > 0) {
+      console.log('[Bybit] Sample executions:', JSON.stringify(executions.slice(0, 3)));
+    }
+
+    // Filter and map executions - only include actual trades with price/qty
+    const filtered = executions.filter(e => {
+        // Only include executions with valid price and quantity
+        // This filters out funding fees, settlements, etc.
+        const hasPrice = e.execPrice && e.execPrice !== '' && e.execPrice !== '0';
+        const hasQty = e.execQty && e.execQty !== '' && e.execQty !== '0';
+
+        if (!hasPrice || !hasQty) {
+          console.log(`[Bybit] Filtering out execution: execPrice=${e.execPrice}, execQty=${e.execQty}, symbol=${e.symbol}`);
+        }
+
+        return hasPrice && hasQty;
+      });
+
+    console.log(`[Bybit] After filtering: ${filtered.length} valid trades`);
+
+    return filtered.map(e => ({
+        id: e.execId,
+        orderId: e.orderId,
+        symbol: e.symbol,
+        side: e.side.toLowerCase() as OrderSide,
+        price: parseFloat(e.execPrice!),
+        quantity: parseFloat(e.execQty!),
+        fee: parseFloat(e.execFee),
+        feeCurrency: e.feeCurrency || 'USDT',
+        timestamp: new Date(parseInt(e.execTime)),
+        isMaker: e.isMaker,
+        category: e.category
+      }));
+  }
+
+  private async fetchClosedPnL(
+    category: 'spot' | 'linear' | 'inverse' | 'option',
+    symbol: string | undefined,
+    startTime: number,
+    endTime: number,
+    limit: number
+  ): Promise<Trade[]> {
+    const timestamp = Date.now().toString();
+    const params: Record<string, string> = {
+      category,
+      startTime: startTime.toString(),
+      endTime: endTime.toString(),
+      limit: limit.toString()
+    };
+    if (symbol) params.symbol = symbol;
+
+    const signature = await this.createSignature('GET', '/v5/position/closed-pnl', timestamp, params);
+
+    const url = new URL('/v5/position/closed-pnl', this.getBaseUrl());
+    Object.keys(params).sort().forEach(key => url.searchParams.append(key, params[key]));
+
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      headers: this.getAuthHeaders(timestamp, signature),
+      signal: AbortSignal.timeout(30000)
+    });
+
+    const data: BybitApiResponse<{ list: BybitClosedPnL[] }> = await response.json();
+
+    if (data.retCode !== 0) {
+      if (data.retCode === 10001 && data.retMsg?.includes('category')) {
+        console.log(`[Bybit] Category ${category} not supported for closed P&L, returning empty`);
+        return [];
+      }
+      this.handleBybitError(data.retCode, data.retMsg);
+    }
+
+    const closedPositions = data.result?.list || [];
+    console.log(`[Bybit] Received ${closedPositions.length} closed positions for category ${category}`);
+
+    // Log first 3 positions to see what data we get
+    if (closedPositions.length > 0) {
+      console.log('[Bybit] Sample closed positions:', JSON.stringify(closedPositions.slice(0, 3)));
+    }
+
+    // Map closed positions to Trade format
+    return closedPositions.map(p => ({
+      id: p.orderId,
+      orderId: p.orderId,
+      symbol: p.symbol,
+      side: p.side.toLowerCase() as OrderSide,
+      price: parseFloat(p.avgEntryPrice),
+      quantity: parseFloat(p.closedSize),
+      fee: 0, // Fee not provided in closed P&L response
+      feeCurrency: 'USDT',
+      timestamp: new Date(parseInt(p.updatedTime)),
+      isMaker: false,
+      category: category,
+      realizedPnl: parseFloat(p.closedPnl) // This is the key - actual realized P&L!
     }));
   }
 

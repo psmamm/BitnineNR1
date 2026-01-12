@@ -19,6 +19,7 @@ import { voiceJournalRouter } from "./routes/voice-journal";
 import { aiCloneRouter } from "./routes/ai-clone";
 import { autoTradingRouter } from "./routes/auto-trading";
 import { subscriptionsRouter } from "./routes/subscriptions";
+import { discipline } from "./routes/discipline";
 import { errorHandlerMiddleware } from "./utils/errorHandler";
 import type { D1Database, R2Bucket } from "@cloudflare/workers-types";
 
@@ -90,7 +91,18 @@ type Env = {
 const app = new Hono<{ Bindings: Env; Variables: { user?: UserVariable } }>();
 
 // Middleware: CORS für alle Routen aktivieren
-app.use("*", cors());
+app.use("*", cors({
+  origin: [
+    'https://4da5370f.circl.pages.dev',
+    'https://3959e209.circl.pages.dev',
+    'https://ee38b538.circl.pages.dev',
+    'https://052874c0.circl.pages.dev',
+    'https://circl.pages.dev',
+    'http://localhost:5173',
+    'http://localhost:5180'
+  ],
+  credentials: true,
+}));
 
 // Middleware: Centralized error handling
 app.use("*", errorHandlerMiddleware());
@@ -596,22 +608,61 @@ app.get('/api/users/settings', firebaseAuthMiddleware, async (c) => {
   }
 
   const userId = user.google_user_data?.sub || user.firebase_user_id;
-  const settings = await c.env.DB.prepare(`
-    SELECT notification_settings, theme_preference, risk_lock_enabled, max_daily_loss FROM users WHERE google_user_id = ?
-  `).bind(userId).first();
 
-  return c.json({
-    notifications: settings?.notification_settings ? JSON.parse(settings.notification_settings as string) : {
+  // Default settings to return if columns don't exist
+  const defaultSettings = {
+    notifications: {
       tradeAlerts: true,
       performanceReports: true,
       productUpdates: false
     },
-    theme: settings?.theme_preference || 'dark',
+    theme: 'dark',
     riskManagement: {
-      risk_lock_enabled: settings?.risk_lock_enabled === 1 || false,
-      max_daily_loss: settings?.max_daily_loss || null
+      risk_lock_enabled: false,
+      max_daily_loss: null
     }
-  });
+  };
+
+  try {
+    // Try to get settings with all columns
+    const settings = await c.env.DB.prepare(`
+      SELECT notification_settings, theme_preference, risk_lock_enabled, max_daily_loss FROM users WHERE google_user_id = ?
+    `).bind(userId).first();
+
+    return c.json({
+      notifications: settings?.notification_settings ? JSON.parse(settings.notification_settings as string) : defaultSettings.notifications,
+      theme: settings?.theme_preference || defaultSettings.theme,
+      riskManagement: {
+        risk_lock_enabled: settings?.risk_lock_enabled === 1 || false,
+        max_daily_loss: settings?.max_daily_loss || null
+      }
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('Error fetching user settings:', errorMessage);
+
+    // If columns don't exist, return defaults
+    if (errorMessage?.includes('no such column') || errorMessage?.includes('has no column named')) {
+      console.log('Settings columns not found, returning defaults');
+      return c.json(defaultSettings);
+    }
+
+    // Try basic query with just core columns
+    try {
+      const basicUser = await c.env.DB.prepare(`
+        SELECT name FROM users WHERE google_user_id = ?
+      `).bind(userId).first();
+
+      if (basicUser) {
+        return c.json(defaultSettings);
+      }
+
+      return c.json({ error: 'User not found' }, 404);
+    } catch (fallbackError) {
+      console.error('Fallback query failed:', fallbackError);
+      return c.json(defaultSettings); // Return defaults on any error
+    }
+  }
 });
 
 // Update user settings
@@ -731,7 +782,7 @@ app.post('/api/auth/firebase-session', async (c) => {
     }), {
       httpOnly: true,
       path: '/',
-      sameSite: 'lax',
+      sameSite: 'none',
       secure: true,
       maxAge: 60 * 24 * 60 * 60, // 60 days
     });
@@ -914,48 +965,162 @@ app.post('/api/export', firebaseAuthMiddleware, async (c) => {
 // Route: User Sync (POST /api/auth/sync)
 // Empfängt { uid, email } vom Frontend und legt User in D1 an
 // Passt sich an das existierende Schema an: google_user_id statt id
+// Enhanced with better error handling and retry-friendly responses
 app.post("/api/auth/sync", async (c) => {
   try {
-    const { uid, email } = await c.req.json<{ uid: string; email: string }>();
+    console.log('[Auth Sync API] Received sync request');
 
-    if (!uid || !email) {
-      return c.json({ error: "Missing uid or email" }, 400);
+    const body = await c.req.json<{ uid?: string; email?: string; name?: string }>();
+    const { uid, email, name } = body;
+
+    // Validate inputs
+    if (!uid || typeof uid !== 'string' || uid.trim() === '') {
+      console.error('[Auth Sync API] Invalid uid:', uid);
+      return c.json({ error: "Invalid uid" }, 400);
     }
 
-    // Prüfe, ob settings Spalte existiert, falls nicht wird sie ignoriert
+    if (!email || typeof email !== 'string' || !email.includes('@')) {
+      console.error('[Auth Sync API] Invalid email:', email);
+      return c.json({ error: "Invalid email" }, 400);
+    }
+
+    // Check if user already exists (avoid duplicate insert errors)
     try {
-      // Versuche zuerst mit settings (neues Schema)
-      await c.env.DB.prepare(
-        `
-          INSERT OR IGNORE INTO users (google_user_id, email, created_at, settings)
-          VALUES (?, ?, CURRENT_TIMESTAMP, ?)
-        `,
-      )
-        .bind(uid, email, JSON.stringify({}))
-        .run();
+      const existingUser = await c.env.DB.prepare(
+        'SELECT google_user_id FROM users WHERE google_user_id = ? LIMIT 1'
+      ).bind(uid).first();
+
+      if (existingUser) {
+        console.log('[Auth Sync API] User already exists:', uid);
+
+        // Set session cookie even for existing users
+        setCookie(c, 'firebase_session', JSON.stringify({
+          google_user_id: uid,
+          email,
+          name: name || '',
+          sub: uid
+        }), {
+          httpOnly: true,
+          path: '/',
+          sameSite: 'none',
+          secure: true,
+          maxAge: 60 * 24 * 60 * 60, // 60 days
+        });
+
+        return c.json({ success: true, message: "User already synced", alreadyExists: true });
+      }
+    } catch (checkError) {
+      console.warn('[Auth Sync API] Error checking existing user (non-critical):', checkError);
+      // Continue to insert attempt even if check fails
+    }
+
+    // Try insert with settings column first (newer schema)
+    try {
+      const result = await c.env.DB.prepare(
+        `INSERT INTO users (google_user_id, email, created_at, updated_at, settings)
+         VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)`
+      ).bind(uid, email, JSON.stringify({})).run();
+
+      if (result.success) {
+        console.log('[Auth Sync API] ✓ User synced successfully (with settings):', uid);
+
+        // Set session cookie for new user
+        setCookie(c, 'firebase_session', JSON.stringify({
+          google_user_id: uid,
+          email,
+          name: name || '',
+          sub: uid
+        }), {
+          httpOnly: true,
+          path: '/',
+          sameSite: 'none',
+          secure: true,
+          maxAge: 60 * 24 * 60 * 60, // 60 days
+        });
+
+        return c.json({ success: true, message: "User synced successfully" });
+      }
     } catch (settingsError) {
-      // Falls settings Spalte nicht existiert, verwende existierendes Schema
-      const errorMessage = settingsError instanceof Error ? settingsError.message : String(settingsError);
-      if (errorMessage?.includes("no such column: settings")) {
-        await c.env.DB.prepare(
-          `
-            INSERT OR IGNORE INTO users (google_user_id, email, created_at)
-            VALUES (?, ?, CURRENT_TIMESTAMP)
-          `,
-        )
-          .bind(uid, email)
-          .run();
+      const errorMsg = settingsError instanceof Error ? settingsError.message : String(settingsError);
+
+      // If settings column doesn't exist, try without it
+      if (errorMsg?.includes("no such column: settings") || errorMsg?.includes("no such column name: settings") || errorMsg?.includes("has no column named settings")) {
+        console.log('[Auth Sync API] Settings column not found, trying basic insert');
+
+        try {
+          const result = await c.env.DB.prepare(
+            `INSERT INTO users (google_user_id, email, created_at, updated_at)
+             VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
+          ).bind(uid, email).run();
+
+          if (result.success) {
+            console.log('[Auth Sync API] ✓ User synced successfully (basic):', uid);
+
+            // Set session cookie for new user
+            setCookie(c, 'firebase_session', JSON.stringify({
+              google_user_id: uid,
+              email,
+              name: name || '',
+              sub: uid
+            }), {
+              httpOnly: true,
+              path: '/',
+              sameSite: 'none',
+              secure: true,
+              maxAge: 60 * 24 * 60 * 60, // 60 days
+            });
+
+            return c.json({ success: true, message: "User synced successfully" });
+          } else {
+            console.error('[Auth Sync API] Basic insert failed:', result);
+            return c.json({ error: "Failed to insert user", details: JSON.stringify(result) }, 500);
+          }
+        } catch (basicError) {
+          console.error('[Auth Sync API] Basic insert error:', basicError);
+          // Check if it's a unique constraint error (user already exists)
+          const basicErrorMsg = basicError instanceof Error ? basicError.message : String(basicError);
+          if (basicErrorMsg?.includes('UNIQUE constraint') || basicErrorMsg?.includes('unique')) {
+            console.log('[Auth Sync API] User already exists (unique constraint):', uid);
+
+            // Set session cookie even for existing users
+            setCookie(c, 'firebase_session', JSON.stringify({
+              google_user_id: uid,
+              email,
+              name: name || '',
+              sub: uid
+            }), {
+              httpOnly: true,
+              path: '/',
+              sameSite: 'none',
+              secure: true,
+              maxAge: 60 * 24 * 60 * 60, // 60 days
+            });
+
+            return c.json({ success: true, message: "User already synced", alreadyExists: true });
+          }
+          throw basicError;
+        }
       } else {
+        // Some other error with settings insert
+        console.error('[Auth Sync API] Settings insert error:', settingsError);
         throw settingsError;
       }
     }
 
-    return c.json({ success: true, message: "User synced successfully" });
+    // Should not reach here, but just in case
+    console.error('[Auth Sync API] Unexpected: reached end without return');
+    return c.json({ error: "Unexpected error in sync flow" }, 500);
+
   } catch (error) {
-    console.error("Error in /api/auth/sync:", error);
-    return c.json({ 
-      error: "Database or parsing error",
-      details: error instanceof Error ? error.message : String(error)
+    console.error("[Auth Sync API] ✗ Fatal error:", error);
+    const errorDetails = error instanceof Error ? error.message : String(error);
+
+    // Return 500 only for genuine server errors
+    // The frontend will retry this with exponential backoff
+    return c.json({
+      error: "Database error during user sync",
+      details: errorDetails,
+      retryable: true // Signal to frontend that retry is appropriate
     }, 500);
   }
 });
@@ -1050,5 +1215,6 @@ app.route('/api/voice-journal', voiceJournalRouter);
 app.route('/api/ai-clone', aiCloneRouter);
 app.route('/api/auto-trading', autoTradingRouter);
 app.route('/api/subscriptions', subscriptionsRouter);
+app.route('/api/discipline', discipline);
 
 export default app;

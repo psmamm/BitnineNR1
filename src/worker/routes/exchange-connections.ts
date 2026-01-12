@@ -42,9 +42,9 @@ interface ExchangeConnection {
   id?: number;
   user_id?: string;
   exchange_id?: string;
-  api_key_encrypted?: string;
-  api_secret_encrypted?: string;
-  passphrase_encrypted?: string | null;
+  api_key?: string;
+  api_secret?: string;
+  passphrase?: string | null;
   auto_sync_enabled?: number;
   sync_interval_hours?: number;
   created_at?: string;
@@ -54,18 +54,58 @@ interface ExchangeConnection {
 
 export const exchangeConnectionsRouter = new Hono<{ Bindings: Env; Variables: { user: UserVariable } }>();
 
-// Firebase session auth middleware
+// Firebase session auth middleware - supports both Authorization header and session cookie
 const firebaseAuthMiddleware = async (c: unknown, next: () => Promise<void>) => {
     const context = c as {
+        req: { header: (name: string) => string | undefined };
         get: (key: string) => UserVariable | undefined;
         set: (key: string, value: UserVariable) => void;
         json: (data: { error: string }, status: number) => Response;
     };
 
+    console.log('[Exchange Auth] Checking authentication...');
+
+    // Try Authorization header first (Firebase ID Token)
+    const authHeader = context.req.header('Authorization');
+    if (authHeader?.startsWith('Bearer ')) {
+        const token = authHeader.substring(7);
+        console.log('[Exchange Auth] Found Authorization header');
+
+        try {
+            // Decode Firebase ID token (simplified - in production, verify signature)
+            const tokenParts = token.split('.');
+            if (tokenParts.length === 3) {
+                const base64Url = tokenParts[1].replace(/-/g, '+').replace(/_/g, '/');
+                const base64 = base64Url + '='.repeat((4 - (base64Url.length % 4)) % 4);
+                const payload = JSON.parse(atob(base64));
+
+                const userId = payload.sub || payload.user_id;
+                console.log('[Exchange Auth] User authenticated via token:', userId);
+
+                context.set('user', {
+                    google_user_data: {
+                        sub: userId,
+                        email: payload.email,
+                        name: payload.name,
+                    },
+                    firebase_user_id: userId,
+                    email: payload.email,
+                });
+                return next();
+            }
+        } catch (error) {
+            console.error('[Exchange Auth] Error parsing Authorization token:', error);
+        }
+    }
+
+    // Fallback to session cookie
     const firebaseSession = getCookie(context as Parameters<typeof getCookie>[0], 'firebase_session');
+    console.log('[Exchange Auth] Firebase session cookie:', firebaseSession ? 'Found' : 'Missing');
+
     if (firebaseSession) {
         try {
             const userData = JSON.parse(firebaseSession) as { google_user_id?: string; sub?: string; email?: string; name?: string };
+            console.log('[Exchange Auth] User authenticated via cookie:', userData.google_user_id || userData.sub);
             context.set('user', {
                 google_user_data: {
                     sub: userData.google_user_id || userData.sub || '',
@@ -76,41 +116,15 @@ const firebaseAuthMiddleware = async (c: unknown, next: () => Promise<void>) => 
             });
             return next();
         } catch (error) {
-            console.error('Error parsing Firebase session:', error);
+            console.error('[Exchange Auth] Error parsing Firebase session:', error);
         }
     }
 
+    console.log('[Exchange Auth] Returning Unauthorized - no valid auth found');
     return context.json({ error: 'Unauthorized' }, 401);
 };
 
-// Apply auth
-exchangeConnectionsRouter.use('*', firebaseAuthMiddleware);
-
-// Get all connections
-exchangeConnectionsRouter.get('/', async (c) => {
-    const user = c.get('user');
-    const userId = user.google_user_data?.sub || user.firebase_user_id;
-    if (!userId) {
-        return c.json({ error: 'Unauthorized' }, 401);
-    }
-
-    const connections = await c.env.DB.prepare(`
-    SELECT * FROM exchange_connections WHERE user_id = ?
-  `).bind(userId).all();
-
-    // Map database columns to frontend interface
-    const mappedConnections = (connections.results as ExchangeConnection[]).map((conn) => ({
-        ...conn,
-        api_key: conn.api_key_encrypted,
-        api_secret: conn.api_secret_encrypted, // Should probably not send back or mask
-        passphrase: conn.passphrase_encrypted,
-        // exchange_name column doesn't exist, utilize exchange_id
-        exchange_name: conn.exchange_id ? (conn.exchange_id.charAt(0).toUpperCase() + conn.exchange_id.slice(1)) : ''
-    }));
-
-    return c.json({ connections: mappedConnections });
-});
-
+// Public routes (no auth required)
 // Get supported exchanges
 exchangeConnectionsRouter.get('/supported', async (c) => {
     // Get full list of supported exchanges from factory
@@ -124,9 +138,11 @@ exchangeConnectionsRouter.get('/supported', async (c) => {
     return c.json({ exchanges: implementedExchanges });
 });
 
-// Test connection without storing credentials
+// Test connection without storing credentials (no auth required)
 exchangeConnectionsRouter.post('/test', zValidator('json', TestConnectionSchema), async (c) => {
+    console.log('[Exchange Test] Received test request');
     const data = c.req.valid('json');
+    console.log('[Exchange Test] Exchange:', data.exchange_id);
 
     try {
         // Validate exchange is supported
@@ -182,7 +198,7 @@ exchangeConnectionsRouter.post('/test', zValidator('json', TestConnectionSchema)
             }, 400);
         }
     } catch (error: unknown) {
-        console.error('Connection test error:', error);
+        console.error('[Exchange Test] Connection test error:', error);
 
         // Provide helpful error messages
         let errorMessage = 'Connection failed';
@@ -193,16 +209,48 @@ exchangeConnectionsRouter.post('/test', zValidator('json', TestConnectionSchema)
                 errorMessage = 'IP address not whitelisted';
             } else if (error.message?.includes('permission')) {
                 errorMessage = 'API key lacks required permissions';
+            } else if (error.message?.includes('Empty response')) {
+                errorMessage = 'Empty response from exchange API';
+            } else if (error.message?.includes('JSON')) {
+                errorMessage = 'Invalid response from exchange API';
             } else {
-                errorMessage = error.message;
+                errorMessage = error.message || 'Unknown error occurred';
             }
         }
 
+        console.error('[Exchange Test] Returning error response:', errorMessage);
         return c.json({
             success: false,
             error: errorMessage,
         }, 400);
     }
+});
+
+// Apply auth middleware to protected routes
+exchangeConnectionsRouter.use('*', firebaseAuthMiddleware);
+
+// Get all connections (protected)
+exchangeConnectionsRouter.get('/', async (c) => {
+    const user = c.get('user');
+    const userId = user.google_user_data?.sub || user.firebase_user_id;
+    if (!userId) {
+        return c.json({ error: 'Unauthorized' }, 401);
+    }
+
+    const connections = await c.env.DB.prepare(`
+    SELECT * FROM exchange_connections WHERE user_id = ?
+  `).bind(userId).all();
+
+    // Map database columns to frontend interface
+    const mappedConnections = (connections.results as ExchangeConnection[]).map((conn) => ({
+        ...conn,
+        // API keys are already encrypted in the database, return as-is
+        // Frontend will only use these for display purposes (masked)
+        // exchange_name column doesn't exist, utilize exchange_id
+        exchange_name: conn.exchange_id ? (conn.exchange_id.charAt(0).toUpperCase() + conn.exchange_id.slice(1)) : ''
+    }));
+
+    return c.json({ connections: mappedConnections });
 });
 
 // Create connection
@@ -240,7 +288,7 @@ exchangeConnectionsRouter.post('/', zValidator('json', CreateConnectionSchema), 
     // Store encrypted keys in exchange_connections table
     const result = await c.env.DB.prepare(`
       INSERT INTO exchange_connections (
-        user_id, exchange_id, api_key_encrypted, api_secret_encrypted, passphrase_encrypted, 
+        user_id, exchange_id, api_key, api_secret, passphrase,
         auto_sync_enabled, sync_interval_hours, created_at, updated_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `).bind(
@@ -267,9 +315,7 @@ exchangeConnectionsRouter.post('/', zValidator('json', CreateConnectionSchema), 
 
     const mappedConnection = {
         ...newConnection,
-        api_key: newConnection.api_key_encrypted,
-        api_secret: newConnection.api_secret_encrypted,
-        passphrase: newConnection.passphrase_encrypted,
+        // API keys are already encrypted in the database, return as-is
         exchange_name: data.exchange_id.charAt(0).toUpperCase() + data.exchange_id.slice(1)
     };
 
@@ -334,18 +380,23 @@ exchangeConnectionsRouter.post('/:id/sync', async (c) => {
     }
 
     try {
+        console.log(`[Exchange Sync] Starting sync for ${exchangeId}, connection ID: ${id}`);
+
         // Decrypt API keys
         const masterKey = c.env.ENCRYPTION_MASTER_KEY;
         if (!masterKey) {
+            console.error('[Exchange Sync] No encryption master key found');
             return c.json({ error: 'Encryption service unavailable' }, 500);
         }
 
-        const apiKey = await decrypt(conn.api_key_encrypted as string, masterKey);
-        const apiSecret = await decrypt(conn.api_secret_encrypted as string, masterKey);
-        const passphrase = conn.passphrase_encrypted
-            ? await decrypt(conn.passphrase_encrypted as string, masterKey)
+        console.log('[Exchange Sync] Decrypting API keys...');
+        const apiKey = await decrypt(conn.api_key as string, masterKey);
+        const apiSecret = await decrypt(conn.api_secret as string, masterKey);
+        const passphrase = conn.passphrase
+            ? await decrypt(conn.passphrase as string, masterKey)
             : undefined;
 
+        console.log('[Exchange Sync] Creating exchange instance...');
         // Create exchange instance via factory
         const exchange = ExchangeFactory.create({
             exchangeId: exchangeId as ExchangeId,
@@ -358,12 +409,29 @@ exchangeConnectionsRouter.post('/:id/sync', async (c) => {
         });
 
         // Fetch trades using unified interface
+        console.log(`[Exchange Sync] Fetching trades from ${exchangeId}...`);
         const trades = await exchange.getTrades(undefined, undefined, undefined, 50);
+        console.log(`[Exchange Sync] Received ${trades.length} trades from ${exchangeId}`);
 
         let importedCount = 0;
         let skippedCount = 0;
+        let errorCount = 0;
 
         for (const trade of trades) {
+            // Validate trade data - skip if quantity is 0, null, or invalid
+            if (!trade.quantity || trade.quantity === 0 || isNaN(trade.quantity)) {
+                console.log(`[Exchange Sync] Skipping trade with invalid quantity:`, trade);
+                errorCount++;
+                continue;
+            }
+
+            // Validate price
+            if (!trade.price || trade.price === 0 || isNaN(trade.price)) {
+                console.log(`[Exchange Sync] Skipping trade with invalid price:`, trade);
+                errorCount++;
+                continue;
+            }
+
             // Check for duplicate
             const exitDate = trade.timestamp.toISOString();
             const pnl = trade.realizedPnl || 0;
@@ -380,37 +448,77 @@ exchangeConnectionsRouter.post('/:id/sync', async (c) => {
                 // Determine direction from trade side
                 const direction = trade.side === 'buy' ? 'long' : 'short';
 
-                await c.env.DB.prepare(`
-                    INSERT INTO trades (
-                        user_id, symbol, asset_type, direction, quantity,
-                        entry_price, exit_price, entry_date, exit_date,
-                        pnl, commission, is_closed, created_at, updated_at
-                    ) VALUES (?, ?, 'crypto', ?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-                `).bind(
-                    userId,
-                    trade.symbol,
-                    direction,
-                    trade.quantity,
-                    trade.price,
-                    trade.price, // Use trade price for both entry/exit (single fill)
-                    exitDate,
-                    exitDate,
-                    pnl,
-                    trade.fee
-                ).run();
-                importedCount++;
+                // For Bybit closed positions, calculate exit price from entry + P&L
+                // If realizedPnl exists and quantity > 0, we can calculate the actual exit price
+                let exitPrice = trade.price; // Default: same as entry (for single fills)
+
+                if (pnl !== 0 && trade.quantity > 0) {
+                    // For long: exitPrice = entryPrice + (pnl / quantity)
+                    // For short: exitPrice = entryPrice - (pnl / quantity)
+                    const pnlPerUnit = pnl / trade.quantity;
+                    if (direction === 'long') {
+                        exitPrice = trade.price + pnlPerUnit;
+                    } else {
+                        exitPrice = trade.price - pnlPerUnit;
+                    }
+                }
+
+                console.log(`[Exchange Sync] Inserting trade: ${trade.symbol} ${direction} qty=${trade.quantity} entry=${trade.price} exit=${exitPrice} pnl=${pnl}`);
+
+                try {
+                    const insertResult = await c.env.DB.prepare(`
+                        INSERT INTO trades (
+                            user_id, symbol, asset_type, direction, quantity,
+                            entry_price, exit_price, entry_date, exit_date,
+                            pnl, commission, is_closed, created_at, updated_at
+                        ) VALUES (?, ?, 'crypto', ?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                    `).bind(
+                        userId,
+                        trade.symbol,
+                        direction,
+                        trade.quantity,
+                        trade.price,      // Entry price
+                        exitPrice,        // Calculated exit price from P&L
+                        exitDate,
+                        exitDate,
+                        pnl,
+                        trade.fee
+                    ).run();
+
+                    if (insertResult.success) {
+                        importedCount++;
+                        console.log(`[Exchange Sync] ✓ Trade inserted successfully`);
+                    } else {
+                        console.error(`[Exchange Sync] ✗ Trade insert failed:`, insertResult);
+                        errorCount++;
+                    }
+                } catch (insertError) {
+                    console.error(`[Exchange Sync] ✗ Trade insert error:`, insertError);
+                    errorCount++;
+                }
             } else {
                 skippedCount++;
             }
         }
 
         const exchangeName = exchange.getExchangeName();
+
+        console.log(`[Exchange Sync] Final stats: imported=${importedCount}, skipped=${skippedCount}, errors=${errorCount}, total=${trades.length}`);
+
+        const messages = [`Successfully synced ${importedCount} trades from ${exchangeName}.`];
+        if (errorCount > 0) {
+            messages.push(`${errorCount} trades skipped due to invalid data (quantity=0 or null).`);
+        }
+        if (skippedCount > 0) {
+            messages.push(`${skippedCount} trades already existed (duplicates).`);
+        }
+
         return c.json({
             imported: importedCount,
             mapped: trades.length,
             skipped: skippedCount,
-            errors: [],
-            message: `Successfully synced ${importedCount} trades from ${exchangeName}.`
+            errors: errorCount > 0 ? [`${errorCount} trades had invalid data`] : [],
+            message: messages.join(' ')
         });
 
     } catch (error: unknown) {

@@ -35,6 +35,10 @@ export default function SettingsPage() {
   const [activeSection, setActiveSection] = useState<SettingsSection>("profile");
   const [showExchangeModal, setShowExchangeModal] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [bulkDeleteSuccess, setBulkDeleteSuccess] = useState<string | null>(null);
+  const [bulkDeleteError, setBulkDeleteError] = useState<string | null>(null);
 
   // Profile editing state
   const [displayName, setDisplayName] = useState(user?.displayName || "");
@@ -203,6 +207,37 @@ export default function SettingsPage() {
     if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
     if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
     return `${Math.floor(seconds / 86400)}d ago`;
+  };
+
+  // Handle bulk delete trades
+  const handleBulkDeleteTrades = async () => {
+    setBulkDeleting(true);
+    setBulkDeleteError(null);
+    setBulkDeleteSuccess(null);
+
+    try {
+      const response = await fetch('/api/trades/bulk', {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to delete trades');
+      }
+
+      setBulkDeleteSuccess(result.message || `Deleted ${result.deletedCount} trades`);
+      setShowBulkDeleteConfirm(false);
+
+      // Clear success message after 5 seconds
+      setTimeout(() => setBulkDeleteSuccess(null), 5000);
+    } catch (error) {
+      console.error('Bulk delete failed:', error);
+      setBulkDeleteError(error instanceof Error ? error.message : 'Failed to delete trades');
+    } finally {
+      setBulkDeleting(false);
+    }
   };
 
   // Generate a mock UID based on user email
@@ -730,6 +765,66 @@ export default function SettingsPage() {
                   {/* Danger Zone */}
                   <div className="bg-[#141416] rounded-xl border border-[#F43F5E]/20 p-6">
                     <h3 className="text-lg font-medium text-[#F43F5E] mb-4">Danger Zone</h3>
+
+                    {/* Success/Error Messages */}
+                    {bulkDeleteSuccess && (
+                      <div className="mb-4 p-3 bg-[#00D9C8]/10 border border-[#00D9C8]/20 rounded-lg flex items-center gap-2">
+                        <Check className="w-4 h-4 text-[#00D9C8]" />
+                        <span className="text-[#00D9C8] text-sm">{bulkDeleteSuccess}</span>
+                      </div>
+                    )}
+                    {bulkDeleteError && (
+                      <div className="mb-4 p-3 bg-[#F43F5E]/10 border border-[#F43F5E]/20 rounded-lg flex items-center gap-2">
+                        <X className="w-4 h-4 text-[#F43F5E]" />
+                        <span className="text-[#F43F5E] text-sm">{bulkDeleteError}</span>
+                      </div>
+                    )}
+
+                    {/* Clear All Trades */}
+                    <div className="flex items-center justify-between pb-5 mb-5 border-b border-[#2A2A2E]">
+                      <div>
+                        <h4 className="text-white font-medium">Clear All Trades</h4>
+                        <p className="text-sm text-[#9CA3AF] mt-0.5">Delete all trades from your journal (cannot be undone)</p>
+                      </div>
+                      {showBulkDeleteConfirm ? (
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={handleBulkDeleteTrades}
+                            disabled={bulkDeleting}
+                            className="px-4 py-2 bg-[#F43F5E] text-white text-sm rounded-lg hover:bg-[#E11D48] transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {bulkDeleting ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                Deleting...
+                              </>
+                            ) : (
+                              <>
+                                <Trash2 className="w-4 h-4" />
+                                Confirm Delete
+                              </>
+                            )}
+                          </button>
+                          <button
+                            onClick={() => setShowBulkDeleteConfirm(false)}
+                            disabled={bulkDeleting}
+                            className="px-4 py-2 bg-[#2A2A2E] text-white text-sm rounded-lg hover:bg-[#3A3A3E] transition-colors disabled:opacity-50"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setShowBulkDeleteConfirm(true)}
+                          className="px-4 py-2 bg-[#F43F5E]/10 border border-[#F43F5E]/20 rounded-lg text-[#F43F5E] text-sm font-medium hover:bg-[#F43F5E]/20 transition-colors flex items-center gap-2"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Clear All Trades
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Delete Account */}
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="text-white font-medium">Delete Account</h4>
