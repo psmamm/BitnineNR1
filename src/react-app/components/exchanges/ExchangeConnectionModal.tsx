@@ -161,7 +161,8 @@ const EXCHANGES: ExchangeInfo[] = [
     category: 'crypto_cex',
     features: ['Spot', 'Futures', 'Copy Trading'],
     supported: true,
-    apiDocsUrl: 'https://bitgetlimited.github.io/apidoc/'
+    apiDocsUrl: 'https://bitgetlimited.github.io/apidoc/',
+    requiresPassphrase: true
   },
 
   // DEXs

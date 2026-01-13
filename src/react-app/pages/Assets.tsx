@@ -56,7 +56,7 @@ export default function AssetsPage() {
       expandable: true,
       items: [
         { label: 'Copy trading', path: '/copy-trading' },
-        { label: 'Bots', path: '/bots' },
+        { label: 'Bots', path: '/trading-bots' },
         { label: 'Earn', path: '/earn' },
       ]
     },

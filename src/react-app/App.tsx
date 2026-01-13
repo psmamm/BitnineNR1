@@ -126,7 +126,8 @@ const SignupPage = lazy(() => import("@/react-app/pages/Signup"));
 const ForgotPasswordPage = lazy(() => import("@/react-app/pages/ForgotPassword"));
 const AuthActionPage = lazy(() => import("@/react-app/pages/AuthAction"));
 const TradingPage = lazy(() => import("@/react-app/pages/TradingPage"));
-const TerminalPage = lazy(() => import("@/react-app/pages/Terminal"));
+// Terminal uses TradingPage
+const TerminalPage = lazy(() => import("@/react-app/pages/TradingPage"));
 const ExchangeSettingsPage = lazy(() => import("@/react-app/pages/ExchangeSettings"));
 const AIClonePage = lazy(() => import("@/react-app/pages/AIClone"));
 const AIInsightsPage = lazy(() => import("@/react-app/pages/AIInsights"));
@@ -186,6 +187,21 @@ export default function App() {
                         </ProtectedRoute>
                       } />
                       <Route path="/trading" element={
+                        <ProtectedRoute>
+                          <TradingPage />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/trading/spot" element={
+                        <ProtectedRoute>
+                          <TradingPage />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/trading/margin" element={
+                        <ProtectedRoute>
+                          <TradingPage />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/trading/futures" element={
                         <ProtectedRoute>
                           <TradingPage />
                         </ProtectedRoute>

@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import DashboardLayout from '../components/DashboardLayout';
 import { Button } from '../components/ui/button';
 import { Bot, Plus, Play, Pause, Settings, RefreshCw } from 'lucide-react';
+import { CreateBotModal, BotFormData } from '../components/bots/CreateBotModal';
 
 interface TradingBot {
   id: string;
@@ -19,6 +20,7 @@ export default function TradingBotsPage() {
   const { user } = useAuth();
   const [bots, setBots] = useState<TradingBot[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -49,6 +51,37 @@ export default function TradingBotsPage() {
     fetchBots();
   }, [user]);
 
+  const handleCreateBot = async (botData: BotFormData) => {
+    if (!user) return;
+
+    const token = await user.getIdToken();
+    const response = await fetch('/api/bots', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name: botData.name,
+        strategy: botData.strategy,
+        symbol: botData.symbol,
+        max_position_size: botData.maxPositionSize,
+        stop_loss: botData.stopLoss,
+        take_profit: botData.takeProfit,
+        risk_per_trade: botData.riskPerTrade,
+        status: 'paused',
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to create bot');
+    }
+
+    const newBot = await response.json();
+    setBots([...bots, newBot.bot]);
+  };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -71,7 +104,7 @@ export default function TradingBotsPage() {
             <p className="text-zinc-400 mt-1">Automate your trading strategies</p>
           </div>
           <Button
-            onClick={() => alert('Create Bot modal - Coming soon!')}
+            onClick={() => setShowCreateModal(true)}
             className="bg-[#00D9C8] hover:bg-[#00A89C]"
           >
             <Plus className="w-5 h-5 mr-2" />
@@ -85,7 +118,7 @@ export default function TradingBotsPage() {
             <h3 className="text-xl font-bold text-white mb-2">No trading bots yet</h3>
             <p className="text-zinc-400 mb-6">Create your first bot to automate your trading</p>
             <Button
-              onClick={() => alert('Create Bot modal - Coming soon!')}
+              onClick={() => setShowCreateModal(true)}
               className="bg-[#00D9C8] hover:bg-[#00A89C]"
             >
               <Plus className="w-5 h-5 mr-2" />
@@ -158,6 +191,12 @@ export default function TradingBotsPage() {
           </div>
         )}
       </div>
+
+      <CreateBotModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onCreateBot={handleCreateBot}
+      />
     </DashboardLayout>
   );
 }

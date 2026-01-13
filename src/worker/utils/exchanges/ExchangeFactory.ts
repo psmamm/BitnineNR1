@@ -13,6 +13,7 @@ import {
   ExchangeError
 } from './ExchangeInterface';
 import { BinanceExchange } from './BinanceExchange';
+import { BitgetExchange } from './BitgetExchange';
 import { BybitExchangeV2 } from './BybitExchangeV2';
 import { CoinbaseExchange } from './CoinbaseExchange';
 import { KrakenExchange } from './KrakenExchange';
@@ -95,6 +96,16 @@ const EXCHANGE_REGISTRY: Record<ExchangeId, ExchangeInfo> = {
     features: ['spot', 'futures', 'options', 'copy_trading'],
     website: 'https://www.okx.com',
     apiDocs: 'https://www.okx.com/docs/',
+    supported: true
+  },
+  bitget: {
+    id: 'bitget',
+    name: 'Bitget',
+    logo: '/exchanges/bitget.svg',
+    assetClasses: ['crypto'],
+    features: ['spot', 'futures', 'copy_trading'],
+    website: 'https://www.bitget.com',
+    apiDocs: 'https://www.bitget.com/api-doc/',
     supported: true
   },
 
@@ -347,6 +358,12 @@ export class ExchangeFactory {
         } else {
           exchange.setInstType('SPOT');
         }
+        return exchange;
+      }
+
+      case 'bitget': {
+        const exchange = new BitgetExchange(credentials, assetClass);
+        exchange.setProductType(market === 'futures' ? 'USDT-FUTURES' : 'SPOT');
         return exchange;
       }
 

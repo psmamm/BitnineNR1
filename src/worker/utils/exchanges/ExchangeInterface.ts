@@ -14,7 +14,7 @@ export type AssetClass = 'crypto' | 'stocks' | 'forex' | 'futures' | 'options';
 
 export type ExchangeId =
   // Crypto CEXs
-  | 'bybit' | 'binance' | 'coinbase' | 'kraken' | 'okx'
+  | 'bybit' | 'binance' | 'coinbase' | 'kraken' | 'okx' | 'bitget'
   // Crypto DEXs
   | 'uniswap' | 'jupiter' | 'dydx' | 'gmx' | 'hyperliquid'
   // Stock Brokers
@@ -401,6 +401,7 @@ export abstract class ExchangeInterface {
       coinbase: 'Coinbase',
       kraken: 'Kraken',
       okx: 'OKX',
+      bitget: 'Bitget',
       uniswap: 'Uniswap',
       jupiter: 'Jupiter',
       dydx: 'dYdX',

@@ -1,4 +1,4 @@
-import { useEffect, useRef, memo } from 'react';
+import { useEffect, useRef, memo, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle } from 'lucide-react';
 
@@ -41,6 +41,8 @@ function TradingViewAdvancedChartComponent({
 }: TradingViewAdvancedChartProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const widgetRef = useRef<HTMLElement | null>(null);
+    const uniqueId = useId().replace(/:/g, '-');
+    const containerId = `tv-widget-${uniqueId}`;
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -69,23 +71,23 @@ function TradingViewAdvancedChartComponent({
             style: "1",
             locale: "en",
             enable_publishing: false,
-            backgroundColor: "rgba(19, 23, 34, 1)",
-            gridColor: "rgba(42, 46, 57, 0.5)",
+            backgroundColor: "rgba(18, 18, 18, 1)",
+            gridColor: "rgba(43, 49, 57, 0.5)",
             hide_top_toolbar: false,
             hide_legend: false,
             save_image: false,
             calendar: false,
             hide_volume: false,
             support_host: "https://www.tradingview.com",
-            container_id: "tradingview-widget-container",
+            container_id: containerId,
             withdateranges: true,
-            allow_symbol_change: false,
+            allow_symbol_change: true,
             details: false,
             hotlist: false,
             show_popup_button: false,
             popup_width: "1000",
             popup_height: "650",
-            studies: [],
+            studies: ["Volume@tv-basicstudies"],
         });
 
         const widgetContainer = document.createElement('div');
@@ -94,7 +96,7 @@ function TradingViewAdvancedChartComponent({
         widgetContainer.style.width = '100%';
 
         const widgetInner = document.createElement('div');
-        widgetInner.id = 'tradingview-widget-container';
+        widgetInner.id = containerId;
         widgetInner.style.height = '100%';
         widgetInner.style.width = '100%';
 
@@ -110,7 +112,7 @@ function TradingViewAdvancedChartComponent({
             }
             widgetRef.current = null;
         };
-    }, [symbol, interval]);
+    }, [symbol, interval, containerId]);
 
     return (
         <div className="relative w-full h-full bg-[#131722]">
