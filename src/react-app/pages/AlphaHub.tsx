@@ -16,7 +16,7 @@ import {
   ArrowRightLeft
 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
-import { useWhaleTransactions } from "@/react-app/hooks/useWhaleTransactions";
+import { useWhaleTracker } from "@/react-app/hooks/useWhaleTracker";
 import { useCryptoNews } from "@/react-app/hooks/useCryptoNews";
 import EconomicCalendar from "@/react-app/components/EconomicCalendar";
 
@@ -53,7 +53,7 @@ interface BreakingNews {
 }
 
 export default function AlphaHubPage() {
-  const { transactions: whaleTransactions, loading: whaleLoading, error: whaleError, refetch: refetchWhales } = useWhaleTransactions();
+  const { transactions: whaleTransactions, loading: whaleLoading, error: whaleError, isConnected, refetch: refetchWhales } = useWhaleTracker();
   const { news: cryptoNews, loading: newsLoading, refetch: refetchNews } = useCryptoNews();
 
   const [keyCoins, setKeyCoins] = useState<MarketMover[]>([]);
@@ -361,9 +361,9 @@ export default function AlphaHubPage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center space-x-2 px-3 py-2 bg-[#00D9C8]/10 border border-[#00D9C8]/20 rounded-lg">
-                <div className="w-2 h-2 bg-[#00D9C8] rounded-full animate-pulse" />
-                <span className="text-[#00D9C8] text-sm font-medium">LIVE</span>
+              <div className={`flex items-center space-x-2 px-3 py-2 rounded-lg border ${isConnected ? 'bg-[#00D9C8]/10 border-[#00D9C8]/20' : 'bg-[#F43F5E]/10 border-[#F43F5E]/20'}`}>
+                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-[#00D9C8] animate-pulse' : 'bg-[#F43F5E]'}`} />
+                <span className={`text-sm font-medium ${isConnected ? 'text-[#00D9C8]' : 'text-[#F43F5E]'}`}>{isConnected ? 'LIVE' : 'OFFLINE'}</span>
               </div>
               <div className="flex items-center space-x-2 px-3 py-2 bg-[#00D9C8]/10 border border-[#00D9C8]/20 rounded-lg">
                 <Globe className="w-4 h-4 text-[#00D9C8]" />
@@ -430,12 +430,12 @@ export default function AlphaHubPage() {
                     </div>
                     <div>
                       <h2 className="text-xl font-semibold text-white">🐋 Whale Tracker</h2>
-                      <p className="text-[#7F8C8D] text-sm">Last 24 hours • Transactions &gt; $100K • 7 Blockchains</p>
+                      <p className="text-[#7F8C8D] text-sm">Real-time • Transactions &gt; $100K • Bybit WebSocket</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[#00D9C8] rounded-full animate-pulse" />
-                    <span className="text-[#00D9C8] text-sm font-semibold">LIVE</span>
+                  <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg ${isConnected ? 'bg-[#00D9C8]/10' : 'bg-[#F43F5E]/10'}`}>
+                    <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-[#00D9C8] animate-pulse' : 'bg-[#F43F5E]'}`} />
+                    <span className={`text-sm font-semibold ${isConnected ? 'text-[#00D9C8]' : 'text-[#F43F5E]'}`}>{isConnected ? 'LIVE' : 'RECONNECTING...'}</span>
                   </div>
                 </div>
 
@@ -444,30 +444,38 @@ export default function AlphaHubPage() {
                 {whaleLoading ? (
                   <div className="text-center py-12">
                     <RefreshCw className="w-8 h-8 text-[#00D9C8] animate-spin mx-auto mb-3" />
-                    <p className="text-[#7F8C8D] text-base">Scanning last 24 hours for whale movements...</p>
-                    <p className="text-[#AAB0C0] text-sm mt-2">ETH • BSC • AVAX • ARB • OP • TRX • SOL</p>
+                    <p className="text-[#7F8C8D] text-base">Connecting to Bybit WebSocket...</p>
+                    <p className="text-[#AAB0C0] text-sm mt-2">BTC • ETH • SOL • BNB • XRP • ADA • DOGE • AVAX</p>
                   </div>
-                ) : whaleError || whaleTransactions.length === 0 ? (
+                ) : whaleError ? (
+                  <div className="text-center py-16 bg-[#F43F5E]/5 border border-[#F43F5E]/20 rounded-xl">
+                    <div className="w-20 h-20 bg-[#F43F5E]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <span className="text-5xl">🔌</span>
+                    </div>
+                    <p className="text-[#F43F5E] text-lg font-semibold mb-2">{whaleError}</p>
+                    <p className="text-[#7F8C8D] text-sm">Click refresh to reconnect</p>
+                  </div>
+                ) : whaleTransactions.length === 0 ? (
                   <div className="text-center py-16 bg-[#00D9C8]/5 border border-[#00D9C8]/20 rounded-xl">
                     <div className="w-20 h-20 bg-[#00D9C8]/10 rounded-full flex items-center justify-center mx-auto mb-6">
                       <span className="text-5xl">🐋</span>
                     </div>
-                    <p className="text-[#00D9C8] text-lg font-semibold mb-2">No whale moves &gt;$100K in the last 24 hours</p>
-                    <p className="text-[#7F8C8D] text-sm">Feed updates when new large transactions are detected</p>
+                    <p className="text-[#00D9C8] text-lg font-semibold mb-2">Waiting for whale activity &gt;$100K...</p>
+                    <p className="text-[#7F8C8D] text-sm">Feed updates in real-time when whales make moves</p>
                     <div className="flex justify-center space-x-4 mt-4 text-xs text-[#AAB0C0]">
+                      <span>BTC</span>
+                      <span>•</span>
                       <span>ETH</span>
                       <span>•</span>
-                      <span>BSC</span>
-                      <span>•</span>
-                      <span>AVAX</span>
-                      <span>•</span>
-                      <span>ARB</span>
-                      <span>•</span>
-                      <span>OP</span>
-                      <span>•</span>
-                      <span>TRX</span>
-                      <span>•</span>
                       <span>SOL</span>
+                      <span>•</span>
+                      <span>BNB</span>
+                      <span>•</span>
+                      <span>XRP</span>
+                      <span>•</span>
+                      <span>ADA</span>
+                      <span>•</span>
+                      <span>DOGE</span>
                     </div>
                   </div>
                 ) : (

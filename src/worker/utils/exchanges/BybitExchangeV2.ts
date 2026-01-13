@@ -285,30 +285,46 @@ export class BybitExchangeV2 extends ExchangeInterface {
     const categories: Array<'spot' | 'linear' | 'inverse' | 'option'> = ['linear'];
 
     const now = Date.now();
-    // Last 90 days for closed positions (increased from 30)
-    const since = startTime || (now - (90 * 24 * 60 * 60 * 1000));
+    // Last 30 days for closed positions
+    const since = startTime || (now - (30 * 24 * 60 * 60 * 1000));
     const until = endTime || now;
 
     console.log(`[Bybit] getTrades called - fetching from ${new Date(since).toISOString()} to ${new Date(until).toISOString()}`);
 
+    // Bybit API only allows max 7 days per request, so we need to chunk the requests
+    const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+    const chunks: Array<{ start: number; end: number }> = [];
+
+    let chunkStart = since;
+    while (chunkStart < until) {
+      const chunkEnd = Math.min(chunkStart + SEVEN_DAYS, until);
+      chunks.push({ start: chunkStart, end: chunkEnd });
+      chunkStart = chunkEnd;
+    }
+
+    console.log(`[Bybit] Split into ${chunks.length} chunks of max 7 days each`);
+
     for (const category of categories) {
-      try {
-        console.log(`[Bybit] Fetching closed P&L for category ${category}`);
-        const trades = await this.fetchClosedPnL(
-          category,
-          symbol,
-          since,
-          until,
-          limit
-        );
-        console.log(`[Bybit] Received ${trades.length} closed positions for ${category}`);
-        allTrades.push(...trades);
-      } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : String(error);
-        if (message?.includes('category') || message?.includes('Permission')) {
-          console.log(`Skipping category ${category}: ${message}`);
-        } else {
-          throw error;
+      for (const chunk of chunks) {
+        try {
+          console.log(`[Bybit] Fetching closed P&L for ${category} from ${new Date(chunk.start).toISOString()} to ${new Date(chunk.end).toISOString()}`);
+          const trades = await this.fetchClosedPnL(
+            category,
+            symbol,
+            chunk.start,
+            chunk.end,
+            limit
+          );
+          console.log(`[Bybit] Received ${trades.length} closed positions for ${category} in this chunk`);
+          allTrades.push(...trades);
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : String(error);
+          if (message?.includes('category') || message?.includes('Permission')) {
+            console.log(`Skipping category ${category}: ${message}`);
+          } else {
+            console.error(`[Bybit] Error fetching chunk: ${message}`);
+            // Continue with next chunk instead of failing completely
+          }
         }
       }
     }
@@ -318,6 +334,8 @@ export class BybitExchangeV2 extends ExchangeInterface {
       new Map(allTrades.map(t => [t.id, t])).values()
     );
     uniqueTrades.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+
+    console.log(`[Bybit] Total unique trades fetched: ${uniqueTrades.length}`);
 
     return uniqueTrades;
   }
