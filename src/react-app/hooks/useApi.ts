@@ -2,7 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { auth } from '../lib/firebase';
 
 export function buildApiUrl(path: string): string {
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
+  // Check for env variable first, then use production URL as fallback
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ||
+    (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+      ? 'https://circl.workers.dev'
+      : '');
 
   // If API_BASE_URL is set, use it (production)
   if (apiBaseUrl) {

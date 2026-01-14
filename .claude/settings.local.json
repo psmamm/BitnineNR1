@@ -17,7 +17,8 @@
       "Bash(powershell -Command:*)",
       "Bash(cmd //c \"taskkill //F //PID 21604\")",
       "Read(//c/Users/Leand/Desktop/CIRCL/**)",
-      "Read(//c/**)"
+      "Read(//c/**)",
+      "Bash(npm update:*)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Leand\\Desktop\\CIRCL"
