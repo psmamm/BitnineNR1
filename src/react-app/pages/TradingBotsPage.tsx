@@ -4,6 +4,7 @@ import DashboardLayout from '../components/DashboardLayout';
 import { Button } from '../components/ui/button';
 import { Bot, Plus, Play, Pause, Settings, RefreshCw } from 'lucide-react';
 import { CreateBotModal, BotFormData } from '../components/bots/CreateBotModal';
+import { buildApiUrl } from '../hooks/useApi';
 
 interface TradingBot {
   id: string;
@@ -31,7 +32,7 @@ export default function TradingBotsPage() {
     const fetchBots = async () => {
       try {
         const token = await user.getIdToken();
-        const response = await fetch('/api/bots', {
+        const response = await fetch(buildApiUrl('/api/bots'), {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -55,7 +56,7 @@ export default function TradingBotsPage() {
     if (!user) return;
 
     const token = await user.getIdToken();
-    const response = await fetch('/api/bots', {
+    const response = await fetch(buildApiUrl('/api/bots'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

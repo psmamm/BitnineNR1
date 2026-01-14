@@ -25,6 +25,7 @@ import { useState, useEffect } from "react";
 import { useStrategies, useCreateStrategy, useUpdateStrategy, useStrategyPerformance, type Strategy } from "@/react-app/hooks/useStrategies";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguageCurrency } from "@/react-app/contexts/LanguageCurrencyContext";
+import { buildApiUrl } from "@/react-app/hooks/useApi";
 
 interface StrategyFormData {
   name: string;
@@ -211,9 +212,9 @@ export default function StrategiesPage() {
     if (!confirm('Are you sure you want to delete this strategy? This action cannot be undone.')) return;
 
     try {
-      const response = await fetch(`/api/strategies/${id}`, { 
-        method: 'DELETE', 
-        credentials: 'include' 
+      const response = await fetch(buildApiUrl(`/api/strategies/${id}`), {
+        method: 'DELETE',
+        credentials: 'include'
       });
 
       if (!response.ok) {

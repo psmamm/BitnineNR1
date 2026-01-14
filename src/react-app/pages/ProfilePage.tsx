@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import DashboardLayout from '../components/DashboardLayout';
 import { Button } from '../components/ui/button';
 import { User, Mail, Award, Edit2, Save, X, RefreshCw } from 'lucide-react';
+import { buildApiUrl } from '../hooks/useApi';
 
 interface UserProfile {
   username: string | null;
@@ -34,7 +35,7 @@ export default function ProfilePage() {
       try {
         setError(null);
         const token = await user.getIdToken();
-        const response = await fetch('/api/users/me', {
+        const response = await fetch(buildApiUrl('/api/users/me'), {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -66,7 +67,7 @@ export default function ProfilePage() {
 
     try {
       const token = await user.getIdToken();
-      const response = await fetch('/api/users/profile', {
+      const response = await fetch(buildApiUrl('/api/users/profile'), {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,

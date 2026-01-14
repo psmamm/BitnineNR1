@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   Sparkles,
 } from 'lucide-react';
+import { buildApiUrl } from '../../hooks/useApi';
 
 // ============================================================================
 // TYPES
@@ -229,7 +230,7 @@ export function VoiceRecorder({
         formData.append('trade_id', tradeId);
       }
 
-      const response = await fetch('/api/voice-journal/upload', {
+      const response = await fetch(buildApiUrl('/api/voice-journal/upload'), {
         method: 'POST',
         body: formData,
         credentials: 'include',

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { buildApiUrl } from './useApi';
 
 export interface Notification {
   id: number;
@@ -37,7 +38,7 @@ export function useNotifications() {
   // Monitor whale transactions and create notifications
   const checkWhaleTransactions = async () => {
     try {
-      const response = await fetch('/api/whale-transactions');
+      const response = await fetch(buildApiUrl('/api/whale-transactions'));
       if (!response.ok) return;
 
       const data = await response.json();

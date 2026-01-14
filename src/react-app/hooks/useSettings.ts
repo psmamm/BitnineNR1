@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { buildApiUrl } from './useApi';
 
 export interface UserSettings {
   notifications: {
@@ -50,7 +51,7 @@ export function useSettings() {
           }));
 
           // Try to load server settings
-          const response = await fetch('/api/users/settings', {
+          const response = await fetch(buildApiUrl('/api/users/settings'), {
             credentials: 'include'
           });
 
@@ -104,7 +105,7 @@ export function useSettings() {
 
     // Update server
     try {
-      const response = await fetch('/api/users/settings', {
+      const response = await fetch(buildApiUrl('/api/users/settings'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -135,7 +136,7 @@ export function useSettings() {
 
     // Update server
     try {
-      const response = await fetch('/api/users/settings', {
+      const response = await fetch(buildApiUrl('/api/users/settings'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -178,7 +179,7 @@ export function useSettings() {
 
       // 3. Update backend (Optional / Sync)
       try {
-        await fetch('/api/users/profile', {
+        await fetch(buildApiUrl('/api/users/profile'), {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { buildApiUrl } from './useApi';
 
 export interface ExportOptions {
   includeTrades: boolean;
@@ -50,7 +51,7 @@ export function useDataExport() {
       setExporting(true);
       setError(null);
 
-      const response = await fetch('/api/export', {
+      const response = await fetch(buildApiUrl('/api/export'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

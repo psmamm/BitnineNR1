@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
+import { buildApiUrl } from '../hooks/useApi';
 import DashboardLayout from '../components/DashboardLayout';
 import { Button } from '../components/ui/button';
 import { Skeleton } from '../components/ui/skeleton';
@@ -176,10 +177,10 @@ export default function AIClonePage() {
       };
 
       const [configRes, patternsRes, suggestionsRes, statsRes] = await Promise.all([
-        fetch('/api/ai-clone/config', { headers }),
-        fetch('/api/ai-clone/patterns?limit=10', { headers }),
-        fetch('/api/ai-clone/suggestions?limit=5', { headers }),
-        fetch('/api/ai-clone/stats', { headers }),
+        fetch(buildApiUrl('/api/ai-clone/config'), { headers }),
+        fetch(buildApiUrl('/api/ai-clone/patterns?limit=10'), { headers }),
+        fetch(buildApiUrl('/api/ai-clone/suggestions?limit=5'), { headers }),
+        fetch(buildApiUrl('/api/ai-clone/stats'), { headers }),
       ]);
 
       if (configRes.ok) {
@@ -227,7 +228,7 @@ export default function AIClonePage() {
 
     try {
       const token = await getToken();
-      const res = await fetch('/api/ai-clone/train', {
+      const res = await fetch(buildApiUrl('/api/ai-clone/train'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -252,7 +253,7 @@ export default function AIClonePage() {
 
     try {
       const token = await getToken();
-      const res = await fetch('/api/ai-clone/config', {
+      const res = await fetch(buildApiUrl('/api/ai-clone/config'), {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -277,7 +278,7 @@ export default function AIClonePage() {
 
     try {
       const token = await getToken();
-      const res = await fetch('/api/ai-clone/execute', {
+      const res = await fetch(buildApiUrl('/api/ai-clone/execute'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -322,7 +323,7 @@ export default function AIClonePage() {
 
     try {
       const token = await getToken();
-      const res = await fetch(`/api/ai-clone/suggestions/${suggestionId}/${action}`, {
+      const res = await fetch(buildApiUrl(`/api/ai-clone/suggestions/${suggestionId}/${action}`), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -347,7 +348,7 @@ export default function AIClonePage() {
 
     try {
       const token = await getToken();
-      const res = await fetch('/api/ai-clone/config', {
+      const res = await fetch(buildApiUrl('/api/ai-clone/config'), {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

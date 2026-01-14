@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { buildApiUrl } from './useApi';
 
 export interface CryptoNewsItem {
     id: string;
@@ -23,7 +24,7 @@ export function useCryptoNews() {
 
             console.log('📰 Fetching real crypto news from API...');
 
-            const response = await fetch('/api/crypto-news');
+            const response = await fetch(buildApiUrl('/api/crypto-news'));
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }

@@ -25,6 +25,7 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { buildApiUrl } from '../../hooks/useApi';
 
 interface Suggestion {
   id: string;
@@ -86,7 +87,7 @@ export function AICloneFloatingPanel({ isOpen, onClose }: AICloneFloatingPanelPr
 
     try {
       const token = await user.getIdToken();
-      const response = await fetch('/api/ai-clone/suggestions', {
+      const response = await fetch(buildApiUrl('/api/ai-clone/suggestions'), {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -126,7 +127,7 @@ export function AICloneFloatingPanel({ isOpen, onClose }: AICloneFloatingPanelPr
 
     try {
       const token = await user.getIdToken();
-      const response = await fetch(`/api/ai-clone/suggestions/${suggestionId}/execute`, {
+      const response = await fetch(buildApiUrl(`/api/ai-clone/suggestions/${suggestionId}/execute`), {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -150,7 +151,7 @@ export function AICloneFloatingPanel({ isOpen, onClose }: AICloneFloatingPanelPr
 
     try {
       const token = await user.getIdToken();
-      await fetch(`/api/ai-clone/suggestions/${suggestionId}/dismiss`, {
+      await fetch(buildApiUrl(`/api/ai-clone/suggestions/${suggestionId}/dismiss`), {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

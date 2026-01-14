@@ -68,6 +68,8 @@ export default function SettingsPage() {
   const [antiPhishingCode, setAntiPhishingCode] = useState("");
   const [antiPhishingInput, setAntiPhishingInput] = useState("");
   const [antiPhishingSaved, setAntiPhishingSaved] = useState(false);
+  const [antiPhishingLoading, setAntiPhishingLoading] = useState(false);
+  const [antiPhishingError, setAntiPhishingError] = useState<string | null>(null);
 
   // 2FA Setup state
   const [twoFactorStep, setTwoFactorStep] = useState<"intro" | "qrcode" | "verify" | "backup" | "success">("intro");
@@ -108,6 +110,31 @@ export default function SettingsPage() {
       }
     };
     fetch2FAStatus();
+  }, [user]);
+
+  // Fetch anti-phishing status on mount
+  useEffect(() => {
+    const fetchAntiPhishingStatus = async () => {
+      if (!user) return;
+      try {
+        const idToken = await user.getIdToken();
+        const response = await fetch(buildApiUrl('/api/security/anti-phishing'), {
+          headers: {
+            'Authorization': `Bearer ${idToken}`,
+          },
+          credentials: 'include',
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.enabled && data.maskedCode) {
+            setAntiPhishingCode(data.maskedCode);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch anti-phishing status:', error);
+      }
+    };
+    fetchAntiPhishingStatus();
   }, [user]);
 
   // Update displayName when user changes
@@ -310,8 +337,8 @@ export default function SettingsPage() {
   };
 
 
-  // Generate random TOTP secret (Base32 encoded)
-  const generateSecret = (): string => {
+  // Generate random TOTP secret (Base32 encoded) - kept for reference, now handled by backend
+  const _generateSecret = (): string => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
     let secret = '';
     const randomValues = new Uint8Array(20);
@@ -321,9 +348,10 @@ export default function SettingsPage() {
     }
     return secret;
   };
+  void _generateSecret; // Mark as intentionally unused
 
-  // Generate backup codes
-  const generateBackupCodes = (): string[] => {
+  // Generate backup codes - kept for reference, now handled by backend
+  const _generateBackupCodes = (): string[] => {
     const codes: string[] = [];
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     for (let i = 0; i < 8; i++) {
@@ -337,6 +365,7 @@ export default function SettingsPage() {
     }
     return codes;
   };
+  void _generateBackupCodes; // Mark as intentionally unused
 
   // Start 2FA setup - calls backend API
   const handleStart2FASetup = async () => {
@@ -479,14 +508,43 @@ export default function SettingsPage() {
   };
 
   // Handle Anti-Phishing Code save
-  const handleSaveAntiPhishing = () => {
-    if (antiPhishingInput.trim()) {
-      setAntiPhishingCode(antiPhishingInput.trim());
+  const handleSaveAntiPhishing = async () => {
+    if (!antiPhishingInput.trim() || !user) return;
+
+    setAntiPhishingLoading(true);
+    setAntiPhishingError(null);
+
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch(buildApiUrl('/api/security/anti-phishing'), {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${idToken}`,
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ code: antiPhishingInput.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setAntiPhishingError(data.error || 'Failed to save anti-phishing code');
+        return;
+      }
+
+      setAntiPhishingCode(data.maskedCode || antiPhishingInput.trim());
       setAntiPhishingSaved(true);
       setTimeout(() => {
         setShowAntiPhishingModal(false);
         setAntiPhishingSaved(false);
+        setAntiPhishingInput('');
       }, 1500);
+    } catch (error) {
+      console.error('Anti-phishing save error:', error);
+      setAntiPhishingError('Failed to save anti-phishing code. Please try again.');
+    } finally {
+      setAntiPhishingLoading(false);
     }
   };
 
@@ -1725,6 +1783,13 @@ export default function SettingsPage() {
                   </div>
                 )}
 
+                {antiPhishingError && (
+                  <div className="p-3 bg-[#F43F5E]/10 border border-[#F43F5E]/20 rounded-lg flex items-center gap-2">
+                    <X className="w-4 h-4 text-[#F43F5E]" />
+                    <span className="text-[#F43F5E] text-sm">{antiPhishingError}</span>
+                  </div>
+                )}
+
                 {antiPhishingCode && !antiPhishingSaved && (
                   <div className="p-3 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg">
                     <p className="text-[#6B7280] text-xs mb-1">Current Code</p>
@@ -1735,16 +1800,22 @@ export default function SettingsPage() {
               <div className="p-6 border-t border-[#2A2A2E] flex gap-3">
                 <button
                   onClick={() => setShowAntiPhishingModal(false)}
-                  className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
+                  disabled={antiPhishingLoading}
+                  className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSaveAntiPhishing}
-                  disabled={!antiPhishingInput.trim() || antiPhishingSaved}
+                  disabled={!antiPhishingInput.trim() || antiPhishingSaved || antiPhishingLoading}
                   className="flex-1 px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  {antiPhishingSaved ? (
+                  {antiPhishingLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : antiPhishingSaved ? (
                     <>
                       <Check className="w-4 h-4" />
                       Saved

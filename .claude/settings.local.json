@@ -18,7 +18,11 @@
       "Bash(cmd //c \"taskkill //F //PID 21604\")",
       "Read(//c/Users/Leand/Desktop/CIRCL/**)",
       "Read(//c/**)",
-      "Bash(npm update:*)"
+      "Bash(npm update:*)",
+      "WebFetch(domain:circl.pages.dev)",
+      "Bash(claude mcp list:*)",
+      "Bash(claude mcp add:*)",
+      "Bash(wrangler d1 execute:*)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Leand\\Desktop\\CIRCL"

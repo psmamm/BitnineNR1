@@ -11,6 +11,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { buildApiUrl } from './useApi';
 
 interface ExchangeBalance {
   exchange: string;
@@ -67,7 +68,7 @@ export function useMultiExchangePortfolio() {
       if (!token) return;
 
       // First, get connected exchanges
-      const connectionsRes = await fetch('/api/exchange-connections', {
+      const connectionsRes = await fetch(buildApiUrl('/api/exchange-connections'), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -108,7 +109,7 @@ export function useMultiExchangePortfolio() {
         }
 
         try {
-          const balanceRes = await fetch(`/api/exchange-connections/${conn.id}/balance`, {
+          const balanceRes = await fetch(buildApiUrl(`/api/exchange-connections/${conn.id}/balance`), {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json',

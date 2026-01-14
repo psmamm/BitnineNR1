@@ -15,6 +15,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, Clock, History, X, TrendingDown } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { buildApiUrl } from '../../hooks/useApi';
 
 interface DisciplineStatus {
   isLockedOut: boolean;
@@ -52,7 +53,7 @@ export default function RiskLockdownOverlay() {
 
     try {
       const token = await user.getIdToken();
-      const response = await fetch('/api/discipline/status', {
+      const response = await fetch(buildApiUrl('/api/discipline/status'), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -80,7 +81,7 @@ export default function RiskLockdownOverlay() {
     setHistoryLoading(true);
     try {
       const token = await user.getIdToken();
-      const response = await fetch('/api/discipline/history', {
+      const response = await fetch(buildApiUrl('/api/discipline/history'), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',

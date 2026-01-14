@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
+import { buildApiUrl } from '../../hooks/useApi';
 import {
   TrendingUp,
   BarChart3,
@@ -160,10 +161,10 @@ export function ReportsDashboard() {
     try {
       // Fetch all data in parallel
       const [overviewRes, dailyPnlRes, winRateDayRes, winRateHourRes] = await Promise.all([
-        fetch(`/api/reports/performance/overview?range=${dateRange}`, { credentials: 'include' }),
-        fetch(`/api/reports/performance/daily-pnl?range=${dateRange}`, { credentials: 'include' }),
-        fetch(`/api/reports/performance/win-rate-by-day?range=${dateRange}`, { credentials: 'include' }),
-        fetch(`/api/reports/performance/win-rate-by-hour?range=${dateRange}`, { credentials: 'include' }),
+        fetch(buildApiUrl(`/api/reports/performance/overview?range=${dateRange}`), { credentials: 'include' }),
+        fetch(buildApiUrl(`/api/reports/performance/daily-pnl?range=${dateRange}`), { credentials: 'include' }),
+        fetch(buildApiUrl(`/api/reports/performance/win-rate-by-day?range=${dateRange}`), { credentials: 'include' }),
+        fetch(buildApiUrl(`/api/reports/performance/win-rate-by-hour?range=${dateRange}`), { credentials: 'include' }),
       ]);
 
       if (overviewRes.ok) {
@@ -194,7 +195,7 @@ export function ReportsDashboard() {
 
   const handleExport = async () => {
     try {
-      const response = await fetch(`/api/reports/export?range=${dateRange}&format=json`, {
+      const response = await fetch(buildApiUrl(`/api/reports/export?range=${dateRange}&format=json`), {
         credentials: 'include',
       });
 

@@ -1,5 +1,6 @@
 // Hook to sync Bybit trades
 import { useState } from 'react';
+import { buildApiUrl } from './useApi';
 
 export interface BybitTrade {
     id: string;
@@ -21,7 +22,7 @@ export function useBybitSync() {
         try {
             // In a real app this would call a backend that signs the request.
             // Here we call a placeholder endpoint.
-            const response = await fetch('/api/bybit/sync', {
+            const response = await fetch(buildApiUrl('/api/bybit/sync'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

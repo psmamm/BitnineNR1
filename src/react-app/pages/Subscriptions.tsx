@@ -6,6 +6,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { buildApiUrl } from '../hooks/useApi';
 import DashboardLayout from '../components/DashboardLayout';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -133,14 +134,14 @@ export default function SubscriptionsPage() {
         };
 
         // Fetch current subscription
-        const subRes = await fetch('/api/subscriptions/current', { headers });
+        const subRes = await fetch(buildApiUrl('/api/subscriptions/current'), { headers });
         if (subRes.ok) {
           const subData = await subRes.json();
           setSubscription(subData.subscription);
         }
 
         // Fetch usage
-        const usageRes = await fetch('/api/subscriptions/usage', { headers });
+        const usageRes = await fetch(buildApiUrl('/api/subscriptions/usage'), { headers });
         if (usageRes.ok) {
           const usageData = await usageRes.json();
           setUsage(usageData.usage);
@@ -163,7 +164,7 @@ export default function SubscriptionsPage() {
 
     try {
       const token = await getToken();
-      const res = await fetch('/api/subscriptions/checkout', {
+      const res = await fetch(buildApiUrl('/api/subscriptions/checkout'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -195,7 +196,7 @@ export default function SubscriptionsPage() {
 
     try {
       const token = await getToken();
-      const res = await fetch('/api/subscriptions/portal', {
+      const res = await fetch(buildApiUrl('/api/subscriptions/portal'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

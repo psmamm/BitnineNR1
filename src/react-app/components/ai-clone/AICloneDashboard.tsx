@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
+import { buildApiUrl } from '../../hooks/useApi';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bot,
@@ -197,10 +198,10 @@ export function AICloneDashboard() {
     setLoading(true);
     try {
       const [configRes, statsRes, patternsRes, suggestionsRes] = await Promise.all([
-        fetch('/api/ai-clone/config', { credentials: 'include' }),
-        fetch('/api/ai-clone/stats', { credentials: 'include' }),
-        fetch('/api/ai-clone/patterns?min_confidence=0.6&limit=10', { credentials: 'include' }),
-        fetch('/api/ai-clone/suggestions', { credentials: 'include' }),
+        fetch(buildApiUrl('/api/ai-clone/config'), { credentials: 'include' }),
+        fetch(buildApiUrl('/api/ai-clone/stats'), { credentials: 'include' }),
+        fetch(buildApiUrl('/api/ai-clone/patterns?min_confidence=0.6&limit=10'), { credentials: 'include' }),
+        fetch(buildApiUrl('/api/ai-clone/suggestions'), { credentials: 'include' }),
       ]);
 
       if (configRes.ok) {
@@ -254,7 +255,7 @@ export function AICloneDashboard() {
     setTrainingProgress(initialProgress);
 
     // Create EventSource for SSE (GET request, cookies sent automatically)
-    const eventSource = new EventSource('/api/ai-clone/training/start');
+    const eventSource = new EventSource(buildApiUrl('/api/ai-clone/training/start'));
     eventSourceRef.current = eventSource;
 
     eventSource.onmessage = (event) => {
@@ -360,7 +361,7 @@ export function AICloneDashboard() {
     if (!config) return;
 
     try {
-      const response = await fetch('/api/ai-clone/config', {
+      const response = await fetch(buildApiUrl('/api/ai-clone/config'), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -384,7 +385,7 @@ export function AICloneDashboard() {
     if (!config) return;
 
     try {
-      const response = await fetch('/api/ai-clone/config', {
+      const response = await fetch(buildApiUrl('/api/ai-clone/config'), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -401,7 +402,7 @@ export function AICloneDashboard() {
 
   const handlePermissionChange = async (level: AICloneConfig['permission_level']) => {
     try {
-      const response = await fetch('/api/ai-clone/config', {
+      const response = await fetch(buildApiUrl('/api/ai-clone/config'), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -418,7 +419,7 @@ export function AICloneDashboard() {
 
   const handleSuggestionResponse = async (suggestionId: string, approved: boolean) => {
     try {
-      const response = await fetch(`/api/ai-clone/suggestions/${suggestionId}/respond`, {
+      const response = await fetch(buildApiUrl(`/api/ai-clone/suggestions/${suggestionId}/respond`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -436,7 +437,7 @@ export function AICloneDashboard() {
 
   const handleGenerateSuggestions = async () => {
     try {
-      const response = await fetch('/api/ai-clone/suggestions/generate', {
+      const response = await fetch(buildApiUrl('/api/ai-clone/suggestions/generate'), {
         method: 'POST',
         credentials: 'include',
       });

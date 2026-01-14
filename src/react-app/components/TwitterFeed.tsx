@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ExternalLink, RefreshCw, Twitter } from "lucide-react";
+import { buildApiUrl } from '../hooks/useApi';
 
 interface TwitterPost {
   id: string;
@@ -43,7 +44,7 @@ export default function TwitterFeed({}: TwitterFeedProps) {
     
     try {
       // Fetch from backend API
-      const response = await fetch('/api/twitter-feed');
+      const response = await fetch(buildApiUrl('/api/twitter-feed'));
       
       const data = await response.json();
       

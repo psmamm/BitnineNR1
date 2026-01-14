@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '@/react-app/contexts/ThemeContext';
 import { getCardBg, getCardBorder, getTextColor, getHoverBg } from '@/react-app/utils/themeUtils';
+import { buildApiUrl } from '@/react-app/hooks/useApi';
 
 // ============================================================================
 // Types
@@ -91,7 +92,7 @@ export default function CSVImportModal({
   // Fetch supported brokers on mount
   const fetchBrokers = useCallback(async () => {
     try {
-      const response = await fetch('/api/trades/import/brokers', {
+      const response = await fetch(buildApiUrl('/api/trades/import/brokers'), {
         credentials: 'include'
       });
       const data = await response.json();
@@ -121,7 +122,7 @@ export default function CSVImportModal({
       setCsvContent(content);
 
       // Detect broker
-      const detectResponse = await fetch('/api/trades/import/detect', {
+      const detectResponse = await fetch(buildApiUrl('/api/trades/import/detect'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -134,7 +135,7 @@ export default function CSVImportModal({
       }
 
       // Get preview
-      const previewResponse = await fetch('/api/trades/import/preview', {
+      const previewResponse = await fetch(buildApiUrl('/api/trades/import/preview'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -186,7 +187,7 @@ export default function CSVImportModal({
     setError(null);
 
     try {
-      const response = await fetch('/api/trades/import', {
+      const response = await fetch(buildApiUrl('/api/trades/import'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
