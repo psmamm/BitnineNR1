@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router";
 import { useAuth } from "../contexts/AuthContext";
 import { buildApiUrl } from "../hooks/useApi";
+import { QRCodeSVG } from "qrcode.react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   User,
@@ -1437,10 +1438,11 @@ export default function SettingsPage() {
                     <div className="flex justify-center">
                       <div className="bg-white p-4 rounded-xl">
                         {twoFactorQrUri ? (
-                          <img
-                            src={`https://api.qrserver.com/v1/create-qr-code/?size=192x192&data=${encodeURIComponent(twoFactorQrUri)}`}
-                            alt="2FA QR Code"
-                            className="w-48 h-48"
+                          <QRCodeSVG
+                            value={twoFactorQrUri}
+                            size={192}
+                            level="M"
+                            includeMargin={false}
                           />
                         ) : (
                           <div className="w-48 h-48 bg-[#1A1A1E] rounded-lg flex items-center justify-center">
