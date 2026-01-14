@@ -5,7 +5,7 @@ export function buildApiUrl(path: string): string {
   // Check for env variable first, then use production URL as fallback
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ||
     (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-      ? 'https://circl.workers.dev'
+      ? 'https://01990f45-1b59-711a-a742-26cd7a0e0415.stylehub.workers.dev'
       : '');
 
   // If API_BASE_URL is set, use it (production)
