@@ -20,6 +20,7 @@ import { aiCloneRouter } from "./routes/ai-clone";
 import { autoTradingRouter } from "./routes/auto-trading";
 import { subscriptionsRouter } from "./routes/subscriptions";
 import { discipline } from "./routes/discipline";
+import { twoFactorRouter } from "./routes/two-factor";
 import { errorHandlerMiddleware } from "./utils/errorHandler";
 import type { D1Database, R2Bucket } from "@cloudflare/workers-types";
 
@@ -1217,5 +1218,6 @@ app.route('/api/ai-clone', aiCloneRouter);
 app.route('/api/auto-trading', autoTradingRouter);
 app.route('/api/subscriptions', subscriptionsRouter);
 app.route('/api/discipline', discipline);
+app.route('/api/2fa', twoFactorRouter);
 
 export default app;

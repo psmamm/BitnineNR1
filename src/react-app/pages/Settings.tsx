@@ -71,10 +71,12 @@ export default function SettingsPage() {
   // 2FA Setup state
   const [twoFactorStep, setTwoFactorStep] = useState<"intro" | "qrcode" | "verify" | "backup" | "success">("intro");
   const [twoFactorSecret, setTwoFactorSecret] = useState("");
+  const [twoFactorQrUri, setTwoFactorQrUri] = useState("");
   const [twoFactorVerifyCode, setTwoFactorVerifyCode] = useState("");
   const [twoFactorVerifyError, setTwoFactorVerifyError] = useState<string | null>(null);
   const [twoFactorBackupCodes, setTwoFactorBackupCodes] = useState<string[]>([]);
   const [twoFactorLoading, setTwoFactorLoading] = useState(false);
+  const [twoFactorDisableCode, setTwoFactorDisableCode] = useState("");
 
   // Read section from URL parameter
   useEffect(() => {
@@ -83,6 +85,29 @@ export default function SettingsPage() {
       setActiveSection(section as SettingsSection);
     }
   }, [searchParams]);
+
+  // Fetch 2FA status on mount
+  useEffect(() => {
+    const fetch2FAStatus = async () => {
+      if (!user) return;
+      try {
+        const idToken = await user.getIdToken();
+        const response = await fetch(buildApiUrl('/api/2fa/status'), {
+          headers: {
+            'Authorization': `Bearer ${idToken}`,
+          },
+          credentials: 'include',
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setTwoFactorEnabled(data.enabled);
+        }
+      } catch (error) {
+        console.error('Failed to fetch 2FA status:', error);
+      }
+    };
+    fetch2FAStatus();
+  }, [user]);
 
   // Update displayName when user changes
   useEffect(() => {
@@ -312,34 +337,85 @@ export default function SettingsPage() {
     return codes;
   };
 
-  // Start 2FA setup
-  const handleStart2FASetup = () => {
-    const secret = generateSecret();
-    setTwoFactorSecret(secret);
-    setTwoFactorStep("qrcode");
-    setTwoFactorVerifyCode("");
+  // Start 2FA setup - calls backend API
+  const handleStart2FASetup = async () => {
+    if (!user) return;
+
+    setTwoFactorLoading(true);
     setTwoFactorVerifyError(null);
+
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch(buildApiUrl('/api/2fa/setup'), {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${idToken}`,
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setTwoFactorVerifyError(data.error || 'Failed to setup 2FA');
+        setTwoFactorLoading(false);
+        return;
+      }
+
+      setTwoFactorSecret(data.secret);
+      setTwoFactorQrUri(data.qrUri);
+      setTwoFactorStep("qrcode");
+      setTwoFactorVerifyCode("");
+    } catch (error) {
+      console.error('2FA setup error:', error);
+      setTwoFactorVerifyError('Failed to setup 2FA. Please try again.');
+    } finally {
+      setTwoFactorLoading(false);
+    }
   };
 
-  // Verify 2FA code
+  // Verify 2FA code - calls backend API
   const handleVerify2FACode = async () => {
     if (twoFactorVerifyCode.length !== 6) {
       setTwoFactorVerifyError("Please enter a 6-digit code");
       return;
     }
 
+    if (!user) return;
+
     setTwoFactorLoading(true);
     setTwoFactorVerifyError(null);
 
-    // Simulate verification (in production, this would call the backend)
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch(buildApiUrl('/api/2fa/verify'), {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${idToken}`,
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ code: twoFactorVerifyCode }),
+      });
 
-    // For demo purposes, accept any 6-digit code
-    // In production, this would verify against the TOTP algorithm
-    const backupCodes = generateBackupCodes();
-    setTwoFactorBackupCodes(backupCodes);
-    setTwoFactorStep("backup");
-    setTwoFactorLoading(false);
+      const data = await response.json();
+
+      if (!response.ok) {
+        setTwoFactorVerifyError(data.error || 'Invalid code. Please try again.');
+        setTwoFactorLoading(false);
+        return;
+      }
+
+      // Success - store backup codes and move to next step
+      setTwoFactorBackupCodes(data.backupCodes);
+      setTwoFactorStep("backup");
+    } catch (error) {
+      console.error('2FA verify error:', error);
+      setTwoFactorVerifyError('Verification failed. Please try again.');
+    } finally {
+      setTwoFactorLoading(false);
+    }
   };
 
   // Complete 2FA setup
@@ -354,14 +430,51 @@ export default function SettingsPage() {
     setTwoFactorStep("intro");
     setTwoFactorVerifyCode("");
     setTwoFactorVerifyError(null);
+    setTwoFactorDisableCode("");
   };
 
-  // Disable 2FA
-  const handleDisable2FA = () => {
-    setTwoFactorEnabled(false);
-    setTwoFactorSecret("");
-    setTwoFactorBackupCodes([]);
-    handleClose2FAModal();
+  // Disable 2FA - calls backend API
+  const handleDisable2FA = async () => {
+    if (!user) return;
+
+    if (!twoFactorDisableCode) {
+      setTwoFactorVerifyError("Please enter your 2FA code to disable");
+      return;
+    }
+
+    setTwoFactorLoading(true);
+    setTwoFactorVerifyError(null);
+
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch(buildApiUrl('/api/2fa/disable'), {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${idToken}`,
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ code: twoFactorDisableCode }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setTwoFactorVerifyError(data.error || 'Failed to disable 2FA');
+        setTwoFactorLoading(false);
+        return;
+      }
+
+      setTwoFactorEnabled(false);
+      setTwoFactorSecret("");
+      setTwoFactorBackupCodes([]);
+      handleClose2FAModal();
+    } catch (error) {
+      console.error('2FA disable error:', error);
+      setTwoFactorVerifyError('Failed to disable 2FA. Please try again.');
+    } finally {
+      setTwoFactorLoading(false);
+    }
   };
 
   // Handle Anti-Phishing Code save
@@ -1290,6 +1403,26 @@ export default function SettingsPage() {
                         Your account is protected with Google Authenticator. You'll need to enter a verification code when logging in or performing sensitive operations.
                       </p>
                     </div>
+
+                    {/* Disable 2FA - requires code verification */}
+                    <div className="p-4 bg-[#1A1A1E] rounded-lg border border-[#F43F5E]/20">
+                      <p className="text-[#F43F5E] text-sm font-medium mb-3">To disable 2FA, enter your current code:</p>
+                      <input
+                        type="text"
+                        value={twoFactorDisableCode}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^A-Za-z0-9-]/g, '').slice(0, 9);
+                          setTwoFactorDisableCode(value);
+                        }}
+                        placeholder="6-digit code or backup code"
+                        className="w-full px-4 py-2.5 bg-[#0D0D0F] border border-[#2A2A2E] rounded-lg text-white font-mono text-center text-lg tracking-widest focus:outline-none focus:border-[#F43F5E] transition-colors"
+                      />
+                      {twoFactorVerifyError && (
+                        <div className="mt-2 p-2 bg-[#F43F5E]/10 border border-[#F43F5E]/20 rounded-lg">
+                          <span className="text-[#F43F5E] text-sm">{twoFactorVerifyError}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -1300,27 +1433,20 @@ export default function SettingsPage() {
                       Scan this QR code with your authenticator app (Google Authenticator, Microsoft Authenticator, or Authy).
                     </p>
 
-                    {/* QR Code placeholder - using a text-based representation */}
+                    {/* Real QR Code */}
                     <div className="flex justify-center">
                       <div className="bg-white p-4 rounded-xl">
-                        <div className="w-48 h-48 bg-[#0D0D0F] rounded-lg flex items-center justify-center relative overflow-hidden">
-                          {/* Simulated QR code pattern */}
-                          <div className="grid grid-cols-7 gap-1 p-2">
-                            {Array.from({ length: 49 }).map((_, i) => (
-                              <div
-                                key={i}
-                                className={`w-5 h-5 rounded-sm ${
-                                  Math.random() > 0.5 ? 'bg-black' : 'bg-white'
-                                }`}
-                              />
-                            ))}
+                        {twoFactorQrUri ? (
+                          <img
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=192x192&data=${encodeURIComponent(twoFactorQrUri)}`}
+                            alt="2FA QR Code"
+                            className="w-48 h-48"
+                          />
+                        ) : (
+                          <div className="w-48 h-48 bg-[#1A1A1E] rounded-lg flex items-center justify-center">
+                            <Loader2 className="w-8 h-8 text-[#00D9C8] animate-spin" />
                           </div>
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="bg-white p-2 rounded-lg">
-                              <Smartphone className="w-6 h-6 text-[#00D9C8]" />
-                            </div>
-                          </div>
-                        </div>
+                        )}
                       </div>
                     </div>
 
@@ -1429,15 +1555,24 @@ export default function SettingsPage() {
                   <>
                     <button
                       onClick={handleClose2FAModal}
-                      className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
+                      disabled={twoFactorLoading}
+                      className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors disabled:opacity-50"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleStart2FASetup}
-                      className="flex-1 px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors"
+                      disabled={twoFactorLoading}
+                      className="flex-1 px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
-                      Start Setup
+                      {twoFactorLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Setting up...
+                        </>
+                      ) : (
+                        'Start Setup'
+                      )}
                     </button>
                   </>
                 )}
@@ -1446,15 +1581,24 @@ export default function SettingsPage() {
                   <>
                     <button
                       onClick={handleClose2FAModal}
-                      className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
+                      disabled={twoFactorLoading}
+                      className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors disabled:opacity-50"
                     >
                       Close
                     </button>
                     <button
                       onClick={handleDisable2FA}
-                      className="flex-1 px-4 py-2.5 bg-[#F43F5E]/10 border border-[#F43F5E]/20 rounded-lg text-[#F43F5E] font-medium hover:bg-[#F43F5E]/20 transition-colors"
+                      disabled={!twoFactorDisableCode || twoFactorLoading}
+                      className="flex-1 px-4 py-2.5 bg-[#F43F5E]/10 border border-[#F43F5E]/20 rounded-lg text-[#F43F5E] font-medium hover:bg-[#F43F5E]/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
-                      Disable 2FA
+                      {twoFactorLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Disabling...
+                        </>
+                      ) : (
+                        'Disable 2FA'
+                      )}
                     </button>
                   </>
                 )}
