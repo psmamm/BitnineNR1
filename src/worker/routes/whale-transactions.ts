@@ -141,6 +141,29 @@ function detectTransferType(fromAddress: string, toAddress: string, chain: strin
   return 'whale_to_whale';
 }
 
+// Safe JSON parser to prevent HTML parsing errors (fixes 471+ console errors)
+async function safeJsonParse<T>(
+  response: Response,
+  source: string
+): Promise<{ success: true; data: T } | { success: false; error: string }> {
+  const contentType = response.headers.get('content-type') || '';
+
+  // Check if response is JSON
+  if (!contentType.includes('application/json')) {
+    const textPreview = await response.text().catch(() => 'Unable to read response');
+    console.warn(`[${source}] Non-JSON response. Content-Type: ${contentType}. Preview: ${textPreview.slice(0, 200)}`);
+    return { success: false, error: `Expected JSON but got ${contentType}` };
+  }
+
+  try {
+    const data = await response.json() as T;
+    return { success: true, data };
+  } catch (parseError) {
+    console.warn(`[${source}] JSON parse error:`, parseError);
+    return { success: false, error: 'Failed to parse JSON response' };
+  }
+}
+
 // Comprehensive whale addresses for better detection
 const WHALE_ADDRESSES = {
   ethereum: [
@@ -333,7 +356,8 @@ async function fetchWhaleAddressTransactions(
         continue;
       }
 
-      const data = await response.json() as {
+      // Use safeJsonParse to prevent HTML parsing errors
+      const parsed = await safeJsonParse<{
         status: string;
         message?: string;
         result?: Array<{
@@ -343,7 +367,14 @@ async function fetchWhaleAddressTransactions(
           from: string;
           to: string;
         }>;
-      };
+      }>(response, `${chain}-whale-address`);
+
+      if (!parsed.success) {
+        console.log(`❌ ${chain}: Failed to parse response for address ${address.slice(0, 10)}: ${parsed.error}`);
+        continue;
+      }
+
+      const data = parsed.data;
       console.log(`📊 ${chain}: API response status: ${data.status}, message: ${data.message}, result count: ${Array.isArray(data.result) ? data.result.length : 'N/A'}`);
 
       if (data.status === "0" && data.message && data.message !== "No transactions found") {
@@ -422,10 +453,24 @@ async function fetchWhaleAddressTransactions(
 
 async function getCryptoPrices(): Promise<Record<string, number>> {
   try {
-    const response = await fetch('https://api.binance.com/api/v3/ticker/price');
-    if (!response.ok) throw new Error('Failed to fetch prices');
+    const response = await fetch('https://api.binance.com/api/v3/ticker/price', {
+      signal: AbortSignal.timeout(10000)
+    });
 
-    const data = await response.json() as Array<{ symbol: string; price: string }>;
+    if (!response.ok) {
+      console.error(`Binance price API returned HTTP ${response.status}`);
+      throw new Error(`Failed to fetch prices: HTTP ${response.status}`);
+    }
+
+    // Use safeJsonParse to prevent HTML parsing errors
+    const parsed = await safeJsonParse<Array<{ symbol: string; price: string }>>(response, 'binance-prices');
+
+    if (!parsed.success) {
+      console.error(`Binance price API parse error: ${parsed.error}`);
+      throw new Error(`Failed to parse prices: ${parsed.error}`);
+    }
+
+    const data = parsed.data;
     const prices: Record<string, number> = {};
 
     // Map Binance symbols to our coins
@@ -443,18 +488,12 @@ async function getCryptoPrices(): Promise<Record<string, number>> {
       }
     }
 
-    console.log('Fetched crypto prices:', prices);
+    console.log('✅ Fetched REAL crypto prices from Binance:', prices);
     return prices;
   } catch (error) {
-    console.error('Failed to fetch crypto prices:', error);
-    // Fallback prices
-    return {
-      ETH: 2500,
-      BNB: 600,
-      AVAX: 35,
-      TRX: 0.09,
-      SOL: 140
-    };
+    console.error('❌ Failed to fetch crypto prices:', error);
+    // Return empty - NO MOCK DATA! Caller must handle missing prices
+    return {};
   }
 }
 
@@ -499,7 +538,8 @@ async function fetchTronTransactions(
           continue;
         }
 
-        const data = await response.json() as {
+        // Use safeJsonParse to prevent HTML parsing errors
+        const parsed = await safeJsonParse<{
           data?: Array<{
             txID: string;
             block_timestamp: number;
@@ -516,7 +556,14 @@ async function fetchTronTransactions(
               }>;
             };
           }>;
-        };
+        }>(response, 'tron-api');
+
+        if (!parsed.success) {
+          console.log(`🟠 TRON: Failed to parse response for ${address.slice(0, 10)}: ${parsed.error}`);
+          continue;
+        }
+
+        const data = parsed.data;
         console.log(`🟠 TRON: Response data keys: ${Object.keys(data)}`);
 
         // TronGrid API uses different structure
@@ -657,7 +704,8 @@ async function fetchSolanaTransactions(
           continue;
         }
 
-        const data = await response.json() as {
+        // Use safeJsonParse to prevent HTML parsing errors
+        const parsed = await safeJsonParse<{
           data?: Array<{
             txHash: string;
             blockTime: number;
@@ -668,7 +716,14 @@ async function fetchSolanaTransactions(
               postTokenBalances?: Array<{ owner?: string }>;
             };
           }>;
-        };
+        }>(response, 'solana-api');
+
+        if (!parsed.success) {
+          console.log(`🟣 SOLANA: Failed to parse response for ${address.slice(0, 10)}: ${parsed.error}`);
+          continue;
+        }
+
+        const data = parsed.data;
         console.log(`🟣 SOLANA: Response data keys: ${Object.keys(data)}`);
         console.log(`🟣 SOLANA: Data array length: ${Array.isArray(data.data) ? data.data.length : 'Not array'}`);
 
@@ -817,8 +872,12 @@ async function fetchChainTransactions(
       return [];
     }
 
-    const latestBlockData = await latestBlockResponse.json() as { result: string };
-    const latestBlock = parseInt(latestBlockData.result, 16);
+    const latestBlockParsed = await safeJsonParse<{ result: string }>(latestBlockResponse, `${chain}-blockNumber`);
+    if (!latestBlockParsed.success) {
+      console.log(`Failed to parse block number for ${chain}: ${latestBlockParsed.error}`);
+      return [];
+    }
+    const latestBlock = parseInt(latestBlockParsed.data.result, 16);
 
     // Check last 2000 blocks for broader coverage 
     const blocksToCheck = 2000;
@@ -837,7 +896,7 @@ async function fetchChainTransactions(
       return [];
     }
 
-    const txData = await txResponse.json() as {
+    type TxListResponse = {
       result?: Array<{
         value: string;
         timeStamp: string;
@@ -847,6 +906,13 @@ async function fetchChainTransactions(
       }>;
     };
 
+    const txParsed = await safeJsonParse<TxListResponse>(txResponse, `${chain}-txlist`);
+    if (!txParsed.success) {
+      console.log(`Failed to parse transactions for ${chain}: ${txParsed.error}`);
+      return [];
+    }
+
+    const txData = txParsed.data;
     if (!txData.result || !Array.isArray(txData.result)) {
       console.log(`No transaction data for ${chain}`);
       return [];

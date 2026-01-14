@@ -1,281 +1,474 @@
-import { useState, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { fixFloatingPoint, calculateStopLoss, calculateTakeProfit } from '@/react-app/utils/formatNumber';
+/**
+ * Professional Deal Ticket Component - Bybit Style
+ */
 
-type OrderType = 'LIMIT' | 'MARKET' | 'CONDITIONAL';
+import { useState, useEffect, useMemo } from 'react';
+import { ChevronDown, Settings, Calculator } from 'lucide-react';
+
+type OrderType = 'limit' | 'market' | 'conditional';
 export type TradingType = 'spot' | 'margin' | 'futures';
 
 interface DealTicketProps {
   currentPrice?: number;
   symbol?: string;
   tradingType?: TradingType;
+  availableBalance?: number;
+  onOrderSubmit?: (order: {
+    side: 'buy' | 'sell';
+    type: OrderType;
+    price: number;
+    quantity: number;
+    leverage: number;
+    takeProfit?: number;
+    stopLoss?: number;
+  }) => void;
 }
 
 export default function DealTicket({
   currentPrice = 98500,
   symbol = 'BTCUSDT',
-  tradingType = 'futures'
+  tradingType = 'futures',
+  availableBalance = 70.1925,
+  onOrderSubmit
 }: DealTicketProps) {
   const baseAsset = symbol.replace(/USDT$|USD$|BUSD$/, '');
-  
-  const [orderType, setOrderType] = useState<OrderType>('LIMIT');
-  const [price, setPrice] = useState<number>(currentPrice);
-  const [stopLoss, setStopLoss] = useState<number>(currentPrice * 0.98);
-  const [takeProfit, setTakeProfit] = useState<number>(currentPrice * 1.04);
-  const [riskAmount, setRiskAmount] = useState<number>(50);
-  const [leverage, setLeverage] = useState<number>(10);
+
+  const [orderType, setOrderType] = useState<OrderType>('limit');
   const [marginMode, setMarginMode] = useState<'isolated' | 'cross'>('isolated');
-  const [calculatedSize, setCalculatedSize] = useState<number>(0);
-  const [sliderValue, setSliderValue] = useState<number>(25);
-  const [showMarginDropdown, setShowMarginDropdown] = useState(false);
+  const [leverage, setLeverage] = useState(15);
+  const [showLeverageModal, setShowLeverageModal] = useState(false);
 
-  // Determine max leverage based on trading type
-  const maxLeverage = tradingType === 'spot' ? 1 : tradingType === 'margin' ? 10 : 125;
+  const [price, setPrice] = useState(currentPrice.toString());
+  const [quantity, setQuantity] = useState('');
+  const [quantityUnit, setQuantityUnit] = useState<'coin' | 'usdt'>('coin');
+  const [sliderValue, setSliderValue] = useState(0);
 
-  // Determine button labels based on trading type
-  const buyLabel = tradingType === 'spot' ? 'Buy' : 'Buy/Long';
-  const sellLabel = tradingType === 'spot' ? 'Sell' : 'Sell/Short';
+  const [showTpSl, setShowTpSl] = useState(false);
+  const [takeProfit, setTakeProfit] = useState('');
+  const [stopLoss, setStopLoss] = useState('');
+  const [postOnly, setPostOnly] = useState(false);
+  const [reduceOnly, setReduceOnly] = useState(false);
 
-  console.log(`[Deal Ticket] Trading type: ${tradingType}, Max leverage: ${maxLeverage}x`);
+  const maxLeverage = tradingType === 'spot' ? 1 : tradingType === 'margin' ? 10 : 100;
 
   useEffect(() => {
-    setPrice(currentPrice);
-    setStopLoss(calculateStopLoss(currentPrice, 0.02)); // 2% below entry
-    setTakeProfit(calculateTakeProfit(currentPrice, 0.04)); // 4% above entry
+    setPrice(currentPrice.toFixed(4));
   }, [currentPrice]);
 
-  useEffect(() => {
-    if (riskAmount > 0 && price > 0 && stopLoss > 0) {
-      const distance = Math.abs(price - stopLoss);
-      if (distance > 0) {
-        const size = riskAmount / distance;
-        setCalculatedSize(fixFloatingPoint(size, 4));
-      } else {
-        setCalculatedSize(0);
-      }
-    } else {
-      setCalculatedSize(0);
-    }
-  }, [riskAmount, price, stopLoss]);
+  // Calculate order values
+  const orderCalc = useMemo(() => {
+    const qty = parseFloat(quantity) || 0;
+    const prc = parseFloat(price) || currentPrice;
 
-  const totalValue = fixFloatingPoint(calculatedSize * price, 2).toFixed(2);
-  const estimatedLiqPrice = fixFloatingPoint(price * 0.9, 2).toFixed(2);
+    let value = 0;
+    let cost = 0;
+    let coinQty = qty;
+
+    if (quantityUnit === 'usdt') {
+      value = qty;
+      coinQty = qty / prc;
+      cost = qty / leverage;
+    } else {
+      value = qty * prc;
+      cost = value / leverage;
+    }
+
+    const liqPrice = prc * (1 - (1 / leverage) * 0.9); // Simplified
+
+    return { value, cost, coinQty, liqPrice };
+  }, [quantity, price, currentPrice, leverage, quantityUnit]);
+
+  // Handle slider change
+  const handleSliderChange = (percent: number) => {
+    setSliderValue(percent);
+    const maxValue = availableBalance * leverage;
+    const value = (maxValue * percent) / 100;
+    if (quantityUnit === 'usdt') {
+      setQuantity(value.toFixed(2));
+    } else {
+      const prc = parseFloat(price) || currentPrice;
+      setQuantity((value / prc).toFixed(6));
+    }
+  };
+
+  const handleOrder = (side: 'buy' | 'sell') => {
+    onOrderSubmit?.({
+      side,
+      type: orderType,
+      price: parseFloat(price) || currentPrice,
+      quantity: orderCalc.coinQty,
+      leverage,
+      takeProfit: parseFloat(takeProfit) || undefined,
+      stopLoss: parseFloat(stopLoss) || undefined,
+    });
+  };
+
   const sliderMarks = [0, 25, 50, 75, 100];
 
-  const handleBuyLong = () => {
-    console.log('Buy/Long:', { orderType, price, stopLoss, takeProfit, riskAmount, leverage, size: calculatedSize });
-  };
-
-  const handleSellShort = () => {
-    console.log('Sell/Short:', { orderType, price, stopLoss, takeProfit, riskAmount, leverage, size: calculatedSize });
-  };
-
   return (
-    <div className="h-full flex flex-col bg-[#1e2026] text-[#eaecef] text-xs">
-      {/* Order Type Tabs */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-[#2b3139]">
-        <div className="flex gap-4">
-          {(['LIMIT', 'MARKET', 'CONDITIONAL'] as OrderType[]).map((type) => (
-            <button
-              key={type}
-              onClick={() => setOrderType(type)}
-              className={`text-xs font-medium pb-1 transition-colors ${
-                orderType === type
-                  ? 'text-[#f0b90b] border-b-2 border-[#f0b90b]'
-                  : 'text-[#848e9c] hover:text-[#eaecef]'
-              }`}
-            >
-              {type.charAt(0) + type.slice(1).toLowerCase()}
-            </button>
-          ))}
+    <div className="h-full flex flex-col bg-[#16181c] text-[13px]">
+      {/* Margin Mode & Leverage */}
+      {tradingType !== 'spot' && (
+        <div className="flex gap-2 px-3 py-2.5 border-b border-[#2b2f36]">
+          <button
+            onClick={() => setShowLeverageModal(true)}
+            className="flex-1 flex items-center justify-between bg-[#1e2026] hover:bg-[#252930] border border-[#2b2f36] rounded px-3 py-2 transition-colors"
+          >
+            <span className="text-[#848e9c]">{marginMode === 'isolated' ? 'Isolated' : 'Cross'}</span>
+            <ChevronDown className="w-3.5 h-3.5 text-[#848e9c]" />
+          </button>
+          <button
+            onClick={() => setShowLeverageModal(true)}
+            className="flex-1 flex items-center justify-between bg-[#1e2026] hover:bg-[#252930] border border-[#2b2f36] rounded px-3 py-2 transition-colors"
+          >
+            <span className="text-white">{leverage.toFixed(2)}x</span>
+            <ChevronDown className="w-3.5 h-3.5 text-[#848e9c]" />
+          </button>
         </div>
+      )}
 
-        {/* Margin Dropdown - Hidden for Spot Trading */}
-        {tradingType !== 'spot' && (
-          <div className="relative">
-            <button
-              onClick={() => setShowMarginDropdown(!showMarginDropdown)}
-              className="flex items-center gap-1 text-[#848e9c] hover:text-[#eaecef] bg-[#2b3139] px-2 py-1 rounded text-xs"
-            >
-              <span>{marginMode === 'isolated' ? 'Isolated' : 'Cross'} {leverage}x</span>
-              <ChevronDown className="w-3 h-3" />
-            </button>
-
-            {showMarginDropdown && (
-              <div className="absolute right-0 top-full mt-1 bg-[#2b3139] rounded shadow-xl z-50 w-36">
-                <div className="p-2 border-b border-[#1e2026]">
-                  <div className="flex gap-1 mb-2">
-                    <button
-                      onClick={() => setMarginMode('cross')}
-                      className={`flex-1 text-xs py-1 rounded ${marginMode === 'cross' ? 'bg-[#f0b90b] text-black' : 'bg-[#1e2026] text-[#848e9c]'}`}
-                    >
-                      Cross
-                    </button>
-                    <button
-                      onClick={() => setMarginMode('isolated')}
-                      className={`flex-1 text-xs py-1 rounded ${marginMode === 'isolated' ? 'bg-[#f0b90b] text-black' : 'bg-[#1e2026] text-[#848e9c]'}`}
-                    >
-                      Isolated
-                    </button>
-                  </div>
-                  <input
-                    type="range"
-                    min="1"
-                    max={maxLeverage}
-                    value={Math.min(leverage, maxLeverage)}
-                    onChange={(e) => setLeverage(Number(e.target.value))}
-                    className="w-full h-1 bg-[#1e2026] rounded appearance-none cursor-pointer"
-                  />
-                  <div className="flex justify-between text-[10px] text-[#848e9c] mt-1">
-                    <span>1x</span>
-                    <span className="text-[#f0b90b]">{Math.min(leverage, maxLeverage)}x</span>
-                    <span>{maxLeverage}x</span>
-                  </div>
-                </div>
-                <button onClick={() => setShowMarginDropdown(false)} className="w-full text-xs py-1.5 text-[#f0b90b] hover:bg-[#1e2026]">
-                  Confirm
-                </button>
-              </div>
-            )}
-          </div>
-        )}
+      {/* Order Type Tabs */}
+      <div className="flex items-center gap-4 px-3 py-2.5 border-b border-[#2b2f36]">
+        {(['limit', 'market', 'conditional'] as OrderType[]).map((type) => (
+          <button
+            key={type}
+            onClick={() => setOrderType(type)}
+            className={`text-[13px] transition-colors ${
+              orderType === type ? 'text-[#00d9c8] font-medium' : 'text-[#848e9c] hover:text-white'
+            }`}
+          >
+            {type.charAt(0).toUpperCase() + type.slice(1)}
+          </button>
+        ))}
+        <ChevronDown className="w-3.5 h-3.5 text-[#848e9c]" />
       </div>
 
-      {/* Form */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin">
-        {/* Price */}
+      {/* Order Form */}
+      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
+        {/* Price Input */}
         <div>
-          <div className="flex justify-between text-[#848e9c] mb-1">
-            <span>Price</span>
-            <span className="text-[#f0b90b] cursor-pointer hover:underline">Last</span>
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[#848e9c] text-xs">Price</span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPrice(currentPrice.toFixed(4))}
+                className="text-[#00d9c8] text-xs hover:text-[#00d9c8]/80"
+              >
+                Last
+              </button>
+              <Settings className="w-3.5 h-3.5 text-[#848e9c] cursor-pointer hover:text-white" />
+            </div>
           </div>
-          <div className="relative">
-            <input
-              type="number"
-              value={orderType === 'MARKET' ? '' : price}
-              onChange={(e) => setPrice(Number(e.target.value))}
-              disabled={orderType === 'MARKET'}
-              placeholder={orderType === 'MARKET' ? 'Market' : ''}
-              className="w-full bg-[#2b3139] rounded px-3 py-2 text-[#eaecef] text-xs focus:outline-none focus:ring-1 focus:ring-[#f0b90b] disabled:text-[#848e9c]"
-            />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#848e9c]">USDT</span>
-          </div>
-        </div>
-
-        {/* Risk Amount */}
-        <div>
-          <div className="flex justify-between text-[#848e9c] mb-1">
-            <span>Risk Amount</span>
-            <span className="text-[#f0b90b]">$</span>
-          </div>
-          <div className="relative">
-            <input
-              type="number"
-              value={riskAmount}
-              onChange={(e) => setRiskAmount(Number(e.target.value))}
-              className="w-full bg-[#2b3139] rounded px-3 py-2 text-[#eaecef] text-xs focus:outline-none ring-1 ring-[#f0b90b]/50"
-            />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#848e9c]">USDT</span>
-          </div>
-        </div>
-
-        {/* Stop Loss */}
-        <div>
-          <div className="text-[#848e9c] mb-1">Stop Loss</div>
-          <div className="relative">
-            <input
-              type="number"
-              value={stopLoss}
-              onChange={(e) => setStopLoss(Number(e.target.value))}
-              className="w-full bg-[#2b3139] rounded px-3 py-2 text-[#eaecef] text-xs focus:outline-none focus:ring-1 focus:ring-[#f6465d]"
-            />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#848e9c]">USDT</span>
-          </div>
-        </div>
-
-        {/* Take Profit */}
-        <div>
-          <div className="text-[#848e9c] mb-1">Take Profit</div>
-          <div className="relative">
-            <input
-              type="number"
-              value={takeProfit}
-              onChange={(e) => setTakeProfit(Number(e.target.value))}
-              className="w-full bg-[#2b3139] rounded px-3 py-2 text-[#eaecef] text-xs focus:outline-none focus:ring-1 focus:ring-[#2ead65]"
-            />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#848e9c]">USDT</span>
-          </div>
-        </div>
-
-        {/* Quantity (Read-only) */}
-        <div>
-          <div className="flex justify-between text-[#848e9c] mb-1">
-            <span>Qty ({baseAsset})</span>
-            <span className="text-[#2ead65]">Auto</span>
-          </div>
-          <div className="relative">
-            <input
-              type="text"
-              value={calculatedSize}
-              readOnly
-              className="w-full bg-[#2b3139] rounded px-3 py-2 text-[#eaecef] text-xs cursor-not-allowed"
-            />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#848e9c]">{baseAsset}</span>
-          </div>
-        </div>
-
-        {/* Slider */}
-        <div className="pt-1">
           <input
-            type="range"
-            min="0"
-            max="100"
-            value={sliderValue}
-            onChange={(e) => setSliderValue(Number(e.target.value))}
-            className="w-full h-1 bg-[#2b3139] rounded appearance-none cursor-pointer"
-            style={{ background: `linear-gradient(to right, #f0b90b 0%, #f0b90b ${sliderValue}%, #2b3139 ${sliderValue}%, #2b3139 100%)` }}
+            type="text"
+            value={orderType === 'market' ? 'Market Price' : price}
+            onChange={(e) => setPrice(e.target.value)}
+            disabled={orderType === 'market'}
+            className="w-full bg-[#1e2026] border border-[#2b2f36] rounded px-3 py-2.5 text-white text-[13px] outline-none focus:border-[#00d9c8]/50 disabled:text-[#848e9c] transition-colors"
           />
-          <div className="flex justify-between mt-1.5">
+        </div>
+
+        {/* Quantity Input */}
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[#848e9c] text-xs">Quantity</span>
+            <button
+              onClick={() => setQuantityUnit(u => u === 'coin' ? 'usdt' : 'coin')}
+              className="flex items-center gap-1 text-[#00d9c8] text-xs"
+            >
+              {quantityUnit === 'coin' ? baseAsset : 'USDT'}
+              <ChevronDown className="w-3 h-3" />
+            </button>
+          </div>
+          <input
+            type="text"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            placeholder="0"
+            className="w-full bg-[#1e2026] border border-[#2b2f36] rounded px-3 py-2.5 text-white text-[13px] outline-none focus:border-[#00d9c8]/50 placeholder-[#848e9c] transition-colors"
+          />
+        </div>
+
+        {/* Percentage Slider */}
+        <div className="py-2">
+          <div className="relative">
+            <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-[2px] bg-[#2b2f36]" />
+            <div
+              className="absolute top-1/2 -translate-y-1/2 left-0 h-[2px] bg-[#00d9c8]"
+              style={{ width: `${sliderValue}%` }}
+            />
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={sliderValue}
+              onChange={(e) => handleSliderChange(Number(e.target.value))}
+              className="relative w-full h-4 appearance-none bg-transparent cursor-pointer z-10 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#00d9c8] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[#16181c] [&::-webkit-slider-thumb]:cursor-pointer"
+            />
+          </div>
+          <div className="flex justify-between mt-1">
             {sliderMarks.map((mark) => (
               <button
                 key={mark}
-                onClick={() => setSliderValue(mark)}
-                className={`w-5 h-5 rounded-full text-[10px] ${sliderValue >= mark ? 'bg-[#f0b90b] text-black' : 'bg-[#2b3139] text-[#848e9c]'}`}
-              >
-                {mark}
-              </button>
+                onClick={() => handleSliderChange(mark)}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  sliderValue >= mark ? 'bg-[#00d9c8]' : 'bg-[#2b2f36]'
+                }`}
+              />
             ))}
           </div>
+          <div className="flex justify-between text-[10px] text-[#848e9c] mt-1">
+            <span>0</span>
+            <span>100%</span>
+          </div>
         </div>
 
-        {/* Summary */}
-        <div className="bg-[#2b3139] rounded p-2 space-y-1 mt-2">
-          <div className="flex justify-between">
-            <span className="text-[#848e9c]">Order Value</span>
-            <span>${totalValue}</span>
+        {/* Order Info */}
+        <div className="space-y-2 py-2 border-t border-[#2b2f36]">
+          <div className="flex justify-between text-xs">
+            <span className="text-[#848e9c]">Value</span>
+            <span className="text-white">
+              {orderCalc.value > 0 ? `${orderCalc.value.toFixed(2)} USDT` : '-- / -- USDT'}
+            </span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-[#848e9c]">Est. Liq. Price</span>
-            <span className="text-[#f6465d]">${estimatedLiqPrice}</span>
+          <div className="flex justify-between text-xs">
+            <span className="text-[#848e9c]">Cost</span>
+            <span className="text-white">
+              {orderCalc.cost > 0 ? `${orderCalc.cost.toFixed(2)} USDT` : '-- / -- USDT'}
+            </span>
           </div>
+          {tradingType !== 'spot' && (
+            <div className="flex justify-between text-xs">
+              <span className="text-[#848e9c]">Liq. Price</span>
+              <button className="text-[#00d9c8]">Calculate</button>
+            </div>
+          )}
+        </div>
+
+        {/* Options */}
+        <div className="space-y-2.5 py-2 border-t border-[#2b2f36]">
+          {/* TP/SL */}
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showTpSl}
+              onChange={(e) => setShowTpSl(e.target.checked)}
+              className="w-4 h-4 rounded border-[#2b2f36] bg-[#1e2026] text-[#00d9c8] focus:ring-0 focus:ring-offset-0 cursor-pointer"
+            />
+            <span className="text-[#848e9c] text-xs">TP/SL</span>
+          </label>
+
+          {showTpSl && (
+            <div className="grid grid-cols-2 gap-2 pl-6">
+              <input
+                type="text"
+                value={takeProfit}
+                onChange={(e) => setTakeProfit(e.target.value)}
+                placeholder="Take Profit"
+                className="bg-[#1e2026] border border-[#2b2f36] rounded px-2 py-1.5 text-white text-xs outline-none focus:border-[#0ecb81]/50 placeholder-[#848e9c]"
+              />
+              <input
+                type="text"
+                value={stopLoss}
+                onChange={(e) => setStopLoss(e.target.value)}
+                placeholder="Stop Loss"
+                className="bg-[#1e2026] border border-[#2b2f36] rounded px-2 py-1.5 text-white text-xs outline-none focus:border-[#f6465d]/50 placeholder-[#848e9c]"
+              />
+            </div>
+          )}
+
+          {/* Post-Only */}
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={postOnly}
+                onChange={(e) => setPostOnly(e.target.checked)}
+                className="w-4 h-4 rounded border-[#2b2f36] bg-[#1e2026] text-[#00d9c8] focus:ring-0 focus:ring-offset-0 cursor-pointer"
+              />
+              <span className="text-[#848e9c] text-xs">Post-Only</span>
+            </label>
+            <button className="flex items-center gap-1 text-[#848e9c] text-xs hover:text-white">
+              Good-Till-Canceled
+              <ChevronDown className="w-3 h-3" />
+            </button>
+          </div>
+
+          {/* Reduce-Only */}
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={reduceOnly}
+              onChange={(e) => setReduceOnly(e.target.checked)}
+              className="w-4 h-4 rounded border-[#2b2f36] bg-[#1e2026] text-[#00d9c8] focus:ring-0 focus:ring-offset-0 cursor-pointer"
+            />
+            <span className="text-[#848e9c] text-xs">Reduce-Only</span>
+          </label>
+        </div>
+
+        {/* Buy/Sell Buttons */}
+        <div className="flex gap-2 pt-2">
+          <button
+            onClick={() => handleOrder('buy')}
+            className="flex-1 py-3 bg-[#0ecb81] hover:bg-[#0ecb81]/90 text-white font-semibold rounded-lg transition-colors"
+          >
+            Long
+          </button>
+          <button
+            onClick={() => handleOrder('sell')}
+            className="flex-1 py-3 bg-[#f6465d] hover:bg-[#f6465d]/90 text-white font-semibold rounded-lg transition-colors"
+          >
+            Short
+          </button>
+        </div>
+
+        {/* Fee Rate & Calculator */}
+        <div className="flex items-center gap-4 text-xs py-1">
+          <button className="flex items-center gap-1 text-[#848e9c] hover:text-white">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00d9c8]" />
+            Fee Rate
+          </button>
+          <button className="flex items-center gap-1 text-[#848e9c] hover:text-white">
+            <Calculator className="w-3.5 h-3.5" />
+            Calculator
+          </button>
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="p-3 border-t border-[#2b3139]">
-        <div className="flex gap-2">
-          <button onClick={handleBuyLong} className="flex-1 bg-[#2ead65] hover:bg-[#26965a] text-white font-medium py-2.5 rounded text-sm transition-colors">
-            {buyLabel}
-          </button>
-          <button onClick={handleSellShort} className="flex-1 bg-[#f6465d] hover:bg-[#d93d52] text-white font-medium py-2.5 rounded text-sm transition-colors">
-            {sellLabel}
+      {/* Account Section */}
+      <div className="border-t border-[#2b2f36] px-3 py-3 space-y-2.5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <span className="text-white text-xs font-medium">Unified Trading Account</span>
+            <span className="text-[#848e9c]">ⓘ</span>
+          </div>
+          <button className="flex items-center gap-1 text-xs text-[#848e9c] hover:text-white">
+            <span>📊</span>
+            P&L
           </button>
         </div>
-        <div className="flex justify-between text-[#848e9c] mt-2">
-          <span>Available</span>
-          <span>0.00 USDT</span>
+
+        <div className="flex justify-between text-xs">
+          <span className="text-[#848e9c]">Margin Mode</span>
+          <button className="flex items-center gap-1 text-white hover:text-[#00d9c8]">
+            {marginMode === 'isolated' ? 'Isolated Margin' : 'Cross Margin'}
+            <ChevronDown className="w-3 h-3" />
+          </button>
+        </div>
+
+        <div className="space-y-1">
+          <div className="flex justify-between text-xs">
+            <span className="text-[#848e9c]">Margin Balance</span>
+            <span className="text-white">{availableBalance.toFixed(4)} USDT</span>
+          </div>
+          <div className="flex justify-between text-xs">
+            <span className="text-[#848e9c]">Available Balance</span>
+            <span className="text-white">{availableBalance.toFixed(4)} USDT</span>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-2 pt-1">
+          <button className="flex-1 py-2 bg-[#2b2f36] hover:bg-[#363c45] text-white text-xs font-medium rounded transition-colors">
+            Deposit
+          </button>
+          <button className="flex-1 py-2 bg-[#2b2f36] hover:bg-[#363c45] text-white text-xs font-medium rounded transition-colors">
+            Convert
+          </button>
+          <button className="flex-1 py-2 bg-[#2b2f36] hover:bg-[#363c45] text-white text-xs font-medium rounded transition-colors">
+            Transfer
+          </button>
         </div>
       </div>
+
+      {/* Leverage Modal */}
+      {showLeverageModal && (
+        <div
+          className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+          onClick={() => setShowLeverageModal(false)}
+        >
+          <div
+            className="bg-[#1e2026] rounded-xl p-4 w-80 border border-[#2b2f36]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-white font-semibold mb-4">Adjust Leverage</h3>
+
+            {/* Margin Mode */}
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={() => setMarginMode('cross')}
+                className={`flex-1 py-2 rounded text-sm transition-colors ${
+                  marginMode === 'cross'
+                    ? 'bg-[#00d9c8] text-black font-medium'
+                    : 'bg-[#2b2f36] text-[#848e9c] hover:text-white'
+                }`}
+              >
+                Cross
+              </button>
+              <button
+                onClick={() => setMarginMode('isolated')}
+                className={`flex-1 py-2 rounded text-sm transition-colors ${
+                  marginMode === 'isolated'
+                    ? 'bg-[#00d9c8] text-black font-medium'
+                    : 'bg-[#2b2f36] text-[#848e9c] hover:text-white'
+                }`}
+              >
+                Isolated
+              </button>
+            </div>
+
+            {/* Leverage Input */}
+            <div className="mb-4">
+              <input
+                type="number"
+                value={leverage}
+                onChange={(e) => setLeverage(Math.min(maxLeverage, Math.max(1, Number(e.target.value))))}
+                className="w-full bg-[#2b2f36] border border-[#2b2f36] rounded px-3 py-2.5 text-white text-center text-lg font-semibold outline-none focus:border-[#00d9c8]/50"
+              />
+            </div>
+
+            {/* Leverage Slider */}
+            <div className="mb-4">
+              <input
+                type="range"
+                min="1"
+                max={maxLeverage}
+                value={leverage}
+                onChange={(e) => setLeverage(Number(e.target.value))}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-[#848e9c] mt-1">
+                <span>1x</span>
+                <span>{maxLeverage}x</span>
+              </div>
+            </div>
+
+            {/* Quick Select */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              {[1, 5, 10, 25, 50, 75, 100].filter(l => l <= maxLeverage).map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLeverage(l)}
+                  className={`px-3 py-1.5 rounded text-xs transition-colors ${
+                    leverage === l
+                      ? 'bg-[#00d9c8] text-black font-medium'
+                      : 'bg-[#2b2f36] text-[#848e9c] hover:text-white'
+                  }`}
+                >
+                  {l}x
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setShowLeverageModal(false)}
+              className="w-full py-2.5 bg-[#00d9c8] hover:bg-[#00d9c8]/90 text-black font-semibold rounded transition-colors"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

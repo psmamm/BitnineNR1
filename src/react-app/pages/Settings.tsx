@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router";
 import { useAuth } from "../contexts/AuthContext";
 import { buildApiUrl } from "../hooks/useApi";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   User,
   Shield,
@@ -31,7 +31,7 @@ import { useExchangeConnections } from "@/react-app/hooks/useExchangeConnections
 type SettingsSection = "profile" | "security" | "api" | "notifications" | "data";
 
 export default function SettingsPage() {
-  const { user, updateUserProfile, uploadProfilePicture } = useAuth();
+  const { user, updateUserProfile, uploadProfilePicture, resetPassword } = useAuth();
   const [searchParams] = useSearchParams();
   const [activeSection, setActiveSection] = useState<SettingsSection>("profile");
   const [showExchangeModal, setShowExchangeModal] = useState(false);
@@ -55,6 +55,26 @@ export default function SettingsPage() {
     productUpdates: false,
     securityAlerts: true,
   });
+
+  // Security modals state
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [show2FAModal, setShow2FAModal] = useState(false);
+  const [showAntiPhishingModal, setShowAntiPhishingModal] = useState(false);
+  const [passwordResetSent, setPasswordResetSent] = useState(false);
+  const [passwordResetError, setPasswordResetError] = useState<string | null>(null);
+  const [passwordResetLoading, setPasswordResetLoading] = useState(false);
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const [antiPhishingCode, setAntiPhishingCode] = useState("");
+  const [antiPhishingInput, setAntiPhishingInput] = useState("");
+  const [antiPhishingSaved, setAntiPhishingSaved] = useState(false);
+
+  // 2FA Setup state
+  const [twoFactorStep, setTwoFactorStep] = useState<"intro" | "qrcode" | "verify" | "backup" | "success">("intro");
+  const [twoFactorSecret, setTwoFactorSecret] = useState("");
+  const [twoFactorVerifyCode, setTwoFactorVerifyCode] = useState("");
+  const [twoFactorVerifyError, setTwoFactorVerifyError] = useState<string | null>(null);
+  const [twoFactorBackupCodes, setTwoFactorBackupCodes] = useState<string[]>([]);
+  const [twoFactorLoading, setTwoFactorLoading] = useState(false);
 
   // Read section from URL parameter
   useEffect(() => {
@@ -241,6 +261,121 @@ export default function SettingsPage() {
     }
   };
 
+  // Handle password reset email
+  const handlePasswordReset = async () => {
+    if (!user?.email) return;
+
+    setPasswordResetLoading(true);
+    setPasswordResetError(null);
+    setPasswordResetSent(false);
+
+    try {
+      const result = await resetPassword(user.email);
+      if (result.error) {
+        setPasswordResetError("Failed to send password reset email");
+      } else {
+        setPasswordResetSent(true);
+      }
+    } catch {
+      setPasswordResetError("Failed to send password reset email");
+    } finally {
+      setPasswordResetLoading(false);
+    }
+  };
+
+
+  // Generate random TOTP secret (Base32 encoded)
+  const generateSecret = (): string => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+    let secret = '';
+    const randomValues = new Uint8Array(20);
+    crypto.getRandomValues(randomValues);
+    for (let i = 0; i < 20; i++) {
+      secret += chars[randomValues[i] % chars.length];
+    }
+    return secret;
+  };
+
+  // Generate backup codes
+  const generateBackupCodes = (): string[] => {
+    const codes: string[] = [];
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    for (let i = 0; i < 8; i++) {
+      let code = '';
+      const randomValues = new Uint8Array(8);
+      crypto.getRandomValues(randomValues);
+      for (let j = 0; j < 8; j++) {
+        code += chars[randomValues[j] % chars.length];
+      }
+      codes.push(`${code.slice(0, 4)}-${code.slice(4, 8)}`);
+    }
+    return codes;
+  };
+
+  // Start 2FA setup
+  const handleStart2FASetup = () => {
+    const secret = generateSecret();
+    setTwoFactorSecret(secret);
+    setTwoFactorStep("qrcode");
+    setTwoFactorVerifyCode("");
+    setTwoFactorVerifyError(null);
+  };
+
+  // Verify 2FA code
+  const handleVerify2FACode = async () => {
+    if (twoFactorVerifyCode.length !== 6) {
+      setTwoFactorVerifyError("Please enter a 6-digit code");
+      return;
+    }
+
+    setTwoFactorLoading(true);
+    setTwoFactorVerifyError(null);
+
+    // Simulate verification (in production, this would call the backend)
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // For demo purposes, accept any 6-digit code
+    // In production, this would verify against the TOTP algorithm
+    const backupCodes = generateBackupCodes();
+    setTwoFactorBackupCodes(backupCodes);
+    setTwoFactorStep("backup");
+    setTwoFactorLoading(false);
+  };
+
+  // Complete 2FA setup
+  const handleComplete2FASetup = () => {
+    setTwoFactorEnabled(true);
+    setTwoFactorStep("success");
+  };
+
+  // Close 2FA modal and reset state
+  const handleClose2FAModal = () => {
+    setShow2FAModal(false);
+    setTwoFactorStep("intro");
+    setTwoFactorVerifyCode("");
+    setTwoFactorVerifyError(null);
+  };
+
+  // Disable 2FA
+  const handleDisable2FA = () => {
+    setTwoFactorEnabled(false);
+    setTwoFactorSecret("");
+    setTwoFactorBackupCodes([]);
+    handleClose2FAModal();
+  };
+
+  // Handle Anti-Phishing Code save
+  const handleSaveAntiPhishing = () => {
+    if (antiPhishingInput.trim()) {
+      setAntiPhishingCode(antiPhishingInput.trim());
+      setAntiPhishingSaved(true);
+      setTimeout(() => {
+        setShowAntiPhishingModal(false);
+        setAntiPhishingSaved(false);
+      }, 1500);
+    }
+  };
+
   // Generate a mock UID based on user email
   const uid = user?.email ?
     user.email.split('@')[0].slice(0, 8).toUpperCase() +
@@ -256,41 +391,6 @@ export default function SettingsPage() {
     { id: "data" as const, label: "Data Export", icon: Download },
   ];
 
-  // Security items with status
-  const securityItems = [
-    {
-      id: "email",
-      title: "Email Verification",
-      description: "Verify your email address for account recovery",
-      icon: Mail,
-      completed: true,
-      action: "Verified"
-    },
-    {
-      id: "password",
-      title: "Login Password",
-      description: "Set a strong password to protect your account",
-      icon: Lock,
-      completed: true,
-      action: "Change"
-    },
-    {
-      id: "2fa",
-      title: "Two-Factor Authentication",
-      description: "Add an extra layer of security to your account",
-      icon: Smartphone,
-      completed: false,
-      action: "Enable"
-    },
-    {
-      id: "anti-phishing",
-      title: "Anti-Phishing Code",
-      description: "Set a code to identify legitimate emails from CIRCL",
-      icon: Shield,
-      completed: false,
-      action: "Set Up"
-    }
-  ];
 
   return (
     <DashboardLayout>
@@ -464,89 +564,254 @@ export default function SettingsPage() {
                 </motion.div>
               )}
 
-              {/* Security Section */}
+              {/* Security Section - Bitget Style */}
               {activeSection === "security" && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="space-y-6"
+                  className="space-y-8"
                 >
-                  {/* Security Overview Card */}
-                  <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-6">
-                    <div className="flex items-center justify-between mb-6">
-                      <div>
-                        <h3 className="text-lg font-medium text-white">Security Level</h3>
-                        <p className="text-sm text-[#9CA3AF] mt-1">Complete all security settings to protect your account</p>
+                  {/* Verification Methods Section */}
+                  <div>
+                    <h2 className="text-white text-lg font-semibold mb-4">Verification methods</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {/* Email Verification Card */}
+                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                            <Mail className="w-5 h-5 text-[#9CA3AF]" />
+                          </div>
+                          <span className="px-2.5 py-1 bg-[#1A1A1E] rounded-full text-xs text-[#9CA3AF] flex items-center gap-1.5">
+                            {user?.email?.replace(/(.{3}).*(@.*)/, '$1***$2')}
+                          </span>
+                        </div>
+                        <h3 className="text-white font-medium mb-1">Email verification</h3>
+                        <p className="text-[#6B7280] text-sm mb-4 flex-1">
+                          Email verification codes help guarantee account and transaction security.
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <button className="text-[#00D9C8] text-sm font-medium hover:text-[#00F5E1] transition-colors">
+                            Edit
+                          </button>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-2xl font-semibold text-[#00D9C8]">50%</div>
-                        <div className="text-xs text-[#6B7280]">2 of 4 completed</div>
-                      </div>
-                    </div>
 
-                    {/* Progress Bar */}
-                    <div className="h-2 bg-[#2A2A2E] rounded-full overflow-hidden">
-                      <div className="h-full w-1/2 bg-[#00D9C8] rounded-full" />
-                    </div>
-                  </div>
-
-                  {/* Security Items */}
-                  <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] divide-y divide-[#2A2A2E]">
-                    {securityItems.map((item) => (
-                      <div key={item.id} className="p-5 flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                            item.completed ? "bg-[#00D9C8]/10" : "bg-[#1A1A1E]"
+                      {/* Google Authenticator Card */}
+                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                            <Smartphone className="w-5 h-5 text-[#00D9C8]" />
+                          </div>
+                          <span className={`px-2.5 py-1 rounded-full text-xs flex items-center gap-1.5 ${
+                            twoFactorEnabled
+                              ? "bg-[#00D9C8]/10 text-[#00D9C8]"
+                              : "bg-[#1A1A1E] text-[#6B7280]"
                           }`}>
-                            <item.icon className={`w-5 h-5 ${
-                              item.completed ? "text-[#00D9C8]" : "text-[#9CA3AF]"
-                            }`} />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h4 className="text-white font-medium">{item.title}</h4>
-                              {item.completed ? (
-                                <span className="w-5 h-5 bg-[#00D9C8] rounded-full flex items-center justify-center">
-                                  <Check className="w-3 h-3 text-[#0D0D0F]" />
-                                </span>
-                              ) : (
-                                <span className="w-5 h-5 bg-[#2A2A2E] rounded-full flex items-center justify-center">
-                                  <X className="w-3 h-3 text-[#6B7280]" />
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-sm text-[#9CA3AF] mt-0.5">{item.description}</p>
-                          </div>
+                            <span className={`w-1.5 h-1.5 rounded-full ${twoFactorEnabled ? "bg-[#00D9C8]" : "bg-[#6B7280]"}`} />
+                            {twoFactorEnabled ? "Enabled" : "Disabled"}
+                          </span>
                         </div>
-                        <button className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                          item.completed
-                            ? "bg-[#1A1A1E] border border-[#2A2A2E] text-white hover:bg-[#222226]"
-                            : "bg-[#00D9C8] text-[#0D0D0F] hover:bg-[#00F5E1]"
-                        }`}>
-                          {item.action}
-                        </button>
+                        <h3 className="text-white font-medium mb-1">Google Authenticator</h3>
+                        <p className="text-[#6B7280] text-sm mb-4 flex-1">
+                          Google Authenticator codes help guarantee account and transaction security.
+                        </p>
+                        <div className="flex items-center gap-3">
+                          {twoFactorEnabled ? (
+                            <>
+                              <button
+                                onClick={() => setShow2FAModal(true)}
+                                className="text-[#00D9C8] text-sm font-medium hover:text-[#00F5E1] transition-colors"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setTwoFactorEnabled(false);
+                                }}
+                                className="text-[#9CA3AF] text-sm font-medium hover:text-white transition-colors"
+                              >
+                                Unbind
+                              </button>
+                            </>
+                          ) : (
+                            <button
+                              onClick={() => setShow2FAModal(true)}
+                              className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors"
+                            >
+                              Configure
+                            </button>
+                          )}
+                        </div>
                       </div>
-                    ))}
+
+                      {/* Login Password Card */}
+                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                            <Lock className="w-5 h-5 text-[#9CA3AF]" />
+                          </div>
+                          <span className="px-2.5 py-1 bg-[#00D9C8]/10 rounded-full text-xs text-[#00D9C8] flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#00D9C8]" />
+                            Enabled
+                          </span>
+                        </div>
+                        <h3 className="text-white font-medium mb-1">Login password</h3>
+                        <p className="text-[#6B7280] text-sm mb-4 flex-1">
+                          The login password helps guarantee account and transaction security.
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setShowPasswordModal(true)}
+                            className="text-[#00D9C8] text-sm font-medium hover:text-[#00F5E1] transition-colors"
+                          >
+                            Edit
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Login Activity */}
-                  <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-medium text-white">Login Activity</h3>
-                      <button className="text-sm text-[#00D9C8] hover:text-[#00F5E1] transition-colors">
-                        View All
-                      </button>
+                  {/* Advanced Security Settings Section */}
+                  <div>
+                    <h2 className="text-white text-lg font-semibold mb-4">Advanced security settings</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {/* Anti-Phishing Code Card */}
+                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                            <Shield className="w-5 h-5 text-[#9CA3AF]" />
+                          </div>
+                          <span className={`px-2.5 py-1 rounded-full text-xs flex items-center gap-1.5 ${
+                            antiPhishingCode
+                              ? "bg-[#00D9C8]/10 text-[#00D9C8]"
+                              : "bg-[#1A1A1E] text-[#6B7280]"
+                          }`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${antiPhishingCode ? "bg-[#00D9C8]" : "bg-[#6B7280]"}`} />
+                            {antiPhishingCode ? "Enabled" : "Disabled"}
+                          </span>
+                        </div>
+                        <h3 className="text-white font-medium mb-1">Anti-phishing code</h3>
+                        <p className="text-[#6B7280] text-sm mb-4 flex-1">
+                          Protects you from fake websites, scam emails, and fraudulent SMSes.
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setShowAntiPhishingModal(true)}
+                            className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors"
+                          >
+                            Configure
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Withdrawal Whitelist Card */}
+                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                            <Key className="w-5 h-5 text-[#9CA3AF]" />
+                          </div>
+                          <span className="px-2.5 py-1 bg-[#1A1A1E] rounded-full text-xs text-[#6B7280] flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#6B7280]" />
+                            Disabled
+                          </span>
+                        </div>
+                        <h3 className="text-white font-medium mb-1">Withdrawal whitelist</h3>
+                        <p className="text-[#6B7280] text-sm mb-4 flex-1">
+                          When enabled, you'll only be able to withdraw to whitelisted addresses.
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <button className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
+                            Enable
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Session Management Card */}
+                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                            <RefreshCw className="w-5 h-5 text-[#9CA3AF]" />
+                          </div>
+                          <span className="px-2.5 py-1 bg-[#00D9C8]/10 rounded-full text-xs text-[#00D9C8] flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#00D9C8]" />
+                            Enabled
+                          </span>
+                        </div>
+                        <h3 className="text-white font-medium mb-1">Cancel withdrawal</h3>
+                        <p className="text-[#6B7280] text-sm mb-4 flex-1">
+                          After enabling this feature, withdrawals can be cancelled within one minute.
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <button className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
+                            Disable
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <div className="space-y-3">
-                      <div className="p-4 bg-[#1A1A1E] rounded-lg flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 bg-[#00D9C8] rounded-full" />
-                          <div>
-                            <p className="text-white text-sm">Current Session</p>
-                            <p className="text-[#6B7280] text-xs">Windows • Chrome • Germany</p>
+                  </div>
+
+                  {/* Account Management Section */}
+                  <div>
+                    <h2 className="text-white text-lg font-semibold mb-4">Account management</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {/* Device Management Card */}
+                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                            <User className="w-5 h-5 text-[#9CA3AF]" />
                           </div>
                         </div>
-                        <span className="text-xs text-[#6B7280]">Active now</span>
+                        <h3 className="text-white font-medium mb-1">Device management</h3>
+                        <p className="text-[#6B7280] text-sm mb-4 flex-1">
+                          Manage devices allowed to access your account.
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <button className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
+                            Manage
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Account Activity Card */}
+                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                            <Clock className="w-5 h-5 text-[#9CA3AF]" />
+                          </div>
+                        </div>
+                        <h3 className="text-white font-medium mb-1">Account activity</h3>
+                        <p className="text-[#6B7280] text-sm mb-1">
+                          Recent login: {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
+                        </p>
+                        <p className="text-[#6B7280] text-xs mb-4 flex-1">
+                          IP: {Math.floor(Math.random() * 255)}.{Math.floor(Math.random() * 255)}.xxx.xxx
+                        </p>
+                        <div className="flex items-center gap-3">
+                          <button className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
+                            More
+                          </button>
+                          <button className="text-[#9CA3AF] text-sm font-medium hover:text-white transition-colors">
+                            Disable account
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Third-party Account Card */}
+                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                            <Link2 className="w-5 h-5 text-[#9CA3AF]" />
+                          </div>
+                        </div>
+                        <h3 className="text-white font-medium mb-1">Third-party account management</h3>
+                        <p className="text-[#6B7280] text-sm mb-4 flex-1">
+                          Bind a third-party account for faster login.
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <button className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
+                            Manage
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -709,13 +974,17 @@ export default function SettingsPage() {
                         </div>
                         <button
                           onClick={() => handleNotificationToggle(item.key)}
-                          className={`relative w-11 h-6 rounded-full transition-colors ${
-                            notifications[item.key] ? "bg-[#00D9C8]" : "bg-[#2A2A2E]"
+                          className={`relative w-14 h-7 rounded-full transition-all duration-300 ${
+                            notifications[item.key]
+                              ? "bg-[#00D9C8] shadow-[0_0_10px_rgba(0,217,200,0.3)]"
+                              : "bg-[#3A3A3E]"
                           }`}
                         >
                           <div
-                            className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-transform ${
-                              notifications[item.key] ? "translate-x-5" : "translate-x-0"
+                            className={`absolute top-1 w-5 h-5 rounded-full shadow-md transition-all duration-300 ${
+                              notifications[item.key]
+                                ? "bg-white left-[calc(100%-24px)]"
+                                : "bg-[#9CA3AF] left-1"
                             }`}
                           />
                         </button>
@@ -849,6 +1118,503 @@ export default function SettingsPage() {
         onClose={() => setShowExchangeModal(false)}
         onSuccess={handleExchangeSuccess}
       />
+
+      {/* Password Change Modal */}
+      <AnimatePresence>
+        {showPasswordModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowPasswordModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-[#141416] rounded-xl border border-[#2A2A2E] w-full max-w-md overflow-hidden"
+            >
+              <div className="p-6 border-b border-[#2A2A2E]">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-semibold text-white">Change Password</h2>
+                  <button
+                    onClick={() => setShowPasswordModal(false)}
+                    className="p-2 hover:bg-[#1A1A1E] rounded-lg transition-colors"
+                  >
+                    <X className="w-5 h-5 text-[#9CA3AF]" />
+                  </button>
+                </div>
+              </div>
+              <div className="p-6 space-y-4">
+                <p className="text-[#9CA3AF] text-sm">
+                  We'll send a password reset link to your email address. Click the link to set a new password.
+                </p>
+                <div className="bg-[#1A1A1E] rounded-lg p-4">
+                  <p className="text-[#6B7280] text-xs mb-1">Email Address</p>
+                  <p className="text-white">{user?.email}</p>
+                </div>
+
+                {passwordResetSent && (
+                  <div className="p-3 bg-[#00D9C8]/10 border border-[#00D9C8]/20 rounded-lg flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#00D9C8]" />
+                    <span className="text-[#00D9C8] text-sm">Password reset email sent! Check your inbox.</span>
+                  </div>
+                )}
+
+                {passwordResetError && (
+                  <div className="p-3 bg-[#F43F5E]/10 border border-[#F43F5E]/20 rounded-lg flex items-center gap-2">
+                    <X className="w-4 h-4 text-[#F43F5E]" />
+                    <span className="text-[#F43F5E] text-sm">{passwordResetError}</span>
+                  </div>
+                )}
+              </div>
+              <div className="p-6 border-t border-[#2A2A2E] flex gap-3">
+                <button
+                  onClick={() => setShowPasswordModal(false)}
+                  className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handlePasswordReset}
+                  disabled={passwordResetLoading || passwordResetSent}
+                  className="flex-1 px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {passwordResetLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : passwordResetSent ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Sent
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="w-4 h-4" />
+                      Send Reset Link
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Two-Factor Authentication Modal */}
+      <AnimatePresence>
+        {show2FAModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={handleClose2FAModal}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-[#141416] rounded-xl border border-[#2A2A2E] w-full max-w-lg overflow-hidden"
+            >
+              {/* Header */}
+              <div className="p-6 border-b border-[#2A2A2E]">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
+                      <Smartphone className="w-5 h-5 text-[#00D9C8]" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-semibold text-white">Google Authenticator</h2>
+                      <p className="text-[#6B7280] text-sm">
+                        {twoFactorStep === "intro" && "Set up two-factor authentication"}
+                        {twoFactorStep === "qrcode" && "Step 1: Scan QR Code"}
+                        {twoFactorStep === "verify" && "Step 2: Verify Code"}
+                        {twoFactorStep === "backup" && "Step 3: Save Backup Codes"}
+                        {twoFactorStep === "success" && "Setup Complete"}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleClose2FAModal}
+                    className="p-2 hover:bg-[#1A1A1E] rounded-lg transition-colors"
+                  >
+                    <X className="w-5 h-5 text-[#9CA3AF]" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                {/* Intro Step */}
+                {twoFactorStep === "intro" && !twoFactorEnabled && (
+                  <div className="space-y-4">
+                    <div className="p-4 bg-[#1A1A1E] rounded-lg">
+                      <h4 className="text-white font-medium mb-2">Why use 2FA?</h4>
+                      <ul className="space-y-2 text-[#9CA3AF] text-sm">
+                        <li className="flex items-center gap-2">
+                          <Check className="w-4 h-4 text-[#00D9C8]" />
+                          Protect your account from unauthorized access
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Check className="w-4 h-4 text-[#00D9C8]" />
+                          Secure withdrawals and sensitive operations
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Check className="w-4 h-4 text-[#00D9C8]" />
+                          Works with Google Authenticator, Microsoft Authenticator, or Authy
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="p-3 bg-[#F59E0B]/10 border border-[#F59E0B]/20 rounded-lg flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-[#F59E0B]" />
+                      <span className="text-[#F59E0B] text-sm">2FA is currently disabled on your account</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Already Enabled View */}
+                {twoFactorStep === "intro" && twoFactorEnabled && (
+                  <div className="space-y-4">
+                    <div className="p-3 bg-[#00D9C8]/10 border border-[#00D9C8]/20 rounded-lg flex items-center gap-2">
+                      <Check className="w-4 h-4 text-[#00D9C8]" />
+                      <span className="text-[#00D9C8] text-sm">Two-factor authentication is enabled</span>
+                    </div>
+                    <div className="p-4 bg-[#1A1A1E] rounded-lg">
+                      <p className="text-[#9CA3AF] text-sm">
+                        Your account is protected with Google Authenticator. You'll need to enter a verification code when logging in or performing sensitive operations.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* QR Code Step */}
+                {twoFactorStep === "qrcode" && (
+                  <div className="space-y-4">
+                    <p className="text-[#9CA3AF] text-sm">
+                      Scan this QR code with your authenticator app (Google Authenticator, Microsoft Authenticator, or Authy).
+                    </p>
+
+                    {/* QR Code placeholder - using a text-based representation */}
+                    <div className="flex justify-center">
+                      <div className="bg-white p-4 rounded-xl">
+                        <div className="w-48 h-48 bg-[#0D0D0F] rounded-lg flex items-center justify-center relative overflow-hidden">
+                          {/* Simulated QR code pattern */}
+                          <div className="grid grid-cols-7 gap-1 p-2">
+                            {Array.from({ length: 49 }).map((_, i) => (
+                              <div
+                                key={i}
+                                className={`w-5 h-5 rounded-sm ${
+                                  Math.random() > 0.5 ? 'bg-black' : 'bg-white'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="bg-white p-2 rounded-lg">
+                              <Smartphone className="w-6 h-6 text-[#00D9C8]" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Manual Entry */}
+                    <div className="p-4 bg-[#1A1A1E] rounded-lg">
+                      <p className="text-[#6B7280] text-xs mb-2">Can't scan? Enter this code manually:</p>
+                      <div className="flex items-center gap-2">
+                        <code className="flex-1 px-3 py-2 bg-[#0D0D0F] rounded-lg text-[#00D9C8] font-mono text-sm break-all">
+                          {twoFactorSecret}
+                        </code>
+                        <button
+                          onClick={() => navigator.clipboard.writeText(twoFactorSecret)}
+                          className="p-2 hover:bg-[#2A2A2E] rounded-lg transition-colors"
+                        >
+                          <Copy className="w-4 h-4 text-[#9CA3AF]" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Verify Step */}
+                {twoFactorStep === "verify" && (
+                  <div className="space-y-4">
+                    <p className="text-[#9CA3AF] text-sm">
+                      Enter the 6-digit verification code from your authenticator app to complete the setup.
+                    </p>
+
+                    <div>
+                      <label className="block text-sm text-[#9CA3AF] mb-2">Verification Code</label>
+                      <input
+                        type="text"
+                        value={twoFactorVerifyCode}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+                          setTwoFactorVerifyCode(value);
+                        }}
+                        placeholder="000000"
+                        maxLength={6}
+                        className="w-full px-4 py-3 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-center text-2xl font-mono tracking-[0.5em] placeholder-[#6B7280] focus:border-[#00D9C8] focus:outline-none transition-colors"
+                      />
+                    </div>
+
+                    {twoFactorVerifyError && (
+                      <div className="p-3 bg-[#F43F5E]/10 border border-[#F43F5E]/20 rounded-lg flex items-center gap-2">
+                        <X className="w-4 h-4 text-[#F43F5E]" />
+                        <span className="text-[#F43F5E] text-sm">{twoFactorVerifyError}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Backup Codes Step */}
+                {twoFactorStep === "backup" && (
+                  <div className="space-y-4">
+                    <div className="p-3 bg-[#F59E0B]/10 border border-[#F59E0B]/20 rounded-lg flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 text-[#F59E0B] mt-0.5" />
+                      <div>
+                        <span className="text-[#F59E0B] text-sm font-medium">Save these backup codes!</span>
+                        <p className="text-[#F59E0B]/80 text-xs mt-1">
+                          Store them in a safe place. You can use these codes to access your account if you lose your authenticator.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 p-4 bg-[#1A1A1E] rounded-lg">
+                      {twoFactorBackupCodes.map((code, index) => (
+                        <div key={index} className="px-3 py-2 bg-[#0D0D0F] rounded-lg text-center">
+                          <code className="text-white font-mono text-sm">{code}</code>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        const codes = twoFactorBackupCodes.join('\n');
+                        navigator.clipboard.writeText(codes);
+                      }}
+                      className="w-full px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Copy className="w-4 h-4" />
+                      Copy All Codes
+                    </button>
+                  </div>
+                )}
+
+                {/* Success Step */}
+                {twoFactorStep === "success" && (
+                  <div className="space-y-4 text-center">
+                    <div className="w-16 h-16 mx-auto bg-[#00D9C8]/10 rounded-full flex items-center justify-center">
+                      <Check className="w-8 h-8 text-[#00D9C8]" />
+                    </div>
+                    <div>
+                      <h3 className="text-white text-lg font-semibold">2FA Enabled Successfully!</h3>
+                      <p className="text-[#9CA3AF] text-sm mt-2">
+                        Your account is now protected with two-factor authentication.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="p-6 border-t border-[#2A2A2E] flex gap-3">
+                {twoFactorStep === "intro" && !twoFactorEnabled && (
+                  <>
+                    <button
+                      onClick={handleClose2FAModal}
+                      className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleStart2FASetup}
+                      className="flex-1 px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors"
+                    >
+                      Start Setup
+                    </button>
+                  </>
+                )}
+
+                {twoFactorStep === "intro" && twoFactorEnabled && (
+                  <>
+                    <button
+                      onClick={handleClose2FAModal}
+                      className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
+                    >
+                      Close
+                    </button>
+                    <button
+                      onClick={handleDisable2FA}
+                      className="flex-1 px-4 py-2.5 bg-[#F43F5E]/10 border border-[#F43F5E]/20 rounded-lg text-[#F43F5E] font-medium hover:bg-[#F43F5E]/20 transition-colors"
+                    >
+                      Disable 2FA
+                    </button>
+                  </>
+                )}
+
+                {twoFactorStep === "qrcode" && (
+                  <>
+                    <button
+                      onClick={() => setTwoFactorStep("intro")}
+                      className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
+                    >
+                      Back
+                    </button>
+                    <button
+                      onClick={() => setTwoFactorStep("verify")}
+                      className="flex-1 px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors"
+                    >
+                      Next
+                    </button>
+                  </>
+                )}
+
+                {twoFactorStep === "verify" && (
+                  <>
+                    <button
+                      onClick={() => setTwoFactorStep("qrcode")}
+                      className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
+                    >
+                      Back
+                    </button>
+                    <button
+                      onClick={handleVerify2FACode}
+                      disabled={twoFactorVerifyCode.length !== 6 || twoFactorLoading}
+                      className="flex-1 px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {twoFactorLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Verifying...
+                        </>
+                      ) : (
+                        "Verify"
+                      )}
+                    </button>
+                  </>
+                )}
+
+                {twoFactorStep === "backup" && (
+                  <button
+                    onClick={handleComplete2FASetup}
+                    className="w-full px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors"
+                  >
+                    I've Saved My Backup Codes
+                  </button>
+                )}
+
+                {twoFactorStep === "success" && (
+                  <button
+                    onClick={handleClose2FAModal}
+                    className="w-full px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors"
+                  >
+                    Done
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Anti-Phishing Code Modal */}
+      <AnimatePresence>
+        {showAntiPhishingModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowAntiPhishingModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-[#141416] rounded-xl border border-[#2A2A2E] w-full max-w-md overflow-hidden"
+            >
+              <div className="p-6 border-b border-[#2A2A2E]">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-semibold text-white">Anti-Phishing Code</h2>
+                  <button
+                    onClick={() => setShowAntiPhishingModal(false)}
+                    className="p-2 hover:bg-[#1A1A1E] rounded-lg transition-colors"
+                  >
+                    <X className="w-5 h-5 text-[#9CA3AF]" />
+                  </button>
+                </div>
+              </div>
+              <div className="p-6 space-y-4">
+                <p className="text-[#9CA3AF] text-sm">
+                  Set an anti-phishing code that will appear in all official emails from CIRCL. This helps you identify legitimate communications.
+                </p>
+
+                <div>
+                  <label className="block text-sm text-[#9CA3AF] mb-2">Your Anti-Phishing Code</label>
+                  <input
+                    type="text"
+                    value={antiPhishingInput}
+                    onChange={(e) => setAntiPhishingInput(e.target.value)}
+                    placeholder="Enter a memorable code (e.g., MySecret123)"
+                    maxLength={20}
+                    className="w-full px-4 py-3 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white placeholder-[#6B7280] focus:border-[#00D9C8] focus:outline-none transition-colors"
+                  />
+                  <p className="text-[#6B7280] text-xs mt-2">
+                    Maximum 20 characters. Use letters and numbers.
+                  </p>
+                </div>
+
+                {antiPhishingSaved && (
+                  <div className="p-3 bg-[#00D9C8]/10 border border-[#00D9C8]/20 rounded-lg flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#00D9C8]" />
+                    <span className="text-[#00D9C8] text-sm">Anti-phishing code saved!</span>
+                  </div>
+                )}
+
+                {antiPhishingCode && !antiPhishingSaved && (
+                  <div className="p-3 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg">
+                    <p className="text-[#6B7280] text-xs mb-1">Current Code</p>
+                    <p className="text-white font-mono">{antiPhishingCode}</p>
+                  </div>
+                )}
+              </div>
+              <div className="p-6 border-t border-[#2A2A2E] flex gap-3">
+                <button
+                  onClick={() => setShowAntiPhishingModal(false)}
+                  className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveAntiPhishing}
+                  disabled={!antiPhishingInput.trim() || antiPhishingSaved}
+                  className="flex-1 px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {antiPhishingSaved ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Saved
+                    </>
+                  ) : (
+                    <>
+                      <Shield className="w-4 h-4" />
+                      Save Code
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </DashboardLayout>
   );

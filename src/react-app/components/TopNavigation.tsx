@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
 import {
   ChevronDown,
+  ChevronRight,
   Globe,
   Menu,
   X,
@@ -36,12 +37,20 @@ import {
   LineChart,
   Eye,
   EyeOff,
-  Repeat
+  Bot,
+  Rocket,
+  RefreshCw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNotifications } from '@/react-app/hooks/useNotifications';
 import { useLanguageCurrency } from '@/react-app/contexts/LanguageCurrencyContext';
-// import WalletConnect from './WalletConnect'; // Removed
+import { useBinanceMarkets } from '@/react-app/hooks/useBinanceMarkets';
+
+// Coin logo helper - returns URL for crypto icon
+const getCoinLogo = (symbol: string): string => {
+  const coin = symbol.replace('USDT', '').replace('USDC', '').replace('BTC', '').replace('ETH', '').toLowerCase();
+  return `https://cdn.jsdelivr.net/gh/AtsumeruDev/CoinIcons/coins/64x64/${coin}.png`;
+};
 
 export default function TopNavigation() {
   const { user, logout } = useAuth();
@@ -49,6 +58,7 @@ export default function TopNavigation() {
   const navigate = useNavigate();
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
   const { language, setLanguage, t } = useLanguageCurrency();
+  const { enhancedData } = useBinanceMarkets();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({});
   const [showNotifications, setShowNotifications] = useState(false);
@@ -63,6 +73,39 @@ export default function TopNavigation() {
   const [showTradingDropdown, setShowTradingDropdown] = useState(false);
   const [showMoreDropdown, setShowMoreDropdown] = useState(false);
   const [showBalanceNav, setShowBalanceNav] = useState(true);
+  const [tradeQuoteTab, setTradeQuoteTab] = useState<'USDT' | 'USDC' | 'FIAT' | 'BTC' | 'ETH'>('USDT');
+  const [tradeSearch, setTradeSearch] = useState('');
+
+  // Get trading pairs for dropdown
+  const tradingPairs = useMemo(() => {
+    const pairs = Object.values(enhancedData);
+    let filtered = pairs;
+
+    // Filter by quote asset based on tab
+    if (tradeQuoteTab === 'USDT') {
+      filtered = pairs.filter(p => p.quoteAsset === 'USDT');
+    } else if (tradeQuoteTab === 'USDC') {
+      filtered = pairs.filter(p => p.quoteAsset === 'USDC');
+    } else if (tradeQuoteTab === 'BTC') {
+      filtered = pairs.filter(p => p.quoteAsset === 'BTC');
+    } else if (tradeQuoteTab === 'ETH') {
+      filtered = pairs.filter(p => p.quoteAsset === 'ETH');
+    }
+
+    // Apply search filter
+    if (tradeSearch) {
+      const search = tradeSearch.toLowerCase();
+      filtered = filtered.filter(p =>
+        p.symbol.toLowerCase().includes(search) ||
+        p.baseAsset.toLowerCase().includes(search)
+      );
+    }
+
+    // Sort by volume and limit
+    return filtered
+      .sort((a, b) => parseFloat(b.quoteVolume || '0') - parseFloat(a.quoteVolume || '0'))
+      .slice(0, 10);
+  }, [enhancedData, tradeQuoteTab, tradeSearch]);
 
   // Generate UID from user email
   const userUID = user?.email ?
@@ -244,91 +287,218 @@ export default function TopNavigation() {
                       />
                     )}
 
-                    {/* Dropdown Menu */}
+                    {/* Trade Mega Menu - Bitget style with two columns */}
                     {hasDropdown && openDropdowns[item.name] && item.key === 'Trade' && (
                       <motion.div
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-2 w-72 bg-[#141416] border border-[#2A2A2E] rounded-xl shadow-2xl z-50"
+                        className="absolute top-full left-0 mt-2 bg-[#141416] border border-[#2A2A2E] rounded-xl shadow-2xl z-50 flex"
+                        style={{ width: '620px' }}
                       >
-                        <div className="py-2">
+                        {/* Left Column - Trade & Explore Options */}
+                        <div className="w-[280px] border-r border-[#2A2A2E] py-3">
+                          {/* Trade Section */}
+                          <div className="px-4 mb-2">
+                            <span className="text-[#6B7280] text-xs font-medium uppercase tracking-wider">Trade</span>
+                          </div>
                           <button
                             onClick={() => {
-                              navigate('/trading?type=spot');
+                              navigate('/trading/spot');
                               toggleDropdown(item.name);
                             }}
-                            className="w-full flex items-center space-x-3 px-4 py-3 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all group"
                           >
-                            <div className="w-10 h-10 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
-                              <Coins className="w-5 h-5 text-[#00D9C8]" />
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
+                                <Coins className="w-4 h-4 text-[#00D9C8]" />
+                              </div>
+                              <div className="text-left">
+                                <span className="block text-sm font-medium">Spot</span>
+                                <span className="text-xs text-[#6B7280]">Buy and sell crypto with ease</span>
+                              </div>
                             </div>
-                            <div className="flex-1 text-left">
-                              <span className="block font-medium">Spot Trading</span>
-                              <span className="text-xs text-[#6B7280]">Buy and sell crypto</span>
-                            </div>
+                            <ChevronRight className="w-4 h-4 text-[#6B7280] opacity-0 group-hover:opacity-100 transition-opacity" />
                           </button>
                           <button
                             onClick={() => {
-                              navigate('/trading?type=margin');
+                              navigate('/trading/margin');
                               toggleDropdown(item.name);
                             }}
-                            className="w-full flex items-center space-x-3 px-4 py-3 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all group"
                           >
-                            <div className="w-10 h-10 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
-                              <Layers className="w-5 h-5 text-[#00D9C8]" />
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
+                                <Layers className="w-4 h-4 text-[#00D9C8]" />
+                              </div>
+                              <div className="text-left">
+                                <span className="block text-sm font-medium">Margin</span>
+                                <span className="text-xs text-[#6B7280]">Amplify your capital and maximize fund efficiency</span>
+                              </div>
                             </div>
-                            <div className="flex-1 text-left">
-                              <span className="block font-medium">Margin Trading</span>
-                              <span className="text-xs text-[#6B7280]">Trade with leverage</span>
-                            </div>
+                            <ChevronRight className="w-4 h-4 text-[#6B7280] opacity-0 group-hover:opacity-100 transition-opacity" />
                           </button>
                           <button
                             onClick={() => {
-                              navigate('/trading?type=futures');
+                              navigate('/trading/futures');
                               toggleDropdown(item.name);
                             }}
-                            className="w-full flex items-center space-x-3 px-4 py-3 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all group"
                           >
-                            <div className="w-10 h-10 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
-                              <LineChart className="w-5 h-5 text-[#00D9C8]" />
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
+                                <LineChart className="w-4 h-4 text-[#00D9C8]" />
+                              </div>
+                              <div className="text-left">
+                                <span className="block text-sm font-medium">Futures</span>
+                                <span className="text-xs text-[#6B7280]">USDT-M & Coin-M perpetual futures</span>
+                              </div>
                             </div>
-                            <div className="flex-1 text-left">
-                              <span className="block font-medium">Futures</span>
-                              <span className="text-xs text-[#6B7280]">USDT-M & Coin-M futures</span>
+                            <ChevronRight className="w-4 h-4 text-[#6B7280] opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              navigate('/convert');
+                              toggleDropdown(item.name);
+                            }}
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all group"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
+                                <RefreshCw className="w-4 h-4 text-[#00D9C8]" />
+                              </div>
+                              <div className="text-left">
+                                <span className="block text-sm font-medium">Convert & Block Trade</span>
+                                <span className="text-xs text-[#6B7280]">Convert crypto with one click and zero fees</span>
+                              </div>
                             </div>
+                            <ChevronRight className="w-4 h-4 text-[#6B7280] opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </button>
+
+                          {/* Explore Section */}
+                          <div className="px-4 mt-4 mb-2">
+                            <span className="text-[#6B7280] text-xs font-medium uppercase tracking-wider">Explore</span>
+                          </div>
+                          <button
+                            onClick={() => {
+                              navigate('/launchpad');
+                              toggleDropdown(item.name);
+                            }}
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all group"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
+                                <Rocket className="w-4 h-4 text-[#00D9C8]" />
+                              </div>
+                              <div className="text-left">
+                                <span className="block text-sm font-medium">Launchhub</span>
+                                <span className="text-xs text-[#6B7280]">Gain the edge early and start winning</span>
+                              </div>
+                            </div>
+                            <ChevronRight className="w-4 h-4 text-[#6B7280] opacity-0 group-hover:opacity-100 transition-opacity" />
                           </button>
                           <button
                             onClick={() => {
                               navigate('/copy-trading');
                               toggleDropdown(item.name);
                             }}
-                            className="w-full flex items-center space-x-3 px-4 py-3 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all group"
                           >
-                            <div className="w-10 h-10 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
-                              <Users className="w-5 h-5 text-[#00D9C8]" />
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
+                                <Users className="w-4 h-4 text-[#00D9C8]" />
+                              </div>
+                              <div className="text-left">
+                                <span className="block text-sm font-medium">Copy</span>
+                                <span className="text-xs text-[#6B7280]">Copy elite traders with one click</span>
+                              </div>
                             </div>
-                            <div className="flex-1 text-left">
-                              <span className="block font-medium">Copy Trading</span>
-                              <span className="text-xs text-[#6B7280]">Follow expert traders</span>
-                            </div>
+                            <ChevronRight className="w-4 h-4 text-[#6B7280] opacity-0 group-hover:opacity-100 transition-opacity" />
                           </button>
                           <button
                             onClick={() => {
                               navigate('/trading-bots');
                               toggleDropdown(item.name);
                             }}
-                            className="w-full flex items-center space-x-3 px-4 py-3 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all group"
                           >
-                            <div className="w-10 h-10 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
-                              <Repeat className="w-5 h-5 text-[#00D9C8]" />
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
+                                <Bot className="w-4 h-4 text-[#00D9C8]" />
+                              </div>
+                              <div className="text-left">
+                                <span className="block text-sm font-medium">Bots</span>
+                                <span className="text-xs text-[#6B7280]">Simple, fast, and reliable AI trading bot</span>
+                              </div>
                             </div>
-                            <div className="flex-1 text-left">
-                              <span className="block font-medium">Trading Bots</span>
-                              <span className="text-xs text-[#6B7280]">Automated trading</span>
-                            </div>
+                            <ChevronRight className="w-4 h-4 text-[#6B7280] opacity-0 group-hover:opacity-100 transition-opacity" />
                           </button>
+                        </div>
+
+                        {/* Right Column - Trading Pairs */}
+                        <div className="flex-1 py-3">
+                          {/* Quote Asset Tabs */}
+                          <div className="flex items-center gap-2 px-4 mb-3">
+                            {(['USDT', 'USDC', 'FIAT', 'BTC', 'ETH'] as const).map((tab) => (
+                              <button
+                                key={tab}
+                                onClick={() => setTradeQuoteTab(tab)}
+                                className={`px-2 py-1 text-xs font-medium rounded transition-colors ${
+                                  tradeQuoteTab === tab
+                                    ? 'text-white'
+                                    : 'text-[#6B7280] hover:text-white'
+                                }`}
+                              >
+                                {tab}
+                              </button>
+                            ))}
+                          </div>
+
+                          {/* Search */}
+                          <div className="px-4 mb-3">
+                            <div className="relative">
+                              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
+                              <input
+                                type="text"
+                                value={tradeSearch}
+                                onChange={(e) => setTradeSearch(e.target.value)}
+                                placeholder="Search"
+                                className="w-full pl-9 pr-3 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm placeholder-[#6B7280] focus:outline-none focus:border-[#00D9C8] transition-colors"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Trading Pairs List */}
+                          <div className="max-h-[320px] overflow-y-auto">
+                            {tradingPairs.map((pair) => (
+                              <button
+                                key={pair.symbol}
+                                onClick={() => {
+                                  navigate(`/trading/spot?symbol=${pair.symbol}`);
+                                  toggleDropdown(item.name);
+                                }}
+                                className="w-full flex items-center gap-3 px-4 py-2 hover:bg-[#1A1A1E] transition-colors"
+                              >
+                                <img
+                                  src={getCoinLogo(pair.symbol)}
+                                  alt={pair.baseAsset}
+                                  className="w-6 h-6 rounded-full"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${pair.baseAsset}&background=1A1A1E&color=00D9C8&size=24`;
+                                  }}
+                                />
+                                <span className="text-white text-sm font-medium">
+                                  {pair.baseAsset}/{pair.quoteAsset}
+                                </span>
+                              </button>
+                            ))}
+                            {tradingPairs.length === 0 && (
+                              <div className="px-4 py-8 text-center text-[#6B7280] text-sm">
+                                No pairs found
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </motion.div>
                     )}
@@ -697,20 +867,18 @@ export default function TopNavigation() {
                 <div className="relative">
                   <button
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
-                    className="w-8 h-8 aspect-square flex-shrink-0 rounded-full overflow-hidden border-2 border-[#2A2A2E] hover:border-[#00D9C8] transition-colors bg-[#1A1A1E]"
+                    className="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full overflow-hidden border-2 border-[#2A2A2E] hover:border-[#00D9C8] transition-colors bg-[#1A1A1E] flex items-center justify-center"
                   >
                     {user?.photoURL?.startsWith('http') || user?.photoURL?.startsWith('data:') ? (
                       <img
                         src={user.photoURL}
                         alt="Profile"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-full"
                       />
                     ) : (
-                      <div className="w-full h-full bg-[#1A1A1E] flex items-center justify-center">
-                        <span className="text-[#9CA3AF] font-semibold text-xs">
-                          {user?.displayName?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'U'}
-                        </span>
-                      </div>
+                      <span className="text-[#9CA3AF] font-semibold text-xs">
+                        {user?.displayName?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'U'}
+                      </span>
                     )}
                   </button>
 
