@@ -132,15 +132,15 @@ export default function CopyTradingPage() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-[#141416] to-[#1A1A1E] rounded-2xl border border-[#2A2A2E] p-8 relative overflow-hidden"
+            className="bg-gradient-to-r from-[#1B1B1D] to-[#252629] rounded-2xl border border-[#2B2F36] p-8 relative overflow-hidden"
           >
             {/* Background decoration */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#00D9C8]/5 rounded-full blur-3xl" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#03AAC7]/5 rounded-full blur-3xl" />
 
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-4">
-                <Trophy className="w-6 h-6 text-[#00D9C8]" />
-                <span className="text-[#00D9C8] font-medium">Copy Trading</span>
+                <Trophy className="w-6 h-6 text-[#03AAC7]" />
+                <span className="text-[#03AAC7] font-medium">Copy Trading</span>
               </div>
               <h1 className="text-3xl font-bold text-white mb-2">
                 Follow the Best Traders
@@ -149,10 +149,10 @@ export default function CopyTradingPage() {
                 Automatically copy trades from elite traders and grow your portfolio with minimal effort.
               </p>
               <div className="flex items-center gap-4">
-                <button className="px-6 py-3 bg-[#00D9C8] hover:bg-[#00F5E1] text-[#0D0D0F] rounded-lg font-semibold transition-colors">
+                <button className="px-6 py-3 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-semibold transition-colors">
                   Become a Trader
                 </button>
-                <button className="px-6 py-3 bg-[#1A1A1E] hover:bg-[#222226] text-white border border-[#2A2A2E] rounded-lg font-medium transition-colors">
+                <button className="px-6 py-3 bg-[#252629] hover:bg-[#222226] text-white border border-[#2B2F36] rounded-lg font-medium transition-colors">
                   How it Works
                 </button>
               </div>
@@ -167,10 +167,10 @@ export default function CopyTradingPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 + index * 0.05 }}
-                className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5"
+                className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5"
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <stat.icon className="w-5 h-5 text-[#00D9C8]" />
+                  <stat.icon className="w-5 h-5 text-[#03AAC7]" />
                   <span className="text-[#6B7280] text-sm">{stat.label}</span>
                 </div>
                 <p className="text-2xl font-bold text-white">{stat.value}</p>
@@ -181,14 +181,14 @@ export default function CopyTradingPage() {
           {/* Tabs & Filters */}
           <div className="flex items-center justify-between">
             {/* Tabs */}
-            <div className="flex items-center gap-1 bg-[#141416] rounded-xl border border-[#2A2A2E] p-1">
+            <div className="flex items-center gap-1 bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-1">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-6 py-2.5 text-sm font-medium rounded-lg transition-colors ${
                     activeTab === tab.id
-                      ? 'bg-[#1A1A1E] text-white'
+                      ? 'bg-[#252629] text-white'
                       : 'text-[#9CA3AF] hover:text-white'
                   }`}
                 >
@@ -200,14 +200,14 @@ export default function CopyTradingPage() {
             {/* Right side filters */}
             <div className="flex items-center gap-4">
               {/* Time Filter */}
-              <div className="flex items-center gap-1 bg-[#141416] rounded-lg border border-[#2A2A2E] p-1">
+              <div className="flex items-center gap-1 bg-[#1B1B1D] rounded-lg border border-[#2B2F36] p-1">
                 {timeFilters.map((filter) => (
                   <button
                     key={filter.id}
                     onClick={() => setTimeFilter(filter.id)}
                     className={`px-3 py-1.5 text-xs font-medium rounded transition-colors ${
                       timeFilter === filter.id
-                        ? 'bg-[#1A1A1E] text-white'
+                        ? 'bg-[#252629] text-white'
                         : 'text-[#6B7280] hover:text-white'
                     }`}
                   >
@@ -224,7 +224,7 @@ export default function CopyTradingPage() {
                   placeholder="Search traders..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2.5 bg-[#141416] border border-[#2A2A2E] rounded-lg text-white placeholder-[#6B7280] focus:border-[#00D9C8] focus:outline-none transition-colors text-sm w-64"
+                  className="pl-10 pr-4 py-2.5 bg-[#1B1B1D] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors text-sm w-64"
                 />
               </div>
 
@@ -233,8 +233,8 @@ export default function CopyTradingPage() {
                 onClick={() => setShowFilters(!showFilters)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-colors ${
                   showFilters
-                    ? 'bg-[#00D9C8]/10 border-[#00D9C8] text-[#00D9C8]'
-                    : 'bg-[#141416] border-[#2A2A2E] text-[#9CA3AF] hover:text-white'
+                    ? 'bg-[#03AAC7]/10 border-[#03AAC7] text-[#03AAC7]'
+                    : 'bg-[#1B1B1D] border-[#2B2F36] text-[#9CA3AF] hover:text-white'
                 }`}
               >
                 <Filter className="w-4 h-4" />
@@ -248,10 +248,10 @@ export default function CopyTradingPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-[#141416] rounded-xl border border-[#2A2A2E] overflow-hidden"
+            className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] overflow-hidden"
           >
             {/* Table Header */}
-            <div className="grid grid-cols-7 gap-4 px-6 py-4 border-b border-[#2A2A2E] text-sm text-[#6B7280]">
+            <div className="grid grid-cols-7 gap-4 px-6 py-4 border-b border-[#2B2F36] text-sm text-[#6B7280]">
               <div className="col-span-2">Trader</div>
               <div className="text-right">ROI ({timeFilter})</div>
               <div className="text-right">Win Rate</div>
@@ -267,19 +267,19 @@ export default function CopyTradingPage() {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.05 * index }}
-                className="grid grid-cols-7 gap-4 px-6 py-5 border-b border-[#2A2A2E] hover:bg-[#1A1A1E] transition-colors items-center cursor-pointer"
+                className="grid grid-cols-7 gap-4 px-6 py-5 border-b border-[#2B2F36] hover:bg-[#252629] transition-colors items-center cursor-pointer"
                 onClick={() => navigate(`/copy-trading/${trader.id}`)}
               >
                 {/* Trader Info */}
                 <div className="col-span-2 flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-12 h-12 rounded-xl bg-[#1A1A1E] border border-[#2A2A2E] flex items-center justify-center text-white font-bold">
+                    <div className="w-12 h-12 rounded-xl bg-[#252629] border border-[#2B2F36] flex items-center justify-center text-white font-bold">
                       {trader.name.slice(0, 2).toUpperCase()}
                     </div>
                     {index < 3 && (
                       <div className={`absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                        index === 0 ? 'bg-[#FFD700] text-[#0D0D0F]' :
-                        index === 1 ? 'bg-[#C0C0C0] text-[#0D0D0F]' :
+                        index === 0 ? 'bg-[#FFD700] text-[#151517]' :
+                        index === 1 ? 'bg-[#C0C0C0] text-[#151517]' :
                         'bg-[#CD7F32] text-white'
                       }`}>
                         {index + 1}
@@ -290,14 +290,14 @@ export default function CopyTradingPage() {
                     <div className="flex items-center gap-2">
                       <span className="text-white font-medium">{trader.name}</span>
                       {trader.verified && (
-                        <Shield className="w-4 h-4 text-[#00D9C8]" />
+                        <Shield className="w-4 h-4 text-[#03AAC7]" />
                       )}
                     </div>
                     <div className="flex items-center gap-2 mt-1">
                       {trader.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="px-2 py-0.5 bg-[#2A2A2E] text-[#9CA3AF] text-[10px] rounded"
+                          className="px-2 py-0.5 bg-[#2B2F36] text-[#9CA3AF] text-[10px] rounded"
                         >
                           {tag}
                         </span>
@@ -308,7 +308,7 @@ export default function CopyTradingPage() {
 
                 {/* ROI */}
                 <div className="text-right">
-                  <span className={`text-lg font-bold ${trader.roi > 0 ? 'text-[#00D9C8]' : 'text-[#F43F5E]'}`}>
+                  <span className={`text-lg font-bold ${trader.roi > 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
                     {trader.roi > 0 ? '+' : ''}{trader.roi.toFixed(1)}%
                   </span>
                 </div>
@@ -335,7 +335,7 @@ export default function CopyTradingPage() {
                       e.stopPropagation();
                       // Copy action
                     }}
-                    className="px-4 py-2 bg-[#00D9C8] hover:bg-[#00F5E1] text-[#0D0D0F] rounded-lg text-sm font-medium transition-colors"
+                    className="px-4 py-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg text-sm font-medium transition-colors"
                   >
                     Copy
                   </button>
@@ -346,7 +346,7 @@ export default function CopyTradingPage() {
 
           {/* Load More */}
           <div className="text-center">
-            <button className="px-6 py-3 bg-[#141416] hover:bg-[#1A1A1E] text-white border border-[#2A2A2E] rounded-lg font-medium transition-colors">
+            <button className="px-6 py-3 bg-[#1B1B1D] hover:bg-[#252629] text-white border border-[#2B2F36] rounded-lg font-medium transition-colors">
               Load More Traders
             </button>
           </div>

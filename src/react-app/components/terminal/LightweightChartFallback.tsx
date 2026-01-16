@@ -262,7 +262,7 @@ function LightweightChartFallbackComponent({ symbol, interval = '60' }: Lightwei
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-[#0B0E11]/80 z-20">
           <div className="flex flex-col items-center gap-3">
-            <Loader2 className="w-8 h-8 text-[#00D9C8] animate-spin" />
+            <Loader2 className="w-8 h-8 text-[#03AAC7] animate-spin" />
             <span className="text-sm text-[#848E9C]">Loading chart data...</span>
           </div>
         </div>

@@ -68,7 +68,7 @@ export function PracticeSettingsModal({ isOpen, onClose, onStart, initialSetting
                         e.stopPropagation();
                         setIsOpen(prev => !prev);
                     }}
-                    className="w-full bg-[#141416] border border-white/10 rounded-lg px-4 py-3 text-left flex items-center justify-between hover:border-[#6A3DF4]/50 transition-colors cursor-pointer"
+                    className="w-full bg-[#1B1B1D] border border-white/10 rounded-lg px-4 py-3 text-left flex items-center justify-between hover:border-[#6A3DF4]/50 transition-colors cursor-pointer"
                 >
                     <span className="text-white">{selectedOption?.label || (value === null ? 'No limit' : String(value))}</span>
                     <svg className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,7 +78,7 @@ export function PracticeSettingsModal({ isOpen, onClose, onStart, initialSetting
                 {isOpen && (
                     <div 
                         ref={menuRef}
-                        className="absolute z-[9999] w-full mt-1 bg-[#141416] border border-white/10 rounded-lg shadow-xl max-h-60 overflow-auto"
+                        className="absolute z-[9999] w-full mt-1 bg-[#1B1B1D] border border-white/10 rounded-lg shadow-xl max-h-60 overflow-auto"
                         onMouseDown={(e) => e.stopPropagation()}
                     >
                         {options.map((option) => {
@@ -124,7 +124,7 @@ export function PracticeSettingsModal({ isOpen, onClose, onStart, initialSetting
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.9, opacity: 0 }}
                     onMouseDown={(e) => e.stopPropagation()}
-                    className="bg-[#141416] border border-white/10 rounded-2xl p-8 w-full max-w-md relative z-[70]"
+                    className="bg-[#1B1B1D] border border-white/10 rounded-2xl p-8 w-full max-w-md relative z-[70]"
                 >
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-2xl font-bold text-white">Practice Settings</h2>
@@ -207,7 +207,7 @@ export function PracticeSettingsModal({ isOpen, onClose, onStart, initialSetting
                         </button>
                         <button
                             onClick={onClose}
-                            className="px-6 py-3 bg-[#141416] hover:bg-[#141416]/80 text-white font-medium rounded-lg transition-colors"
+                            className="px-6 py-3 bg-[#1B1B1D] hover:bg-[#1B1B1D]/80 text-white font-medium rounded-lg transition-colors"
                         >
                             Cancel
                         </button>

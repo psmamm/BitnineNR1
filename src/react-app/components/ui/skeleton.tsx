@@ -5,9 +5,9 @@ import { cn } from "@/react-app/lib/utils"
  * Skeleton & Loading Components - Bitget Style (2026)
  *
  * Colors:
- * - Skeleton bg: #1A1A1E
- * - Progress bar track: #2A2A2E
- * - Progress bar fill: #00D9C8 (teal)
+ * - Skeleton bg: #252629
+ * - Progress bar track: #2B2F36
+ * - Progress bar fill: #03AAC7 (teal)
  */
 
 // Basic Skeleton
@@ -23,7 +23,7 @@ function Skeleton({
   return (
     <div
       className={cn(
-        "bg-[#1A1A1E] rounded-lg animate-pulse",
+        "bg-[#252629] rounded-lg animate-pulse",
         variant === "circular" && "rounded-full",
         variant === "text" && "h-4 rounded",
         className
@@ -36,7 +36,7 @@ function Skeleton({
 // Skeleton Card - Bitget style
 function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className={cn("bg-[#141416] rounded-xl border border-[#2A2A2E] p-5", className)}>
+    <div className={cn("bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5", className)}>
       <div className="flex items-center gap-4 mb-4">
         <Skeleton variant="circular" className="h-10 w-10" />
         <div className="space-y-2">
@@ -56,7 +56,7 @@ function SkeletonCard({ className }: { className?: string }) {
 // Skeleton Table Row - Bitget style
 function SkeletonTableRow({ columns = 5 }: { columns?: number }) {
   return (
-    <div className="flex items-center gap-4 py-4 border-b border-[#2A2A2E]">
+    <div className="flex items-center gap-4 py-4 border-b border-[#2B2F36]">
       {Array.from({ length: columns }).map((_, i) => (
         <Skeleton
           key={i}
@@ -73,7 +73,7 @@ function SkeletonTableRow({ columns = 5 }: { columns?: number }) {
 // Skeleton Stats Card - Bitget style
 function SkeletonStats({ className }: { className?: string }) {
   return (
-    <div className={cn("bg-[#141416] rounded-xl border border-[#2A2A2E] p-5", className)}>
+    <div className={cn("bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5", className)}>
       <Skeleton className="h-3 w-20 mb-2" />
       <Skeleton className="h-8 w-32 mb-2" />
       <Skeleton className="h-3 w-24" />
@@ -84,7 +84,7 @@ function SkeletonStats({ className }: { className?: string }) {
 // Skeleton Chart - Bitget style
 function SkeletonChart({ className }: { className?: string }) {
   return (
-    <div className={cn("bg-[#141416] rounded-xl border border-[#2A2A2E] p-5", className)}>
+    <div className={cn("bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5", className)}>
       <div className="flex items-center justify-between mb-6">
         <Skeleton className="h-5 w-32" />
         <div className="flex gap-2">
@@ -121,7 +121,7 @@ function Spinner({ size = "md", className }: SpinnerProps) {
   return (
     <div
       className={cn(
-        "rounded-full border-[#2A2A2E] border-t-[#00D9C8] animate-spin",
+        "rounded-full border-[#2B2F36] border-t-[#03AAC7] animate-spin",
         sizeClasses[size],
         className
       )}
@@ -149,7 +149,7 @@ function LoadingOverlay({
       {isLoading && (
         <div
           className={cn(
-            "absolute inset-0 flex flex-col items-center justify-center bg-[#0D0D0F]/80 rounded-xl z-10",
+            "absolute inset-0 flex flex-col items-center justify-center bg-[#151517]/80 rounded-xl z-10",
             blur && "backdrop-blur-sm"
           )}
         >
@@ -182,15 +182,15 @@ function ProgressBar({
   const percentage = Math.min(100, Math.max(0, (value / max) * 100))
 
   const variantClasses = {
-    default: "bg-[#00D9C8]",
-    success: "bg-[#00D9C8]",
+    default: "bg-[#03AAC7]",
+    success: "bg-[#03AAC7]",
     danger: "bg-[#F43F5E]",
     warning: "bg-[#F59E0B]",
   }
 
   return (
     <div className={cn("w-full", className)}>
-      <div className="h-1.5 bg-[#2A2A2E] rounded-full overflow-hidden">
+      <div className="h-1.5 bg-[#2B2F36] rounded-full overflow-hidden">
         <div
           className={cn(
             "h-full rounded-full transition-all duration-300",
@@ -216,8 +216,8 @@ interface PulseDotProps {
 
 function PulseDot({ color = "default", className }: PulseDotProps) {
   const colorClasses = {
-    default: "bg-[#00D9C8]",
-    success: "bg-[#00D9C8]",
+    default: "bg-[#03AAC7]",
+    success: "bg-[#03AAC7]",
     danger: "bg-[#F43F5E]",
     warning: "bg-[#F59E0B]",
   }

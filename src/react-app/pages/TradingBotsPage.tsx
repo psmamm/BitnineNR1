@@ -88,7 +88,7 @@ export default function TradingBotsPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center h-screen">
           <div className="text-center">
-            <RefreshCw className="w-16 h-16 text-[#00D9C8] animate-spin mx-auto mb-4" />
+            <RefreshCw className="w-16 h-16 text-[#03AAC7] animate-spin mx-auto mb-4" />
             <p className="text-zinc-400">Loading trading bots...</p>
           </div>
         </div>
@@ -106,7 +106,7 @@ export default function TradingBotsPage() {
           </div>
           <Button
             onClick={() => setShowCreateModal(true)}
-            className="bg-[#00D9C8] hover:bg-[#00A89C]"
+            className="bg-[#03AAC7] hover:bg-[#00A89C]"
           >
             <Plus className="w-5 h-5 mr-2" />
             Create Bot
@@ -120,7 +120,7 @@ export default function TradingBotsPage() {
             <p className="text-zinc-400 mb-6">Create your first bot to automate your trading</p>
             <Button
               onClick={() => setShowCreateModal(true)}
-              className="bg-[#00D9C8] hover:bg-[#00A89C]"
+              className="bg-[#03AAC7] hover:bg-[#00A89C]"
             >
               <Plus className="w-5 h-5 mr-2" />
               Create Your First Bot
@@ -135,8 +135,8 @@ export default function TradingBotsPage() {
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-[#00D9C8]" />
+                    <div className="w-10 h-10 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
+                      <Bot className="w-5 h-5 text-[#03AAC7]" />
                     </div>
                     <div>
                       <h3 className="font-bold text-white">{bot.name}</h3>
@@ -178,7 +178,7 @@ export default function TradingBotsPage() {
                       Pause
                     </Button>
                   ) : (
-                    <Button size="sm" className="flex-1 bg-[#00D9C8] hover:bg-[#00A89C]">
+                    <Button size="sm" className="flex-1 bg-[#03AAC7] hover:bg-[#00A89C]">
                       <Play className="w-4 h-4 mr-1" />
                       Start
                     </Button>

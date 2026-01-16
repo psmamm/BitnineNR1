@@ -76,12 +76,12 @@ export default function LeaderboardPage() {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-[#141416] p-8">
+            <div className="min-h-screen bg-[#1B1B1D] p-8">
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <div className="flex items-center gap-4 mb-8">
-                        <div className="bg-[#00D9C8]/20 p-3 rounded-xl">
-                            <Trophy className="w-8 h-8 text-[#00D9C8]" />
+                        <div className="bg-[#03AAC7]/20 p-3 rounded-xl">
+                            <Trophy className="w-8 h-8 text-[#03AAC7]" />
                         </div>
                         <div>
                             <h1 className="text-4xl font-bold mb-2">Leaderboard</h1>
@@ -91,12 +91,12 @@ export default function LeaderboardPage() {
 
                     {/* My Stats Card - NEW */}
                     {activeTab === 'elo' && eloData && (
-                        <div className="bg-[#141416] border border-[#2A2A2E] rounded-xl p-4 mb-8 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-[#00D9C8]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+                        <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-xl p-4 mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-[#03AAC7]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
                             <div className="flex items-center justify-between relative z-10">
                                 <div className="flex items-center gap-6">
-                                    <div className="w-16 h-16 bg-[#00D9C8] rounded-full flex items-center justify-center shadow-lg shadow-[#00D9C8]/20 text-white text-2xl font-bold overflow-hidden">
+                                    <div className="w-16 h-16 bg-[#03AAC7] rounded-full flex items-center justify-center shadow-lg shadow-[#03AAC7]/20 text-white text-2xl font-bold overflow-hidden">
                                         {user?.photoURL?.startsWith('http') || user?.photoURL?.startsWith('data:') ? (
                                             <img src={user.photoURL} alt="Me" className="w-full h-full object-cover" />
                                         ) : (
@@ -108,7 +108,7 @@ export default function LeaderboardPage() {
                                         <h2 className="text-3xl font-bold text-white flex items-center gap-3">
                                             {eloData.elo} ELO
                                             <span
-                                                className="text-sm px-3 py-1 rounded-full border border-[#2A2A2E]"
+                                                className="text-sm px-3 py-1 rounded-full border border-[#2B2F36]"
                                                 style={{
                                                     backgroundColor: `${getDivisionColor(eloData.division)}20`,
                                                     color: getDivisionColor(eloData.division)
@@ -127,7 +127,7 @@ export default function LeaderboardPage() {
                                     </div>
                                     <div>
                                         <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">Win Rate</p>
-                                        <p className="text-xl font-semibold text-[#00D9C8]">
+                                        <p className="text-xl font-semibold text-[#03AAC7]">
                                             {(eloData.wins + eloData.losses) > 0
                                                 ? Math.round((eloData.wins / (eloData.wins + eloData.losses)) * 100)
                                                 : 0}%
@@ -139,11 +139,11 @@ export default function LeaderboardPage() {
                     )}
 
                     {/* Tabs */}
-                    <div className="flex gap-4 mb-8 border-b border-[#2A2A2E]">
+                    <div className="flex gap-4 mb-8 border-b border-[#2B2F36]">
                         <button
                             onClick={() => setActiveTab('elo')}
                             className={`px-6 py-3 border-b-2 transition-colors ${activeTab === 'elo'
-                                    ? 'border-[#00D9C8] text-white'
+                                    ? 'border-[#03AAC7] text-white'
                                     : 'border-transparent text-gray-400 hover:text-white'
                                 }`}
                         >
@@ -153,7 +153,7 @@ export default function LeaderboardPage() {
                         <button
                             onClick={() => setActiveTab('pnl')}
                             className={`px-6 py-3 border-b-2 transition-colors ${activeTab === 'pnl'
-                                    ? 'border-[#00D9C8] text-white'
+                                    ? 'border-[#03AAC7] text-white'
                                     : 'border-transparent text-gray-400 hover:text-white'
                                 }`}
                         >
@@ -165,14 +165,14 @@ export default function LeaderboardPage() {
                     {/* Leaderboard Table */}
                     {loading ? (
                         <div className="text-center py-12">
-                            <div className="w-12 h-12 border-4 border-[#00D9C8]/30 border-t-[#00D9C8] rounded-full animate-spin mx-auto mb-4" />
+                            <div className="w-12 h-12 border-4 border-[#03AAC7]/30 border-t-[#03AAC7] rounded-full animate-spin mx-auto mb-4" />
                             <p className="text-gray-400">Loading leaderboard...</p>
                         </div>
                     ) : (
-                        <div className="bg-[#141416] border border-[#2A2A2E] rounded-xl overflow-hidden">
+                        <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-xl overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className="w-full">
-                                    <thead className="bg-[#141416] border-b border-[#2A2A2E]">
+                                    <thead className="bg-[#1B1B1D] border-b border-[#2B2F36]">
                                         <tr>
                                             <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">RANK</th>
                                             <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">TRADER</th>
@@ -199,7 +199,7 @@ export default function LeaderboardPage() {
                                                     initial={{ opacity: 0, y: 10 }}
                                                     animate={{ opacity: 1, y: 0 }}
                                                     transition={{ delay: idx * 0.05 }}
-                                                    className={`hover:bg-white/5 transition-colors ${isYou ? 'bg-[#00D9C8]/10' : ''}`}
+                                                    className={`hover:bg-white/5 transition-colors ${isYou ? 'bg-[#03AAC7]/10' : ''}`}
                                                 >
                                                     <td className="px-6 py-4">
                                                         {rank <= 3 ? (
@@ -212,7 +212,7 @@ export default function LeaderboardPage() {
                                                     </td>
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center gap-3">
-                                                            <div className="w-10 h-10 bg-[#00D9C8]/20 rounded-full flex items-center justify-center overflow-hidden">
+                                                            <div className="w-10 h-10 bg-[#03AAC7]/20 rounded-full flex items-center justify-center overflow-hidden">
                                                                 {(() => {
                                                                     const photoURL = isYou ? user?.photoURL : entry.photoURL;
                                                                     const displayName = isYou ? (user?.displayName || entry.username) : entry.username;
@@ -231,7 +231,7 @@ export default function LeaderboardPage() {
                                                                 <div className="font-medium flex items-center gap-2">
                                                                     {isYou ? (user?.displayName || entry.username) : entry.username}
                                                                     {isYou && (
-                                                                        <span className="text-xs bg-[#00D9C8] text-white px-2 py-0.5 rounded">YOU</span>
+                                                                        <span className="text-xs bg-[#03AAC7] text-white px-2 py-0.5 rounded">YOU</span>
                                                                     )}
                                                                 </div>
                                                             </div>
@@ -240,7 +240,7 @@ export default function LeaderboardPage() {
                                                     <td className="px-6 py-4">
                                                         <span
                                                             className="font-bold"
-                                                            style={{ color: activeTab === 'elo' ? divisionColor : '#00D9C8' }}
+                                                            style={{ color: activeTab === 'elo' ? divisionColor : '#03AAC7' }}
                                                         >
                                                             {activeTab === 'elo' ? entry.elo : '—'}
                                                         </span>

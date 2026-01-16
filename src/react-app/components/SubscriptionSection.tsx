@@ -43,10 +43,10 @@ export default function SubscriptionSection({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
-      className="bg-[#141416] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+      className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
     >
       <div className="flex items-center space-x-3 mb-6">
-        <div className="bg-[#00D9C8]/10 p-2 rounded-xl">
+        <div className="bg-[#03AAC7]/10 p-2 rounded-xl">
           <CreditCard className="w-6 h-6 text-[#6B7280]" />
         </div>
         <h3 className="text-xl font-semibold text-white">Subscription</h3>
@@ -59,12 +59,12 @@ export default function SubscriptionSection({
           <div className={`border rounded-xl p-4 ${
             isBasicPlan 
               ? 'bg-[#F39C12]/10 border-[#F39C12]/20' 
-              : 'bg-[#00D9C8]/10 border-[#00D9C8]/20'
+              : 'bg-[#03AAC7]/10 border-[#03AAC7]/20'
           }`}>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">
                 <span className={`font-semibold ${
-                  isBasicPlan ? 'text-[#F39C12]' : 'text-[#00D9C8]'
+                  isBasicPlan ? 'text-[#F39C12]' : 'text-[#03AAC7]'
                 }`}>
                   {subscription.plan}
                 </span>
@@ -103,11 +103,11 @@ export default function SubscriptionSection({
                   }
                 </span>
               </div>
-              <div className="w-full bg-[#141416]/50 rounded-full h-2">
+              <div className="w-full bg-[#1B1B1D]/50 rounded-full h-2">
                 <div 
                   className={`h-2 rounded-full ${
                     tradeUsagePercent > 80 ? 'bg-[#F43F5E]' : 
-                    tradeUsagePercent > 60 ? 'bg-[#F39C12]' : 'bg-[#00D9C8]'
+                    tradeUsagePercent > 60 ? 'bg-[#F39C12]' : 'bg-[#03AAC7]'
                   }`}
                   style={{ width: `${Math.min(tradeUsagePercent, 100)}%` }}
                 ></div>
@@ -121,11 +121,11 @@ export default function SubscriptionSection({
                   {subscription.usage.apiCalls.current.toLocaleString()} / {subscription.usage.apiCalls.limit.toLocaleString()}
                 </span>
               </div>
-              <div className="w-full bg-[#141416]/50 rounded-full h-2">
+              <div className="w-full bg-[#1B1B1D]/50 rounded-full h-2">
                 <div 
                   className={`h-2 rounded-full ${
                     apiUsagePercent > 80 ? 'bg-[#F43F5E]' : 
-                    apiUsagePercent > 60 ? 'bg-[#F39C12]' : 'bg-[#00D9C8]'
+                    apiUsagePercent > 60 ? 'bg-[#F39C12]' : 'bg-[#03AAC7]'
                   }`}
                   style={{ width: `${Math.min(apiUsagePercent, 100)}%` }}
                 ></div>
@@ -142,7 +142,7 @@ export default function SubscriptionSection({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={onUpgrade}
-            className="bg-gradient-to-r from-[#00D9C8] to-[#00F5E1] hover:from-[#00F5E1] hover:to-[#00D9C8] text-white px-6 py-2 rounded-xl font-medium transition-all shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)] flex items-center space-x-2"
+            className="bg-gradient-to-r from-[#03AAC7] to-[#26BFD4] hover:from-[#26BFD4] hover:to-[#03AAC7] text-white px-6 py-2 rounded-xl font-medium transition-all shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)] flex items-center space-x-2"
           >
             <Zap className="w-4 h-4" />
             <span>Upgrade to Pro</span>
@@ -152,7 +152,7 @@ export default function SubscriptionSection({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={onUpgrade}
-            className="bg-[#00D9C8] hover:bg-[#00F5E1] text-white px-6 py-2 rounded-xl font-medium transition-all shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)] flex items-center space-x-2"
+            className="bg-[#03AAC7] hover:bg-[#26BFD4] text-white px-6 py-2 rounded-xl font-medium transition-all shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)] flex items-center space-x-2"
           >
             <TrendingUp className="w-4 h-4" />
             <span>Upgrade Plan</span>
@@ -163,7 +163,7 @@ export default function SubscriptionSection({
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={onManageBilling}
-          className="bg-[#141416]/50 hover:bg-[#141416]/70 text-white px-6 py-2 rounded-xl font-medium transition-all border border-[#2A2A2E] hover:border-white/20"
+          className="bg-[#1B1B1D]/50 hover:bg-[#1B1B1D]/70 text-white px-6 py-2 rounded-xl font-medium transition-all border border-[#2B2F36] hover:border-white/20"
         >
           Manage Billing
         </motion.button>
@@ -174,24 +174,24 @@ export default function SubscriptionSection({
         <motion.div 
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="mt-6 pt-6 border-t border-[#2A2A2E]"
+          className="mt-6 pt-6 border-t border-[#2B2F36]"
         >
           <h5 className="text-white font-medium mb-3">Pro Plan Benefits</h5>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-            <div className="flex items-center space-x-2 text-[#00D9C8]">
-              <div className="w-1.5 h-1.5 bg-[#00D9C8] rounded-full"></div>
+            <div className="flex items-center space-x-2 text-[#03AAC7]">
+              <div className="w-1.5 h-1.5 bg-[#03AAC7] rounded-full"></div>
               <span>Unlimited trades</span>
             </div>
-            <div className="flex items-center space-x-2 text-[#00D9C8]">
-              <div className="w-1.5 h-1.5 bg-[#00D9C8] rounded-full"></div>
+            <div className="flex items-center space-x-2 text-[#03AAC7]">
+              <div className="w-1.5 h-1.5 bg-[#03AAC7] rounded-full"></div>
               <span>Advanced analytics</span>
             </div>
-            <div className="flex items-center space-x-2 text-[#00D9C8]">
-              <div className="w-1.5 h-1.5 bg-[#00D9C8] rounded-full"></div>
+            <div className="flex items-center space-x-2 text-[#03AAC7]">
+              <div className="w-1.5 h-1.5 bg-[#03AAC7] rounded-full"></div>
               <span>Real-time data feeds</span>
             </div>
-            <div className="flex items-center space-x-2 text-[#00D9C8]">
-              <div className="w-1.5 h-1.5 bg-[#00D9C8] rounded-full"></div>
+            <div className="flex items-center space-x-2 text-[#03AAC7]">
+              <div className="w-1.5 h-1.5 bg-[#03AAC7] rounded-full"></div>
               <span>Priority support</span>
             </div>
           </div>

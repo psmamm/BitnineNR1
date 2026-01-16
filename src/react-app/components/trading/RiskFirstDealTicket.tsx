@@ -273,7 +273,7 @@ export default function RiskFirstDealTicket({
               onClick={() => setOrderType(type)}
               className={`text-xs font-medium pb-1 transition-colors ${
                 orderType === type
-                  ? 'text-[#00d9c8] border-b-2 border-[#00d9c8]'
+                  ? 'text-[#03AAC7] border-b-2 border-[#03AAC7]'
                   : 'text-[#848e9c] hover:text-[#eaecef]'
               }`}
             >
@@ -298,13 +298,13 @@ export default function RiskFirstDealTicket({
                 <div className="flex gap-1 mb-2">
                   <button
                     onClick={() => setMarginMode('cross')}
-                    className={`flex-1 text-xs py-1 rounded ${marginMode === 'cross' ? 'bg-[#00d9c8] text-black' : 'bg-[#1e2026] text-[#848e9c]'}`}
+                    className={`flex-1 text-xs py-1 rounded ${marginMode === 'cross' ? 'bg-[#03AAC7] text-black' : 'bg-[#1e2026] text-[#848e9c]'}`}
                   >
                     Cross
                   </button>
                   <button
                     onClick={() => setMarginMode('isolated')}
-                    className={`flex-1 text-xs py-1 rounded ${marginMode === 'isolated' ? 'bg-[#00d9c8] text-black' : 'bg-[#1e2026] text-[#848e9c]'}`}
+                    className={`flex-1 text-xs py-1 rounded ${marginMode === 'isolated' ? 'bg-[#03AAC7] text-black' : 'bg-[#1e2026] text-[#848e9c]'}`}
                   >
                     Isolated
                   </button>
@@ -319,11 +319,11 @@ export default function RiskFirstDealTicket({
                 />
                 <div className="flex justify-between text-[10px] text-[#848e9c] mt-1">
                   <span>1x</span>
-                  <span className="text-[#00d9c8]">{leverage}x</span>
+                  <span className="text-[#03AAC7]">{leverage}x</span>
                   <span>100x</span>
                 </div>
               </div>
-              <button onClick={() => setShowMarginDropdown(false)} className="w-full text-xs py-1.5 text-[#00d9c8] hover:bg-[#1e2026]">
+              <button onClick={() => setShowMarginDropdown(false)} className="w-full text-xs py-1.5 text-[#03AAC7] hover:bg-[#1e2026]">
                 Confirm
               </button>
             </div>
@@ -339,7 +339,7 @@ export default function RiskFirstDealTicket({
             <span>Price</span>
             <button 
               onClick={() => setPrice(currentPrice)}
-              className="text-[#00d9c8] cursor-pointer hover:underline"
+              className="text-[#03AAC7] cursor-pointer hover:underline"
             >
               Last
             </button>
@@ -351,7 +351,7 @@ export default function RiskFirstDealTicket({
               onChange={(e) => setPrice(Number(e.target.value))}
               disabled={orderType === 'MARKET'}
               placeholder={orderType === 'MARKET' ? 'Market' : ''}
-              className="w-full bg-[#2b3139] rounded px-3 py-2 text-[#eaecef] text-xs focus:outline-none focus:ring-1 focus:ring-[#00d9c8] disabled:text-[#848e9c]"
+              className="w-full bg-[#2b3139] rounded px-3 py-2 text-[#eaecef] text-xs focus:outline-none focus:ring-1 focus:ring-[#03AAC7] disabled:text-[#848e9c]"
             />
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#848e9c]">USDT</span>
           </div>
@@ -361,14 +361,14 @@ export default function RiskFirstDealTicket({
         <div>
           <div className="flex justify-between text-[#848e9c] mb-1">
             <span>Risk Amount</span>
-            <span className="text-[#00d9c8]">$</span>
+            <span className="text-[#03AAC7]">$</span>
           </div>
           <div className="relative">
             <input
               type="number"
               value={riskAmount}
               onChange={(e) => setRiskAmount(Number(e.target.value))}
-              className="w-full bg-[#2b3139] rounded px-3 py-2 text-[#eaecef] text-xs focus:outline-none ring-1 ring-[#00d9c8]/50"
+              className="w-full bg-[#2b3139] rounded px-3 py-2 text-[#eaecef] text-xs focus:outline-none ring-1 ring-[#03AAC7]/50"
             />
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#848e9c]">USDT</span>
           </div>
@@ -431,7 +431,7 @@ export default function RiskFirstDealTicket({
           </div>
           <div className="flex justify-between">
             <span className="text-[#848e9c]">Risk Amount</span>
-            <span className="text-[#00d9c8]">${riskAmount.toFixed(2)}</span>
+            <span className="text-[#03AAC7]">${riskAmount.toFixed(2)}</span>
           </div>
           {positionSizeResult.liquidationPrice && (
             <div className="flex justify-between">

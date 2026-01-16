@@ -53,15 +53,15 @@ export default function CompetitionPage() {
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const divisionColor = eloData ? getDivisionColor(eloData.division) : '#00D9C8';
+    const divisionColor = eloData ? getDivisionColor(eloData.division) : '#03AAC7';
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-[#141416] text-white p-8">
+            <div className="min-h-screen bg-[#1B1B1D] text-white p-8">
                 <div className="max-w-6xl mx-auto">
                     {/* Header */}
                     <div className="text-center mb-12">
-                        <h1 className="text-5xl font-bold mb-4 bg- from-[#00D9C8] to-[#00D9C8] bg-clip-text text-transparent">
+                        <h1 className="text-5xl font-bold mb-4 bg- from-[#03AAC7] to-[#03AAC7] bg-clip-text text-transparent">
                             Choose Game Mode
                         </h1>
                         <p className="text-gray-400 text-lg">Compete against traders worldwide or practice your skills</p>
@@ -72,7 +72,7 @@ export default function CompetitionPage() {
                         <motion.div
                             initial={{ opacity: 0, y: -20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-[#141416] border border-[#2A2A2E] rounded-xl px-6 py-3 flex items-center gap-3"
+                            className="bg-[#1B1B1D] border border-[#2B2F36] rounded-xl px-6 py-3 flex items-center gap-3"
                         >
                             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                             <span className="text-sm font-medium text-gray-300">
@@ -88,12 +88,12 @@ export default function CompetitionPage() {
                             initial={{ opacity: 0, x: -50 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-[#141416] border-2 border-[#2A2A2E] rounded-xl p-4 hover:bg-white/5 transition-all cursor-pointer group"
+                            className="bg-[#1B1B1D] border-2 border-[#2B2F36] rounded-xl p-4 hover:bg-white/5 transition-all cursor-pointer group"
                             onClick={handleRankedMatch}
                         >
                             <div className="flex items-start justify-between mb-6">
-                                <div className="bg-[#00D9C8]/20 p-4 rounded-xl">
-                                    <Medal className="w-8 h-8 text-[#00D9C8]" />
+                                <div className="bg-[#03AAC7]/20 p-4 rounded-xl">
+                                    <Medal className="w-8 h-8 text-[#03AAC7]" />
                                 </div>
                                 <div className="flex items-center gap-2 text-sm text-green-400">
                                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
@@ -103,13 +103,13 @@ export default function CompetitionPage() {
 
                             <h2 className="text-2xl font-bold mb-3">Ranked Match</h2>
                             {matchmaking ? (
-                                <p className="text-[#00D9C8] animate-pulse mb-6">Searching for opponent...</p>
+                                <p className="text-[#03AAC7] animate-pulse mb-6">Searching for opponent...</p>
                             ) : (
                                 <p className="text-gray-400 mb-6">Compete for ranking points</p>
                             )}
 
                             {eloData && (
-                                <div className="mb-6 p-4 bg-[#141416] rounded-xl border border-white/5">
+                                <div className="mb-6 p-4 bg-[#1B1B1D] rounded-xl border border-white/5">
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <div className="text-xs text-gray-500 mb-1">Your ELO</div>
@@ -143,7 +143,7 @@ export default function CompetitionPage() {
 
                             <div className="flex items-center justify-between">
                                 <span className="text-sm text-gray-400">{matchmaking ? 'Please wait...' : 'Win to gain ELO'}</span>
-                                <ArrowRight className={`w-5 h-5 text-[#00D9C8] transition-all ${matchmaking ? 'opacity-0' : 'group-hover:translate-x-1'}`} />
+                                <ArrowRight className={`w-5 h-5 text-[#03AAC7] transition-all ${matchmaking ? 'opacity-0' : 'group-hover:translate-x-1'}`} />
                             </div>
                         </motion.div>
 
@@ -152,17 +152,17 @@ export default function CompetitionPage() {
                             initial={{ opacity: 0, x: 50 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="bg-[#141416] border-2 border-[#2A2A2E] rounded-xl p-4 hover:bg-white/5 transition-all cursor-pointer group"
+                            className="bg-[#1B1B1D] border-2 border-[#2B2F36] rounded-xl p-4 hover:bg-white/5 transition-all cursor-pointer group"
                             onClick={handlePracticeMode}
                         >
-                            <div className="bg-[#00D9C8]/20 p-4 rounded-xl w-fit mb-6">
-                                <User className="w-8 h-8 text-[#00D9C8]" />
+                            <div className="bg-[#03AAC7]/20 p-4 rounded-xl w-fit mb-6">
+                                <User className="w-8 h-8 text-[#03AAC7]" />
                             </div>
 
                             <h2 className="text-2xl font-bold mb-3">Practice Mode</h2>
                             <p className="text-gray-400 mb-6">Play solo to improve your skills</p>
 
-                            <div className="mb-6 p-4 bg-[#141416] rounded-xl border border-white/5">
+                            <div className="mb-6 p-4 bg-[#1B1B1D] rounded-xl border border-white/5">
                                 <div className="text-sm text-gray-400 space-y-2">
                                     <div className="flex items-center gap-2">
                                         <Check className="w-4 h-4 text-green-400" />
@@ -181,7 +181,7 @@ export default function CompetitionPage() {
 
                             <div className="flex items-center justify-between">
                                 <span className="text-sm text-gray-400">Perfect for beginners</span>
-                                <ArrowRight className="w-5 h-5 text-[#00D9C8] group-hover:translate-x-1 transition-transform" />
+                                <ArrowRight className="w-5 h-5 text-[#03AAC7] group-hover:translate-x-1 transition-transform" />
                             </div>
                         </motion.div>
                     </div>
@@ -192,7 +192,7 @@ export default function CompetitionPage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={handleCopyInviteLink}
-                            className="bg-[#141416] border border-[#2A2A2E] hover:bg-white/5 rounded-xl px-6 py-3 flex items-center gap-3 transition-all"
+                            className="bg-[#1B1B1D] border border-[#2B2F36] hover:bg-white/5 rounded-xl px-6 py-3 flex items-center gap-3 transition-all"
                         >
                             {copied ? (
                                 <>
@@ -213,23 +213,23 @@ export default function CompetitionPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="bg-[#141416] border border-[#2A2A2E] rounded-xl p-4"
+                        className="bg-[#1B1B1D] border border-[#2B2F36] rounded-xl p-4"
                     >
                         {friendsLoading ? (
                             <div className="text-center py-8">
-                                <div className="w-8 h-8 border-4 border-[#00D9C8]/30 border-t-[#00D9C8] rounded-full animate-spin mx-auto mb-3" />
+                                <div className="w-8 h-8 border-4 border-[#03AAC7]/30 border-t-[#03AAC7] rounded-full animate-spin mx-auto mb-3" />
                                 <p className="text-gray-400 text-sm">Loading friends...</p>
                             </div>
                         ) : friends.length === 0 ? (
                             <div className="text-center">
-                                <div className="bg-[#00D9C8]/20 p-4 rounded-xl w-fit mx-auto mb-4">
-                                    <Users className="w-8 h-8 text-[#00D9C8]" />
+                                <div className="bg-[#03AAC7]/20 p-4 rounded-xl w-fit mx-auto mb-4">
+                                    <Users className="w-8 h-8 text-[#03AAC7]" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-2">No friends yet</h3>
                                 <p className="text-gray-400 text-sm mb-4">Add friends to challenge them!</p>
                                 <button
                                     onClick={handleCopyInviteLink}
-                                    className="text-[#00D9C8] hover:text-[#00D9C8] text-sm font-medium transition-colors flex items-center gap-2 mx-auto"
+                                    className="text-[#03AAC7] hover:text-[#03AAC7] text-sm font-medium transition-colors flex items-center gap-2 mx-auto"
                                 >
                                     <UserPlus className="w-4 h-4" />
                                     Invite Friends
@@ -245,15 +245,15 @@ export default function CompetitionPage() {
                                     {friends.slice(0, 5).map((friend) => (
                                         <div
                                             key={friend.id}
-                                            className="flex items-center justify-between p-3 bg-[#141416] rounded-lg hover:bg-[#141416]/80 transition-colors"
+                                            className="flex items-center justify-between p-3 bg-[#1B1B1D] rounded-lg hover:bg-[#1B1B1D]/80 transition-colors"
                                         >
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-[#00D9C8]/20 rounded-full flex items-center justify-center">
+                                                <div className="w-10 h-10 bg-[#03AAC7]/20 rounded-full flex items-center justify-center">
                                                     {friend.username?.charAt(0).toUpperCase() || '👤'}
                                                 </div>
                                                 <span className="font-medium">{friend.username || 'Friend'}</span>
                                             </div>
-                                            <button className="text-[#00D9C8] hover:text-[#00D9C8] text-sm font-medium transition-colors">
+                                            <button className="text-[#03AAC7] hover:text-[#03AAC7] text-sm font-medium transition-colors">
                                                 Challenge
                                             </button>
                                         </div>
@@ -274,7 +274,7 @@ export default function CompetitionPage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => navigate('/competition/daily-challenge')}
-                            className="flex items-center gap-3 px-6 py-4 bg-[#141416] border border-[#2A2A2E] hover:bg-white/5 rounded-xl group transition-all min-w-[200px]"
+                            className="flex items-center gap-3 px-6 py-4 bg-[#1B1B1D] border border-[#2B2F36] hover:bg-white/5 rounded-xl group transition-all min-w-[200px]"
                         >
                             <div className="p-2 bg-yellow-500/10 rounded-lg group-hover:bg-yellow-500/20 transition-colors">
                                 <Zap className="w-5 h-5 text-yellow-500" />
@@ -289,10 +289,10 @@ export default function CompetitionPage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => navigate('/competition/tournaments')}
-                            className="flex items-center gap-3 px-6 py-4 bg-[#141416] border border-[#2A2A2E] hover:bg-white/5 rounded-xl group transition-all min-w-[200px]"
+                            className="flex items-center gap-3 px-6 py-4 bg-[#1B1B1D] border border-[#2B2F36] hover:bg-white/5 rounded-xl group transition-all min-w-[200px]"
                         >
-                            <div className="p-2 bg-[#00D9C8]/10 rounded-lg group-hover:bg-[#00D9C8]/20 transition-colors">
-                                <Trophy className="w-5 h-5 text-[#00D9C8]" />
+                            <div className="p-2 bg-[#03AAC7]/10 rounded-lg group-hover:bg-[#03AAC7]/20 transition-colors">
+                                <Trophy className="w-5 h-5 text-[#03AAC7]" />
                             </div>
                             <div className="text-left">
                                 <span className="block text-white font-semibold text-sm">Tournaments</span>
@@ -304,7 +304,7 @@ export default function CompetitionPage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => navigate('/competition/leaderboard')}
-                            className="flex items-center gap-3 px-6 py-4 bg-[#141416] border border-[#2A2A2E] hover:bg-white/5 rounded-xl group transition-all min-w-[200px]"
+                            className="flex items-center gap-3 px-6 py-4 bg-[#1B1B1D] border border-[#2B2F36] hover:bg-white/5 rounded-xl group transition-all min-w-[200px]"
                         >
                             <div className="p-2 bg-purple-500/10 rounded-lg group-hover:bg-purple-500/20 transition-colors">
                                 <Crown className="w-5 h-5 text-purple-500" />

@@ -238,7 +238,7 @@ export default function QuickAddTradeModal({ isOpen, onClose, onSuccess }: Quick
                     placeholder="BTCUSDT"
                     required
                     disabled={loading}
-                    className={`w-full px-4 py-3 ${getCardBg(theme)} border ${getCardBorder(theme)} rounded-lg ${getTextColor(theme, 'primary')} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00D9C8] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed`}
+                    className={`w-full px-4 py-3 ${getCardBg(theme)} border ${getCardBorder(theme)} rounded-lg ${getTextColor(theme, 'primary')} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#03AAC7] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed`}
                   />
                 </div>
 
@@ -254,7 +254,7 @@ export default function QuickAddTradeModal({ isOpen, onClose, onSuccess }: Quick
                       disabled={loading}
                       className={`flex items-center justify-center space-x-2 px-4 py-3 rounded-lg border transition-all ${
                         formData.direction === 'LONG'
-                          ? 'bg-[#00D9C8]/20 border-[#00D9C8] text-[#00D9C8]'
+                          ? 'bg-[#03AAC7]/20 border-[#03AAC7] text-[#03AAC7]'
                           : `${getCardBg(theme)} ${getCardBorder(theme)} ${getTextColor(theme, 'secondary')} hover:bg-white/5`
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
@@ -290,7 +290,7 @@ export default function QuickAddTradeModal({ isOpen, onClose, onSuccess }: Quick
                     placeholder="50000.00"
                     required
                     disabled={loading}
-                    className={`w-full px-4 py-3 ${getCardBg(theme)} border ${getCardBorder(theme)} rounded-lg ${getTextColor(theme, 'primary')} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00D9C8] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed`}
+                    className={`w-full px-4 py-3 ${getCardBg(theme)} border ${getCardBorder(theme)} rounded-lg ${getTextColor(theme, 'primary')} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#03AAC7] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed`}
                   />
                 </div>
 
@@ -306,7 +306,7 @@ export default function QuickAddTradeModal({ isOpen, onClose, onSuccess }: Quick
                     onChange={(e) => setFormData({ ...formData, exit_price: e.target.value })}
                     placeholder="51000.00"
                     disabled={loading}
-                    className={`w-full px-4 py-3 ${getCardBg(theme)} border ${getCardBorder(theme)} rounded-lg ${getTextColor(theme, 'primary')} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00D9C8] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed`}
+                    className={`w-full px-4 py-3 ${getCardBg(theme)} border ${getCardBorder(theme)} rounded-lg ${getTextColor(theme, 'primary')} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#03AAC7] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed`}
                   />
                 </div>
 
@@ -323,7 +323,7 @@ export default function QuickAddTradeModal({ isOpen, onClose, onSuccess }: Quick
                     placeholder="1000.00"
                     required
                     disabled={loading}
-                    className={`w-full px-4 py-3 ${getCardBg(theme)} border ${getCardBorder(theme)} rounded-lg ${getTextColor(theme, 'primary')} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00D9C8] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed`}
+                    className={`w-full px-4 py-3 ${getCardBg(theme)} border ${getCardBorder(theme)} rounded-lg ${getTextColor(theme, 'primary')} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#03AAC7] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed`}
                   />
                 </div>
 
@@ -344,7 +344,7 @@ export default function QuickAddTradeModal({ isOpen, onClose, onSuccess }: Quick
                     placeholder="Record voice note or type..."
                     disabled={loading}
                     rows={4}
-                    className={`w-full px-4 py-3 ${getCardBg(theme)} border ${getCardBorder(theme)} rounded-lg ${getTextColor(theme, 'primary')} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00D9C8] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed resize-none`}
+                    className={`w-full px-4 py-3 ${getCardBg(theme)} border ${getCardBorder(theme)} rounded-lg ${getTextColor(theme, 'primary')} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#03AAC7] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed resize-none`}
                   />
                 </div>
 
@@ -359,7 +359,7 @@ export default function QuickAddTradeModal({ isOpen, onClose, onSuccess }: Quick
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-[#00D9C8] hover:bg-[#5A2DE4] text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-[#03AAC7] hover:bg-[#5A2DE4] text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <>
@@ -388,7 +388,7 @@ export default function QuickAddTradeModal({ isOpen, onClose, onSuccess }: Quick
             exit={{ opacity: 0, y: 50, x: '-50%' }}
             className="fixed bottom-8 left-1/2 z-[200] transform -translate-x-1/2"
           >
-            <div className="bg-[#00D9C8] text-white px-6 py-4 rounded-lg shadow-2xl flex items-center space-x-3">
+            <div className="bg-[#03AAC7] text-white px-6 py-4 rounded-lg shadow-2xl flex items-center space-x-3">
               <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
               <span className="font-semibold">{toast.message}</span>
             </div>

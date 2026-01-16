@@ -6,8 +6,8 @@ import { ChevronRight, Check } from "lucide-react"
  * Dropdown Menu Component - Bitget Style (2026)
  *
  * Features:
- * - Dark background (#141416)
- * - Border (#2A2A2E)
+ * - Dark background (#1B1B1D)
+ * - Border (#2B2F36)
  * - Icon + Label layout
  * - Hover state with background change
  * - Sections with headers
@@ -158,7 +158,7 @@ const DropdownMenuContent = React.forwardRef<HTMLDivElement, DropdownMenuContent
         }}
         className={cn(
           "absolute z-50 min-w-[200px] overflow-hidden",
-          "bg-[#141416] border border-[#2A2A2E] rounded-xl",
+          "bg-[#1B1B1D] border border-[#2B2F36] rounded-xl",
           "shadow-dropdown p-2",
           "animate-in fade-in-0 zoom-in-95 duration-200",
           alignClasses[align],
@@ -199,7 +199,7 @@ const DropdownMenuItem = React.forwardRef<HTMLDivElement, DropdownMenuItemProps>
         className={cn(
           "flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer",
           "text-sm text-[#9CA3AF] transition-colors duration-150",
-          "hover:bg-[#1A1A1E] hover:text-white",
+          "hover:bg-[#252629] hover:text-white",
           disabled && "opacity-50 cursor-not-allowed hover:bg-transparent hover:text-[#9CA3AF]",
           destructive && "text-[#F43F5E] hover:text-[#F43F5E] hover:bg-[#F43F5E]/10",
           className
@@ -244,9 +244,9 @@ const DropdownMenuCheckboxItem = React.forwardRef<HTMLDivElement, DropdownMenuCh
         <span className="flex-1">{children}</span>
         <span className={cn(
           "w-4 h-4 rounded border flex items-center justify-center",
-          checked ? "bg-[#00D9C8] border-[#00D9C8]" : "border-[#2A2A2E]"
+          checked ? "bg-[#03AAC7] border-[#03AAC7]" : "border-[#2B2F36]"
         )}>
-          {checked && <Check className="w-3 h-3 text-[#0D0D0F]" />}
+          {checked && <Check className="w-3 h-3 text-[#151517]" />}
         </span>
       </DropdownMenuItem>
     )
@@ -261,7 +261,7 @@ const DropdownMenuSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("h-px my-2 bg-[#2A2A2E]", className)}
+    className={cn("h-px my-2 bg-[#2B2F36]", className)}
     role="separator"
     {...props}
   />
@@ -334,8 +334,8 @@ const DropdownMenuSubTrigger = React.forwardRef<HTMLDivElement, DropdownMenuSubT
         className={cn(
           "flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer",
           "text-sm text-[#9CA3AF] transition-colors duration-150",
-          "hover:bg-[#1A1A1E] hover:text-white",
-          open && "bg-[#1A1A1E] text-white",
+          "hover:bg-[#252629] hover:text-white",
+          open && "bg-[#252629] text-white",
           className
         )}
         {...props}
@@ -363,7 +363,7 @@ const DropdownMenuSubContent = React.forwardRef<
       ref={ref}
       className={cn(
         "absolute left-full top-0 ml-1 min-w-[200px]",
-        "bg-[#141416] border border-[#2A2A2E] rounded-xl",
+        "bg-[#1B1B1D] border border-[#2B2F36] rounded-xl",
         "shadow-dropdown p-2",
         "animate-in fade-in-0 slide-in-from-left-2 duration-200",
         className

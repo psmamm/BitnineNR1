@@ -195,9 +195,9 @@ export function AICloneFloatingPanel({ isOpen, onClose }: AICloneFloatingPanelPr
           // Minimized state - just icon with badge
           <button
             onClick={() => setIsMinimized(false)}
-            className="w-full h-full flex items-center justify-center relative bg-[#00D9C8]/10 hover:bg-[#00D9C8]/20 transition-colors"
+            className="w-full h-full flex items-center justify-center relative bg-[#03AAC7]/10 hover:bg-[#03AAC7]/20 transition-colors"
           >
-            <Bot className="w-6 h-6 text-[#00D9C8]" />
+            <Bot className="w-6 h-6 text-[#03AAC7]" />
             {pendingSuggestions.length > 0 && (
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#F6465D] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                 {pendingSuggestions.length}
@@ -213,10 +213,10 @@ export function AICloneFloatingPanel({ isOpen, onClose }: AICloneFloatingPanelPr
             >
               <div className="flex items-center gap-2">
                 <GripVertical className="w-4 h-4 text-[#848E9C]" />
-                <Bot className="w-4 h-4 text-[#00D9C8]" />
+                <Bot className="w-4 h-4 text-[#03AAC7]" />
                 <span className="text-sm font-medium text-[#EAECEF]">AI Clone</span>
                 {pendingSuggestions.length > 0 && (
-                  <span className="px-1.5 py-0.5 bg-[#00D9C8]/20 text-[#00D9C8] text-[10px] font-medium rounded">
+                  <span className="px-1.5 py-0.5 bg-[#03AAC7]/20 text-[#03AAC7] text-[10px] font-medium rounded">
                     {pendingSuggestions.length} new
                   </span>
                 )}

@@ -106,9 +106,9 @@ export const SymbolSearchDropdown = ({
                     onFocus={handleInputFocus}
                     onKeyDown={handleKeyDown}
                     placeholder={placeholder}
-                    className="w-full h-14 pl-12 pr-12 bg-[#141416] 
-                     border border-white/20 hover:border-[#00D9C8]/50 rounded-xl text-white 
-                     focus:border-[#00D9C8] focus:ring-2 focus:ring-[#00D9C8]/20 
+                    className="w-full h-14 pl-12 pr-12 bg-[#1B1B1D] 
+                     border border-white/20 hover:border-[#03AAC7]/50 rounded-xl text-white 
+                     focus:border-[#03AAC7] focus:ring-2 focus:ring-[#03AAC7]/20 
                      transition-colors duration-200 font-medium placeholder-[#6B7280]
                      backdrop-blur-xl focus:outline-none"
                 />
@@ -116,31 +116,31 @@ export const SymbolSearchDropdown = ({
                     className={`absolute right-4 top-1/2 transform -translate-y-1/2 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''} cursor-pointer`}
                     onClick={() => setIsOpen(!isOpen)}
                 >
-                    <ChevronDown className="w-5 h-5 text-[#6B7280] hover:text-[#00D9C8] transition-colors duration-200" />
+                    <ChevronDown className="w-5 h-5 text-[#6B7280] hover:text-[#03AAC7] transition-colors duration-200" />
                 </div>
             </div>
 
             {isOpen && searchTerm.length > 0 && (
-                <div className="absolute z-[9999] w-full mt-3 bg-[#141416] 
-                     border border-[#00D9C8]/30 rounded-xl shadow-xl 
+                <div className="absolute z-[9999] w-full mt-3 bg-[#1B1B1D] 
+                     border border-[#03AAC7]/30 rounded-xl shadow-xl 
                      overflow-hidden backdrop-blur-xl"
                     style={{ zIndex: 9999 }}
                 >
                     {/* Search Results Header */}
-                    <div className="px-4 py-2 border-b border-[#2A2A2E] bg-[#00D9C8]/5">
+                    <div className="px-4 py-2 border-b border-[#2B2F36] bg-[#03AAC7]/5">
                         <p className="text-xs text-[#6B7280]">
                             {filteredOptions.length} results for "{searchTerm}"
                         </p>
                     </div>
 
-                    <div className="max-h-64 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-[#00D9C8]/20 scrollbar-track-transparent">
+                    <div className="max-h-64 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-[#03AAC7]/20 scrollbar-track-transparent">
                         {filteredOptions.length === 0 ? (
                             <button
                                 type="button"
                                 onClick={() => setIsOpen(false)}
-                                className="w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 hover:bg-[#00D9C8]/10 flex items-center space-x-3 group"
+                                className="w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 hover:bg-[#03AAC7]/10 flex items-center space-x-3 group"
                             >
-                                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[#00D9C8]/10 text-[#00D9C8] group-hover:bg-[#00D9C8] group-hover:text-white transition-all">
+                                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[#03AAC7]/10 text-[#03AAC7] group-hover:bg-[#03AAC7] group-hover:text-white transition-all">
                                     <Plus className="w-4 h-4" />
                                 </div>
                                 <div>
@@ -158,9 +158,9 @@ export const SymbolSearchDropdown = ({
                                         handleOptionSelect(option.value);
                                     }}
                                     className={`w-full text-left px-4 py-3 rounded-lg transition-colors duration-200
-                             hover:bg-[#00D9C8]/10 flex items-center justify-between group
+                             hover:bg-[#03AAC7]/10 flex items-center justify-between group
                              ${value === option.value ?
-                                            'bg-[#00D9C8]/20 text-white' :
+                                            'bg-[#03AAC7]/20 text-white' :
                                             'text-[#6B7280] hover:text-white'
                                         }`}
                                 >
@@ -168,7 +168,7 @@ export const SymbolSearchDropdown = ({
                                         {renderOption ? renderOption(option) : option.label}
                                     </div>
                                     {value === option.value && (
-                                        <div className="text-[#00D9C8]">
+                                        <div className="text-[#03AAC7]">
                                             <Check className="w-4 h-4" />
                                         </div>
                                     )}
@@ -239,32 +239,32 @@ export const Modern3DDropdown = ({
                     e.preventDefault();
                     setIsOpen(!isOpen);
                 }}
-                className="w-full h-14 px-5 bg-[#141416] 
-                   border border-white/20 hover:border-[#00D9C8]/50 rounded-xl text-white 
-                   focus:outline-none focus:border-[#00D9C8] focus:ring-2 focus:ring-[#00D9C8]/20 
+                className="w-full h-14 px-5 bg-[#1B1B1D] 
+                   border border-white/20 hover:border-[#03AAC7]/50 rounded-xl text-white 
+                   focus:outline-none focus:border-[#03AAC7] focus:ring-2 focus:ring-[#03AAC7]/20 
                    transition-colors duration-200 flex items-center justify-between group
                    backdrop-blur-xl"
             >
                 <div className="flex items-center space-x-3">
                     {icon && React.createElement(icon, {
-                        className: "w-5 h-5 text-[#6B7280] group-hover:text-[#00D9C8] transition-colors duration-300"
+                        className: "w-5 h-5 text-[#6B7280] group-hover:text-[#03AAC7] transition-colors duration-300"
                     })}
                     <span className={`font-medium ${selectedOption ? 'text-white' : 'text-[#6B7280]'}`}>
                         {selectedOption ? (renderOption ? renderOption(selectedOption) : selectedOption.label) : placeholder}
                     </span>
                 </div>
                 <div className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
-                    <ChevronDown className="w-5 h-5 text-[#6B7280] group-hover:text-[#00D9C8] transition-colors duration-200" />
+                    <ChevronDown className="w-5 h-5 text-[#6B7280] group-hover:text-[#03AAC7] transition-colors duration-200" />
                 </div>
             </button>
 
             {isOpen && (
-                <div className="absolute z-[9999] w-full mt-3 bg-[#141416] 
-                     border border-[#00D9C8]/30 rounded-xl shadow-xl 
+                <div className="absolute z-[9999] w-full mt-3 bg-[#1B1B1D] 
+                     border border-[#03AAC7]/30 rounded-xl shadow-xl 
                      overflow-hidden backdrop-blur-xl"
                     style={{ zIndex: 9999 }}
                 >
-                    <div className="max-h-64 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-[#00D9C8]/20 scrollbar-track-transparent">
+                    <div className="max-h-64 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-[#03AAC7]/20 scrollbar-track-transparent">
                         {options.map((option: Option) => (
                             <button
                                 key={option.value}
@@ -274,9 +274,9 @@ export const Modern3DDropdown = ({
                                     handleOptionSelect(option.value);
                                 }}
                                 className={`w-full text-left px-4 py-3 rounded-lg transition-colors duration-200
-                           hover:bg-[#00D9C8]/10 flex items-center justify-between group
+                           hover:bg-[#03AAC7]/10 flex items-center justify-between group
                            ${value === option.value ?
-                                        'bg-[#00D9C8]/20 text-white' :
+                                        'bg-[#03AAC7]/20 text-white' :
                                         'text-[#6B7280] hover:text-white'
                                     }`}
                             >
@@ -284,7 +284,7 @@ export const Modern3DDropdown = ({
                                     {renderOption ? renderOption(option) : option.label}
                                 </div>
                                 {value === option.value && (
-                                    <div className="text-[#00D9C8]">
+                                    <div className="text-[#03AAC7]">
                                         <Check className="w-4 h-4" />
                                     </div>
                                 )}
@@ -330,12 +330,12 @@ export const ModernInput = ({
                     value={value}
                     onChange={onChange}
                     className={`w-full h-14 ${icon ? 'pl-12' : 'pl-5'} pr-5 
-                     bg-[#141416] border rounded-xl text-white font-medium placeholder-[#6B7280] 
+                     bg-[#1B1B1D] border rounded-xl text-white font-medium placeholder-[#6B7280] 
                      focus:outline-none transition-colors duration-200
                      backdrop-blur-xl
                      ${error ?
                             'border-[#F43F5E] focus:border-[#F43F5E] focus:ring-2 focus:ring-[#F43F5E]/20' :
-                            'border-white/20 hover:border-[#00D9C8]/50 focus:border-[#00D9C8] focus:ring-2 focus:ring-[#00D9C8]/20'
+                            'border-white/20 hover:border-[#03AAC7]/50 focus:border-[#03AAC7] focus:ring-2 focus:ring-[#03AAC7]/20'
                         }`}
                     {...props}
                 />
@@ -437,7 +437,7 @@ export const ModernDateInput = ({
         <div className="relative" ref={calendarRef}>
             <div className="relative group">
                 <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
-                    <Calendar className="w-5 h-5 text-[#6B7280] group-focus-within:text-[#00D9C8] transition-colors duration-200" />
+                    <Calendar className="w-5 h-5 text-[#6B7280] group-focus-within:text-[#03AAC7] transition-colors duration-200" />
                 </div>
                 <input
                     type="text"
@@ -446,22 +446,22 @@ export const ModernDateInput = ({
                     placeholder="tt.mm.jjjj"
                     readOnly
                     className={`w-full h-14 pl-12 pr-5 cursor-pointer
-                     bg-[#141416] border rounded-xl text-white font-medium
+                     bg-[#1B1B1D] border rounded-xl text-white font-medium
                      focus:outline-none transition-all duration-200
                      backdrop-blur-xl placeholder-[#7F8C8D]
                      shadow-lg hover:shadow-xl
                      ${error ?
                             'border-[#F43F5E] focus:border-[#F43F5E] focus:ring-2 focus:ring-[#F43F5E]/20' :
-                            'border-white/20 hover:border-[#00D9C8]/50 focus:border-[#00D9C8] focus:ring-2 focus:ring-[#00D9C8]/20'
+                            'border-white/20 hover:border-[#03AAC7]/50 focus:border-[#03AAC7] focus:ring-2 focus:ring-[#03AAC7]/20'
                         }`}
                     {...props}
                 />
             </div>
 
             {showCalendar && (
-                <div className="absolute z-[9999] mt-2 bg-[#2A2F42] border border-[#00D9C8]/30 rounded-xl shadow-2xl overflow-hidden backdrop-blur-xl">
+                <div className="absolute z-[9999] mt-2 bg-[#2A2F42] border border-[#03AAC7]/30 rounded-xl shadow-2xl overflow-hidden backdrop-blur-xl">
                     {/* Calendar Header */}
-                    <div className="bg-[#00D9C8] px-4 py-3">
+                    <div className="bg-[#03AAC7] px-4 py-3">
                         <div className="flex items-center justify-between">
                             <h3 className="text-white font-semibold">
                                 {monthNames[new Date().getMonth()]} {new Date().getFullYear()}
@@ -489,11 +489,11 @@ export const ModernDateInput = ({
                                     type="button"
                                     onClick={() => handleDateSelect(day.dateStr)}
                                     className={`h-8 w-8 flex items-center justify-center text-sm rounded-lg transition-all duration-200 ${day.isSelected
-                                        ? 'bg-[#00D9C8] text-white font-bold shadow-lg'
+                                        ? 'bg-[#03AAC7] text-white font-bold shadow-lg'
                                         : day.isToday
-                                            ? 'bg-[#00D9C8]/20 text-[#00D9C8] font-semibold border border-[#00D9C8]/50'
+                                            ? 'bg-[#03AAC7]/20 text-[#03AAC7] font-semibold border border-[#03AAC7]/50'
                                             : day.isCurrentMonth
-                                                ? 'text-white hover:bg-[#00D9C8]/10 hover:text-[#00D9C8]'
+                                                ? 'text-white hover:bg-[#03AAC7]/10 hover:text-[#03AAC7]'
                                                 : 'text-[#7F8C8D] hover:bg-white/5'
                                         }`}
                                 >
@@ -503,11 +503,11 @@ export const ModernDateInput = ({
                         </div>
 
                         {/* Today Button */}
-                        <div className="mt-4 pt-3 border-t border-[#2A2A2E]">
+                        <div className="mt-4 pt-3 border-t border-[#2B2F36]">
                             <button
                                 type="button"
                                 onClick={() => handleDateSelect(new Date().toISOString().split('T')[0])}
-                                className="w-full px-3 py-2 bg-[#00D9C8]/10 hover:bg-[#00D9C8]/20 text-[#00D9C8] rounded-lg text-sm font-medium transition-all duration-200"
+                                className="w-full px-3 py-2 bg-[#03AAC7]/10 hover:bg-[#03AAC7]/20 text-[#03AAC7] rounded-lg text-sm font-medium transition-all duration-200"
                             >
                                 Heute
                             </button>

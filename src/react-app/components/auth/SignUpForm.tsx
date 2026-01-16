@@ -57,7 +57,7 @@ export const SignUpForm = () => {
       score: passed,
       percentage: (passed / PASSWORD_CRITERIA.length) * 100,
       label: passed === 0 ? '' : passed <= 1 ? 'Weak' : passed <= 2 ? 'Fair' : passed <= 3 ? 'Good' : 'Strong',
-      color: passed <= 1 ? 'bg-red-500' : passed <= 2 ? 'bg-yellow-500' : passed <= 3 ? 'bg-blue-500' : 'bg-[#00D9C8]',
+      color: passed <= 1 ? 'bg-red-500' : passed <= 2 ? 'bg-yellow-500' : passed <= 3 ? 'bg-blue-500' : 'bg-[#03AAC7]',
     };
   }, [password]);
 
@@ -158,7 +158,7 @@ export const SignUpForm = () => {
   };
 
   return (
-    <div className="relative bg-[#141416] rounded-2xl border border-[#2A2A2E] shadow-[0_4px_20px_rgba(0,0,0,0.3)] p-8 space-y-8 max-w-md w-full">
+    <div className="relative bg-[#1B1B1D] rounded-2xl border border-[#2B2F36] shadow-[0_4px_20px_rgba(0,0,0,0.3)] p-8 space-y-8 max-w-md w-full">
       {/* Close button */}
       <Link
         to="/"
@@ -169,7 +169,7 @@ export const SignUpForm = () => {
 
       <div className="space-y-6">
         <div className="space-y-3 text-center">
-          <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/5 border border-[#2A2A2E] text-[11px] uppercase tracking-[0.2em] text-gray-400">
+          <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/5 border border-[#2B2F36] text-[11px] uppercase tracking-[0.2em] text-gray-400">
             Join Tradecircle
           </div>
           <h2 className="text-3xl font-extrabold text-white">Create a new account</h2>
@@ -199,12 +199,12 @@ export const SignUpForm = () => {
                   required
                   aria-invalid={emailTouched && !isEmailValid}
                   aria-describedby={emailTouched && !isEmailValid ? "email-error" : undefined}
-                  className={`w-full rounded-xl border bg-[#141416]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${
+                  className={`w-full rounded-xl border bg-[#1B1B1D]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${
                     emailTouched
                       ? isEmailValid
-                        ? 'border-[#00D9C8]/50 focus:ring-[#00D9C8]/50 focus:border-[#00D9C8]/50'
+                        ? 'border-[#03AAC7]/50 focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50'
                         : 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
-                      : 'border-[#2A2A2E] focus:ring-[#00D9C8]/50 focus:border-[#00D9C8]/50'
+                      : 'border-[#2B2F36] focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50'
                   }`}
                   placeholder="you@example.com"
                   value={email}
@@ -214,7 +214,7 @@ export const SignUpForm = () => {
                 {emailTouched && (
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                     {isEmailValid ? (
-                      <CheckCircle className="w-4 h-4 text-[#00D9C8]" />
+                      <CheckCircle className="w-4 h-4 text-[#03AAC7]" />
                     ) : (
                       <AlertCircle className="w-4 h-4 text-red-400" />
                     )}
@@ -238,7 +238,7 @@ export const SignUpForm = () => {
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="new-password"
                   required
-                  className="w-full rounded-xl border border-[#2A2A2E] bg-[#141416]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00D9C8]/50 focus:border-[#00D9C8]/50 transition-all"
+                  className="w-full rounded-xl border border-[#2B2F36] bg-[#1B1B1D]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50 transition-all"
                   placeholder="••••••••"
                   value={password}
                   onChange={handlePasswordChange}
@@ -267,7 +267,7 @@ export const SignUpForm = () => {
                     <span className={`text-xs font-medium ${
                       passwordStrength.score <= 1 ? 'text-red-400' : 
                       passwordStrength.score <= 2 ? 'text-yellow-400' : 
-                      passwordStrength.score <= 3 ? 'text-blue-400' : 'text-[#00D9C8]'
+                      passwordStrength.score <= 3 ? 'text-blue-400' : 'text-[#03AAC7]'
                     }`}>
                       {passwordStrength.label}
                     </span>
@@ -277,7 +277,7 @@ export const SignUpForm = () => {
                       <div 
                         key={criteria.id}
                         className={`flex items-center gap-1.5 text-xs ${
-                          criteria.test(password) ? 'text-[#00D9C8]' : 'text-[#7F8C8D]'
+                          criteria.test(password) ? 'text-[#03AAC7]' : 'text-[#7F8C8D]'
                         }`}
                       >
                         {criteria.test(password) ? (
@@ -306,12 +306,12 @@ export const SignUpForm = () => {
                   autoComplete="new-password"
                   required
                   aria-invalid={confirmPasswordTouched && !passwordsMatch}
-                  className={`w-full rounded-xl border bg-[#141416]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${
+                  className={`w-full rounded-xl border bg-[#1B1B1D]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${
                     confirmPasswordTouched && confirmPassword.length > 0
                       ? passwordsMatch
-                        ? 'border-[#00D9C8]/50 focus:ring-[#00D9C8]/50 focus:border-[#00D9C8]/50'
+                        ? 'border-[#03AAC7]/50 focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50'
                         : 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
-                      : 'border-[#2A2A2E] focus:ring-[#00D9C8]/50 focus:border-[#00D9C8]/50'
+                      : 'border-[#2B2F36] focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50'
                   }`}
                   placeholder="••••••••"
                   value={confirmPassword}
@@ -331,7 +331,7 @@ export const SignUpForm = () => {
                 <p className="text-xs text-red-400 mt-1">Passwords don't match</p>
               )}
               {confirmPasswordTouched && passwordsMatch && (
-                <p className="text-xs text-[#00D9C8] mt-1 flex items-center gap-1">
+                <p className="text-xs text-[#03AAC7] mt-1 flex items-center gap-1">
                   <CheckCircle className="w-3 h-3" />
                   Passwords match
                 </p>
@@ -352,7 +352,7 @@ export const SignUpForm = () => {
               />
               <label
                 htmlFor="terms"
-                className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-md border-2 border-white/20 bg-white/5 transition-all duration-200 hover:border-[#00D9C8]/50 hover:bg-[#00D9C8]/10 peer-checked:border-[#00D9C8] peer-checked:bg-[#00D9C8] peer-focus-visible:ring-2 peer-focus-visible:ring-[#00D9C8]/50 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#141416]"
+                className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-md border-2 border-white/20 bg-white/5 transition-all duration-200 hover:border-[#03AAC7]/50 hover:bg-[#03AAC7]/10 peer-checked:border-[#03AAC7] peer-checked:bg-[#03AAC7] peer-focus-visible:ring-2 peer-focus-visible:ring-[#03AAC7]/50 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#1B1B1D]"
               >
                 <svg
                   className="h-3 w-3 text-white transition-opacity duration-200"
@@ -368,11 +368,11 @@ export const SignUpForm = () => {
             </div>
             <label htmlFor="terms" className="ml-3 text-sm text-[#AAB0C0] cursor-pointer select-none leading-tight hover:text-white/80 transition-colors">
               I agree to the{' '}
-              <Link to="/terms" className="text-[#00D9C8] hover:text-[#00F5E1] transition-colors">
+              <Link to="/terms" className="text-[#03AAC7] hover:text-[#26BFD4] transition-colors">
                 Terms of Service
               </Link>{' '}
               and{' '}
-              <Link to="/privacy" className="text-[#00D9C8] hover:text-[#00F5E1] transition-colors">
+              <Link to="/privacy" className="text-[#03AAC7] hover:text-[#26BFD4] transition-colors">
                 Privacy Policy
               </Link>
             </label>
@@ -382,7 +382,7 @@ export const SignUpForm = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-[#00D9C8] hover:bg-[#00F5E1] px-4 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)] transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full rounded-xl bg-[#03AAC7] hover:bg-[#26BFD4] px-4 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)] transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -396,10 +396,10 @@ export const SignUpForm = () => {
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#2A2A2E]" />
+                <div className="w-full border-t border-[#2B2F36]" />
               </div>
               <div className="relative flex justify-center text-xs uppercase tracking-[0.15em] text-gray-500">
-                <span className="bg-[#141416] px-3">or</span>
+                <span className="bg-[#1B1B1D] px-3">or</span>
               </div>
             </div>
 
@@ -407,7 +407,7 @@ export const SignUpForm = () => {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full inline-flex items-center justify-center gap-3 rounded-xl border border-[#2A2A2E] bg-[#141416]/50 px-4 py-3 text-sm font-medium text-white hover:bg-white/5 hover:border-white/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full inline-flex items-center justify-center gap-3 rounded-xl border border-[#2B2F36] bg-[#1B1B1D]/50 px-4 py-3 text-sm font-medium text-white hover:bg-white/5 hover:border-white/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -421,7 +421,7 @@ export const SignUpForm = () => {
 
         <div className="text-center text-sm text-[#7F8C8D]">
           Already have an account?{' '}
-          <Link to="/login" className="text-[#00D9C8] hover:text-[#00F5E1] transition-colors font-medium">
+          <Link to="/login" className="text-[#03AAC7] hover:text-[#26BFD4] transition-colors font-medium">
             Sign in
           </Link>
         </div>

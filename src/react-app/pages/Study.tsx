@@ -1814,7 +1814,7 @@ export default function StudyPage() {
                       className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                         selectedLevel === level
                           ? 'bg-[#0D9488] text-white'
-                          : 'bg-[#141416] text-[#E5E7EB] hover:bg-[#2A2F42] hover:text-white'
+                          : 'bg-[#1B1B1D] text-[#E5E7EB] hover:bg-[#2A2F42] hover:text-white'
                       }`}
                     >
                       {level}
@@ -1836,7 +1836,7 @@ export default function StudyPage() {
                       placeholder="Search Topics"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full bg-[#141416] border border-[#2A2A2E] rounded-xl pl-12 pr-4 py-3 text-white placeholder-[#AAB0C0] focus:outline-none focus:border-[#0D9488] focus:ring-2 focus:ring-[#0D9488]/20 transition-all"
+                      className="w-full bg-[#1B1B1D] border border-[#2B2F36] rounded-xl pl-12 pr-4 py-3 text-white placeholder-[#AAB0C0] focus:outline-none focus:border-[#0D9488] focus:ring-2 focus:ring-[#0D9488]/20 transition-all"
                     />
                   </div>
                 </motion.div>
@@ -1863,7 +1863,7 @@ export default function StudyPage() {
                           className={`w-full flex items-center space-x-4 p-4 rounded-xl text-left transition-all duration-200 group cursor-pointer ${
                             selectedCategory.id === category.id && !searchTerm
                               ? 'bg-[#0D9488] text-white shadow-lg'
-                              : 'bg-[#141416] text-[#E5E7EB] hover:bg-[#2A2F42] hover:text-white border border-white/5 hover:border-[#2A2A2E]'
+                              : 'bg-[#1B1B1D] text-[#E5E7EB] hover:bg-[#2A2F42] hover:text-white border border-white/5 hover:border-[#2B2F36]'
                           }`}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
@@ -2009,7 +2009,7 @@ export default function StudyPage() {
                           <motion.button
                             key={lesson.id}
                             onClick={() => setSelectedLesson(lesson)}
-                            className="bg-[#141416] border border-[#2A2A2E] rounded-xl p-4 text-left hover:bg-white/5 transition-all duration-200 group relative overflow-hidden"
+                            className="bg-[#1B1B1D] border border-[#2B2F36] rounded-xl p-4 text-left hover:bg-white/5 transition-all duration-200 group relative overflow-hidden"
                             whileHover={{ scale: 1.02, y: -2 }}
                             whileTap={{ scale: 0.98 }}
                             initial={{ opacity: 0, y: 20 }}
@@ -2061,7 +2061,7 @@ export default function StudyPage() {
                         <motion.button
                           key={lesson.id}
                           onClick={() => setSelectedLesson(lesson)}
-                          className="bg-[#141416] border border-white/5 rounded-xl p-6 text-left hover:border-[#2A2A2E] hover:bg-[#252A3D] transition-all duration-200 group relative overflow-hidden"
+                          className="bg-[#1B1B1D] border border-white/5 rounded-xl p-6 text-left hover:border-[#2B2F36] hover:bg-[#252A3D] transition-all duration-200 group relative overflow-hidden"
                           whileHover={{ scale: 1.02, y: -2 }}
                           whileTap={{ scale: 0.98 }}
                           initial={{ opacity: 0, y: 20 }}
@@ -2134,7 +2134,7 @@ export default function StudyPage() {
                 {/* Lesson Content */}
                 <div className="lg:col-span-2">
                   <motion.div 
-                    className="bg-[#141416] border border-[#2A2A2E] rounded-xl p-4"
+                    className="bg-[#1B1B1D] border border-[#2B2F36] rounded-xl p-4"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
@@ -2166,7 +2166,7 @@ export default function StudyPage() {
 
                     {/* Key Points or Video */}
                     {selectedLesson.id === 'trading-vs-investing' ? (
-                      <div className="bg-[#141416] border border-white/5 rounded-xl p-6">
+                      <div className="bg-[#1B1B1D] border border-white/5 rounded-xl p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
                           <Play className="w-5 h-5 text-[#0D9488]" />
                           <span>Watch: Trading vs Investing Explained</span>
@@ -2183,7 +2183,7 @@ export default function StudyPage() {
                         </div>
                       </div>
                     ) : selectedLesson.id === 'what-is-trading' ? (
-                      <div className="bg-[#141416] border border-white/5 rounded-xl p-6">
+                      <div className="bg-[#1B1B1D] border border-white/5 rounded-xl p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
                           <Play className="w-5 h-5 text-[#0D9488]" />
                           <span>Video Lesson</span>
@@ -2200,7 +2200,7 @@ export default function StudyPage() {
                         </div>
                       </div>
                     ) : selectedLesson.id === 'what-is-bitcoin' ? (
-                      <div className="bg-[#141416] border border-white/5 rounded-xl p-6">
+                      <div className="bg-[#1B1B1D] border border-white/5 rounded-xl p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
                           <Play className="w-5 h-5 text-[#0D9488]" />
                           <span>Video Lesson</span>
@@ -2217,7 +2217,7 @@ export default function StudyPage() {
                         </div>
                       </div>
                     ) : selectedLesson.id === 'what-is-blockchain' ? (
-                      <div className="bg-[#141416] border border-[#2A2A2E] rounded-xl p-4">
+                      <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-xl p-4">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
                           <Play className="w-5 h-5 text-[#0D9488]" />
                           <span>Video Lesson</span>
@@ -2234,7 +2234,7 @@ export default function StudyPage() {
                         </div>
                       </div>
                     ) : selectedLesson.id === 'what-are-cryptocurrencies' ? (
-                      <div className="bg-[#141416] border border-white/5 rounded-xl p-6">
+                      <div className="bg-[#1B1B1D] border border-white/5 rounded-xl p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
                           <Play className="w-5 h-5 text-[#0D9488]" />
                           <span>Video Lesson</span>
@@ -2251,7 +2251,7 @@ export default function StudyPage() {
                         </div>
                       </div>
                     ) : selectedLesson.id === 'altcoins-vs-bitcoin' ? (
-                      <div className="bg-[#141416] border border-white/5 rounded-xl p-6">
+                      <div className="bg-[#1B1B1D] border border-white/5 rounded-xl p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
                           <Play className="w-5 h-5 text-[#0D9488]" />
                           <span>Video Lesson</span>
@@ -2268,7 +2268,7 @@ export default function StudyPage() {
                         </div>
                       </div>
                     ) : selectedLesson.id === 'what-is-ethereum' ? (
-                      <div className="bg-[#141416] border border-white/5 rounded-xl p-6">
+                      <div className="bg-[#1B1B1D] border border-white/5 rounded-xl p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
                           <Play className="w-5 h-5 text-[#0D9488]" />
                           <span>Video Lesson</span>
@@ -2285,7 +2285,7 @@ export default function StudyPage() {
                         </div>
                       </div>
                     ) : selectedLesson.id === 'crypto-wallets' ? (
-                      <div className="bg-[#141416] border border-white/5 rounded-xl p-6">
+                      <div className="bg-[#1B1B1D] border border-white/5 rounded-xl p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
                           <Play className="w-5 h-5 text-[#0D9488]" />
                           <span>Video Lesson</span>
@@ -2302,7 +2302,7 @@ export default function StudyPage() {
                         </div>
                       </div>
                     ) : selectedLesson.id === 'exchanges-cex-vs-dex' ? (
-                      <div className="bg-[#141416] border border-white/5 rounded-xl p-6">
+                      <div className="bg-[#1B1B1D] border border-white/5 rounded-xl p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
                           <Play className="w-5 h-5 text-[#0D9488]" />
                           <span>Video Lesson</span>
@@ -2319,7 +2319,7 @@ export default function StudyPage() {
                         </div>
                       </div>
                     ) : selectedLesson.id === 'stablecoins-explained' ? (
-                      <div className="bg-[#141416] border border-white/5 rounded-xl p-6">
+                      <div className="bg-[#1B1B1D] border border-white/5 rounded-xl p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
                           <Play className="w-5 h-5 text-[#0D9488]" />
                           <span>Video Lesson</span>
@@ -2336,7 +2336,7 @@ export default function StudyPage() {
                         </div>
                       </div>
                     ) : selectedLesson.id === 'trading-fees' ? (
-                      <div className="bg-[#141416] border border-white/5 rounded-xl p-6">
+                      <div className="bg-[#1B1B1D] border border-white/5 rounded-xl p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
                           <Play className="w-5 h-5 text-[#0D9488]" />
                           <span>Video Lesson</span>
@@ -2353,7 +2353,7 @@ export default function StudyPage() {
                         </div>
                       </div>
                     ) : selectedLesson.id === 'risk-basics' ? (
-                      <div className="bg-[#141416] border border-white/5 rounded-xl p-6">
+                      <div className="bg-[#1B1B1D] border border-white/5 rounded-xl p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
                           <Play className="w-5 h-5 text-[#0D9488]" />
                           <span>Video Lesson</span>
@@ -2370,7 +2370,7 @@ export default function StudyPage() {
                         </div>
                       </div>
                     ) : (
-                      <div className="bg-[#141416] border border-white/5 rounded-xl p-6">
+                      <div className="bg-[#1B1B1D] border border-white/5 rounded-xl p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
                           <Target className="w-5 h-5 text-[#0D9488]" />
                           <span>Key Points</span>
@@ -2461,14 +2461,14 @@ export default function StudyPage() {
                   {(() => {
                     const nextLesson = getNextLesson(selectedLesson);
                     return nextLesson && (
-                      <div className="bg-[#141416] border border-[#2A2A2E] rounded-xl p-4">
+                      <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-xl p-4">
                         <h3 className="font-semibold text-white mb-4 flex items-center space-x-2">
                           <ArrowRight className="w-5 h-5 text-[#0D9488]" />
                           <span>Next Lesson</span>
                         </h3>
                         <button
                           onClick={() => setSelectedLesson(nextLesson)}
-                          className="w-full text-left p-4 bg-[#141416] hover:bg-[#0D9488]/10 border border-white/5 hover:border-[#0D9488]/30 rounded-xl transition-all group"
+                          className="w-full text-left p-4 bg-[#1B1B1D] hover:bg-[#0D9488]/10 border border-white/5 hover:border-[#0D9488]/30 rounded-xl transition-all group"
                         >
                           <div className="flex items-center space-x-3">
                             <div className="bg-[#0D9488]/20 p-2 rounded-lg group-hover:bg-[#0D9488]/30 transition-colors">
@@ -2485,7 +2485,7 @@ export default function StudyPage() {
                   })()}
 
                   {/* Progress in Category */}
-                  <div className="bg-[#141416] border border-[#2A2A2E] rounded-xl p-4">
+                  <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-xl p-4">
                     <h3 className="font-semibold text-white mb-4">Chapter Progress</h3>
                     {(() => {
                       const category = studyData.find(cat => 
@@ -2517,7 +2517,7 @@ export default function StudyPage() {
                   </div>
 
                   {/* Study Tips */}
-                  <div className="bg-[#141416] border border-[#2A2A2E] rounded-xl p-4">
+                  <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-xl p-4">
                     <h3 className="font-semibold text-white mb-4 flex items-center space-x-2">
                       <Brain className="w-5 h-5 text-[#0D9488]" />
                       <span>Study Tip</span>
@@ -2545,7 +2545,7 @@ export default function StudyPage() {
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0.9, opacity: 0 }}
-                      className="bg-[#141416] border border-[#2A2A2E] rounded-xl p-4 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+                      className="bg-[#1B1B1D] border border-[#2B2F36] rounded-xl p-4 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
                       onClick={(e) => e.stopPropagation()}
                     >
                       {!showResults ? (
@@ -2660,7 +2660,7 @@ export default function StudyPage() {
 
                           <div className="space-y-4 mb-8">
                             {getCurrentQuiz().map((question, qIndex) => (
-                              <div key={qIndex} className="bg-[#141416] border border-white/5 rounded-xl p-4 text-left">
+                              <div key={qIndex} className="bg-[#1B1B1D] border border-white/5 rounded-xl p-4 text-left">
                                 <div className="font-medium text-white mb-2">
                                   Q{qIndex + 1}: {question.question}
                                 </div>

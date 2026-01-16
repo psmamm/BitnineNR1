@@ -54,7 +54,7 @@ export default function WithdrawPage() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate(-1)}
-              className="p-2 hover:bg-[#1A1A1E] rounded-lg transition-colors"
+              className="p-2 hover:bg-[#252629] rounded-lg transition-colors"
             >
               <ArrowLeft className="w-5 h-5 text-[#9CA3AF]" />
             </button>
@@ -81,10 +81,10 @@ export default function WithdrawPage() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5"
+            className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5"
           >
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-6 h-6 rounded-full bg-[#00D9C8] flex items-center justify-center text-xs font-bold text-[#0D0D0F]">
+              <div className="w-6 h-6 rounded-full bg-[#03AAC7] flex items-center justify-center text-xs font-bold text-[#151517]">
                 1
               </div>
               <h3 className="text-white font-medium">Select Coin</h3>
@@ -98,7 +98,7 @@ export default function WithdrawPage() {
                 placeholder="Search coin..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white placeholder-[#6B7280] focus:border-[#00D9C8] focus:outline-none transition-colors text-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors text-sm"
               />
             </div>
 
@@ -113,12 +113,12 @@ export default function WithdrawPage() {
                   }}
                   className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
                     selectedCoin === coin.symbol
-                      ? 'bg-[#00D9C8]/10 border border-[#00D9C8]'
-                      : 'bg-[#1A1A1E] border border-transparent hover:border-[#2A2A2E]'
+                      ? 'bg-[#03AAC7]/10 border border-[#03AAC7]'
+                      : 'bg-[#252629] border border-transparent hover:border-[#2B2F36]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#2A2A2E] flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-[#2B2F36] flex items-center justify-center">
                       <span className="text-xs font-bold text-white">{coin.symbol.slice(0, 2)}</span>
                     </div>
                     <div className="text-left">
@@ -140,10 +140,10 @@ export default function WithdrawPage() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5"
+              className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5"
             >
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-6 h-6 rounded-full bg-[#00D9C8] flex items-center justify-center text-xs font-bold text-[#0D0D0F]">
+                <div className="w-6 h-6 rounded-full bg-[#03AAC7] flex items-center justify-center text-xs font-bold text-[#151517]">
                   2
                 </div>
                 <h3 className="text-white font-medium">Select Network</h3>
@@ -156,8 +156,8 @@ export default function WithdrawPage() {
                     onClick={() => setSelectedNetwork(network)}
                     className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
                       selectedNetwork === network
-                        ? 'bg-[#00D9C8]/10 border border-[#00D9C8]'
-                        : 'bg-[#1A1A1E] border border-transparent hover:border-[#2A2A2E]'
+                        ? 'bg-[#03AAC7]/10 border border-[#03AAC7]'
+                        : 'bg-[#252629] border border-transparent hover:border-[#2B2F36]'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -178,10 +178,10 @@ export default function WithdrawPage() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5"
+              className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5"
             >
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-6 h-6 rounded-full bg-[#00D9C8] flex items-center justify-center text-xs font-bold text-[#0D0D0F]">
+                <div className="w-6 h-6 rounded-full bg-[#03AAC7] flex items-center justify-center text-xs font-bold text-[#151517]">
                   3
                 </div>
                 <h3 className="text-white font-medium">Withdrawal Details</h3>
@@ -196,7 +196,7 @@ export default function WithdrawPage() {
                     placeholder="Enter wallet address"
                     value={withdrawAddress}
                     onChange={(e) => setWithdrawAddress(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white placeholder-[#6B7280] focus:border-[#00D9C8] focus:outline-none transition-colors text-sm font-mono"
+                    className="w-full px-4 py-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors text-sm font-mono"
                   />
                 </div>
 
@@ -214,11 +214,11 @@ export default function WithdrawPage() {
                       placeholder="0.00"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
-                      className="w-full px-4 py-3 pr-20 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white placeholder-[#6B7280] focus:border-[#00D9C8] focus:outline-none transition-colors text-sm"
+                      className="w-full px-4 py-3 pr-20 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors text-sm"
                     />
                     <button
                       onClick={() => setAmount(String(selectedCoinData?.balance || 0))}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#00D9C8] text-sm font-medium hover:text-[#00F5E1]"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#03AAC7] text-sm font-medium hover:text-[#26BFD4]"
                     >
                       MAX
                     </button>
@@ -226,7 +226,7 @@ export default function WithdrawPage() {
                 </div>
 
                 {/* Summary */}
-                <div className="space-y-2 pt-4 border-t border-[#2A2A2E]">
+                <div className="space-y-2 pt-4 border-t border-[#2B2F36]">
                   <div className="flex justify-between text-sm">
                     <span className="text-[#6B7280]">Network Fee</span>
                     <span className="text-white">{networkFees[selectedNetwork] || 0} {selectedCoin}</span>
@@ -242,7 +242,7 @@ export default function WithdrawPage() {
                 {/* Submit Button */}
                 <button
                   disabled={!withdrawAddress || !amount || parseFloat(amount) <= 0}
-                  className="w-full py-3 bg-[#00D9C8] hover:bg-[#00F5E1] text-[#0D0D0F] rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Withdraw
                 </button>

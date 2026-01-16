@@ -43,12 +43,12 @@ export function IndicatorsPanel({
                         initial={{ x: 300, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: 300, opacity: 0 }}
-                        className="fixed right-0 top-0 h-full w-80 bg-[#141416] border-l border-white/10 z-50 overflow-y-auto"
+                        className="fixed right-0 top-0 h-full w-80 bg-[#1B1B1D] border-l border-white/10 z-50 overflow-y-auto"
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between p-4 border-b border-white/10">
                             <div className="flex items-center gap-2">
-                                <BarChart3 className="w-5 h-5 text-[#00D9C8]" />
+                                <BarChart3 className="w-5 h-5 text-[#03AAC7]" />
                                 <h3 className="text-lg font-semibold text-white">Indicators</h3>
                             </div>
                             <button
@@ -76,12 +76,12 @@ export function IndicatorsPanel({
                                                     key={indicator.id}
                                                     onClick={() => onIndicatorToggle(indicator.id)}
                                                     className={`w-full flex items-center justify-between p-3 rounded-lg transition-all ${indicator.enabled
-                                                            ? 'bg-[#00D9C8]/20 border border-[#00D9C8]/50'
-                                                            : 'bg-[#141416] border border-white/5 hover:border-white/20'
+                                                            ? 'bg-[#03AAC7]/20 border border-[#03AAC7]/50'
+                                                            : 'bg-[#1B1B1D] border border-white/5 hover:border-white/20'
                                                         }`}
                                                 >
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`${indicator.enabled ? 'text-[#00D9C8]' : 'text-[#7F8C8D]'}`}>
+                                                        <div className={`${indicator.enabled ? 'text-[#03AAC7]' : 'text-[#7F8C8D]'}`}>
                                                             {indicator.icon}
                                                         </div>
                                                         <span className={`text-sm font-medium ${indicator.enabled ? 'text-white' : 'text-[#6B7280]'}`}>
@@ -89,7 +89,7 @@ export function IndicatorsPanel({
                                                         </span>
                                                     </div>
                                                     <div className={`w-4 h-4 rounded-full border-2 ${indicator.enabled
-                                                            ? 'bg-[#00D9C8] border-[#00D9C8]'
+                                                            ? 'bg-[#03AAC7] border-[#03AAC7]'
                                                             : 'border-[#7F8C8D]'
                                                         }`}>
                                                         {indicator.enabled && (
@@ -107,7 +107,7 @@ export function IndicatorsPanel({
                         </div>
 
                         {/* Footer */}
-                        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-[#141416]">
+                        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-[#1B1B1D]">
                             <div className="text-xs text-[#7F8C8D] text-center">
                                 {indicators.filter(i => i.enabled).length} indicators active
                             </div>

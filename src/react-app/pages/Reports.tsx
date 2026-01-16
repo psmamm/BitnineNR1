@@ -83,7 +83,7 @@ export default function ReportsPage() {
   const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-[#141416] border border-[#2A2A2E] rounded-lg p-3">
+        <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-lg p-3">
           <p className="text-[#7F8C8D] text-sm mb-1">{label}</p>
           <p className="text-white font-semibold">
             {formatCurrency(payload[0].value || 0)}
@@ -100,7 +100,7 @@ export default function ReportsPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <RefreshCw className="w-16 h-16 text-[#00D9C8] animate-spin mx-auto mb-4" />
+            <RefreshCw className="w-16 h-16 text-[#03AAC7] animate-spin mx-auto mb-4" />
             <p className="text-white text-lg font-medium">Loading Reports...</p>
             <p className="text-[#7F8C8D] text-sm mt-2">Analyzing your trading performance</p>
           </div>
@@ -129,7 +129,7 @@ export default function ReportsPage() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => window.location.reload()}
-              className="flex items-center justify-center space-x-2 bg-[#00D9C8] hover:bg-[#00F5E1] text-white px-6 py-3 rounded-xl font-medium transition-all mx-auto"
+              className="flex items-center justify-center space-x-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-white px-6 py-3 rounded-xl font-medium transition-all mx-auto"
             >
               <RefreshCw className="w-4 h-4" />
               <span>Retry</span>
@@ -147,11 +147,11 @@ export default function ReportsPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-[#141416] rounded-xl p-4 border border-[#2A2A2E]"
+          className="bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36]"
         >
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center space-x-4 mb-6 sm:mb-0">
-              <div className="bg-[#00D9C8]/10 p-3 rounded-xl">
+              <div className="bg-[#03AAC7]/10 p-3 rounded-xl">
                 <BarChart3 className="w-8 h-8 text-[#6B7280]" />
               </div>
               <div>
@@ -164,7 +164,7 @@ export default function ReportsPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleExportReport}
-                className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-[#00D9C8] hover:bg-[#00F5E1] text-white px-4 py-3 rounded-xl font-medium transition-all shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)]"
+                className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-white px-4 py-3 rounded-xl font-medium transition-all shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)]"
               >
                 <Download className="w-4 h-4" />
                 <span>Export Report</span>
@@ -173,7 +173,7 @@ export default function ReportsPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => window.location.reload()}
-                className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-[#141416] hover:bg-white/5 text-white px-4 py-3 rounded-xl font-medium transition-all border border-[#2A2A2E]"
+                className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-[#1B1B1D] hover:bg-white/5 text-white px-4 py-3 rounded-xl font-medium transition-all border border-[#2B2F36]"
               >
                 <RefreshCw className="w-4 h-4" />
                 <span>Refresh</span>
@@ -189,60 +189,60 @@ export default function ReportsPage() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-1 md:grid-cols-4 gap-6"
         >
-          <div className="bg-[#141416] rounded-xl p-4 border border-[#2A2A2E]">
+          <div className="bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36]">
             <h3 className="text-[#7F8C8D] text-sm font-medium mb-2">Total P&L</h3>
-            <p className={`text-2xl font-bold ${keyMetrics.totalPnl >= 0 ? 'text-[#00D9C8]' : 'text-[#F43F5E]'}`}>
+            <p className={`text-2xl font-bold ${keyMetrics.totalPnl >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
               {keyMetrics.totalPnl >= 0 ? '+' : ''}${keyMetrics.totalPnl}
             </p>
             <div className="flex items-center space-x-1 mt-1">
               {keyMetrics.change.totalPnl >= 0 ? (
-                <TrendingUp className="w-3 h-3 text-[#00D9C8]" />
+                <TrendingUp className="w-3 h-3 text-[#03AAC7]" />
               ) : (
                 <TrendingDown className="w-3 h-3 text-[#F43F5E]" />
               )}
-              <p className={`text-sm ${keyMetrics.change.totalPnl >= 0 ? 'text-[#00D9C8]' : 'text-[#F43F5E]'}`}>
+              <p className={`text-sm ${keyMetrics.change.totalPnl >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
                 {keyMetrics.change.totalPnl >= 0 ? '+' : ''}{keyMetrics.change.totalPnl.toFixed(1)}% this month
               </p>
             </div>
           </div>
 
-          <div className="bg-[#141416] rounded-xl p-4 border border-[#2A2A2E]">
+          <div className="bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36]">
             <h3 className="text-[#7F8C8D] text-sm font-medium mb-2">Win Rate</h3>
             <p className="text-2xl font-bold text-white">{keyMetrics.winRate}%</p>
             <div className="flex items-center space-x-1 mt-1">
               {keyMetrics.change.winRate >= 0 ? (
-                <TrendingUp className="w-3 h-3 text-[#00D9C8]" />
+                <TrendingUp className="w-3 h-3 text-[#03AAC7]" />
               ) : (
                 <TrendingDown className="w-3 h-3 text-[#F43F5E]" />
               )}
-              <p className={`text-sm ${keyMetrics.change.winRate >= 0 ? 'text-[#00D9C8]' : 'text-[#F43F5E]'}`}>
+              <p className={`text-sm ${keyMetrics.change.winRate >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
                 {keyMetrics.change.winRate >= 0 ? '+' : ''}{keyMetrics.change.winRate.toFixed(1)}% vs last month
               </p>
             </div>
           </div>
 
-          <div className="bg-[#141416] rounded-xl p-4 border border-[#2A2A2E]">
+          <div className="bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36]">
             <h3 className="text-[#7F8C8D] text-sm font-medium mb-2">Avg Trade</h3>
             <p className={`text-2xl font-bold ${keyMetrics.avgTrade >= 0 ? 'text-white' : 'text-[#F43F5E]'}`}>
               {formatCurrency(keyMetrics.avgTrade)}
             </p>
             <div className="flex items-center space-x-1 mt-1">
               {keyMetrics.change.avgTrade >= 0 ? (
-                <TrendingUp className="w-3 h-3 text-[#00D9C8]" />
+                <TrendingUp className="w-3 h-3 text-[#03AAC7]" />
               ) : (
                 <TrendingDown className="w-3 h-3 text-[#F43F5E]" />
               )}
-              <p className={`text-sm ${keyMetrics.change.avgTrade >= 0 ? 'text-[#00D9C8]' : 'text-[#F43F5E]'}`}>
+              <p className={`text-sm ${keyMetrics.change.avgTrade >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
                 {keyMetrics.change.avgTrade >= 0 ? '+' : ''}{formatCurrency(keyMetrics.change.avgTrade)} vs last month
               </p>
             </div>
           </div>
 
-          <div className="bg-[#141416] rounded-xl p-4 border border-[#2A2A2E]">
+          <div className="bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36]">
             <h3 className="text-[#7F8C8D] text-sm font-medium mb-2">Sharpe Ratio</h3>
             <p className="text-2xl font-bold text-white">{keyMetrics.sharpeRatio}</p>
-            <p className={`text-sm mt-1 ${keyMetrics.sharpeRatio > 2 ? 'text-[#00D9C8]' :
-                keyMetrics.sharpeRatio > 1 ? 'text-[#00D9C8]' : 'text-[#F43F5E]'
+            <p className={`text-sm mt-1 ${keyMetrics.sharpeRatio > 2 ? 'text-[#03AAC7]' :
+                keyMetrics.sharpeRatio > 1 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'
               }`}>
               {keyMetrics.sharpeRatio > 2 ? 'Excellent' :
                 keyMetrics.sharpeRatio > 1 ? 'Good' :
@@ -258,7 +258,7 @@ export default function ReportsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-[#141416] rounded-xl p-4 border border-[#2A2A2E]"
+            className="bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36]"
           >
             <h3 className="text-xl font-semibold text-white mb-4">Monthly Performance</h3>
             <div className="h-80">
@@ -270,7 +270,7 @@ export default function ReportsPage() {
                   <Tooltip content={<CustomTooltip />} />
                   <Bar
                     dataKey="profit"
-                    fill="#00D9C8"
+                    fill="#03AAC7"
                     radius={[4, 4, 0, 0]}
                   />
                 </BarChart>
@@ -283,7 +283,7 @@ export default function ReportsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-[#141416] rounded-xl p-4 border border-[#2A2A2E]"
+            className="bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36]"
           >
             <h3 className="text-xl font-semibold text-white mb-4">Win/Loss Distribution</h3>
             <div className="h-80">
@@ -308,7 +308,7 @@ export default function ReportsPage() {
             </div>
             <div className="flex justify-center space-x-6 mt-4">
               <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-[#00D9C8] rounded-full"></div>
+                <div className="w-3 h-3 bg-[#03AAC7] rounded-full"></div>
                 <span className="text-[#AAB0C0] text-sm">Wins ({winLossData[0]?.value}%)</span>
               </div>
               <div className="flex items-center space-x-2">
@@ -323,7 +323,7 @@ export default function ReportsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="lg:col-span-2 bg-[#141416] rounded-xl p-4 border border-[#2A2A2E]"
+            className="lg:col-span-2 bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36]"
           >
             <h3 className="text-xl font-semibold text-white mb-4">Strategy Performance</h3>
             <div className="h-80">
@@ -335,7 +335,7 @@ export default function ReportsPage() {
                   <Tooltip content={<CustomTooltip />} />
                   <Bar
                     dataKey="profit"
-                    fill="#00D9C8"
+                    fill="#03AAC7"
                     radius={[0, 4, 4, 0]}
                   />
                 </BarChart>
@@ -351,13 +351,13 @@ export default function ReportsPage() {
           transition={{ delay: 0.35 }}
           className="grid grid-cols-1 lg:grid-cols-2 gap-8"
         >
-          <div className="bg-[#141416] rounded-xl p-4 border border-[#2A2A2E] space-y-4">
+          <div className="bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36] space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-xl font-semibold text-white">Monte Carlo Survival</h3>
                 <p className="text-[#7F8C8D] text-sm">Probability of staying within drawdown cap</p>
               </div>
-              <PlayCircle className="w-5 h-5 text-[#00D9C8]" />
+              <PlayCircle className="w-5 h-5 text-[#03AAC7]" />
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <label className="text-[#AAB0C0] flex flex-col gap-1">
@@ -366,7 +366,7 @@ export default function ReportsPage() {
                   type="number"
                   value={mcParams.runs}
                   onChange={(e) => setMcParams(prev => ({ ...prev, runs: parseInt(e.target.value || '0', 10) }))}
-                  className="bg-[#141416] border border-[#2A2A2E] rounded-lg px-3 py-2 text-white"
+                  className="bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-3 py-2 text-white"
                 />
               </label>
               <label className="text-[#AAB0C0] flex flex-col gap-1">
@@ -375,7 +375,7 @@ export default function ReportsPage() {
                   type="number"
                   value={mcParams.pathLength}
                   onChange={(e) => setMcParams(prev => ({ ...prev, pathLength: parseInt(e.target.value || '0', 10) }))}
-                  className="bg-[#141416] border border-[#2A2A2E] rounded-lg px-3 py-2 text-white"
+                  className="bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-3 py-2 text-white"
                 />
               </label>
               <label className="text-[#AAB0C0] flex flex-col gap-1">
@@ -384,7 +384,7 @@ export default function ReportsPage() {
                   type="number"
                   value={mcParams.startingBalance}
                   onChange={(e) => setMcParams(prev => ({ ...prev, startingBalance: parseFloat(e.target.value || '0') }))}
-                  className="bg-[#141416] border border-[#2A2A2E] rounded-lg px-3 py-2 text-white"
+                  className="bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-3 py-2 text-white"
                 />
               </label>
               <label className="text-[#AAB0C0] flex flex-col gap-1">
@@ -393,14 +393,14 @@ export default function ReportsPage() {
                   type="number"
                   value={mcParams.maxDrawdownPct}
                   onChange={(e) => setMcParams(prev => ({ ...prev, maxDrawdownPct: parseFloat(e.target.value || '0') }))}
-                  className="bg-[#141416] border border-[#2A2A2E] rounded-lg px-3 py-2 text-white"
+                  className="bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-3 py-2 text-white"
                 />
               </label>
             </div>
             <div className="flex items-center justify-between pt-2">
               <button
                 onClick={() => monteCarlo.simulate(mcParams)}
-                className="bg-[#00D9C8] hover:bg-[#00F5E1] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                className="bg-[#03AAC7] hover:bg-[#26BFD4] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
               >
                 Run simulation
               </button>
@@ -408,15 +408,15 @@ export default function ReportsPage() {
             </div>
             {monteCarlo.monteResult && (
               <div className="grid grid-cols-3 gap-3 pt-2">
-                <div className="bg-[#141416] border border-[#2A2A2E] rounded-lg p-3">
+                <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-lg p-3">
                   <div className="text-[#7F8C8D] text-xs">Survival Rate</div>
                   <div className="text-white text-xl font-bold">{monteCarlo.monteResult.survivalRate.toFixed(1)}%</div>
                 </div>
-                <div className="bg-[#141416] border border-[#2A2A2E] rounded-lg p-3">
+                <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-lg p-3">
                   <div className="text-[#7F8C8D] text-xs">Avg Ending Balance</div>
                   <div className="text-white text-xl font-bold">{formatCurrency(monteCarlo.monteResult.averageEndingBalance)}</div>
                 </div>
-                <div className="bg-[#141416] border border-[#2A2A2E] rounded-lg p-3">
+                <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-lg p-3">
                   <div className="text-[#7F8C8D] text-xs">Worst Drawdown</div>
                   <div className="text-white text-xl font-bold">{monteCarlo.monteResult.worstDrawdownPct.toFixed(1)}%</div>
                 </div>
@@ -424,7 +424,7 @@ export default function ReportsPage() {
             )}
           </div>
 
-          <div className="bg-[#141416] rounded-xl p-4 border border-[#2A2A2E] space-y-4">
+          <div className="bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36] space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-xl font-semibold text-white">What-If Scenarios</h3>
@@ -438,7 +438,7 @@ export default function ReportsPage() {
                   type="number"
                   value={whatIfParams.takeProfitAdjustmentPct}
                   onChange={(e) => setWhatIfParams(prev => ({ ...prev, takeProfitAdjustmentPct: parseFloat(e.target.value || '0') }))}
-                  className="bg-[#141416] border border-[#2A2A2E] rounded-lg px-3 py-2 text-white"
+                  className="bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-3 py-2 text-white"
                 />
               </label>
               <label className="text-[#AAB0C0] flex flex-col gap-1">
@@ -447,14 +447,14 @@ export default function ReportsPage() {
                   type="number"
                   value={whatIfParams.stopLossAdjustmentPct}
                   onChange={(e) => setWhatIfParams(prev => ({ ...prev, stopLossAdjustmentPct: parseFloat(e.target.value || '0') }))}
-                  className="bg-[#141416] border border-[#2A2A2E] rounded-lg px-3 py-2 text-white"
+                  className="bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-3 py-2 text-white"
                 />
               </label>
             </div>
             <div className="flex items-center justify-between pt-2">
               <button
                 onClick={() => monteCarlo.runWhatIf(whatIfParams)}
-                className="bg-[#00D9C8] hover:bg-[#00F5E1] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                className="bg-[#03AAC7] hover:bg-[#26BFD4] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
               >
                 Run what-if
               </button>
@@ -462,17 +462,17 @@ export default function ReportsPage() {
             </div>
             {monteCarlo.whatIfResult && (
               <div className="grid grid-cols-3 gap-3 pt-2">
-                <div className="bg-[#141416] border border-[#2A2A2E] rounded-lg p-3">
+                <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-lg p-3">
                   <div className="text-[#7F8C8D] text-xs">Adjusted P&L</div>
                   <div className="text-white text-xl font-bold">{formatCurrency(monteCarlo.whatIfResult.adjustedPnl)}</div>
                 </div>
-                <div className="bg-[#141416] border border-[#2A2A2E] rounded-lg p-3">
+                <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-lg p-3">
                   <div className="text-[#7F8C8D] text-xs">Current P&L</div>
                   <div className="text-white text-xl font-bold">{formatCurrency(monteCarlo.whatIfResult.totalPnl)}</div>
                 </div>
-                <div className="bg-[#141416] border border-[#2A2A2E] rounded-lg p-3">
+                <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-lg p-3">
                   <div className="text-[#7F8C8D] text-xs">Delta</div>
-                  <div className={`text-xl font-bold ${monteCarlo.whatIfResult.delta >= 0 ? 'text-[#00D9C8]' : 'text-[#F43F5E]'}`}>
+                  <div className={`text-xl font-bold ${monteCarlo.whatIfResult.delta >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
                     {monteCarlo.whatIfResult.delta >= 0 ? '+' : ''}{formatCurrency(monteCarlo.whatIfResult.delta)}
                   </div>
                 </div>
@@ -486,14 +486,14 @@ export default function ReportsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-[#141416] rounded-xl border border-[#2A2A2E] overflow-hidden"
+          className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] overflow-hidden"
         >
           <div className="px-6 py-4 border-b border-white/5">
             <h3 className="text-xl font-semibold text-white">Performance Breakdown</h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-[#141416]/50">
+              <thead className="bg-[#1B1B1D]/50">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-medium text-[#7F8C8D] uppercase tracking-wider">Period</th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-[#7F8C8D] uppercase tracking-wider">Trades</th>
@@ -509,9 +509,9 @@ export default function ReportsPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{row.period}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#AAB0C0]">{row.trades}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#AAB0C0]">{row.winRate}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#00D9C8] hidden md:table-cell">{row.avgWin}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#03AAC7] hidden md:table-cell">{row.avgWin}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#F43F5E] hidden md:table-cell">{row.avgLoss}</td>
-                    <td className={`px-6 py-4 whitespace-nowrap text-sm font-semibold ${row.pnl > 0 ? 'text-[#00D9C8]' : 'text-[#F43F5E]'
+                    <td className={`px-6 py-4 whitespace-nowrap text-sm font-semibold ${row.pnl > 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'
                       }`}>
                       {row.pnl > 0 ? '+' : ''}{formatCurrency(row.pnl)}
                     </td>

@@ -6,35 +6,35 @@ import { cn } from "@/react-app/lib/utils"
  * Input Component - Bitget Style (2026)
  *
  * Colors:
- * - Background: #1A1A1E (surface)
- * - Border: #2A2A2E
- * - Focus border: #00D9C8 (teal)
+ * - Background: #252629 (surface)
+ * - Border: #2B2F36
+ * - Focus border: #03AAC7 (cyan)
  * - Text: #FFFFFF
  * - Placeholder: #6B7280
  */
 
 const inputVariants = cva(
-  "flex w-full rounded-lg text-sm transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-[#6B7280] disabled:cursor-not-allowed disabled:opacity-50",
+  "flex w-full rounded-lg text-sm transition-all duration-100 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-[#6B7280] disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       variant: {
         // Default input - Bitget style
-        default: "bg-[#1A1A1E] border border-[#2A2A2E] text-white focus:border-[#00D9C8] focus:outline-none",
+        default: "bg-[#252629] border border-[#2B2F36] text-white focus:border-[#03AAC7] focus:outline-none",
 
         // Ghost - No border until focus
-        ghost: "bg-transparent border-transparent text-white focus:bg-[#1A1A1E] focus:border-[#2A2A2E] focus:outline-none",
+        ghost: "bg-transparent border-transparent text-white focus:bg-[#252629] focus:border-[#2B2F36] focus:outline-none",
 
         // Filled - Solid background
-        filled: "bg-[#1A1A1E] border border-transparent text-white focus:border-[#00D9C8] focus:outline-none",
+        filled: "bg-[#252629] border border-transparent text-white focus:border-[#03AAC7] focus:outline-none",
 
         // Outline - Border only
-        outline: "bg-transparent border border-[#2A2A2E] text-white focus:border-[#00D9C8] focus:outline-none",
+        outline: "bg-transparent border border-[#2B2F36] text-white focus:border-[#03AAC7] focus:outline-none",
 
         // Error state
-        error: "bg-[#1A1A1E] border border-[#F43F5E]/50 text-white focus:border-[#F43F5E] focus:outline-none",
+        error: "bg-[#252629] border border-[#F43F5E]/50 text-white focus:border-[#F43F5E] focus:outline-none",
 
         // Success state
-        success: "bg-[#1A1A1E] border border-[#00D9C8]/50 text-white focus:border-[#00D9C8] focus:outline-none",
+        success: "bg-[#252629] border border-[#03AAC7]/50 text-white focus:border-[#03AAC7] focus:outline-none",
       },
       inputSize: {
         sm: "h-8 px-3 text-xs",
@@ -99,13 +99,13 @@ Input.displayName = "Input"
 
 // Textarea component - Bitget style
 const textareaVariants = cva(
-  "flex w-full rounded-lg text-sm transition-all duration-200 placeholder:text-[#6B7280] disabled:cursor-not-allowed disabled:opacity-50 resize-none",
+  "flex w-full rounded-lg text-sm transition-all duration-100 placeholder:text-[#6B7280] disabled:cursor-not-allowed disabled:opacity-50 resize-none",
   {
     variants: {
       variant: {
-        default: "bg-[#1A1A1E] border border-[#2A2A2E] text-white focus:border-[#00D9C8] focus:outline-none",
-        ghost: "bg-transparent border-transparent text-white focus:bg-[#1A1A1E] focus:border-[#2A2A2E] focus:outline-none",
-        filled: "bg-[#1A1A1E] border border-transparent text-white focus:border-[#00D9C8] focus:outline-none",
+        default: "bg-[#252629] border border-[#2B2F36] text-white focus:border-[#03AAC7] focus:outline-none",
+        ghost: "bg-transparent border-transparent text-white focus:bg-[#252629] focus:border-[#2B2F36] focus:outline-none",
+        filled: "bg-[#252629] border border-transparent text-white focus:border-[#03AAC7] focus:outline-none",
       },
     },
     defaultVariants: {

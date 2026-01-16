@@ -178,7 +178,7 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={prevMonth}
-                        className="p-2.5 hover:bg-[#00D9C8]/20 rounded-xl text-[#7F8C8D] hover:text-white transition-all border border-[#2A2A2E] hover:border-[#00D9C8]/50 bg-[#141416]"
+                        className="p-2.5 hover:bg-[#03AAC7]/20 rounded-xl text-[#7F8C8D] hover:text-white transition-all border border-[#2B2F36] hover:border-[#03AAC7]/50 bg-[#1B1B1D]"
                     >
                         <ChevronLeft className="w-5 h-5" />
                     </motion.button>
@@ -194,7 +194,7 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={nextMonth}
-                        className="p-2.5 hover:bg-[#00D9C8]/20 rounded-xl text-[#7F8C8D] hover:text-white transition-all border border-[#2A2A2E] hover:border-[#00D9C8]/50 bg-[#141416]"
+                        className="p-2.5 hover:bg-[#03AAC7]/20 rounded-xl text-[#7F8C8D] hover:text-white transition-all border border-[#2B2F36] hover:border-[#03AAC7]/50 bg-[#1B1B1D]"
                     >
                         <ChevronRight className="w-5 h-5" />
                     </motion.button>
@@ -202,7 +202,7 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setCurrentDate(new Date())}
-                        className="px-4 py-2 text-sm font-semibold text-white bg-[#00D9C8] rounded-xl border border-[#00D9C8]/30 hover:from-[#7B8EF0] hover:to-[#00F5E1] transition-all shadow-lg shadow-[#00D9C8]/20"
+                        className="px-4 py-2 text-sm font-semibold text-white bg-[#03AAC7] rounded-xl border border-[#03AAC7]/30 hover:from-[#7B8EF0] hover:to-[#26BFD4] transition-all shadow-lg shadow-[#03AAC7]/20"
                     >
                         Today
                     </motion.button>
@@ -210,26 +210,26 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                 <div className="flex items-center gap-3 flex-wrap">
                     <motion.div 
                         whileHover={{ scale: 1.05 }}
-                        className="px-4 py-2.5 rounded-xl bg-[#141416] border border-[#2A2A2E] hover:border-[#00D9C8]/30 text-sm shadow-lg transition-all"
+                        className="px-4 py-2.5 rounded-xl bg-[#1B1B1D] border border-[#2B2F36] hover:border-[#03AAC7]/30 text-sm shadow-lg transition-all"
                     >
                         <span className="text-[#7F8C8D] mr-2">Monthly P&L:</span>
-                        <span className={`font-bold text-base ${monthStats.totalPnl >= 0 ? 'text-[#00D9C8]' : 'text-[#F43F5E]'}`}>
+                        <span className={`font-bold text-base ${monthStats.totalPnl >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
                             {monthStats.totalPnl >= 0 ? '+' : ''}${monthStats.totalPnl.toFixed(2)}
                         </span>
                     </motion.div>
                     <motion.div 
                         whileHover={{ scale: 1.05 }}
-                        className="px-4 py-2.5 rounded-xl bg-[#141416] border border-[#2A2A2E] hover:border-[#00D9C8]/30 text-sm shadow-lg transition-all"
+                        className="px-4 py-2.5 rounded-xl bg-[#1B1B1D] border border-[#2B2F36] hover:border-[#03AAC7]/30 text-sm shadow-lg transition-all"
                     >
                         <span className="text-[#7F8C8D] mr-2">Trades:</span>
                         <span className="text-white font-bold text-base">{monthStats.trades}</span>
                     </motion.div>
                     <motion.div 
                         whileHover={{ scale: 1.05 }}
-                        className="px-4 py-2.5 rounded-xl bg-[#141416] border border-[#2A2A2E] hover:border-[#00D9C8]/30 text-sm shadow-lg transition-all"
+                        className="px-4 py-2.5 rounded-xl bg-[#1B1B1D] border border-[#2B2F36] hover:border-[#03AAC7]/30 text-sm shadow-lg transition-all"
                     >
                         <span className="text-[#7F8C8D] mr-2">Win Rate:</span>
-                        <span className={`font-bold text-base ${monthStats.winRate >= 50 ? 'text-[#00D9C8]' : 'text-[#F43F5E]'}`}>
+                        <span className={`font-bold text-base ${monthStats.winRate >= 50 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
                             {monthStats.winRate.toFixed(1)}%
                         </span>
                     </motion.div>
@@ -241,10 +241,10 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="border border-[#2A2A2E] rounded-2xl overflow-hidden shadow-2xl bg-[#141416]"
+                className="border border-[#2B2F36] rounded-2xl overflow-hidden shadow-2xl bg-[#1B1B1D]"
             >
                 {/* Header Row */}
-                <div className="grid grid-cols-8 bg-[#00D9C8]/20 border-b border-white/20 backdrop-blur-sm">
+                <div className="grid grid-cols-8 bg-[#03AAC7]/20 border-b border-white/20 backdrop-blur-sm">
                     {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Total'].map((day, idx) => (
                         <motion.div
                             key={day}
@@ -263,10 +263,10 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: weekIdx * 0.05 }}
-                        className="grid grid-cols-8 border-b border-[#2A2A2E] last:border-b-0 hover:bg-white/2 transition-colors"
+                        className="grid grid-cols-8 border-b border-[#2B2F36] last:border-b-0 hover:bg-white/2 transition-colors"
                     >
                         {week.map((date, dayIdx) => {
-                            if (!date) return <div key={`empty-${dayIdx}`} className="border-r border-white/5 p-2 bg-[#141416]/30" />;
+                            if (!date) return <div key={`empty-${dayIdx}`} className="border-r border-white/5 p-2 bg-[#1B1B1D]/30" />;
 
                             const pnl = date.data?.daily_pnl || 0;
                             const trades = date.data?.trade_count || 0;
@@ -282,9 +282,9 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                                     onClick={() => handleSelect(date.dateStr, hasData)}
                                     className={`
                                         border-r border-white/5 p-3 min-h-[90px] cursor-pointer transition-all relative group
-                                        ${date.isCurrentMonth ? 'bg-[#141416]' : 'bg-[#141416]/30'}
-                                        ${isSelected ? 'ring-2 ring-[#00D9C8] ring-inset bg-[#00D9C8]/10' : ''}
-                                        ${hasData && pnl > 0 ? 'hover:bg-[#00D9C8]/15 hover:border-[#00D9C8]/30' : hasData && pnl < 0 ? 'hover:bg-[#F43F5E]/15 hover:border-[#F43F5E]/30' : 'hover:bg-white/5 hover:border-white/20'}
+                                        ${date.isCurrentMonth ? 'bg-[#1B1B1D]' : 'bg-[#1B1B1D]/30'}
+                                        ${isSelected ? 'ring-2 ring-[#03AAC7] ring-inset bg-[#03AAC7]/10' : ''}
+                                        ${hasData && pnl > 0 ? 'hover:bg-[#03AAC7]/15 hover:border-[#03AAC7]/30' : hasData && pnl < 0 ? 'hover:bg-[#F43F5E]/15 hover:border-[#F43F5E]/30' : 'hover:bg-white/5 hover:border-white/20'}
                                     `}
                                 >
                                     {/* Day number */}
@@ -292,7 +292,7 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                                         <motion.span 
                                             whileHover={{ scale: 1.1 }}
                                             className={`text-sm font-semibold transition-all ${isToday
-                                                    ? 'bg-[#00D9C8] text-white w-7 h-7 rounded-full flex items-center justify-center text-xs shadow-lg shadow-[#00D9C8]/30'
+                                                    ? 'bg-[#03AAC7] text-white w-7 h-7 rounded-full flex items-center justify-center text-xs shadow-lg shadow-[#03AAC7]/30'
                                                     : date.isCurrentMonth ? 'text-white' : 'text-[#4A5568]'
                                                 }`}
                                         >
@@ -301,7 +301,7 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                                         {hasData && (
                                             <motion.span 
                                                 whileHover={{ scale: 1.1 }}
-                                                className="text-[10px] px-2 py-1 rounded-full bg-gradient-to-r from-[#00D9C8]/20 to-[#00D9C8]/20 border border-[#00D9C8]/30 text-white font-medium"
+                                                className="text-[10px] px-2 py-1 rounded-full bg-gradient-to-r from-[#03AAC7]/20 to-[#03AAC7]/20 border border-[#03AAC7]/30 text-white font-medium"
                                             >
                                                 {trades}
                                             </motion.span>
@@ -310,7 +310,7 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
 
                                     {/* P&L */}
                                     <motion.div 
-                                        className={`text-base font-bold mb-1 ${pnl > 0 ? 'text-[#00D9C8]' : pnl < 0 ? 'text-[#F43F5E]' : 'text-[#4A5568]'
+                                        className={`text-base font-bold mb-1 ${pnl > 0 ? 'text-[#03AAC7]' : pnl < 0 ? 'text-[#F43F5E]' : 'text-[#4A5568]'
                                             }`}
                                     >
                                         {pnl !== 0 ? (pnl > 0 ? '+' : '') + '$' + pnl.toFixed(0) : '$0'}
@@ -324,7 +324,7 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                                     {/* Hover glow effect */}
                                     {hasData && (
                                         <motion.div 
-                                            className="absolute inset-0 border-2 border-[#00D9C8]/0 group-hover:border-[#00D9C8]/60 rounded-lg transition-all pointer-events-none"
+                                            className="absolute inset-0 border-2 border-[#03AAC7]/0 group-hover:border-[#03AAC7]/60 rounded-lg transition-all pointer-events-none"
                                             whileHover={{ boxShadow: '0 0 20px rgba(102, 126, 234, 0.3)' }}
                                         />
                                     )}
@@ -332,7 +332,7 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                                     {/* Background gradient for profitable/losing days */}
                                     {hasData && (
                                         <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg ${
-                                            pnl > 0 ? 'bg-gradient-to-br from-[#00D9C8]/5 to-transparent' : 'bg-gradient-to-br from-[#F43F5E]/5 to-transparent'
+                                            pnl > 0 ? 'bg-gradient-to-br from-[#03AAC7]/5 to-transparent' : 'bg-gradient-to-br from-[#F43F5E]/5 to-transparent'
                                         }`} />
                                     )}
                                 </motion.div>
@@ -342,12 +342,12 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                         {/* Weekly Total */}
                         <motion.div 
                             whileHover={{ scale: 1.02, backgroundColor: 'rgba(102, 126, 234, 0.1)' }}
-                            className="p-3 min-h-[90px] bg-[#141416] border-l border-white/20 relative overflow-hidden"
+                            className="p-3 min-h-[90px] bg-[#1B1B1D] border-l border-white/20 relative overflow-hidden"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-br from-[#00D9C8]/5 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
+                            <div className="absolute inset-0 bg-gradient-to-br from-[#03AAC7]/5 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
                             <div className="relative z-10">
                                 <div className="text-[10px] text-[#7F8C8D] font-bold uppercase tracking-widest mb-2">Week {weekIdx + 1}</div>
-                                <div className={`text-lg font-bold mb-1 ${weeklyStats[weekIdx].pnl >= 0 ? 'text-[#00D9C8]' : 'text-[#F43F5E]'}`}>
+                                <div className={`text-lg font-bold mb-1 ${weeklyStats[weekIdx].pnl >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
                                     {weeklyStats[weekIdx].pnl >= 0 ? '+' : ''}${weeklyStats[weekIdx].pnl.toFixed(0)}
                                 </div>
                                 <div className="text-[10px] text-[#7F8C8D] font-medium">
@@ -379,9 +379,9 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                             onClick={(e) => e.stopPropagation()}
                             className="relative z-50 w-full max-w-md"
                         >
-                            <div className="bg-[#141416] rounded-2xl border border-white/20 overflow-hidden shadow-2xl">
+                            <div className="bg-[#1B1B1D] rounded-2xl border border-white/20 overflow-hidden shadow-2xl">
                                 {/* Popup Header */}
-                                <div className="bg-[#00D9C8] p-6 relative overflow-hidden">
+                                <div className="bg-[#03AAC7] p-6 relative overflow-hidden">
                                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
                                     <div className="relative z-10 flex items-center justify-between">
                                         <div>
@@ -417,7 +417,7 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                                     >
                                         <div className="text-sm text-[#7F8C8D] mb-2 font-medium uppercase tracking-wider">Net P&L</div>
                                         <motion.div 
-                                            className={`text-5xl font-black ${popupData.daily_pnl >= 0 ? 'text-[#00D9C8]' : 'text-[#F43F5E]'}`}
+                                            className={`text-5xl font-black ${popupData.daily_pnl >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}
                                             initial={{ y: -10, opacity: 0 }}
                                             animate={{ y: 0, opacity: 1 }}
                                             transition={{ delay: 0.2 }}
@@ -430,11 +430,11 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                                     <div className="grid grid-cols-2 gap-4 mb-6">
                                         <motion.div 
                                             whileHover={{ scale: 1.05, y: -2 }}
-                                            className="bg-[#141416] rounded-xl p-5 border border-[#2A2A2E] hover:border-[#00D9C8]/50 transition-all shadow-lg"
+                                            className="bg-[#1B1B1D] rounded-xl p-5 border border-[#2B2F36] hover:border-[#03AAC7]/50 transition-all shadow-lg"
                                         >
                                             <div className="flex items-center gap-2 mb-3">
-                                                <div className="p-2 bg-[#00D9C8]/20 rounded-lg">
-                                                    <BarChart3 className="w-5 h-5 text-[#00D9C8]" />
+                                                <div className="p-2 bg-[#03AAC7]/20 rounded-lg">
+                                                    <BarChart3 className="w-5 h-5 text-[#03AAC7]" />
                                                 </div>
                                                 <span className="text-xs text-[#7F8C8D] font-medium uppercase tracking-wider">Total Trades</span>
                                             </div>
@@ -443,16 +443,16 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
 
                                         <motion.div 
                                             whileHover={{ scale: 1.05, y: -2 }}
-                                            className="bg-[#141416] rounded-xl p-5 border border-[#2A2A2E] hover:border-[#00D9C8]/50 transition-all shadow-lg"
+                                            className="bg-[#1B1B1D] rounded-xl p-5 border border-[#2B2F36] hover:border-[#03AAC7]/50 transition-all shadow-lg"
                                         >
                                             <div className="flex items-center gap-2 mb-3">
-                                                <div className="p-2 bg-[#00D9C8]/20 rounded-lg">
-                                                    <Target className="w-5 h-5 text-[#00D9C8]" />
+                                                <div className="p-2 bg-[#03AAC7]/20 rounded-lg">
+                                                    <Target className="w-5 h-5 text-[#03AAC7]" />
                                                 </div>
                                                 <span className="text-xs text-[#7F8C8D] font-medium uppercase tracking-wider">Win Rate</span>
                                             </div>
                                             <div className={`text-3xl font-bold ${popupData.trade_count > 0 && (popupData.wins / popupData.trade_count) >= 0.5
-                                                    ? 'text-[#00D9C8]'
+                                                    ? 'text-[#03AAC7]'
                                                     : 'text-[#F43F5E]'
                                                 }`}>
                                                 {popupData.trade_count > 0
@@ -463,20 +463,20 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
 
                                         <motion.div 
                                             whileHover={{ scale: 1.05, y: -2 }}
-                                            className="bg-[#141416] rounded-xl p-5 border border-[#2A2A2E] hover:border-[#00D9C8]/50 transition-all shadow-lg"
+                                            className="bg-[#1B1B1D] rounded-xl p-5 border border-[#2B2F36] hover:border-[#03AAC7]/50 transition-all shadow-lg"
                                         >
                                             <div className="flex items-center gap-2 mb-3">
-                                                <div className="p-2 bg-[#00D9C8]/20 rounded-lg">
-                                                    <TrendingUp className="w-5 h-5 text-[#00D9C8]" />
+                                                <div className="p-2 bg-[#03AAC7]/20 rounded-lg">
+                                                    <TrendingUp className="w-5 h-5 text-[#03AAC7]" />
                                                 </div>
                                                 <span className="text-xs text-[#7F8C8D] font-medium uppercase tracking-wider">Winning Trades</span>
                                             </div>
-                                            <div className="text-3xl font-bold text-[#00D9C8]">{popupData.wins || 0}</div>
+                                            <div className="text-3xl font-bold text-[#03AAC7]">{popupData.wins || 0}</div>
                                         </motion.div>
 
                                         <motion.div 
                                             whileHover={{ scale: 1.05, y: -2 }}
-                                            className="bg-[#141416] rounded-xl p-5 border border-[#2A2A2E] hover:border-[#F43F5E]/50 transition-all shadow-lg"
+                                            className="bg-[#1B1B1D] rounded-xl p-5 border border-[#2B2F36] hover:border-[#F43F5E]/50 transition-all shadow-lg"
                                         >
                                             <div className="flex items-center gap-2 mb-3">
                                                 <div className="p-2 bg-[#F43F5E]/20 rounded-lg">
@@ -492,7 +492,7 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                                     <motion.div 
                                         whileHover={{ scale: 1.02 }}
                                         className={`p-5 rounded-xl border-2 ${popupData.daily_pnl >= 0 
-                                            ? 'bg-gradient-to-br from-[#00D9C8]/10 to-[#00D9C8]/5 border-[#00D9C8]/40' 
+                                            ? 'bg-gradient-to-br from-[#03AAC7]/10 to-[#03AAC7]/5 border-[#03AAC7]/40' 
                                             : 'bg-gradient-to-br from-[#F43F5E]/10 to-[#F43F5E]/5 border-[#F43F5E]/40'
                                         }`}
                                     >
@@ -502,12 +502,12 @@ export function CalendarView({ dailyStats, selectedDate: externalSelected, onSel
                                                 transition={{ duration: 0.5 }}
                                             >
                                                 {popupData.daily_pnl >= 0
-                                                    ? <TrendingUp className="w-8 h-8 text-[#00D9C8]" />
+                                                    ? <TrendingUp className="w-8 h-8 text-[#03AAC7]" />
                                                     : <TrendingDown className="w-8 h-8 text-[#F43F5E]" />
                                                 }
                                             </motion.div>
                                             <div>
-                                                <div className={`text-lg font-bold ${popupData.daily_pnl >= 0 ? 'text-[#00D9C8]' : 'text-[#F43F5E]'}`}>
+                                                <div className={`text-lg font-bold ${popupData.daily_pnl >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
                                                     {popupData.daily_pnl >= 0 ? 'Profitable Day' : 'Loss Day'}
                                                 </div>
                                                 <div className="text-sm text-[#7F8C8D] font-medium">

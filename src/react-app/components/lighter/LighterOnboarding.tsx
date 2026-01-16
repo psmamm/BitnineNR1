@@ -52,8 +52,9 @@ const LIGHTER_FEATURES = [
   { icon: Shield, text: 'Non-Custodial' }
 ];
 
-// Arbitrum One Chain ID
-const ARBITRUM_CHAIN_ID = '0xa4b1'; // 42161 in hex
+// Supported Chain IDs
+const ETHEREUM_CHAIN_ID = '0x1'; // Ethereum Mainnet
+const ARBITRUM_CHAIN_ID = '0xa4b1'; // Arbitrum One (42161)
 
 // ============================================================================
 // Component
@@ -99,28 +100,40 @@ export function LighterOnboarding({ isOpen, onClose, onSuccess }: LighterOnboard
         throw new Error('Keine Wallet gefunden. Bitte verbinde MetaMask.');
       }
 
-      // Check/switch to Arbitrum
-      const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-      if (chainId !== ARBITRUM_CHAIN_ID) {
+      // Check network - allow Ethereum or Arbitrum
+      const chainId = await window.ethereum.request({ method: 'eth_chainId' }) as string;
+      const isEthereum = chainId === ETHEREUM_CHAIN_ID;
+      const isArbitrum = chainId === ARBITRUM_CHAIN_ID;
+
+      if (!isEthereum && !isArbitrum) {
+        // Try to switch to Ethereum first
         try {
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
-            params: [{ chainId: ARBITRUM_CHAIN_ID }]
+            params: [{ chainId: ETHEREUM_CHAIN_ID }]
           });
-        } catch (switchError: unknown) {
-          if ((switchError as { code?: number })?.code === 4902) {
+        } catch {
+          // If that fails, try Arbitrum
+          try {
             await window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [{
-                chainId: ARBITRUM_CHAIN_ID,
-                chainName: 'Arbitrum One',
-                nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-                rpcUrls: ['https://arb1.arbitrum.io/rpc'],
-                blockExplorerUrls: ['https://arbiscan.io']
-              }]
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: ARBITRUM_CHAIN_ID }]
             });
-          } else {
-            throw new Error('Bitte wechsle zu Arbitrum in MetaMask.');
+          } catch (switchError: unknown) {
+            if ((switchError as { code?: number })?.code === 4902) {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [{
+                  chainId: ARBITRUM_CHAIN_ID,
+                  chainName: 'Arbitrum One',
+                  nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                  rpcUrls: ['https://arb1.arbitrum.io/rpc'],
+                  blockExplorerUrls: ['https://arbiscan.io']
+                }]
+              });
+            } else {
+              throw new Error('Bitte wechsle zu Ethereum oder Arbitrum.');
+            }
           }
         }
       }
@@ -231,30 +244,30 @@ export function LighterOnboarding({ isOpen, onClose, onSuccess }: LighterOnboard
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-md mx-4 bg-[#141416] border border-[#2A2A2E] rounded-2xl shadow-2xl overflow-hidden"
+          className="relative w-full max-w-md mx-4 bg-[#1B1B1D] border border-[#2B2F36] rounded-2xl shadow-2xl overflow-hidden"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[#2A2A2E]">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[#2B2F36]">
             <div>
               <h2 className="text-lg font-semibold text-white">{currentConfig.title}</h2>
               <p className="text-sm text-[#AAB0C0]">{currentConfig.subtitle}</p>
             </div>
             <button
               onClick={handleClose}
-              className="p-2 text-[#AAB0C0] hover:text-white hover:bg-[#2A2A2E] rounded-lg transition-colors"
+              className="p-2 text-[#AAB0C0] hover:text-white hover:bg-[#2B2F36] rounded-lg transition-colors"
             >
               <X size={20} />
             </button>
           </div>
 
           {/* Progress Bar - 3 steps */}
-          <div className="px-6 py-3 bg-[#0D0D0F]">
+          <div className="px-6 py-3 bg-[#151517]">
             <div className="flex gap-2">
               {[0, 1, 2].map((index) => (
                 <div
                   key={index}
                   className={`h-1 flex-1 rounded-full transition-colors ${
-                    index <= stepIndex ? 'bg-[#0D9488]' : 'bg-[#2A2A2E]'
+                    index <= stepIndex ? 'bg-[#0D9488]' : 'bg-[#2B2F36]'
                   }`}
                 />
               ))}
@@ -299,11 +312,15 @@ export function LighterOnboarding({ isOpen, onClose, onSuccess }: LighterOnboard
                     ))}
                   </div>
 
-                  {/* Network Badge */}
-                  <div className="flex justify-center">
+                  {/* Network Badges */}
+                  <div className="flex justify-center gap-2">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#627EEA]/10 border border-[#627EEA]/30 rounded-full">
+                      <div className="w-2 h-2 rounded-full bg-[#627EEA]" />
+                      <span className="text-sm text-[#627EEA]">Ethereum</span>
+                    </div>
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#2563EB]/10 border border-[#2563EB]/30 rounded-full">
                       <div className="w-2 h-2 rounded-full bg-[#2563EB]" />
-                      <span className="text-sm text-[#2563EB]">Arbitrum One</span>
+                      <span className="text-sm text-[#2563EB]">Arbitrum</span>
                     </div>
                   </div>
 
@@ -364,7 +381,7 @@ export function LighterOnboarding({ isOpen, onClose, onSuccess }: LighterOnboard
                       value={apiKey}
                       onChange={(e) => setApiKey(e.target.value)}
                       placeholder="c42d53...730d"
-                      className="w-full px-4 py-2.5 bg-[#1A1A1C] border border-[#2A2A2E] rounded-xl text-white placeholder-[#666] focus:border-[#0D9488] focus:outline-none text-sm font-mono"
+                      className="w-full px-4 py-2.5 bg-[#1A1A1C] border border-[#2B2F36] rounded-xl text-white placeholder-[#666] focus:border-[#0D9488] focus:outline-none text-sm font-mono"
                     />
                   </div>
 
@@ -377,7 +394,7 @@ export function LighterOnboarding({ isOpen, onClose, onSuccess }: LighterOnboard
                         value={apiSecret}
                         onChange={(e) => setApiSecret(e.target.value)}
                         placeholder="fcafc8...6700"
-                        className="w-full px-4 py-2.5 pr-10 bg-[#1A1A1C] border border-[#2A2A2E] rounded-xl text-white placeholder-[#666] focus:border-[#0D9488] focus:outline-none text-sm font-mono"
+                        className="w-full px-4 py-2.5 pr-10 bg-[#1A1A1C] border border-[#2B2F36] rounded-xl text-white placeholder-[#666] focus:border-[#0D9488] focus:outline-none text-sm font-mono"
                       />
                       <button
                         type="button"
@@ -401,7 +418,7 @@ export function LighterOnboarding({ isOpen, onClose, onSuccess }: LighterOnboard
                       max={254}
                       value={accountIndex}
                       onChange={(e) => setAccountIndex(parseInt(e.target.value) || 3)}
-                      className="w-full px-4 py-2.5 bg-[#1A1A1C] border border-[#2A2A2E] rounded-xl text-white focus:border-[#0D9488] focus:outline-none text-sm"
+                      className="w-full px-4 py-2.5 bg-[#1A1A1C] border border-[#2B2F36] rounded-xl text-white focus:border-[#0D9488] focus:outline-none text-sm"
                     />
                   </div>
 

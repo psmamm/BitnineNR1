@@ -501,7 +501,7 @@ export function AICloneDashboard() {
             >
               {/* Modal Header */}
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#00D9C8] to-[#00A89C] flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#03AAC7] to-[#00A89C] flex items-center justify-center">
                   <Brain className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -537,7 +537,7 @@ export function AICloneDashboard() {
                       transition={{ delay: index * 0.1 }}
                       className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
                         isActive
-                          ? 'bg-[#00D9C8]/10 border border-[#00D9C8]/30'
+                          ? 'bg-[#03AAC7]/10 border border-[#03AAC7]/30'
                           : isCompleted
                           ? 'bg-[#2EAD65]/10 border border-[#2EAD65]/30'
                           : 'bg-[#0B0E11] border border-[#2B2F36]'
@@ -548,7 +548,7 @@ export function AICloneDashboard() {
                           isCompleted
                             ? 'bg-[#2EAD65]'
                             : isActive
-                            ? 'bg-[#00D9C8]'
+                            ? 'bg-[#03AAC7]'
                             : 'bg-[#2B2F36]'
                         }`}
                       >
@@ -574,7 +574,7 @@ export function AICloneDashboard() {
                           {step.name}
                         </p>
                         {isActive && step.message && (
-                          <p className="text-xs text-[#00D9C8]">{step.message}</p>
+                          <p className="text-xs text-[#03AAC7]">{step.message}</p>
                         )}
                       </div>
                       <span className="text-xs text-[#848E9C]">{step.step}/5</span>
@@ -593,7 +593,7 @@ export function AICloneDashboard() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-xs text-[#848E9C]">Trades Analyzed</p>
-                      <p className="text-xl font-mono font-semibold text-[#00D9C8]">
+                      <p className="text-xl font-mono font-semibold text-[#03AAC7]">
                         {trainingProgress.result.trades_analyzed}
                       </p>
                     </div>
@@ -626,7 +626,7 @@ export function AICloneDashboard() {
               {/* Close Button */}
               {(trainingProgress.status === 'completed' || trainingProgress.status === 'error') && (
                 <Button
-                  className="w-full bg-[#00D9C8] hover:bg-[#00C4B4] text-black font-medium"
+                  className="w-full bg-[#03AAC7] hover:bg-[#00C4B4] text-black font-medium"
                   onClick={() => setShowTrainingModal(false)}
                 >
                   {trainingProgress.status === 'completed' ? 'Done' : 'Close'}
@@ -673,11 +673,11 @@ export function AICloneDashboard() {
       </div>
 
       {/* PROMINENT: Train My Clone Card (Day 3) */}
-      <Card className="glass border-[#00D9C8]/30 bg-gradient-to-br from-[#00D9C8]/5 to-transparent">
+      <Card className="glass border-[#03AAC7]/30 bg-gradient-to-br from-[#03AAC7]/5 to-transparent">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00D9C8] to-[#00A89C] flex items-center justify-center shadow-lg shadow-[#00D9C8]/20">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#03AAC7] to-[#00A89C] flex items-center justify-center shadow-lg shadow-[#03AAC7]/20">
                 <Rocket className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -724,7 +724,7 @@ export function AICloneDashboard() {
               <Button
                 onClick={handleTrainWithSSE}
                 disabled={isTraining}
-                className="bg-[#00D9C8] hover:bg-[#00C4B4] text-black font-semibold px-6 py-3 h-auto text-base shadow-lg shadow-[#00D9C8]/20 hover:shadow-[#00D9C8]/30 transition-all"
+                className="bg-[#03AAC7] hover:bg-[#00C4B4] text-black font-semibold px-6 py-3 h-auto text-base shadow-lg shadow-[#03AAC7]/20 hover:shadow-[#03AAC7]/30 transition-all"
               >
                 {isTraining ? (
                   <>

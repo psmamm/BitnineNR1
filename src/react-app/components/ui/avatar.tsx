@@ -15,7 +15,7 @@ import { User } from "lucide-react"
  */
 
 const avatarVariants = cva(
-  "relative inline-flex items-center justify-center overflow-hidden bg-[#1A1A1E] border-2 border-[#2A2A2E] flex-shrink-0",
+  "relative inline-flex items-center justify-center overflow-hidden bg-[#252629] border-2 border-[#2B2F36] flex-shrink-0",
   {
     variants: {
       size: {
@@ -76,7 +76,7 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
     }
 
     const statusColorMap = {
-      online: "bg-[#00D9C8]",
+      online: "bg-[#03AAC7]",
       offline: "bg-[#6B7280]",
       away: "bg-[#F59E0B]",
       busy: "bg-[#F43F5E]",
@@ -104,7 +104,7 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
         {status && (
           <span
             className={cn(
-              "absolute bottom-0 right-0 rounded-full border-[#0D0D0F]",
+              "absolute bottom-0 right-0 rounded-full border-[#151517]",
               statusSizeMap[size || "default"],
               statusColorMap[status]
             )}
@@ -132,7 +132,7 @@ const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
     return (
       <div ref={ref} className={cn("flex -space-x-2", className)} {...props}>
         {visibleChildren.map((child, index) => (
-          <div key={index} className="relative ring-2 ring-[#0D0D0F] rounded-lg">
+          <div key={index} className="relative ring-2 ring-[#151517] rounded-lg">
             {child}
           </div>
         ))}
@@ -140,7 +140,7 @@ const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
           <div
             className={cn(
               avatarVariants({ size }),
-              "ring-2 ring-[#0D0D0F] bg-[#2A2A2E] text-[#9CA3AF] font-medium"
+              "ring-2 ring-[#151517] bg-[#2B2F36] text-[#9CA3AF] font-medium"
             )}
           >
             +{remainingCount}
@@ -189,7 +189,7 @@ const UserProfile = ({
             {name}
           </span>
           {verified && (
-            <span className="text-[#00D9C8]">
+            <span className="text-[#03AAC7]">
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
@@ -200,7 +200,7 @@ const UserProfile = ({
             </span>
           )}
           {vipLevel && vipLevel > 0 && (
-            <span className="px-1.5 py-0.5 bg-[#2A2A2E] text-[#9CA3AF] text-[10px] font-medium rounded">
+            <span className="px-1.5 py-0.5 bg-[#2B2F36] text-[#9CA3AF] text-[10px] font-medium rounded">
               VIP{vipLevel}
             </span>
           )}

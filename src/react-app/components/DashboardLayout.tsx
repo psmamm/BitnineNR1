@@ -12,8 +12,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className={`min-h-screen overflow-x-hidden transition-colors ${
       theme === 'dark'
-        ? 'bg-[#0D0D0F] text-white'
-        : 'bg-[#0D0D0F] text-white'
+        ? 'bg-[#151517] text-white'
+        : 'bg-[#151517] text-white'
     }`}>
       {/* Top Navigation */}
       <TopNavigation />

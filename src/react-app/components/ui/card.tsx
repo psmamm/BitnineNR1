@@ -6,37 +6,37 @@ import { cn } from "@/react-app/lib/utils"
  * Card Component - Bitget Style (2026)
  *
  * Backgrounds:
- * - Default: #141416 (elevated)
- * - Surface: #1A1A1E
- * - Border: #2A2A2E
+ * - Default: #1B1B1D (elevated)
+ * - Surface: #252629
+ * - Border: #2B2F36
  * - Border radius: 12px
  */
 
 const cardVariants = cva(
-  "rounded-xl transition-all duration-200",
+  "rounded-xl transition-all duration-100",
   {
     variants: {
       variant: {
         // Default - Bitget card style
-        default: "bg-[#141416] border border-[#2A2A2E] shadow-card",
+        default: "bg-[#1B1B1D] border border-[#2B2F36] shadow-card",
 
         // Glass - Glassmorphism with blur
-        glass: "bg-[#141416]/80 backdrop-blur-xl border border-[#2A2A2E]",
+        glass: "bg-[#1B1B1D]/80 backdrop-blur-xl border border-[#2B2F36]",
 
         // Ghost - Minimal, just for grouping
         ghost: "bg-transparent",
 
         // Outline - Border only
-        outline: "bg-transparent border border-[#2A2A2E]",
+        outline: "bg-transparent border border-[#2B2F36]",
 
         // Surface - Slightly elevated (input background)
-        surface: "bg-[#1A1A1E] border border-[#2A2A2E]",
+        surface: "bg-[#252629] border border-[#2B2F36]",
 
         // Interactive - Hover effects
-        interactive: "bg-[#141416] border border-[#2A2A2E] shadow-card hover:shadow-card-hover hover:border-[#3A3A3E] hover:-translate-y-0.5 cursor-pointer",
+        interactive: "bg-[#1B1B1D] border border-[#2B2F36] shadow-card hover:shadow-card-hover hover:border-[#3A3E45] hover:-translate-y-0.5 cursor-pointer",
 
         // Promo - For recommendation/promo cards (Bitget style)
-        promo: "bg-gradient-to-br from-[#1A1A1E] to-[#141416] border border-[#2A2A2E] relative overflow-hidden",
+        promo: "bg-gradient-to-br from-[#252629] to-[#1B1B1D] border border-[#2B2F36] relative overflow-hidden",
       },
       padding: {
         none: "p-0",

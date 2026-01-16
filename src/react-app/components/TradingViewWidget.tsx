@@ -140,7 +140,7 @@ export default function TradingViewWidget({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex items-center justify-center bg-[#141416]/30 rounded-xl border border-[#2A2A2E] p-8"
+        className="flex items-center justify-center bg-[#1B1B1D]/30 rounded-xl border border-[#2B2F36] p-8"
         style={{ width: typeof width === 'number' ? `${width}px` : width, height: typeof height === 'number' ? `${height}px` : height }}
       >
         <div className="text-center">
@@ -157,7 +157,7 @@ export default function TradingViewWidget({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
-      className="relative bg-[#141416]/30 rounded-xl overflow-hidden"
+      className="relative bg-[#1B1B1D]/30 rounded-xl overflow-hidden"
     >
       {/* Loading overlay */}
       {!isLoaded && (
@@ -165,10 +165,10 @@ export default function TradingViewWidget({
           initial={{ opacity: 1 }}
           animate={{ opacity: 0 }}
           transition={{ delay: 3, duration: 0.5 }}
-          className="absolute inset-0 flex items-center justify-center bg-[#141416]/80 z-10 rounded-xl"
+          className="absolute inset-0 flex items-center justify-center bg-[#1B1B1D]/80 z-10 rounded-xl"
         >
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-[#00D9C8] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#03AAC7] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <div className="text-white font-semibold mb-2">Loading TradingView Chart</div>
             <div className="text-[#7F8C8D] text-sm">Professional trading analysis for {symbol}</div>
           </div>
@@ -272,10 +272,10 @@ export function TradingViewMiniChart({
     <div className="relative">
       {!isLoaded && (
         <div
-          className="absolute inset-0 bg-[#141416]/30 rounded flex items-center justify-center"
+          className="absolute inset-0 bg-[#1B1B1D]/30 rounded flex items-center justify-center"
           style={{ width: `${width}px`, height: `${height}px` }}
         >
-          <div className="w-4 h-4 border-2 border-[#00D9C8] border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-4 h-4 border-2 border-[#03AAC7] border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
       <div

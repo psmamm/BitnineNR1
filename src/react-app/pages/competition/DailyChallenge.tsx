@@ -40,9 +40,9 @@ export default function DailyChallengePage() {
     if (loading) {
         return (
             <DashboardLayout>
-                <div className="min-h-screen bg-[#141416] flex items-center justify-center">
+                <div className="min-h-screen bg-[#1B1B1D] flex items-center justify-center">
                     <div className="text-center">
-                        <div className="w-12 h-12 border-4 border-[#00D9C8]/30 border-t-[#00D9C8] rounded-full animate-spin mx-auto mb-4" />
+                        <div className="w-12 h-12 border-4 border-[#03AAC7]/30 border-t-[#03AAC7] rounded-full animate-spin mx-auto mb-4" />
                         <p className="text-gray-400">Loading daily challenge...</p>
                     </div>
                 </div>
@@ -52,21 +52,21 @@ export default function DailyChallengePage() {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-[#141416] p-8">
+            <div className="min-h-screen bg-[#1B1B1D] p-8">
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-4">
-                            <div className="bg-[#00D9C8]/20 p-3 rounded-xl">
-                                <Trophy className="w-8 h-8 text-[#00D9C8]" />
+                            <div className="bg-[#03AAC7]/20 p-3 rounded-xl">
+                                <Trophy className="w-8 h-8 text-[#03AAC7]" />
                             </div>
                             <div>
                                 <h1 className="text-4xl font-bold mb-2">Daily Challenge</h1>
                                 <div className="flex items-center gap-3">
-                                    <span className="px-3 py-1 bg-[#00D9C8]/20 text-[#00D9C8] rounded-lg text-sm font-medium">
+                                    <span className="px-3 py-1 bg-[#03AAC7]/20 text-[#03AAC7] rounded-lg text-sm font-medium">
                                         24 Hour Challenge
                                     </span>
-                                    <span className="px-3 py-1 bg-[#00D9C8]/20 text-[#00D9C8] rounded-lg text-sm font-medium flex items-center gap-2">
+                                    <span className="px-3 py-1 bg-[#03AAC7]/20 text-[#03AAC7] rounded-lg text-sm font-medium flex items-center gap-2">
                                         <Users className="w-4 h-4" />
                                         {challenge?.participantCount || 0} participants
                                     </span>
@@ -78,7 +78,7 @@ export default function DailyChallengePage() {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleJoin}
-                                className="bg- from-[#00D9C8] to-[#00D9C8] hover:from-[#5A2DE4] hover:to-[#7B4CE6] text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2"
+                                className="bg- from-[#03AAC7] to-[#03AAC7] hover:from-[#5A2DE4] hover:to-[#7B4CE6] text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2"
                             >
                                 <Play className="w-5 h-5" />
                                 Start Challenge
@@ -87,7 +87,7 @@ export default function DailyChallengePage() {
                     </div>
 
                     {/* Date & Timer Section */}
-                    <div className="bg-[#141416] border border-[#2A2A2E] rounded-2xl p-8 mb-8">
+                    <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-2xl p-8 mb-8">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-4">
                                 <button
@@ -105,8 +105,8 @@ export default function DailyChallengePage() {
                                 </button>
                             </div>
                             <div className="flex items-center gap-3">
-                                <Clock className="w-6 h-6 text-[#00D9C8]" />
-                                <div className="text-4xl font-bold text-[#00D9C8] font-mono">
+                                <Clock className="w-6 h-6 text-[#03AAC7]" />
+                                <div className="text-4xl font-bold text-[#03AAC7] font-mono">
                                     {formatTime(timeRemaining)}
                                 </div>
                             </div>
@@ -122,7 +122,7 @@ export default function DailyChallengePage() {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.1 }}
-                                    className="bg-[#141416] border border-[#2A2A2E] rounded-2xl p-6 text-center"
+                                    className="bg-[#1B1B1D] border border-[#2B2F36] rounded-2xl p-6 text-center"
                                 >
                                     <div className="flex justify-center mb-4">
                                         <div className="bg-gray-400/20 p-4 rounded-full">
@@ -152,14 +152,14 @@ export default function DailyChallengePage() {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.2 }}
-                                    className="bg- from-[#00D9C8]/20 to-[#00D9C8]/20 border-2 border-[#00D9C8]/50 rounded-2xl p-6 text-center transform scale-105"
+                                    className="bg- from-[#03AAC7]/20 to-[#03AAC7]/20 border-2 border-[#03AAC7]/50 rounded-2xl p-6 text-center transform scale-105"
                                 >
                                     <div className="flex justify-center mb-4">
                                         <div className="bg-yellow-500/20 p-4 rounded-full">
                                             <Crown className="w-8 h-8 text-yellow-500" />
                                         </div>
                                     </div>
-                                    <div className="w-20 h-20 bg- from-[#00D9C8] to-[#00D9C8] rounded-full mx-auto mb-3 flex items-center justify-center text-2xl font-bold">
+                                    <div className="w-20 h-20 bg- from-[#03AAC7] to-[#03AAC7] rounded-full mx-auto mb-3 flex items-center justify-center text-2xl font-bold">
                                         {top3[0].username.charAt(0).toUpperCase()}
                                     </div>
                                     <h3 className="font-bold mb-1 text-lg">{top3[0].username}</h3>
@@ -182,7 +182,7 @@ export default function DailyChallengePage() {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.3 }}
-                                    className="bg-[#141416] border border-[#2A2A2E] rounded-2xl p-6 text-center"
+                                    className="bg-[#1B1B1D] border border-[#2B2F36] rounded-2xl p-6 text-center"
                                 >
                                     <div className="flex justify-center mb-4">
                                         <div className="bg-orange-600/20 p-4 rounded-full">
@@ -209,10 +209,10 @@ export default function DailyChallengePage() {
                     )}
 
                     {/* Leaderboard Table */}
-                    <div className="bg-[#141416] border border-[#2A2A2E] rounded-2xl overflow-hidden">
-                        <div className="p-6 border-b border-[#2A2A2E] flex items-center justify-between">
+                    <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-2xl overflow-hidden">
+                        <div className="p-6 border-b border-[#2B2F36] flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <TrendingUp className="w-6 h-6 text-[#00D9C8]" />
+                                <TrendingUp className="w-6 h-6 text-[#03AAC7]" />
                                 <h2 className="text-2xl font-bold">Daily Challenge Leaderboard</h2>
                             </div>
                             <span className="text-sm text-gray-400">Live Rankings & Trade Analysis</span>
@@ -220,7 +220,7 @@ export default function DailyChallengePage() {
 
                         <div className="overflow-x-auto">
                             <table className="w-full">
-                                <thead className="bg-[#141416] border-b border-[#2A2A2E]">
+                                <thead className="bg-[#1B1B1D] border-b border-[#2B2F36]">
                                     <tr>
                                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">RANK</th>
                                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">TRADER</th>
@@ -255,7 +255,7 @@ export default function DailyChallengePage() {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-10 h-10 bg-[#00D9C8]/20 rounded-full flex items-center justify-center">
+                                                        <div className="w-10 h-10 bg-[#03AAC7]/20 rounded-full flex items-center justify-center">
                                                             {participant.username.charAt(0).toUpperCase()}
                                                         </div>
                                                         <span className="font-medium">{participant.username}</span>

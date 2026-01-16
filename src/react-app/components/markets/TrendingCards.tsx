@@ -80,7 +80,7 @@ function TrendingCard({ title, icon, items, color, quoteAssetPrices }: TrendingC
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-[#141416] rounded-xl p-4 border border-white/10 flex-1 min-w-[280px]"
+      className="bg-[#1B1B1D] rounded-xl p-4 border border-white/10 flex-1 min-w-[280px]"
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-2">
@@ -100,7 +100,7 @@ function TrendingCard({ title, icon, items, color, quoteAssetPrices }: TrendingC
               className="flex items-center justify-between py-2 hover:bg-white/5 cursor-pointer transition-colors rounded"
             >
               <div className="flex items-center space-x-2.5 flex-1 min-w-0">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 bg-[#141416]/50">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 bg-[#1B1B1D]/50">
                   <img
                     src={item.logo || getLogoUrlForCoin(item.baseAsset)}
                     alt={item.baseAsset}

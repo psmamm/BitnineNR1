@@ -27,12 +27,12 @@ export default function PricingCard({
   buttonVariant = 'secondary'
 }: PricingCardProps) {
   return (
-    <div className={`relative bg-[#141416] rounded-xl border-2 p-4 transition-all duration-200 hover:bg-white/5 ${
-      popular ? 'border-[#00D9C8]/50 scale-105' : 'border-[#2A2A2E]'
+    <div className={`relative bg-[#1B1B1D] rounded-xl border-2 p-4 transition-all duration-200 hover:bg-white/5 ${
+      popular ? 'border-[#03AAC7]/50 scale-105' : 'border-[#2B2F36]'
     }`}>
       {popular && (
         <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-          <span className="bg-[#00D9C8] text-white px-4 py-2 rounded-full text-sm font-semibold">
+          <span className="bg-[#03AAC7] text-white px-4 py-2 rounded-full text-sm font-semibold">
             Most Popular
           </span>
         </div>
@@ -52,10 +52,10 @@ export default function PricingCard({
           {features.map((feature, index) => (
             <li key={index} className="flex items-center">
               <div className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mr-3 ${
-                feature.included ? 'bg-[#00D9C8]/20' : 'bg-[#7F8C8D]/20'
+                feature.included ? 'bg-[#03AAC7]/20' : 'bg-[#7F8C8D]/20'
               }`}>
                 <Check className={`w-3 h-3 ${
-                  feature.included ? 'text-[#00D9C8]' : 'text-[#7F8C8D]'
+                  feature.included ? 'text-[#03AAC7]' : 'text-[#7F8C8D]'
                 }`} />
               </div>
               <span className={`text-sm ${
@@ -70,8 +70,8 @@ export default function PricingCard({
 
       <button className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 ${
         buttonVariant === 'primary'
-          ? 'bg-[#00D9C8] hover:bg-[#00F5E1] text-white shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)]'
-          : 'bg-[#141416] hover:bg-white/5 text-white border border-[#2A2A2E]'
+          ? 'bg-[#03AAC7] hover:bg-[#26BFD4] text-white shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)]'
+          : 'bg-[#1B1B1D] hover:bg-white/5 text-white border border-[#2B2F36]'
       }`}>
         {buttonText}
       </button>

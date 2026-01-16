@@ -92,7 +92,7 @@ export default function MatchmakingPage() {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-[#141416] flex items-center justify-center p-8">
+            <div className="min-h-screen bg-[#1B1B1D] flex items-center justify-center p-8">
                 <div className="max-w-md w-full">
                     <AnimatePresence mode="wait">
                         {matchFound ? (
@@ -100,24 +100,24 @@ export default function MatchmakingPage() {
                                 key="match-found"
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className="bg-[#141416] border border-[#2A2A2E] rounded-2xl p-8 text-center"
+                                className="bg-[#1B1B1D] border border-[#2B2F36] rounded-2xl p-8 text-center"
                             >
                                 <motion.div
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
                                     transition={{ delay: 0.2, type: "spring" }}
-                                    className="bg-[#00D9C8]/20 p-6 rounded-full w-fit mx-auto mb-6"
+                                    className="bg-[#03AAC7]/20 p-6 rounded-full w-fit mx-auto mb-6"
                                 >
-                                    <Gamepad2 className="w-12 h-12 text-[#00D9C8]" />
+                                    <Gamepad2 className="w-12 h-12 text-[#03AAC7]" />
                                 </motion.div>
-                                <h2 className="text-3xl font-bold mb-2 text-[#00D9C8]">Match Found!</h2>
+                                <h2 className="text-3xl font-bold mb-2 text-[#03AAC7]">Match Found!</h2>
                                 <p className="text-gray-400 mb-6">Loading match, please wait...</p>
                                 <div className="flex justify-center">
                                     <motion.div
                                         animate={{ rotate: 360 }}
                                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                                     >
-                                        <Zap className="w-6 h-6 text-[#00D9C8]" />
+                                        <Zap className="w-6 h-6 text-[#03AAC7]" />
                                     </motion.div>
                                 </div>
                             </motion.div>
@@ -126,7 +126,7 @@ export default function MatchmakingPage() {
                                 key="matchmaking"
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className="bg-[#141416] border border-[#2A2A2E] rounded-2xl p-8"
+                                className="bg-[#1B1B1D] border border-[#2B2F36] rounded-2xl p-8"
                             >
                                 <div className="flex items-center justify-between mb-6">
                                     <h2 className="text-2xl font-bold">Matchmaking</h2>

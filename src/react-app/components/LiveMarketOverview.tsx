@@ -89,22 +89,22 @@ export default function LiveMarketOverview({ selectedCoin }: LiveMarketOverviewP
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-[#141416] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+        className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
       >
         <div className="flex items-center space-x-3 mb-6">
-          <div className="w-8 h-8 bg-[#00D9C8]/10 rounded-lg flex items-center justify-center">
-            <BarChart3 className="w-4 h-4 text-[#00D9C8] animate-pulse" />
+          <div className="w-8 h-8 bg-[#03AAC7]/10 rounded-lg flex items-center justify-center">
+            <BarChart3 className="w-4 h-4 text-[#03AAC7] animate-pulse" />
           </div>
           <h3 className="text-lg font-semibold text-white">Live Market Overview</h3>
           <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-[#00D9C8] rounded-full animate-pulse" />
-            <span className="text-[#00D9C8] text-sm font-medium">Loading...</span>
+            <div className="w-2 h-2 bg-[#03AAC7] rounded-full animate-pulse" />
+            <span className="text-[#03AAC7] text-sm font-medium">Loading...</span>
           </div>
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="p-4 bg-[#141416]/50 rounded-xl border border-[#2A2A2E] animate-pulse">
+            <div key={i} className="p-4 bg-[#1B1B1D]/50 rounded-xl border border-[#2B2F36] animate-pulse">
               <div className="h-4 bg-white/10 rounded w-16 mb-2" />
               <div className="h-6 bg-white/10 rounded w-20 mb-1" />
               <div className="h-3 bg-white/10 rounded w-12" />
@@ -121,7 +121,7 @@ export default function LiveMarketOverview({ selectedCoin }: LiveMarketOverviewP
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-[#141416] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+        className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
       >
         <div className="flex items-center space-x-3 mb-6">
           <div className="w-8 h-8 bg-[#F43F5E]/10 rounded-lg flex items-center justify-center">
@@ -135,7 +135,7 @@ export default function LiveMarketOverview({ selectedCoin }: LiveMarketOverviewP
           <p className="text-[#7F8C8D] text-sm">{error}</p>
           <button
             onClick={fetchCoinData}
-            className="mt-4 px-4 py-2 bg-[#00D9C8] hover:bg-[#00F5E1] text-white rounded-lg font-medium transition-colors"
+            className="mt-4 px-4 py-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-white rounded-lg font-medium transition-colors"
           >
             Retry
           </button>
@@ -149,12 +149,12 @@ export default function LiveMarketOverview({ selectedCoin }: LiveMarketOverviewP
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
-      className="bg-[#141416] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+      className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
     >
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-[#00D9C8]/10 rounded-lg flex items-center justify-center">
-            <BarChart3 className="w-4 h-4 text-[#00D9C8]" />
+          <div className="w-8 h-8 bg-[#03AAC7]/10 rounded-lg flex items-center justify-center">
+            <BarChart3 className="w-4 h-4 text-[#03AAC7]" />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-white">Live Market Overview</h3>
@@ -162,8 +162,8 @@ export default function LiveMarketOverview({ selectedCoin }: LiveMarketOverviewP
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 bg-[#00D9C8] rounded-full animate-pulse" />
-          <span className="text-[#00D9C8] text-sm font-medium">LIVE</span>
+          <div className="w-2 h-2 bg-[#03AAC7] rounded-full animate-pulse" />
+          <span className="text-[#03AAC7] text-sm font-medium">LIVE</span>
         </div>
       </div>
 
@@ -173,7 +173,7 @@ export default function LiveMarketOverview({ selectedCoin }: LiveMarketOverviewP
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
-          className="p-4 bg-[#141416]/50 rounded-xl border border-[#2A2A2E] hover:border-[#00D9C8]/50 transition-colors"
+          className="p-4 bg-[#1B1B1D]/50 rounded-xl border border-[#2B2F36] hover:border-[#03AAC7]/50 transition-colors"
         >
           <div className="flex items-center space-x-2 mb-2">
             <DollarSign className="w-4 h-4 text-[#6B7280]" />
@@ -181,7 +181,7 @@ export default function LiveMarketOverview({ selectedCoin }: LiveMarketOverviewP
           </div>
           <div className="text-2xl font-bold text-white">{formatPrice(coinData.price)}</div>
           <div className={`flex items-center space-x-1 text-sm font-medium ${
-            coinData.change24h >= 0 ? 'text-[#00D9C8]' : 'text-[#F43F5E]'
+            coinData.change24h >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'
           }`}>
             {coinData.change24h >= 0 ? (
               <TrendingUp className="w-3 h-3" />
@@ -197,7 +197,7 @@ export default function LiveMarketOverview({ selectedCoin }: LiveMarketOverviewP
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2 }}
-          className="p-4 bg-[#141416]/50 rounded-xl border border-[#2A2A2E] hover:border-[#00D9C8]/50 transition-colors"
+          className="p-4 bg-[#1B1B1D]/50 rounded-xl border border-[#2B2F36] hover:border-[#03AAC7]/50 transition-colors"
         >
           <div className="flex items-center space-x-2 mb-2">
             <Activity className="w-4 h-4 text-[#6B7280]" />
@@ -213,14 +213,14 @@ export default function LiveMarketOverview({ selectedCoin }: LiveMarketOverviewP
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
-            className="p-4 bg-[#141416]/50 rounded-xl border border-[#2A2A2E] hover:border-[#00D9C8]/50 transition-colors"
+            className="p-4 bg-[#1B1B1D]/50 rounded-xl border border-[#2B2F36] hover:border-[#03AAC7]/50 transition-colors"
           >
             <div className="flex items-center space-x-2 mb-2">
-              <TrendingUp className="w-4 h-4 text-[#00D9C8]" />
+              <TrendingUp className="w-4 h-4 text-[#03AAC7]" />
               <span className="text-[#7F8C8D] text-sm font-medium">24h High</span>
             </div>
             <div className="text-2xl font-bold text-white">{formatPrice(coinData.high24h)}</div>
-            <div className="text-[#00D9C8] text-sm">Daily high</div>
+            <div className="text-[#03AAC7] text-sm">Daily high</div>
           </motion.div>
         )}
 
@@ -230,7 +230,7 @@ export default function LiveMarketOverview({ selectedCoin }: LiveMarketOverviewP
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 }}
-            className="p-4 bg-[#141416]/50 rounded-xl border border-[#2A2A2E] hover:border-[#00D9C8]/50 transition-colors"
+            className="p-4 bg-[#1B1B1D]/50 rounded-xl border border-[#2B2F36] hover:border-[#03AAC7]/50 transition-colors"
           >
             <div className="flex items-center space-x-2 mb-2">
               <TrendingDown className="w-4 h-4 text-[#F43F5E]" />
@@ -242,9 +242,9 @@ export default function LiveMarketOverview({ selectedCoin }: LiveMarketOverviewP
         )}
       </div>
 
-      <div className="mt-6 p-4 bg-[#00D9C8]/5 border border-[#00D9C8]/20 rounded-xl">
+      <div className="mt-6 p-4 bg-[#03AAC7]/5 border border-[#03AAC7]/20 rounded-xl">
         <div className="text-center">
-          <p className="text-[#00D9C8] text-sm font-medium">
+          <p className="text-[#03AAC7] text-sm font-medium">
             Real-time data from Binance API
           </p>
           <p className="text-[#7F8C8D] text-xs mt-1">

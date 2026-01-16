@@ -133,7 +133,7 @@ export const ForgotPasswordForm = () => {
   };
 
   return (
-    <div className="relative bg-[#141416] rounded-2xl border border-[#2A2A2E] shadow-[0_4px_20px_rgba(0,0,0,0.3)] p-8 space-y-8 max-w-md w-full">
+    <div className="relative bg-[#1B1B1D] rounded-2xl border border-[#2B2F36] shadow-[0_4px_20px_rgba(0,0,0,0.3)] p-8 space-y-8 max-w-md w-full">
       {/* Close button */}
       <Link
         to="/login"
@@ -146,7 +146,7 @@ export const ForgotPasswordForm = () => {
       <div className="space-y-6">
         {/* Header */}
         <div className="space-y-3 text-center">
-          <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/5 border border-[#2A2A2E] text-[11px] uppercase tracking-[0.2em] text-gray-400">
+          <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/5 border border-[#2B2F36] text-[11px] uppercase tracking-[0.2em] text-gray-400">
             {emailSent ? 'Email sent' : 'Forgot password'}
           </div>
           <h2 className="text-3xl font-extrabold text-white">
@@ -165,13 +165,13 @@ export const ForgotPasswordForm = () => {
           <div className="space-y-4">
             {/* Success Icon */}
             <div className="flex justify-center">
-              <div className="w-16 h-16 bg-[#00D9C8]/10 rounded-full flex items-center justify-center">
-                <Mail className="w-8 h-8 text-[#00D9C8]" />
+              <div className="w-16 h-16 bg-[#03AAC7]/10 rounded-full flex items-center justify-center">
+                <Mail className="w-8 h-8 text-[#03AAC7]" />
               </div>
             </div>
 
             {/* Success Message */}
-            <div className="bg-[#00D9C8]/10 border border-[#00D9C8]/30 text-[#00D9C8] px-4 py-3 rounded-xl text-sm flex items-center gap-2" role="alert">
+            <div className="bg-[#03AAC7]/10 border border-[#03AAC7]/30 text-[#03AAC7] px-4 py-3 rounded-xl text-sm flex items-center gap-2" role="alert">
               <CheckCircle className="w-4 h-4 flex-shrink-0" />
               <span>{message}</span>
             </div>
@@ -191,7 +191,7 @@ export const ForgotPasswordForm = () => {
               type="button"
               onClick={handleResend}
               disabled={cooldown > 0 || loading}
-              className="w-full rounded-xl border border-[#2A2A2E] bg-[#141416]/50 px-4 py-3 text-sm font-medium text-white hover:bg-white/5 hover:border-white/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full rounded-xl border border-[#2B2F36] bg-[#1B1B1D]/50 px-4 py-3 text-sm font-medium text-white hover:bg-white/5 hover:border-white/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -208,7 +208,7 @@ export const ForgotPasswordForm = () => {
             {/* Back to login */}
             <Link
               to="/login"
-              className="w-full flex items-center justify-center gap-2 text-[#00D9C8] hover:text-[#00F5E1] transition-colors text-sm font-medium"
+              className="w-full flex items-center justify-center gap-2 text-[#03AAC7] hover:text-[#26BFD4] transition-colors text-sm font-medium"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to sign in</span>
@@ -240,12 +240,12 @@ export const ForgotPasswordForm = () => {
                     required
                     aria-invalid={emailTouched && !isEmailValid}
                     aria-describedby={emailTouched && !isEmailValid ? "email-error" : undefined}
-                    className={`w-full rounded-xl border bg-[#141416]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${
+                    className={`w-full rounded-xl border bg-[#1B1B1D]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${
                       emailTouched
                         ? isEmailValid
-                          ? 'border-[#00D9C8]/50 focus:ring-[#00D9C8]/50 focus:border-[#00D9C8]/50'
+                          ? 'border-[#03AAC7]/50 focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50'
                           : 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
-                        : 'border-[#2A2A2E] focus:ring-[#00D9C8]/50 focus:border-[#00D9C8]/50'
+                        : 'border-[#2B2F36] focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50'
                     }`}
                     placeholder="you@example.com"
                     value={email}
@@ -255,7 +255,7 @@ export const ForgotPasswordForm = () => {
                   {emailTouched && (
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                       {isEmailValid ? (
-                        <CheckCircle className="w-4 h-4 text-[#00D9C8]" />
+                        <CheckCircle className="w-4 h-4 text-[#03AAC7]" />
                       ) : (
                         <AlertCircle className="w-4 h-4 text-red-400" />
                       )}
@@ -270,7 +270,7 @@ export const ForgotPasswordForm = () => {
               <button
                 type="submit"
                 disabled={loading || cooldown > 0}
-                className="w-full rounded-xl bg-[#00D9C8] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#00D9C8]/20 hover:shadow-[#00D9C8]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full rounded-xl bg-[#03AAC7] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#03AAC7]/20 hover:shadow-[#03AAC7]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
@@ -287,7 +287,7 @@ export const ForgotPasswordForm = () => {
 
             <div className="text-center text-sm text-[#7F8C8D]">
               Remembered your password?{' '}
-              <Link to="/login" className="text-[#00D9C8] hover:text-[#00D9C8] transition-colors font-medium">
+              <Link to="/login" className="text-[#03AAC7] hover:text-[#03AAC7] transition-colors font-medium">
                 Back to sign in
               </Link>
             </div>

@@ -578,15 +578,15 @@ export default function SettingsPage() {
           <div className="flex gap-6">
             {/* Sidebar */}
             <div className="w-64 flex-shrink-0">
-              <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] overflow-hidden">
+              <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] overflow-hidden">
                 {sidebarItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setActiveSection(item.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors ${
                       activeSection === item.id
-                        ? "bg-[#1A1A1E] text-[#00D9C8] border-l-2 border-[#00D9C8]"
-                        : "text-[#9CA3AF] hover:bg-[#1A1A1E] hover:text-white border-l-2 border-transparent"
+                        ? "bg-[#252629] text-[#03AAC7] border-l-2 border-[#03AAC7]"
+                        : "text-[#9CA3AF] hover:bg-[#252629] hover:text-white border-l-2 border-transparent"
                     }`}
                   >
                     <item.icon className="w-5 h-5" />
@@ -606,7 +606,7 @@ export default function SettingsPage() {
                   className="space-y-6"
                 >
                   {/* User Profile Card */}
-                  <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-6">
+                  <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-6">
                     <div className="flex items-start gap-6">
                       {/* Avatar */}
                       <div className="relative">
@@ -621,22 +621,22 @@ export default function SettingsPage() {
                           <img
                             src={user.photoURL}
                             alt="Profile"
-                            className="w-20 h-20 rounded-xl object-cover border border-[#2A2A2E]"
+                            className="w-20 h-20 rounded-xl object-cover border border-[#2B2F36]"
                           />
                         ) : (
-                          <div className="w-20 h-20 rounded-xl bg-[#1A1A1E] border border-[#2A2A2E] flex items-center justify-center text-3xl">
+                          <div className="w-20 h-20 rounded-xl bg-[#252629] border border-[#2B2F36] flex items-center justify-center text-3xl">
                             {user?.displayName?.charAt(0) || user?.email?.charAt(0) || "👤"}
                           </div>
                         )}
                         <button
                           onClick={handleAvatarClick}
                           disabled={isSavingProfile}
-                          className="absolute -bottom-1 -right-1 w-7 h-7 bg-[#00D9C8] rounded-lg flex items-center justify-center hover:bg-[#00F5E1] transition-colors disabled:opacity-50"
+                          className="absolute -bottom-1 -right-1 w-7 h-7 bg-[#03AAC7] rounded-lg flex items-center justify-center hover:bg-[#26BFD4] transition-colors disabled:opacity-50"
                         >
                           {isSavingProfile ? (
-                            <Loader2 className="w-4 h-4 text-[#0D0D0F] animate-spin" />
+                            <Loader2 className="w-4 h-4 text-[#151517] animate-spin" />
                           ) : (
-                            <Camera className="w-4 h-4 text-[#0D0D0F]" />
+                            <Camera className="w-4 h-4 text-[#151517]" />
                           )}
                         </button>
                       </div>
@@ -648,7 +648,7 @@ export default function SettingsPage() {
                             {user?.displayName || user?.email?.split('@')[0] || "Trader"}
                           </h2>
                           {/* Verified Badge */}
-                          <span className="px-2.5 py-1 bg-[#00D9C8]/10 text-[#00D9C8] text-xs font-medium rounded-full flex items-center gap-1">
+                          <span className="px-2.5 py-1 bg-[#03AAC7]/10 text-[#03AAC7] text-xs font-medium rounded-full flex items-center gap-1">
                             <Check className="w-3 h-3" />
                             Verified
                           </span>
@@ -660,14 +660,14 @@ export default function SettingsPage() {
                             <span className="text-white font-mono">{uid}</span>
                             <button
                               onClick={handleCopyUID}
-                              className="p-1 hover:bg-[#1A1A1E] rounded transition-colors"
+                              className="p-1 hover:bg-[#252629] rounded transition-colors"
                             >
                               <Copy className="w-3.5 h-3.5" />
                             </button>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="text-[#6B7280]">VIP:</span>
-                            <span className="px-2 py-0.5 bg-[#2A2A2E] text-[#9CA3AF] text-xs rounded">
+                            <span className="px-2 py-0.5 bg-[#2B2F36] text-[#9CA3AF] text-xs rounded">
                               Level 1
                             </span>
                           </div>
@@ -677,9 +677,9 @@ export default function SettingsPage() {
 
                     {/* Success/Error Messages */}
                     {profileSaved && (
-                      <div className="mt-4 p-3 bg-[#00D9C8]/10 border border-[#00D9C8]/20 rounded-lg flex items-center gap-2">
-                        <Check className="w-4 h-4 text-[#00D9C8]" />
-                        <span className="text-[#00D9C8] text-sm">Profile updated successfully!</span>
+                      <div className="mt-4 p-3 bg-[#03AAC7]/10 border border-[#03AAC7]/20 rounded-lg flex items-center gap-2">
+                        <Check className="w-4 h-4 text-[#03AAC7]" />
+                        <span className="text-[#03AAC7] text-sm">Profile updated successfully!</span>
                       </div>
                     )}
                     {profileError && (
@@ -691,7 +691,7 @@ export default function SettingsPage() {
                   </div>
 
                   {/* Profile Form */}
-                  <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-6">
+                  <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-6">
                     <h3 className="text-lg font-medium text-white mb-6">Profile Information</h3>
 
                     <div className="grid grid-cols-2 gap-6">
@@ -702,7 +702,7 @@ export default function SettingsPage() {
                           value={displayName}
                           onChange={(e) => setDisplayName(e.target.value)}
                           placeholder="Enter your name"
-                          className="w-full px-4 py-3 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white placeholder-[#6B7280] focus:border-[#00D9C8] focus:outline-none transition-colors"
+                          className="w-full px-4 py-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors"
                         />
                       </div>
                       <div>
@@ -711,7 +711,7 @@ export default function SettingsPage() {
                           type="email"
                           value={user?.email || ""}
                           disabled
-                          className="w-full px-4 py-3 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-[#6B7280] cursor-not-allowed"
+                          className="w-full px-4 py-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-[#6B7280] cursor-not-allowed"
                         />
                       </div>
                     </div>
@@ -720,7 +720,7 @@ export default function SettingsPage() {
                       <button
                         onClick={handleSaveProfile}
                         disabled={isSavingProfile || displayName === (user?.displayName || "")}
-                        className="px-6 py-2.5 bg-[#00D9C8] text-[#0D0D0F] rounded-lg font-medium hover:bg-[#00F5E1] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="px-6 py-2.5 bg-[#03AAC7] text-[#151517] rounded-lg font-medium hover:bg-[#26BFD4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                       >
                         {isSavingProfile ? (
                           <>
@@ -748,12 +748,12 @@ export default function SettingsPage() {
                     <h2 className="text-white text-lg font-semibold mb-4">Verification methods</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {/* Email Verification Card */}
-                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                      <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5 flex flex-col">
                         <div className="flex items-start justify-between mb-4">
-                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-lg bg-[#252629] flex items-center justify-center">
                             <Mail className="w-5 h-5 text-[#9CA3AF]" />
                           </div>
-                          <span className="px-2.5 py-1 bg-[#1A1A1E] rounded-full text-xs text-[#9CA3AF] flex items-center gap-1.5">
+                          <span className="px-2.5 py-1 bg-[#252629] rounded-full text-xs text-[#9CA3AF] flex items-center gap-1.5">
                             {user?.email?.replace(/(.{3}).*(@.*)/, '$1***$2')}
                           </span>
                         </div>
@@ -762,24 +762,24 @@ export default function SettingsPage() {
                           Email verification codes help guarantee account and transaction security.
                         </p>
                         <div className="flex items-center gap-2">
-                          <button className="text-[#00D9C8] text-sm font-medium hover:text-[#00F5E1] transition-colors">
+                          <button className="text-[#03AAC7] text-sm font-medium hover:text-[#26BFD4] transition-colors">
                             Edit
                           </button>
                         </div>
                       </div>
 
                       {/* Google Authenticator Card */}
-                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                      <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5 flex flex-col">
                         <div className="flex items-start justify-between mb-4">
-                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
-                            <Smartphone className="w-5 h-5 text-[#00D9C8]" />
+                          <div className="w-10 h-10 rounded-lg bg-[#252629] flex items-center justify-center">
+                            <Smartphone className="w-5 h-5 text-[#03AAC7]" />
                           </div>
                           <span className={`px-2.5 py-1 rounded-full text-xs flex items-center gap-1.5 ${
                             twoFactorEnabled
-                              ? "bg-[#00D9C8]/10 text-[#00D9C8]"
-                              : "bg-[#1A1A1E] text-[#6B7280]"
+                              ? "bg-[#03AAC7]/10 text-[#03AAC7]"
+                              : "bg-[#252629] text-[#6B7280]"
                           }`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${twoFactorEnabled ? "bg-[#00D9C8]" : "bg-[#6B7280]"}`} />
+                            <span className={`w-1.5 h-1.5 rounded-full ${twoFactorEnabled ? "bg-[#03AAC7]" : "bg-[#6B7280]"}`} />
                             {twoFactorEnabled ? "Enabled" : "Disabled"}
                           </span>
                         </div>
@@ -792,7 +792,7 @@ export default function SettingsPage() {
                             <>
                               <button
                                 onClick={() => setShow2FAModal(true)}
-                                className="text-[#00D9C8] text-sm font-medium hover:text-[#00F5E1] transition-colors"
+                                className="text-[#03AAC7] text-sm font-medium hover:text-[#26BFD4] transition-colors"
                               >
                                 Edit
                               </button>
@@ -808,7 +808,7 @@ export default function SettingsPage() {
                           ) : (
                             <button
                               onClick={() => setShow2FAModal(true)}
-                              className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors"
+                              className="px-4 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors"
                             >
                               Configure
                             </button>
@@ -817,13 +817,13 @@ export default function SettingsPage() {
                       </div>
 
                       {/* Login Password Card */}
-                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                      <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5 flex flex-col">
                         <div className="flex items-start justify-between mb-4">
-                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-lg bg-[#252629] flex items-center justify-center">
                             <Lock className="w-5 h-5 text-[#9CA3AF]" />
                           </div>
-                          <span className="px-2.5 py-1 bg-[#00D9C8]/10 rounded-full text-xs text-[#00D9C8] flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#00D9C8]" />
+                          <span className="px-2.5 py-1 bg-[#03AAC7]/10 rounded-full text-xs text-[#03AAC7] flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#03AAC7]" />
                             Enabled
                           </span>
                         </div>
@@ -834,7 +834,7 @@ export default function SettingsPage() {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => setShowPasswordModal(true)}
-                            className="text-[#00D9C8] text-sm font-medium hover:text-[#00F5E1] transition-colors"
+                            className="text-[#03AAC7] text-sm font-medium hover:text-[#26BFD4] transition-colors"
                           >
                             Edit
                           </button>
@@ -848,17 +848,17 @@ export default function SettingsPage() {
                     <h2 className="text-white text-lg font-semibold mb-4">Advanced security settings</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {/* Anti-Phishing Code Card */}
-                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                      <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5 flex flex-col">
                         <div className="flex items-start justify-between mb-4">
-                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-lg bg-[#252629] flex items-center justify-center">
                             <Shield className="w-5 h-5 text-[#9CA3AF]" />
                           </div>
                           <span className={`px-2.5 py-1 rounded-full text-xs flex items-center gap-1.5 ${
                             antiPhishingCode
-                              ? "bg-[#00D9C8]/10 text-[#00D9C8]"
-                              : "bg-[#1A1A1E] text-[#6B7280]"
+                              ? "bg-[#03AAC7]/10 text-[#03AAC7]"
+                              : "bg-[#252629] text-[#6B7280]"
                           }`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${antiPhishingCode ? "bg-[#00D9C8]" : "bg-[#6B7280]"}`} />
+                            <span className={`w-1.5 h-1.5 rounded-full ${antiPhishingCode ? "bg-[#03AAC7]" : "bg-[#6B7280]"}`} />
                             {antiPhishingCode ? "Enabled" : "Disabled"}
                           </span>
                         </div>
@@ -869,7 +869,7 @@ export default function SettingsPage() {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => setShowAntiPhishingModal(true)}
-                            className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors"
+                            className="px-4 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors"
                           >
                             Configure
                           </button>
@@ -877,12 +877,12 @@ export default function SettingsPage() {
                       </div>
 
                       {/* Withdrawal Whitelist Card */}
-                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                      <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5 flex flex-col">
                         <div className="flex items-start justify-between mb-4">
-                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-lg bg-[#252629] flex items-center justify-center">
                             <Key className="w-5 h-5 text-[#9CA3AF]" />
                           </div>
-                          <span className="px-2.5 py-1 bg-[#1A1A1E] rounded-full text-xs text-[#6B7280] flex items-center gap-1.5">
+                          <span className="px-2.5 py-1 bg-[#252629] rounded-full text-xs text-[#6B7280] flex items-center gap-1.5">
                             <span className="w-1.5 h-1.5 rounded-full bg-[#6B7280]" />
                             Disabled
                           </span>
@@ -892,20 +892,20 @@ export default function SettingsPage() {
                           When enabled, you'll only be able to withdraw to whitelisted addresses.
                         </p>
                         <div className="flex items-center gap-2">
-                          <button className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
+                          <button className="px-4 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
                             Enable
                           </button>
                         </div>
                       </div>
 
                       {/* Session Management Card */}
-                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                      <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5 flex flex-col">
                         <div className="flex items-start justify-between mb-4">
-                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-lg bg-[#252629] flex items-center justify-center">
                             <RefreshCw className="w-5 h-5 text-[#9CA3AF]" />
                           </div>
-                          <span className="px-2.5 py-1 bg-[#00D9C8]/10 rounded-full text-xs text-[#00D9C8] flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#00D9C8]" />
+                          <span className="px-2.5 py-1 bg-[#03AAC7]/10 rounded-full text-xs text-[#03AAC7] flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#03AAC7]" />
                             Enabled
                           </span>
                         </div>
@@ -914,7 +914,7 @@ export default function SettingsPage() {
                           After enabling this feature, withdrawals can be cancelled within one minute.
                         </p>
                         <div className="flex items-center gap-2">
-                          <button className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
+                          <button className="px-4 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
                             Disable
                           </button>
                         </div>
@@ -927,9 +927,9 @@ export default function SettingsPage() {
                     <h2 className="text-white text-lg font-semibold mb-4">Account management</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {/* Device Management Card */}
-                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                      <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5 flex flex-col">
                         <div className="flex items-start justify-between mb-4">
-                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-lg bg-[#252629] flex items-center justify-center">
                             <User className="w-5 h-5 text-[#9CA3AF]" />
                           </div>
                         </div>
@@ -938,16 +938,16 @@ export default function SettingsPage() {
                           Manage devices allowed to access your account.
                         </p>
                         <div className="flex items-center gap-2">
-                          <button className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
+                          <button className="px-4 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
                             Manage
                           </button>
                         </div>
                       </div>
 
                       {/* Account Activity Card */}
-                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                      <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5 flex flex-col">
                         <div className="flex items-start justify-between mb-4">
-                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-lg bg-[#252629] flex items-center justify-center">
                             <Clock className="w-5 h-5 text-[#9CA3AF]" />
                           </div>
                         </div>
@@ -959,7 +959,7 @@ export default function SettingsPage() {
                           IP: {Math.floor(Math.random() * 255)}.{Math.floor(Math.random() * 255)}.xxx.xxx
                         </p>
                         <div className="flex items-center gap-3">
-                          <button className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
+                          <button className="px-4 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
                             More
                           </button>
                           <button className="text-[#9CA3AF] text-sm font-medium hover:text-white transition-colors">
@@ -969,9 +969,9 @@ export default function SettingsPage() {
                       </div>
 
                       {/* Third-party Account Card */}
-                      <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 flex flex-col">
+                      <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5 flex flex-col">
                         <div className="flex items-start justify-between mb-4">
-                          <div className="w-10 h-10 rounded-lg bg-[#1A1A1E] flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-lg bg-[#252629] flex items-center justify-center">
                             <Link2 className="w-5 h-5 text-[#9CA3AF]" />
                           </div>
                         </div>
@@ -980,7 +980,7 @@ export default function SettingsPage() {
                           Bind a third-party account for faster login.
                         </p>
                         <div className="flex items-center gap-2">
-                          <button className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
+                          <button className="px-4 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors">
                             Manage
                           </button>
                         </div>
@@ -1011,7 +1011,7 @@ export default function SettingsPage() {
                   </div>
 
                   {/* Exchange Connections */}
-                  <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-6">
+                  <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-6">
                     <div className="flex items-center justify-between mb-6">
                       <div>
                         <h3 className="text-lg font-medium text-white">Exchange Connections</h3>
@@ -1019,7 +1019,7 @@ export default function SettingsPage() {
                       </div>
                       <button
                         onClick={() => setShowExchangeModal(true)}
-                        className="px-4 py-2 bg-[#00D9C8] text-[#0D0D0F] rounded-lg font-medium hover:bg-[#00F5E1] transition-colors flex items-center gap-2"
+                        className="px-4 py-2 bg-[#03AAC7] text-[#151517] rounded-lg font-medium hover:bg-[#26BFD4] transition-colors flex items-center gap-2"
                       >
                         <Key className="w-4 h-4" />
                         Add Exchange
@@ -1035,7 +1035,7 @@ export default function SettingsPage() {
                     ) : connections.length === 0 ? (
                       /* Empty State */
                       <div className="text-center py-12">
-                        <div className="w-16 h-16 bg-[#1A1A1E] rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <div className="w-16 h-16 bg-[#252629] rounded-xl flex items-center justify-center mx-auto mb-4">
                           <Key className="w-8 h-8 text-[#6B7280]" />
                         </div>
                         <h4 className="text-white font-medium mb-2">No exchanges connected</h4>
@@ -1049,12 +1049,12 @@ export default function SettingsPage() {
                         {connections.map((connection) => (
                           <div
                             key={connection.id}
-                            className="bg-[#1A1A1E] rounded-xl p-4 flex items-center justify-between"
+                            className="bg-[#252629] rounded-xl p-4 flex items-center justify-between"
                           >
                             <div className="flex items-center gap-4">
                               {/* Exchange Logo */}
-                              <div className="w-12 h-12 bg-[#2A2A2E] rounded-xl flex items-center justify-center">
-                                <span className="text-xl font-bold text-[#00D9C8]">
+                              <div className="w-12 h-12 bg-[#2B2F36] rounded-xl flex items-center justify-center">
+                                <span className="text-xl font-bold text-[#03AAC7]">
                                   {(connection.exchange_name || connection.exchange_id).charAt(0).toUpperCase()}
                                 </span>
                               </div>
@@ -1064,8 +1064,8 @@ export default function SettingsPage() {
                                     {connection.exchange_name || connection.exchange_id.charAt(0).toUpperCase() + connection.exchange_id.slice(1)}
                                   </h4>
                                   {connection.is_active !== false && (
-                                    <span className="w-5 h-5 bg-[#00D9C8] rounded-full flex items-center justify-center">
-                                      <Check className="w-3 h-3 text-[#0D0D0F]" />
+                                    <span className="w-5 h-5 bg-[#03AAC7] rounded-full flex items-center justify-center">
+                                      <Check className="w-3 h-3 text-[#151517]" />
                                     </span>
                                   )}
                                 </div>
@@ -1087,7 +1087,7 @@ export default function SettingsPage() {
                               <button
                                 onClick={() => handleSync(connection.id)}
                                 disabled={syncing[connection.id]}
-                                className="p-2 hover:bg-[#2A2A2E] rounded-lg transition-colors"
+                                className="p-2 hover:bg-[#2B2F36] rounded-lg transition-colors"
                               >
                                 <RefreshCw className={`w-5 h-5 text-[#9CA3AF] ${syncing[connection.id] ? 'animate-spin' : ''}`} />
                               </button>
@@ -1103,7 +1103,7 @@ export default function SettingsPage() {
                                   </button>
                                   <button
                                     onClick={() => setDeleteConfirmId(null)}
-                                    className="px-3 py-1.5 bg-[#2A2A2E] text-white text-sm rounded-lg hover:bg-[#3A3A3E] transition-colors"
+                                    className="px-3 py-1.5 bg-[#2B2F36] text-white text-sm rounded-lg hover:bg-[#3A3E45] transition-colors"
                                   >
                                     Cancel
                                   </button>
@@ -1111,7 +1111,7 @@ export default function SettingsPage() {
                               ) : (
                                 <button
                                   onClick={() => setDeleteConfirmId(connection.id)}
-                                  className="p-2 hover:bg-[#2A2A2E] rounded-lg transition-colors"
+                                  className="p-2 hover:bg-[#2B2F36] rounded-lg transition-colors"
                                 >
                                   <Trash2 className="w-5 h-5 text-[#9CA3AF] hover:text-[#F43F5E]" />
                                 </button>
@@ -1132,7 +1132,7 @@ export default function SettingsPage() {
                   animate={{ opacity: 1, y: 0 }}
                   className="space-y-6"
                 >
-                  <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] divide-y divide-[#2A2A2E]">
+                  <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] divide-y divide-[#2B2F36]">
                     {[
                       { key: "tradeAlerts" as const, title: "Trade Alerts", description: "Get notified when trades are executed" },
                       { key: "performanceReports" as const, title: "Performance Reports", description: "Weekly and monthly performance summaries" },
@@ -1148,8 +1148,8 @@ export default function SettingsPage() {
                           onClick={() => handleNotificationToggle(item.key)}
                           className={`relative w-14 h-7 rounded-full transition-all duration-300 ${
                             notifications[item.key]
-                              ? "bg-[#00D9C8] shadow-[0_0_10px_rgba(0,217,200,0.3)]"
-                              : "bg-[#3A3A3E]"
+                              ? "bg-[#03AAC7] shadow-[0_0_10px_rgba(0,217,200,0.3)]"
+                              : "bg-[#3A3E45]"
                           }`}
                         >
                           <div
@@ -1173,7 +1173,7 @@ export default function SettingsPage() {
                   animate={{ opacity: 1, y: 0 }}
                   className="space-y-6"
                 >
-                  <div className="bg-[#141416] rounded-xl border border-[#2A2A2E] divide-y divide-[#2A2A2E]">
+                  <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] divide-y divide-[#2B2F36]">
                     {[
                       {
                         title: "Export All Data",
@@ -1196,7 +1196,7 @@ export default function SettingsPage() {
                           <h4 className="text-white font-medium">{item.title}</h4>
                           <p className="text-sm text-[#9CA3AF] mt-0.5">{item.description}</p>
                         </div>
-                        <button className="px-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors flex items-center gap-2">
+                        <button className="px-4 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm font-medium hover:bg-[#222226] transition-colors flex items-center gap-2">
                           <Download className="w-4 h-4" />
                           {item.action}
                         </button>
@@ -1205,14 +1205,14 @@ export default function SettingsPage() {
                   </div>
 
                   {/* Danger Zone */}
-                  <div className="bg-[#141416] rounded-xl border border-[#F43F5E]/20 p-6">
+                  <div className="bg-[#1B1B1D] rounded-xl border border-[#F43F5E]/20 p-6">
                     <h3 className="text-lg font-medium text-[#F43F5E] mb-4">Danger Zone</h3>
 
                     {/* Success/Error Messages */}
                     {bulkDeleteSuccess && (
-                      <div className="mb-4 p-3 bg-[#00D9C8]/10 border border-[#00D9C8]/20 rounded-lg flex items-center gap-2">
-                        <Check className="w-4 h-4 text-[#00D9C8]" />
-                        <span className="text-[#00D9C8] text-sm">{bulkDeleteSuccess}</span>
+                      <div className="mb-4 p-3 bg-[#03AAC7]/10 border border-[#03AAC7]/20 rounded-lg flex items-center gap-2">
+                        <Check className="w-4 h-4 text-[#03AAC7]" />
+                        <span className="text-[#03AAC7] text-sm">{bulkDeleteSuccess}</span>
                       </div>
                     )}
                     {bulkDeleteError && (
@@ -1223,7 +1223,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* Clear All Trades */}
-                    <div className="flex items-center justify-between pb-5 mb-5 border-b border-[#2A2A2E]">
+                    <div className="flex items-center justify-between pb-5 mb-5 border-b border-[#2B2F36]">
                       <div>
                         <h4 className="text-white font-medium">Clear All Trades</h4>
                         <p className="text-sm text-[#9CA3AF] mt-0.5">Delete all trades from your journal (cannot be undone)</p>
@@ -1250,7 +1250,7 @@ export default function SettingsPage() {
                           <button
                             onClick={() => setShowBulkDeleteConfirm(false)}
                             disabled={bulkDeleting}
-                            className="px-4 py-2 bg-[#2A2A2E] text-white text-sm rounded-lg hover:bg-[#3A3A3E] transition-colors disabled:opacity-50"
+                            className="px-4 py-2 bg-[#2B2F36] text-white text-sm rounded-lg hover:bg-[#3A3E45] transition-colors disabled:opacity-50"
                           >
                             Cancel
                           </button>
@@ -1306,14 +1306,14 @@ export default function SettingsPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-[#141416] rounded-xl border border-[#2A2A2E] w-full max-w-md overflow-hidden"
+              className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] w-full max-w-md overflow-hidden"
             >
-              <div className="p-6 border-b border-[#2A2A2E]">
+              <div className="p-6 border-b border-[#2B2F36]">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-semibold text-white">Change Password</h2>
                   <button
                     onClick={() => setShowPasswordModal(false)}
-                    className="p-2 hover:bg-[#1A1A1E] rounded-lg transition-colors"
+                    className="p-2 hover:bg-[#252629] rounded-lg transition-colors"
                   >
                     <X className="w-5 h-5 text-[#9CA3AF]" />
                   </button>
@@ -1323,15 +1323,15 @@ export default function SettingsPage() {
                 <p className="text-[#9CA3AF] text-sm">
                   We'll send a password reset link to your email address. Click the link to set a new password.
                 </p>
-                <div className="bg-[#1A1A1E] rounded-lg p-4">
+                <div className="bg-[#252629] rounded-lg p-4">
                   <p className="text-[#6B7280] text-xs mb-1">Email Address</p>
                   <p className="text-white">{user?.email}</p>
                 </div>
 
                 {passwordResetSent && (
-                  <div className="p-3 bg-[#00D9C8]/10 border border-[#00D9C8]/20 rounded-lg flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#00D9C8]" />
-                    <span className="text-[#00D9C8] text-sm">Password reset email sent! Check your inbox.</span>
+                  <div className="p-3 bg-[#03AAC7]/10 border border-[#03AAC7]/20 rounded-lg flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#03AAC7]" />
+                    <span className="text-[#03AAC7] text-sm">Password reset email sent! Check your inbox.</span>
                   </div>
                 )}
 
@@ -1342,17 +1342,17 @@ export default function SettingsPage() {
                   </div>
                 )}
               </div>
-              <div className="p-6 border-t border-[#2A2A2E] flex gap-3">
+              <div className="p-6 border-t border-[#2B2F36] flex gap-3">
                 <button
                   onClick={() => setShowPasswordModal(false)}
-                  className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
+                  className="flex-1 px-4 py-2.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handlePasswordReset}
                   disabled={passwordResetLoading || passwordResetSent}
-                  className="flex-1 px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2.5 bg-[#03AAC7] rounded-lg text-[#151517] font-medium hover:bg-[#26BFD4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {passwordResetLoading ? (
                     <>
@@ -1392,14 +1392,14 @@ export default function SettingsPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-[#141416] rounded-xl border border-[#2A2A2E] w-full max-w-lg overflow-hidden"
+              className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] w-full max-w-lg overflow-hidden"
             >
               {/* Header */}
-              <div className="p-6 border-b border-[#2A2A2E]">
+              <div className="p-6 border-b border-[#2B2F36]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
-                      <Smartphone className="w-5 h-5 text-[#00D9C8]" />
+                    <div className="w-10 h-10 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
+                      <Smartphone className="w-5 h-5 text-[#03AAC7]" />
                     </div>
                     <div>
                       <h2 className="text-lg font-semibold text-white">Google Authenticator</h2>
@@ -1414,7 +1414,7 @@ export default function SettingsPage() {
                   </div>
                   <button
                     onClick={handleClose2FAModal}
-                    className="p-2 hover:bg-[#1A1A1E] rounded-lg transition-colors"
+                    className="p-2 hover:bg-[#252629] rounded-lg transition-colors"
                   >
                     <X className="w-5 h-5 text-[#9CA3AF]" />
                   </button>
@@ -1426,19 +1426,19 @@ export default function SettingsPage() {
                 {/* Intro Step */}
                 {twoFactorStep === "intro" && !twoFactorEnabled && (
                   <div className="space-y-4">
-                    <div className="p-4 bg-[#1A1A1E] rounded-lg">
+                    <div className="p-4 bg-[#252629] rounded-lg">
                       <h4 className="text-white font-medium mb-2">Why use 2FA?</h4>
                       <ul className="space-y-2 text-[#9CA3AF] text-sm">
                         <li className="flex items-center gap-2">
-                          <Check className="w-4 h-4 text-[#00D9C8]" />
+                          <Check className="w-4 h-4 text-[#03AAC7]" />
                           Protect your account from unauthorized access
                         </li>
                         <li className="flex items-center gap-2">
-                          <Check className="w-4 h-4 text-[#00D9C8]" />
+                          <Check className="w-4 h-4 text-[#03AAC7]" />
                           Secure withdrawals and sensitive operations
                         </li>
                         <li className="flex items-center gap-2">
-                          <Check className="w-4 h-4 text-[#00D9C8]" />
+                          <Check className="w-4 h-4 text-[#03AAC7]" />
                           Works with Google Authenticator, Microsoft Authenticator, or Authy
                         </li>
                       </ul>
@@ -1453,18 +1453,18 @@ export default function SettingsPage() {
                 {/* Already Enabled View */}
                 {twoFactorStep === "intro" && twoFactorEnabled && (
                   <div className="space-y-4">
-                    <div className="p-3 bg-[#00D9C8]/10 border border-[#00D9C8]/20 rounded-lg flex items-center gap-2">
-                      <Check className="w-4 h-4 text-[#00D9C8]" />
-                      <span className="text-[#00D9C8] text-sm">Two-factor authentication is enabled</span>
+                    <div className="p-3 bg-[#03AAC7]/10 border border-[#03AAC7]/20 rounded-lg flex items-center gap-2">
+                      <Check className="w-4 h-4 text-[#03AAC7]" />
+                      <span className="text-[#03AAC7] text-sm">Two-factor authentication is enabled</span>
                     </div>
-                    <div className="p-4 bg-[#1A1A1E] rounded-lg">
+                    <div className="p-4 bg-[#252629] rounded-lg">
                       <p className="text-[#9CA3AF] text-sm">
                         Your account is protected with Google Authenticator. You'll need to enter a verification code when logging in or performing sensitive operations.
                       </p>
                     </div>
 
                     {/* Disable 2FA - requires code verification */}
-                    <div className="p-4 bg-[#1A1A1E] rounded-lg border border-[#F43F5E]/20">
+                    <div className="p-4 bg-[#252629] rounded-lg border border-[#F43F5E]/20">
                       <p className="text-[#F43F5E] text-sm font-medium mb-3">To disable 2FA, enter your current code:</p>
                       <input
                         type="text"
@@ -1474,7 +1474,7 @@ export default function SettingsPage() {
                           setTwoFactorDisableCode(value);
                         }}
                         placeholder="6-digit code or backup code"
-                        className="w-full px-4 py-2.5 bg-[#0D0D0F] border border-[#2A2A2E] rounded-lg text-white font-mono text-center text-lg tracking-widest focus:outline-none focus:border-[#F43F5E] transition-colors"
+                        className="w-full px-4 py-2.5 bg-[#151517] border border-[#2B2F36] rounded-lg text-white font-mono text-center text-lg tracking-widest focus:outline-none focus:border-[#F43F5E] transition-colors"
                       />
                       {twoFactorVerifyError && (
                         <div className="mt-2 p-2 bg-[#F43F5E]/10 border border-[#F43F5E]/20 rounded-lg">
@@ -1503,23 +1503,23 @@ export default function SettingsPage() {
                             includeMargin={false}
                           />
                         ) : (
-                          <div className="w-48 h-48 bg-[#1A1A1E] rounded-lg flex items-center justify-center">
-                            <Loader2 className="w-8 h-8 text-[#00D9C8] animate-spin" />
+                          <div className="w-48 h-48 bg-[#252629] rounded-lg flex items-center justify-center">
+                            <Loader2 className="w-8 h-8 text-[#03AAC7] animate-spin" />
                           </div>
                         )}
                       </div>
                     </div>
 
                     {/* Manual Entry */}
-                    <div className="p-4 bg-[#1A1A1E] rounded-lg">
+                    <div className="p-4 bg-[#252629] rounded-lg">
                       <p className="text-[#6B7280] text-xs mb-2">Can't scan? Enter this code manually:</p>
                       <div className="flex items-center gap-2">
-                        <code className="flex-1 px-3 py-2 bg-[#0D0D0F] rounded-lg text-[#00D9C8] font-mono text-sm break-all">
+                        <code className="flex-1 px-3 py-2 bg-[#151517] rounded-lg text-[#03AAC7] font-mono text-sm break-all">
                           {twoFactorSecret}
                         </code>
                         <button
                           onClick={() => navigator.clipboard.writeText(twoFactorSecret)}
-                          className="p-2 hover:bg-[#2A2A2E] rounded-lg transition-colors"
+                          className="p-2 hover:bg-[#2B2F36] rounded-lg transition-colors"
                         >
                           <Copy className="w-4 h-4 text-[#9CA3AF]" />
                         </button>
@@ -1546,7 +1546,7 @@ export default function SettingsPage() {
                         }}
                         placeholder="000000"
                         maxLength={6}
-                        className="w-full px-4 py-3 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-center text-2xl font-mono tracking-[0.5em] placeholder-[#6B7280] focus:border-[#00D9C8] focus:outline-none transition-colors"
+                        className="w-full px-4 py-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-center text-2xl font-mono tracking-[0.5em] placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors"
                       />
                     </div>
 
@@ -1572,9 +1572,9 @@ export default function SettingsPage() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 p-4 bg-[#1A1A1E] rounded-lg">
+                    <div className="grid grid-cols-2 gap-2 p-4 bg-[#252629] rounded-lg">
                       {twoFactorBackupCodes.map((code, index) => (
-                        <div key={index} className="px-3 py-2 bg-[#0D0D0F] rounded-lg text-center">
+                        <div key={index} className="px-3 py-2 bg-[#151517] rounded-lg text-center">
                           <code className="text-white font-mono text-sm">{code}</code>
                         </div>
                       ))}
@@ -1585,7 +1585,7 @@ export default function SettingsPage() {
                         const codes = twoFactorBackupCodes.join('\n');
                         navigator.clipboard.writeText(codes);
                       }}
-                      className="w-full px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors flex items-center justify-center gap-2"
+                      className="w-full px-4 py-2.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors flex items-center justify-center gap-2"
                     >
                       <Copy className="w-4 h-4" />
                       Copy All Codes
@@ -1596,8 +1596,8 @@ export default function SettingsPage() {
                 {/* Success Step */}
                 {twoFactorStep === "success" && (
                   <div className="space-y-4 text-center">
-                    <div className="w-16 h-16 mx-auto bg-[#00D9C8]/10 rounded-full flex items-center justify-center">
-                      <Check className="w-8 h-8 text-[#00D9C8]" />
+                    <div className="w-16 h-16 mx-auto bg-[#03AAC7]/10 rounded-full flex items-center justify-center">
+                      <Check className="w-8 h-8 text-[#03AAC7]" />
                     </div>
                     <div>
                       <h3 className="text-white text-lg font-semibold">2FA Enabled Successfully!</h3>
@@ -1610,20 +1610,20 @@ export default function SettingsPage() {
               </div>
 
               {/* Footer */}
-              <div className="p-6 border-t border-[#2A2A2E] flex gap-3">
+              <div className="p-6 border-t border-[#2B2F36] flex gap-3">
                 {twoFactorStep === "intro" && !twoFactorEnabled && (
                   <>
                     <button
                       onClick={handleClose2FAModal}
                       disabled={twoFactorLoading}
-                      className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors disabled:opacity-50"
+                      className="flex-1 px-4 py-2.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors disabled:opacity-50"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleStart2FASetup}
                       disabled={twoFactorLoading}
-                      className="flex-1 px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="flex-1 px-4 py-2.5 bg-[#03AAC7] rounded-lg text-[#151517] font-medium hover:bg-[#26BFD4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {twoFactorLoading ? (
                         <>
@@ -1642,7 +1642,7 @@ export default function SettingsPage() {
                     <button
                       onClick={handleClose2FAModal}
                       disabled={twoFactorLoading}
-                      className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors disabled:opacity-50"
+                      className="flex-1 px-4 py-2.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors disabled:opacity-50"
                     >
                       Close
                     </button>
@@ -1667,13 +1667,13 @@ export default function SettingsPage() {
                   <>
                     <button
                       onClick={() => setTwoFactorStep("intro")}
-                      className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
+                      className="flex-1 px-4 py-2.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
                     >
                       Back
                     </button>
                     <button
                       onClick={() => setTwoFactorStep("verify")}
-                      className="flex-1 px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors"
+                      className="flex-1 px-4 py-2.5 bg-[#03AAC7] rounded-lg text-[#151517] font-medium hover:bg-[#26BFD4] transition-colors"
                     >
                       Next
                     </button>
@@ -1684,14 +1684,14 @@ export default function SettingsPage() {
                   <>
                     <button
                       onClick={() => setTwoFactorStep("qrcode")}
-                      className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
+                      className="flex-1 px-4 py-2.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors"
                     >
                       Back
                     </button>
                     <button
                       onClick={handleVerify2FACode}
                       disabled={twoFactorVerifyCode.length !== 6 || twoFactorLoading}
-                      className="flex-1 px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="flex-1 px-4 py-2.5 bg-[#03AAC7] rounded-lg text-[#151517] font-medium hover:bg-[#26BFD4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {twoFactorLoading ? (
                         <>
@@ -1708,7 +1708,7 @@ export default function SettingsPage() {
                 {twoFactorStep === "backup" && (
                   <button
                     onClick={handleComplete2FASetup}
-                    className="w-full px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors"
+                    className="w-full px-4 py-2.5 bg-[#03AAC7] rounded-lg text-[#151517] font-medium hover:bg-[#26BFD4] transition-colors"
                   >
                     I've Saved My Backup Codes
                   </button>
@@ -1717,7 +1717,7 @@ export default function SettingsPage() {
                 {twoFactorStep === "success" && (
                   <button
                     onClick={handleClose2FAModal}
-                    className="w-full px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors"
+                    className="w-full px-4 py-2.5 bg-[#03AAC7] rounded-lg text-[#151517] font-medium hover:bg-[#26BFD4] transition-colors"
                   >
                     Done
                   </button>
@@ -1743,14 +1743,14 @@ export default function SettingsPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-[#141416] rounded-xl border border-[#2A2A2E] w-full max-w-md overflow-hidden"
+              className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] w-full max-w-md overflow-hidden"
             >
-              <div className="p-6 border-b border-[#2A2A2E]">
+              <div className="p-6 border-b border-[#2B2F36]">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-semibold text-white">Anti-Phishing Code</h2>
                   <button
                     onClick={() => setShowAntiPhishingModal(false)}
-                    className="p-2 hover:bg-[#1A1A1E] rounded-lg transition-colors"
+                    className="p-2 hover:bg-[#252629] rounded-lg transition-colors"
                   >
                     <X className="w-5 h-5 text-[#9CA3AF]" />
                   </button>
@@ -1769,7 +1769,7 @@ export default function SettingsPage() {
                     onChange={(e) => setAntiPhishingInput(e.target.value)}
                     placeholder="Enter a memorable code (e.g., MySecret123)"
                     maxLength={20}
-                    className="w-full px-4 py-3 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white placeholder-[#6B7280] focus:border-[#00D9C8] focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors"
                   />
                   <p className="text-[#6B7280] text-xs mt-2">
                     Maximum 20 characters. Use letters and numbers.
@@ -1777,9 +1777,9 @@ export default function SettingsPage() {
                 </div>
 
                 {antiPhishingSaved && (
-                  <div className="p-3 bg-[#00D9C8]/10 border border-[#00D9C8]/20 rounded-lg flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#00D9C8]" />
-                    <span className="text-[#00D9C8] text-sm">Anti-phishing code saved!</span>
+                  <div className="p-3 bg-[#03AAC7]/10 border border-[#03AAC7]/20 rounded-lg flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#03AAC7]" />
+                    <span className="text-[#03AAC7] text-sm">Anti-phishing code saved!</span>
                   </div>
                 )}
 
@@ -1791,24 +1791,24 @@ export default function SettingsPage() {
                 )}
 
                 {antiPhishingCode && !antiPhishingSaved && (
-                  <div className="p-3 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg">
+                  <div className="p-3 bg-[#252629] border border-[#2B2F36] rounded-lg">
                     <p className="text-[#6B7280] text-xs mb-1">Current Code</p>
                     <p className="text-white font-mono">{antiPhishingCode}</p>
                   </div>
                 )}
               </div>
-              <div className="p-6 border-t border-[#2A2A2E] flex gap-3">
+              <div className="p-6 border-t border-[#2B2F36] flex gap-3">
                 <button
                   onClick={() => setShowAntiPhishingModal(false)}
                   disabled={antiPhishingLoading}
-                  className="flex-1 px-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors disabled:opacity-50"
+                  className="flex-1 px-4 py-2.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white font-medium hover:bg-[#222226] transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSaveAntiPhishing}
                   disabled={!antiPhishingInput.trim() || antiPhishingSaved || antiPhishingLoading}
-                  className="flex-1 px-4 py-2.5 bg-[#00D9C8] rounded-lg text-[#0D0D0F] font-medium hover:bg-[#00F5E1] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2.5 bg-[#03AAC7] rounded-lg text-[#151517] font-medium hover:bg-[#26BFD4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {antiPhishingLoading ? (
                     <>

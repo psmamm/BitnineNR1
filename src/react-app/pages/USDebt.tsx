@@ -135,7 +135,7 @@ export default function USDebtPage() {
   const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-[#141416] border border-white/10 rounded-lg p-3 shadow-lg">
+        <div className="bg-[#1B1B1D] border border-white/10 rounded-lg p-3 shadow-lg">
           <p className="text-[#7F8C8D] text-sm mb-1">{label}</p>
           <p className="text-[#2ECC71] font-semibold">
             Debt: ${payload[0].value.toFixed(6)}T
@@ -158,7 +158,7 @@ export default function USDebtPage() {
         <div className="flex items-center justify-between">
           <Link
             to="/bitcoin-halving"
-            className="flex items-center space-x-2 px-4 py-2 bg-[#141416] text-[#AAB0C0] rounded-lg hover:bg-[#2A2F42] hover:text-white transition-all border border-white/10"
+            className="flex items-center space-x-2 px-4 py-2 bg-[#1B1B1D] text-[#AAB0C0] rounded-lg hover:bg-[#2A2F42] hover:text-white transition-all border border-white/10"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Bitcoin Halving</span>
@@ -184,7 +184,7 @@ export default function USDebtPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-[#141416] rounded-xl p-8 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+          className="bg-[#1B1B1D] rounded-xl p-8 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
         >
           <div className="text-center space-y-6">
             <div className="flex items-center justify-center space-x-4 mb-6">
@@ -202,7 +202,7 @@ export default function USDebtPage() {
             </div>
 
             {/* Main Debt Display */}
-            <div className="bg-[#141416]/50 rounded-xl p-8 border border-white/10">
+            <div className="bg-[#1B1B1D]/50 rounded-xl p-8 border border-white/10">
               <div className="text-center mb-8">
                 <div className="text-[#7F8C8D] text-xl mb-4 flex items-center justify-center space-x-3">
                   <div className="w-4 h-4 bg-[#2ECC71] rounded-full animate-pulse"></div>
@@ -227,7 +227,7 @@ export default function USDebtPage() {
 
               {/* Real-time Increases */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-[#141416] rounded-xl p-4 border border-white/5">
+                <div className="bg-[#1B1B1D] rounded-xl p-4 border border-white/5">
                   <div className="text-[#E74C3C] text-sm font-semibold mb-2 flex items-center space-x-2">
                     <Zap className="w-4 h-4" />
                     <span>Per Second</span>
@@ -243,7 +243,7 @@ export default function USDebtPage() {
                   </motion.div>
                 </div>
 
-                <div className="bg-[#141416] rounded-xl p-4 border border-white/5">
+                <div className="bg-[#1B1B1D] rounded-xl p-4 border border-white/5">
                   <div className="text-[#F39C12] text-sm font-semibold mb-2 flex items-center space-x-2">
                     <Clock className="w-4 h-4" />
                     <span>Per Minute</span>
@@ -253,7 +253,7 @@ export default function USDebtPage() {
                   </div>
                 </div>
 
-                <div className="bg-[#141416] rounded-xl p-4 border border-white/5">
+                <div className="bg-[#1B1B1D] rounded-xl p-4 border border-white/5">
                   <div className="text-[#6A3DF4] text-sm font-semibold mb-2 flex items-center space-x-2">
                     <Clock className="w-4 h-4" />
                     <span>Per Hour</span>
@@ -263,7 +263,7 @@ export default function USDebtPage() {
                   </div>
                 </div>
 
-                <div className="bg-[#141416] rounded-xl p-4 border border-white/5">
+                <div className="bg-[#1B1B1D] rounded-xl p-4 border border-white/5">
                   <div className="text-[#2ECC71] text-sm font-semibold mb-2 flex items-center space-x-2">
                     <Calendar className="w-4 h-4" />
                     <span>Per Day</span>
@@ -282,7 +282,7 @@ export default function USDebtPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-[#141416] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+          className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
         >
           <div className="flex items-center space-x-3 mb-6">
             <Target className="w-6 h-6 text-[#6B7280]" />
@@ -293,7 +293,7 @@ export default function USDebtPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-[#141416]/30 rounded-xl p-6">
+            <div className="bg-[#1B1B1D]/30 rounded-xl p-6">
               <div className="text-[#E74C3C] text-sm mb-2">Debt Increased By</div>
               <motion.div
                 key={Math.floor((debtData?.debtSincePageLoad || 0) / 100)}
@@ -306,7 +306,7 @@ export default function USDebtPage() {
               </motion.div>
             </div>
 
-            <div className="bg-[#141416]/30 rounded-xl p-6">
+            <div className="bg-[#1B1B1D]/30 rounded-xl p-6">
               <div className="text-[#F39C12] text-sm mb-2">Interest Accumulated</div>
               <motion.div
                 key={Math.floor((debtData?.interestSincePageLoad || 0) / 100)}
@@ -327,7 +327,7 @@ export default function USDebtPage() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-[#141416] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+            className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
           >
             <div className="flex items-center space-x-3 mb-6">
               <Users className="w-6 h-6 text-[#6B7280]" />
@@ -335,7 +335,7 @@ export default function USDebtPage() {
             </div>
 
             <div className="space-y-6">
-              <div className="bg-[#141416]/30 rounded-xl p-6">
+              <div className="bg-[#1B1B1D]/30 rounded-xl p-6">
                 <div className="text-[#7F8C8D] text-sm mb-2 flex items-center space-x-2">
                   <Users className="w-4 h-4" />
                   <span>Per US Citizen</span>
@@ -354,7 +354,7 @@ export default function USDebtPage() {
                 </div>
               </div>
 
-              <div className="bg-[#141416]/30 rounded-xl p-6">
+              <div className="bg-[#1B1B1D]/30 rounded-xl p-6">
                 <div className="text-[#7F8C8D] text-sm mb-2 flex items-center space-x-2">
                   <Receipt className="w-4 h-4" />
                   <span>Per Taxpayer</span>
@@ -373,7 +373,7 @@ export default function USDebtPage() {
                 </div>
               </div>
 
-              <div className="bg-[#141416]/30 rounded-xl p-6">
+              <div className="bg-[#1B1B1D]/30 rounded-xl p-6">
                 <div className="text-[#7F8C8D] text-sm mb-2 flex items-center space-x-2">
                   <Baby className="w-4 h-4" />
                   <span>Per Child (Under 18)</span>
@@ -399,14 +399,14 @@ export default function USDebtPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-[#141416] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+            className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
           >
             <div className="flex items-center space-x-3 mb-6">
               <TrendingUp className="w-6 h-6 text-[#6B7280]" />
               <h2 className="text-xl font-semibold text-white">Live Debt & Interest Chart</h2>
             </div>
 
-            <div className="bg-[#141416]/30 rounded-xl p-4 h-80">
+            <div className="bg-[#1B1B1D]/30 rounded-xl p-4 h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -480,7 +480,7 @@ export default function USDebtPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-[#141416] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+          className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
         >
           <div className="flex items-center space-x-3 mb-6">
             <PiggyBank className="w-6 h-6 text-[#6B7280]" />
@@ -488,7 +488,7 @@ export default function USDebtPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-[#141416]/30 rounded-xl p-4 border border-white/5">
+            <div className="bg-[#1B1B1D]/30 rounded-xl p-4 border border-white/5">
               <div className="text-[#E74C3C] font-semibold mb-2">Interest Per Second</div>
               <motion.div
                 key={Math.floor(Date.now() / 1000)}
@@ -504,7 +504,7 @@ export default function USDebtPage() {
               </div>
             </div>
 
-            <div className="bg-[#141416]/30 rounded-xl p-4 border border-white/5">
+            <div className="bg-[#1B1B1D]/30 rounded-xl p-4 border border-white/5">
               <div className="text-[#F39C12] font-semibold mb-2">Interest Per Day</div>
               <div className="text-2xl font-bold text-white mb-2 font-mono">
                 {formatCurrency(debtData?.interestPerDay || 0)}
@@ -514,7 +514,7 @@ export default function USDebtPage() {
               </div>
             </div>
 
-            <div className="bg-[#141416]/30 rounded-xl p-4 border border-white/5">
+            <div className="bg-[#1B1B1D]/30 rounded-xl p-4 border border-white/5">
               <div className="text-[#6A3DF4] font-semibold mb-2">Debt-to-GDP Ratio</div>
               <div className="text-2xl font-bold text-white mb-2 font-mono">
                 {debtData?.debtToGDPRatio.toFixed(1)}%
@@ -524,7 +524,7 @@ export default function USDebtPage() {
               </div>
             </div>
 
-            <div className="bg-[#141416]/30 rounded-xl p-4 border border-white/5">
+            <div className="bg-[#1B1B1D]/30 rounded-xl p-4 border border-white/5">
               <div className="text-[#2ECC71] font-semibold mb-2">Interest-to-Revenue</div>
               <div className="text-2xl font-bold text-white mb-2 font-mono">
                 {debtData?.interestToRevenueRatio.toFixed(1)}%
@@ -541,7 +541,7 @@ export default function USDebtPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-[#141416] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+          className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
         >
           <div className="flex items-center space-x-3 mb-6">
             <Receipt className="w-6 h-6 text-[#6B7280]" />
@@ -549,7 +549,7 @@ export default function USDebtPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-[#141416]/30 rounded-xl p-4 border border-white/5">
+            <div className="bg-[#1B1B1D]/30 rounded-xl p-4 border border-white/5">
               <div className="text-[#E74C3C] font-semibold mb-2">Debt Increase/Year</div>
               <div className="text-2xl font-bold text-white mb-2">
                 {formatCurrency(debtData?.debtIncreasePerYear || 0)}
@@ -559,7 +559,7 @@ export default function USDebtPage() {
               </div>
             </div>
 
-            <div className="bg-[#141416]/30 rounded-xl p-4 border border-white/5">
+            <div className="bg-[#1B1B1D]/30 rounded-xl p-4 border border-white/5">
               <div className="text-[#F39C12] font-semibold mb-2">Interest Payments</div>
               <div className="text-2xl font-bold text-white mb-2">
                 {formatCurrency(debtData?.interestPerYear || 0)}
@@ -569,7 +569,7 @@ export default function USDebtPage() {
               </div>
             </div>
 
-            <div className="bg-[#141416]/30 rounded-xl p-4 border border-white/5">
+            <div className="bg-[#1B1B1D]/30 rounded-xl p-4 border border-white/5">
               <div className="text-[#2ECC71] font-semibold mb-2">Federal Revenue</div>
               <div className="text-2xl font-bold text-white mb-2">$5.2T</div>
               <div className="text-[#7F8C8D] text-sm">
@@ -577,7 +577,7 @@ export default function USDebtPage() {
               </div>
             </div>
 
-            <div className="bg-[#141416]/30 rounded-xl p-4 border border-white/5">
+            <div className="bg-[#1B1B1D]/30 rounded-xl p-4 border border-white/5">
               <div className="text-[#6A3DF4] font-semibold mb-2">GDP (Annual)</div>
               <div className="text-2xl font-bold text-white mb-2">$28.7T</div>
               <div className="text-[#7F8C8D] text-sm">

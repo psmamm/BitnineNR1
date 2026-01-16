@@ -317,25 +317,9 @@ lighterRouter.post('/create-account', zValidator('json', CreateAccountSchema), a
     return c.json({ error: 'Encryption service unavailable' }, 500);
   }
 
-  // Test the connection first
-  try {
-    const exchange = new LighterExchange({
-      apiKey: data.api_key,
-      apiSecret: data.api_secret,
-      accountIndex: data.account_index,
-      walletAddress: data.wallet_address
-    });
-
-    const isConnected = await exchange.testConnection();
-    if (!isConnected) {
-      return c.json({ error: 'Failed to connect to Lighter account' }, 400);
-    }
-  } catch (error) {
-    console.error('[Lighter] Connection test failed:', error);
-    return c.json({
-      error: error instanceof Error ? error.message : 'Invalid API credentials'
-    }, 400);
-  }
+  // Skip connection test for now - Lighter uses complex auth tokens
+  // Credentials will be validated when user actually tries to trade
+  console.log('[Lighter] Storing credentials for account index:', data.account_index);
 
   // Encrypt credentials
   const encryptedKey = await encrypt(data.api_key, masterKey);

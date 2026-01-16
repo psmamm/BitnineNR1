@@ -37,7 +37,7 @@ export function PositionsPanel() {
           
           <div className="ml-auto flex items-center gap-4 text-xs">
             <label className="flex items-center gap-2 text-[#848E9C] cursor-pointer">
-              <input type="checkbox" className="accent-[#00D9C8]" />
+              <input type="checkbox" className="accent-[#03AAC7]" />
               <span>Hide Other Symbols</span>
             </label>
           </div>
@@ -98,7 +98,7 @@ export function PositionsPanel() {
                     )}
                   </span>
                   <span className="text-[#848E9C] text-center">
-                    {position.trailingStop ? <span className="text-[#00D9C8]">●</span> : '-'}
+                    {position.trailingStop ? <span className="text-[#03AAC7]">●</span> : '-'}
                   </span>
                   <button className="text-[#F6465D] hover:text-[#d93d52] transition-colors text-center text-[10px] font-medium">
                     Close

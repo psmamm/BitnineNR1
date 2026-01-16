@@ -37,7 +37,7 @@ export default function QuickActions() {
       description: 'Record a new trade',
       icon: Plus,
       onClick: () => setShowWizard(true),
-      color: 'bg-gradient-to-r from-[#00D9C8] to-[#00F5E1] hover:from-[#7B47FF] hover:to-[#9B6AFF]',
+      color: 'bg-gradient-to-r from-[#03AAC7] to-[#26BFD4] hover:from-[#7B47FF] hover:to-[#9B6AFF]',
       badge: null,
     },
     {
@@ -45,7 +45,7 @@ export default function QuickActions() {
       description: `${openTrades} open position${openTrades !== 1 ? 's' : ''}`,
       icon: BookOpen,
       onClick: () => navigate('/journal'),
-      color: 'bg-gradient-to-r from-[#00D9C8] to-[#27AE60] hover:from-[#00D9C8] hover:to-[#229954]',
+      color: 'bg-gradient-to-r from-[#03AAC7] to-[#27AE60] hover:from-[#03AAC7] hover:to-[#229954]',
       badge: openTrades > 0 ? openTrades.toString() : null,
     },
     {
@@ -71,8 +71,8 @@ export default function QuickActions() {
     <>
       <div className={`${getCardBg(theme)} rounded-xl p-4 border ${getCardBorder(theme)} h-full`}>
         <div className="flex items-center space-x-3 mb-6">
-          <div className="w-10 h-10 bg-[#00D9C8]/10 rounded-xl flex items-center justify-center">
-            <Plus className="w-5 h-5 text-[#00D9C8]" />
+          <div className="w-10 h-10 bg-[#03AAC7]/10 rounded-xl flex items-center justify-center">
+            <Plus className="w-5 h-5 text-[#03AAC7]" />
           </div>
           <div>
             <h2 className={`text-xl font-semibold ${getTextColor(theme, 'primary')}`}>Quick Actions</h2>
@@ -93,7 +93,7 @@ export default function QuickActions() {
               className={`w-full flex items-center space-x-4 p-4 ${getCardBg(theme)} ${getHoverBg(theme)} border ${getCardBorder(theme)} rounded-xl transition-all duration-200 group relative ${action.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                 }`}
             >
-              <div className={`${action.color} p-3 rounded-xl transition-all shadow-md group-hover:shadow-lg group-hover:shadow-[#00D9C8]/20 relative`}>
+              <div className={`${action.color} p-3 rounded-xl transition-all shadow-md group-hover:shadow-lg group-hover:shadow-[#03AAC7]/20 relative`}>
                 <action.icon className={`w-5 h-5 text-white ${action.disabled && action.title === 'Export Data' ? 'animate-pulse' : ''}`} />
               </div>
               <div className="flex-1 text-left">
@@ -102,7 +102,7 @@ export default function QuickActions() {
                   {action.badge && (
                     <span className={`px-2 py-1 text-xs font-bold rounded-full ${action.badge === 'NEW'
                         ? 'bg-[#F43F5E] text-white animate-pulse'
-                        : 'bg-[#00D9C8] text-white'
+                        : 'bg-[#03AAC7] text-white'
                       }`}>
                       {action.badge}
                     </span>

@@ -22,27 +22,27 @@ const badgeVariants = cva(
     variants: {
       variant: {
         // Default - Gray
-        default: "bg-[#2A2A2E] text-[#9CA3AF]",
+        default: "bg-[#2B2F36] text-[#9CA3AF]",
 
-        // Verified - Teal (Bitget style)
-        verified: "bg-[#00D9C8]/10 text-[#00D9C8]",
+        // Verified - Cyan (Bitget style)
+        verified: "bg-[#03AAC7]/10 text-[#03AAC7]",
 
         // VIP levels
-        vip: "bg-[#2A2A2E] text-[#9CA3AF]",
+        vip: "bg-[#2B2F36] text-[#9CA3AF]",
         "vip-gold": "bg-[#F59E0B]/10 text-[#F59E0B]",
         "vip-platinum": "bg-[#9CA3AF]/10 text-[#9CA3AF]",
 
         // Status colors
-        success: "bg-[#00D9C8]/10 text-[#00D9C8]",
+        success: "bg-[#03AAC7]/10 text-[#03AAC7]",
         warning: "bg-[#F59E0B]/10 text-[#F59E0B]",
         danger: "bg-[#F43F5E]/10 text-[#F43F5E]",
 
         // Outline - Border only
-        outline: "border border-[#2A2A2E] text-[#9CA3AF]",
+        outline: "border border-[#2B2F36] text-[#9CA3AF]",
 
         // Pro/Premium
-        pro: "bg-gradient-to-r from-[#00D9C8] to-[#00B8A9] text-[#0D0D0F] font-semibold",
-        elite: "bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-[#0D0D0F] font-semibold",
+        pro: "bg-gradient-to-r from-[#03AAC7] to-[#028BA3] text-[#151517] font-semibold",
+        elite: "bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-[#151517] font-semibold",
       },
       size: {
         sm: "px-2 py-0.5 text-[10px]",
@@ -137,7 +137,7 @@ interface StatusBadgeProps {
 
 const StatusBadge = ({ status, size = "default", showText = true, className }: StatusBadgeProps) => {
   const statusConfig = {
-    online: { variant: "success" as const, text: "Online", dot: "bg-[#00D9C8]" },
+    online: { variant: "success" as const, text: "Online", dot: "bg-[#03AAC7]" },
     offline: { variant: "default" as const, text: "Offline", dot: "bg-[#6B7280]" },
     away: { variant: "warning" as const, text: "Away", dot: "bg-[#F59E0B]" },
     busy: { variant: "danger" as const, text: "Busy", dot: "bg-[#F43F5E]" },

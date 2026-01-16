@@ -26,13 +26,13 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
 
-        // Primary - TEAL (Bitget Style)
+        // Primary - CYAN (Bitget Style)
         primary: {
-          DEFAULT: '#00D9C8',
-          foreground: '#0D0D0F',
-          hover: '#00F5E1',
-          muted: 'rgba(0, 217, 200, 0.1)',
-          glow: 'rgba(0, 217, 200, 0.3)',
+          DEFAULT: '#03AAC7',
+          foreground: '#151517',
+          hover: '#26BFD4',
+          muted: 'rgba(3, 170, 199, 0.1)',
+          glow: 'rgba(3, 170, 199, 0.3)',
         },
 
         // Secondary - Dark with border
@@ -53,11 +53,11 @@ export default {
           foreground: "hsl(var(--muted-foreground))",
         },
 
-        // Accent - Same as Primary (Teal)
+        // Accent - Same as Primary (Cyan)
         accent: {
-          DEFAULT: '#00D9C8',
-          foreground: '#0D0D0F',
-          hover: '#00F5E1',
+          DEFAULT: '#03AAC7',
+          foreground: '#151517',
+          hover: '#26BFD4',
         },
 
         // Popover
@@ -76,23 +76,23 @@ export default {
         // BITGET DARK BACKGROUNDS (STRICT!)
         // ===========================================
         dark: {
-          base: '#0D0D0F',        // Main background (almost black)
-          elevated: '#141416',    // Cards, Panels
-          surface: '#1A1A1E',     // Inputs, Dropdowns
-          hover: '#222226',       // Hover states
-          border: '#2A2A2E',      // All borders
-          subtle: '#3A3A3E',      // Hover borders
+          base: '#151517',        // Main background (Bitget: rgb(21,21,23))
+          elevated: '#1B1B1D',    // Cards, Panels (Bitget: rgb(27,27,29))
+          surface: '#252629',     // Inputs, Dropdowns (Bitget: rgb(37,38,41))
+          hover: '#2B2F36',       // Hover states
+          border: '#2B2F36',      // All borders
+          subtle: '#3A3E45',      // Hover borders
         },
 
         // Bitget specific colors
         bitget: {
-          bg: '#0D0D0F',
-          card: '#141416',
-          input: '#1A1A1E',
-          border: '#2A2A2E',
-          'border-hover': '#3A3A3E',
-          accent: '#00D9C8',
-          'accent-hover': '#00F5E1',
+          bg: '#151517',
+          card: '#1B1B1D',
+          input: '#252629',
+          border: '#2B2F36',
+          'border-hover': '#3A3E45',
+          accent: '#03AAC7',
+          'accent-hover': '#26BFD4',
         },
 
         // Text colors
@@ -106,8 +106,8 @@ export default {
         // Status colors (sparingly used!)
         success: {
           light: '#34D399',
-          DEFAULT: '#00D9C8',     // Same as accent
-          dark: '#00B8A9',
+          DEFAULT: '#03AAC7',     // Same as accent
+          dark: '#028BA3',
         },
 
         danger: {
@@ -123,20 +123,22 @@ export default {
         },
 
         // Profit/Loss - ONLY use for trading data
-        profit: '#00D9C8',        // Teal (same as accent)
+        profit: '#03AAC7',        // Cyan (same as accent)
         loss: '#F43F5E',          // Red
       },
 
       // ===========================================
-      // BORDER RADIUS - Soft Edges
+      // BORDER RADIUS - Bitget Style (4, 8, 12, 16, 32)
       // ===========================================
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        'none': '0px',
+        'sm': '4px',
+        'DEFAULT': '8px',
+        'md': '8px',
+        'lg': '12px',
         'xl': '16px',
-        '2xl': '24px',
-        '3xl': '32px',
+        '2xl': '32px',
+        'full': '9999px',
       },
 
       // ===========================================
@@ -157,12 +159,12 @@ export default {
       },
 
       // ===========================================
-      // FONT FAMILY - Premium Fonts
+      // FONT FAMILY - Bitget Style (DM Sans as Pulse alternative)
       // ===========================================
       fontFamily: {
-        sans: ['Inter', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans: ['DM Sans', 'Arial', 'Inter', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         mono: ['JetBrains Mono', 'SF Mono', 'Fira Code', 'monospace'],
-        display: ['Cal Sans', 'Inter', 'sans-serif'],
+        display: ['DM Sans', 'Cal Sans', 'Inter', 'sans-serif'],
       },
 
       // ===========================================
@@ -174,11 +176,11 @@ export default {
         'soft-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.2)',
         'soft-xl': '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3)',
         'soft-2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.6)',
-        // Glow shadows - TEAL (Bitget accent)
-        'glow': '0 0 20px rgba(0, 217, 200, 0.3)',
-        'glow-sm': '0 0 10px rgba(0, 217, 200, 0.2)',
-        'glow-lg': '0 0 40px rgba(0, 217, 200, 0.4)',
-        'glow-success': '0 0 20px rgba(0, 217, 200, 0.3)',
+        // Glow shadows - CYAN (Bitget accent)
+        'glow': '0 0 20px rgba(3, 170, 199, 0.3)',
+        'glow-sm': '0 0 10px rgba(3, 170, 199, 0.2)',
+        'glow-lg': '0 0 40px rgba(3, 170, 199, 0.4)',
+        'glow-success': '0 0 20px rgba(3, 170, 199, 0.3)',
         'glow-danger': '0 0 20px rgba(244, 63, 94, 0.3)',
         'glow-warning': '0 0 20px rgba(245, 158, 11, 0.3)',
         // Card elevation - Bitget style
@@ -274,8 +276,8 @@ export default {
           to: { opacity: '0', transform: 'scale(0.95)' },
         },
         glowPulse: {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(0, 217, 200, 0.3)' },
-          '50%': { boxShadow: '0 0 40px rgba(0, 217, 200, 0.5)' },
+          '0%, 100%': { boxShadow: '0 0 20px rgba(3, 170, 199, 0.3)' },
+          '50%': { boxShadow: '0 0 40px rgba(3, 170, 199, 0.5)' },
         },
         shimmer: {
           from: { backgroundPosition: '-200% 0' },
@@ -332,14 +334,14 @@ export default {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         // Bitget-style gradients (subtle, not flashy)
-        'gradient-primary': 'linear-gradient(135deg, #00D9C8 0%, #00B8A9 100%)',
-        'gradient-profit': 'linear-gradient(135deg, #00D9C8 0%, #00B8A9 100%)',
+        'gradient-primary': 'linear-gradient(135deg, #03AAC7 0%, #028BA3 100%)',
+        'gradient-profit': 'linear-gradient(135deg, #03AAC7 0%, #028BA3 100%)',
         'gradient-loss': 'linear-gradient(135deg, #F43F5E 0%, #E11D48 100%)',
-        'gradient-card': 'linear-gradient(135deg, #1A1A1E 0%, #141416 100%)',
-        'gradient-glow': 'radial-gradient(circle, rgba(0, 217, 200, 0.1) 0%, transparent 70%)',
+        'gradient-card': 'linear-gradient(135deg, #252629 0%, #1B1B1D 100%)',
+        'gradient-glow': 'radial-gradient(circle, rgba(3, 170, 199, 0.1) 0%, transparent 70%)',
         'shimmer-gradient': 'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)',
         // Promo card gradient
-        'gradient-promo': 'linear-gradient(135deg, #1A1A1E 0%, #141416 100%)',
+        'gradient-promo': 'linear-gradient(135deg, #252629 0%, #1B1B1D 100%)',
       },
     },
   },

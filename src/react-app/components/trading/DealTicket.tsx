@@ -134,7 +134,7 @@ export default function DealTicket({
             key={type}
             onClick={() => setOrderType(type)}
             className={`text-[13px] transition-colors ${
-              orderType === type ? 'text-[#00d9c8] font-medium' : 'text-[#848e9c] hover:text-white'
+              orderType === type ? 'text-[#03AAC7] font-medium' : 'text-[#848e9c] hover:text-white'
             }`}
           >
             {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -152,7 +152,7 @@ export default function DealTicket({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setPrice(currentPrice.toFixed(4))}
-                className="text-[#00d9c8] text-xs hover:text-[#00d9c8]/80"
+                className="text-[#03AAC7] text-xs hover:text-[#03AAC7]/80"
               >
                 Last
               </button>
@@ -164,7 +164,7 @@ export default function DealTicket({
             value={orderType === 'market' ? 'Market Price' : price}
             onChange={(e) => setPrice(e.target.value)}
             disabled={orderType === 'market'}
-            className="w-full bg-[#1e2026] border border-[#2b2f36] rounded px-3 py-2.5 text-white text-[13px] outline-none focus:border-[#00d9c8]/50 disabled:text-[#848e9c] transition-colors"
+            className="w-full bg-[#1e2026] border border-[#2b2f36] rounded px-3 py-2.5 text-white text-[13px] outline-none focus:border-[#03AAC7]/50 disabled:text-[#848e9c] transition-colors"
           />
         </div>
 
@@ -174,7 +174,7 @@ export default function DealTicket({
             <span className="text-[#848e9c] text-xs">Quantity</span>
             <button
               onClick={() => setQuantityUnit(u => u === 'coin' ? 'usdt' : 'coin')}
-              className="flex items-center gap-1 text-[#00d9c8] text-xs"
+              className="flex items-center gap-1 text-[#03AAC7] text-xs"
             >
               {quantityUnit === 'coin' ? baseAsset : 'USDT'}
               <ChevronDown className="w-3 h-3" />
@@ -185,7 +185,7 @@ export default function DealTicket({
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
             placeholder="0"
-            className="w-full bg-[#1e2026] border border-[#2b2f36] rounded px-3 py-2.5 text-white text-[13px] outline-none focus:border-[#00d9c8]/50 placeholder-[#848e9c] transition-colors"
+            className="w-full bg-[#1e2026] border border-[#2b2f36] rounded px-3 py-2.5 text-white text-[13px] outline-none focus:border-[#03AAC7]/50 placeholder-[#848e9c] transition-colors"
           />
         </div>
 
@@ -194,7 +194,7 @@ export default function DealTicket({
           <div className="relative">
             <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-[2px] bg-[#2b2f36]" />
             <div
-              className="absolute top-1/2 -translate-y-1/2 left-0 h-[2px] bg-[#00d9c8]"
+              className="absolute top-1/2 -translate-y-1/2 left-0 h-[2px] bg-[#03AAC7]"
               style={{ width: `${sliderValue}%` }}
             />
             <input
@@ -203,7 +203,7 @@ export default function DealTicket({
               max="100"
               value={sliderValue}
               onChange={(e) => handleSliderChange(Number(e.target.value))}
-              className="relative w-full h-4 appearance-none bg-transparent cursor-pointer z-10 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#00d9c8] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[#16181c] [&::-webkit-slider-thumb]:cursor-pointer"
+              className="relative w-full h-4 appearance-none bg-transparent cursor-pointer z-10 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#03AAC7] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[#16181c] [&::-webkit-slider-thumb]:cursor-pointer"
             />
           </div>
           <div className="flex justify-between mt-1">
@@ -212,7 +212,7 @@ export default function DealTicket({
                 key={mark}
                 onClick={() => handleSliderChange(mark)}
                 className={`w-2 h-2 rounded-full transition-colors ${
-                  sliderValue >= mark ? 'bg-[#00d9c8]' : 'bg-[#2b2f36]'
+                  sliderValue >= mark ? 'bg-[#03AAC7]' : 'bg-[#2b2f36]'
                 }`}
               />
             ))}
@@ -240,7 +240,7 @@ export default function DealTicket({
           {tradingType !== 'spot' && (
             <div className="flex justify-between text-xs">
               <span className="text-[#848e9c]">Liq. Price</span>
-              <button className="text-[#00d9c8]">Calculate</button>
+              <button className="text-[#03AAC7]">Calculate</button>
             </div>
           )}
         </div>
@@ -253,7 +253,7 @@ export default function DealTicket({
               type="checkbox"
               checked={showTpSl}
               onChange={(e) => setShowTpSl(e.target.checked)}
-              className="w-4 h-4 rounded border-[#2b2f36] bg-[#1e2026] text-[#00d9c8] focus:ring-0 focus:ring-offset-0 cursor-pointer"
+              className="w-4 h-4 rounded border-[#2b2f36] bg-[#1e2026] text-[#03AAC7] focus:ring-0 focus:ring-offset-0 cursor-pointer"
             />
             <span className="text-[#848e9c] text-xs">TP/SL</span>
           </label>
@@ -284,7 +284,7 @@ export default function DealTicket({
                 type="checkbox"
                 checked={postOnly}
                 onChange={(e) => setPostOnly(e.target.checked)}
-                className="w-4 h-4 rounded border-[#2b2f36] bg-[#1e2026] text-[#00d9c8] focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                className="w-4 h-4 rounded border-[#2b2f36] bg-[#1e2026] text-[#03AAC7] focus:ring-0 focus:ring-offset-0 cursor-pointer"
               />
               <span className="text-[#848e9c] text-xs">Post-Only</span>
             </label>
@@ -300,7 +300,7 @@ export default function DealTicket({
               type="checkbox"
               checked={reduceOnly}
               onChange={(e) => setReduceOnly(e.target.checked)}
-              className="w-4 h-4 rounded border-[#2b2f36] bg-[#1e2026] text-[#00d9c8] focus:ring-0 focus:ring-offset-0 cursor-pointer"
+              className="w-4 h-4 rounded border-[#2b2f36] bg-[#1e2026] text-[#03AAC7] focus:ring-0 focus:ring-offset-0 cursor-pointer"
             />
             <span className="text-[#848e9c] text-xs">Reduce-Only</span>
           </label>
@@ -325,7 +325,7 @@ export default function DealTicket({
         {/* Fee Rate & Calculator */}
         <div className="flex items-center gap-4 text-xs py-1">
           <button className="flex items-center gap-1 text-[#848e9c] hover:text-white">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#00d9c8]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#03AAC7]" />
             Fee Rate
           </button>
           <button className="flex items-center gap-1 text-[#848e9c] hover:text-white">
@@ -350,7 +350,7 @@ export default function DealTicket({
 
         <div className="flex justify-between text-xs">
           <span className="text-[#848e9c]">Margin Mode</span>
-          <button className="flex items-center gap-1 text-white hover:text-[#00d9c8]">
+          <button className="flex items-center gap-1 text-white hover:text-[#03AAC7]">
             {marginMode === 'isolated' ? 'Isolated Margin' : 'Cross Margin'}
             <ChevronDown className="w-3 h-3" />
           </button>
@@ -399,7 +399,7 @@ export default function DealTicket({
                 onClick={() => setMarginMode('cross')}
                 className={`flex-1 py-2 rounded text-sm transition-colors ${
                   marginMode === 'cross'
-                    ? 'bg-[#00d9c8] text-black font-medium'
+                    ? 'bg-[#03AAC7] text-black font-medium'
                     : 'bg-[#2b2f36] text-[#848e9c] hover:text-white'
                 }`}
               >
@@ -409,7 +409,7 @@ export default function DealTicket({
                 onClick={() => setMarginMode('isolated')}
                 className={`flex-1 py-2 rounded text-sm transition-colors ${
                   marginMode === 'isolated'
-                    ? 'bg-[#00d9c8] text-black font-medium'
+                    ? 'bg-[#03AAC7] text-black font-medium'
                     : 'bg-[#2b2f36] text-[#848e9c] hover:text-white'
                 }`}
               >
@@ -423,7 +423,7 @@ export default function DealTicket({
                 type="number"
                 value={leverage}
                 onChange={(e) => setLeverage(Math.min(maxLeverage, Math.max(1, Number(e.target.value))))}
-                className="w-full bg-[#2b2f36] border border-[#2b2f36] rounded px-3 py-2.5 text-white text-center text-lg font-semibold outline-none focus:border-[#00d9c8]/50"
+                className="w-full bg-[#2b2f36] border border-[#2b2f36] rounded px-3 py-2.5 text-white text-center text-lg font-semibold outline-none focus:border-[#03AAC7]/50"
               />
             </div>
 
@@ -451,7 +451,7 @@ export default function DealTicket({
                   onClick={() => setLeverage(l)}
                   className={`px-3 py-1.5 rounded text-xs transition-colors ${
                     leverage === l
-                      ? 'bg-[#00d9c8] text-black font-medium'
+                      ? 'bg-[#03AAC7] text-black font-medium'
                       : 'bg-[#2b2f36] text-[#848e9c] hover:text-white'
                   }`}
                 >
@@ -462,7 +462,7 @@ export default function DealTicket({
 
             <button
               onClick={() => setShowLeverageModal(false)}
-              className="w-full py-2.5 bg-[#00d9c8] hover:bg-[#00d9c8]/90 text-black font-semibold rounded transition-colors"
+              className="w-full py-2.5 bg-[#03AAC7] hover:bg-[#03AAC7]/90 text-black font-semibold rounded transition-colors"
             >
               Confirm
             </button>

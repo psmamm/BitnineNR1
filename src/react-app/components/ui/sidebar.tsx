@@ -6,8 +6,8 @@ import { ChevronRight, ChevronDown } from "lucide-react"
  * Sidebar Component - Bitget Style (2026)
  *
  * Features:
- * - Dark background (#0D0D0F)
- * - Border right (#2A2A2E)
+ * - Dark background (#151517)
+ * - Border right (#2B2F36)
  * - Icon + Label items
  * - Active state with teal color
  * - Collapsible sections
@@ -69,7 +69,7 @@ const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
         <aside
           ref={ref}
           className={cn(
-            "flex flex-col h-full bg-[#0D0D0F] border-r border-[#2A2A2E]",
+            "flex flex-col h-full bg-[#151517] border-r border-[#2B2F36]",
             "transition-all duration-300 ease-in-out",
             className
           )}
@@ -91,7 +91,7 @@ const SidebarHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex items-center h-16 px-4 border-b border-[#2A2A2E]", className)}
+    className={cn("flex items-center h-16 px-4 border-b border-[#2B2F36]", className)}
     {...props}
   />
 ))
@@ -117,7 +117,7 @@ const SidebarFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("mt-auto p-4 border-t border-[#2A2A2E]", className)}
+    className={cn("mt-auto p-4 border-t border-[#2B2F36]", className)}
     {...props}
   />
 ))
@@ -141,7 +141,7 @@ const SidebarGroup = React.forwardRef<HTMLDivElement, SidebarGroupProps>(
           <div
             className={cn(
               "flex items-center justify-between px-3 py-2",
-              collapsible && "cursor-pointer hover:bg-[#141416] rounded-lg"
+              collapsible && "cursor-pointer hover:bg-[#1B1B1D] rounded-lg"
             )}
             onClick={() => collapsible && setOpen(!open)}
           >
@@ -190,8 +190,8 @@ const SidebarItem = React.forwardRef<HTMLDivElement, SidebarItemProps>(
           "flex items-center gap-3 px-3 py-2.5 mx-1 rounded-lg cursor-pointer",
           "text-sm transition-colors duration-150",
           active
-            ? "bg-[#141416] text-[#00D9C8]"
-            : "text-[#9CA3AF] hover:bg-[#141416] hover:text-white",
+            ? "bg-[#1B1B1D] text-[#03AAC7]"
+            : "text-[#9CA3AF] hover:bg-[#1B1B1D] hover:text-white",
           disabled && "opacity-50 cursor-not-allowed hover:bg-transparent hover:text-[#9CA3AF]",
           collapsed && "justify-center px-2",
           className
@@ -204,7 +204,7 @@ const SidebarItem = React.forwardRef<HTMLDivElement, SidebarItemProps>(
         {icon && (
           <span className={cn(
             "flex-shrink-0 w-5 h-5 flex items-center justify-center",
-            active ? "text-[#00D9C8]" : "opacity-70"
+            active ? "text-[#03AAC7]" : "opacity-70"
           )}>
             {icon}
           </span>
@@ -213,7 +213,7 @@ const SidebarItem = React.forwardRef<HTMLDivElement, SidebarItemProps>(
           <>
             <span className="flex-1 truncate">{children}</span>
             {badge && (
-              <span className="px-1.5 py-0.5 text-[10px] font-medium bg-[#2A2A2E] text-[#9CA3AF] rounded">
+              <span className="px-1.5 py-0.5 text-[10px] font-medium bg-[#2B2F36] text-[#9CA3AF] rounded">
                 {badge}
               </span>
             )}
@@ -232,7 +232,7 @@ const SidebarDivider = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("h-px my-2 mx-3 bg-[#2A2A2E]", className)}
+    className={cn("h-px my-2 mx-3 bg-[#2B2F36]", className)}
     {...props}
   />
 ))
@@ -251,7 +251,7 @@ const SidebarToggle = React.forwardRef<HTMLButtonElement, SidebarToggleProps>(
         type="button"
         className={cn(
           "flex items-center justify-center w-8 h-8 rounded-lg",
-          "text-[#9CA3AF] hover:text-white hover:bg-[#1A1A1E]",
+          "text-[#9CA3AF] hover:text-white hover:bg-[#252629]",
           "transition-colors duration-150",
           className
         )}
@@ -282,7 +282,7 @@ const SidebarUser = ({ name, email, avatar, className }: SidebarUserProps) => {
 
   return (
     <div className={cn("flex items-center gap-3", className)}>
-      <div className="w-9 h-9 rounded-lg bg-[#1A1A1E] border border-[#2A2A2E] flex items-center justify-center overflow-hidden flex-shrink-0">
+      <div className="w-9 h-9 rounded-lg bg-[#252629] border border-[#2B2F36] flex items-center justify-center overflow-hidden flex-shrink-0">
         {avatar ? (
           <img src={avatar} alt={name} className="w-full h-full object-cover" />
         ) : (

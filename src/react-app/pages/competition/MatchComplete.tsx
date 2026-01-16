@@ -61,9 +61,9 @@ export default function MatchCompletePage() {
     if (loading) {
         return (
             <DashboardLayout>
-                <div className="min-h-screen bg-[#141416] flex items-center justify-center">
+                <div className="min-h-screen bg-[#1B1B1D] flex items-center justify-center">
                     <div className="text-center">
-                        <div className="w-12 h-12 border-4 border-[#00D9C8]/30 border-t-[#00D9C8] rounded-full animate-spin mx-auto mb-4" />
+                        <div className="w-12 h-12 border-4 border-[#03AAC7]/30 border-t-[#03AAC7] rounded-full animate-spin mx-auto mb-4" />
                         <p className="text-gray-400">Loading match results...</p>
                     </div>
                 </div>
@@ -74,12 +74,12 @@ export default function MatchCompletePage() {
     if (!matchData) {
         return (
             <DashboardLayout>
-                <div className="min-h-screen bg-[#141416] flex items-center justify-center">
+                <div className="min-h-screen bg-[#1B1B1D] flex items-center justify-center">
                     <div className="text-center">
                         <p className="text-gray-400 mb-4">Match not found</p>
                         <button
                             onClick={() => navigate('/competition')}
-                            className="text-[#00D9C8] hover:text-[#00D9C8]"
+                            className="text-[#03AAC7] hover:text-[#03AAC7]"
                         >
                             Back to Competition
                         </button>
@@ -124,11 +124,11 @@ export default function MatchCompletePage() {
     };
 
     const youWon = matchData.winner_id === userId;
-    const divisionColor = eloData ? getDivisionColor(eloData.division) : '#00D9C8';
+    const divisionColor = eloData ? getDivisionColor(eloData.division) : '#03AAC7';
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-[#141416] p-8">
+            <div className="min-h-screen bg-[#1B1B1D] p-8">
                 <div className="max-w-4xl mx-auto">
                     <h1 className="text-4xl font-bold mb-8 text-center">Match Complete</h1>
 
@@ -138,12 +138,12 @@ export default function MatchCompletePage() {
                         <motion.div
                             initial={{ opacity: 0, x: -50 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className={`bg-[#141416] border-2 rounded-2xl p-6 ${
+                            className={`bg-[#1B1B1D] border-2 rounded-2xl p-6 ${
                                 youWon ? 'border-green-500/50' : 'border-red-500/50'
                             }`}
                         >
                             <div className="flex items-center justify-between mb-4">
-                                <div className="w-16 h-16 bg-[#00D9C8]/20 rounded-full flex items-center justify-center text-2xl">
+                                <div className="w-16 h-16 bg-[#03AAC7]/20 rounded-full flex items-center justify-center text-2xl">
                                     {user?.displayName?.charAt(0) || user?.email?.charAt(0) || '👤'}
                                 </div>
                                 <div className="text-right">
@@ -194,7 +194,7 @@ export default function MatchCompletePage() {
                         <motion.div
                             initial={{ opacity: 0, x: 50 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="bg-[#141416] border-2 border-[#2A2A2E] rounded-2xl p-6"
+                            className="bg-[#1B1B1D] border-2 border-[#2B2F36] rounded-2xl p-6"
                         >
                             <div className="flex items-center justify-between mb-4">
                                 <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center text-2xl">
@@ -247,7 +247,7 @@ export default function MatchCompletePage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => navigate('/competition')}
-                            className="bg- from-[#00D9C8] to-[#00D9C8] hover:from-[#5A2DE4] hover:to-[#7B4CE6] text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2"
+                            className="bg- from-[#03AAC7] to-[#03AAC7] hover:from-[#5A2DE4] hover:to-[#7B4CE6] text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2"
                         >
                             <Trophy className="w-5 h-5" />
                             New Ranked Match
@@ -256,7 +256,7 @@ export default function MatchCompletePage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => navigate('/competition/play?type=practice')}
-                            className="bg-[#141416] border border-[#2A2A2E] hover:border-[#00D9C8]/50 text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2"
+                            className="bg-[#1B1B1D] border border-[#2B2F36] hover:border-[#03AAC7]/50 text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2"
                         >
                             <Wrench className="w-5 h-5" />
                             New Practice Match
@@ -268,7 +268,7 @@ export default function MatchCompletePage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="bg-[#141416] border border-[#2A2A2E] rounded-2xl p-6"
+                        className="bg-[#1B1B1D] border border-[#2B2F36] rounded-2xl p-6"
                     >
                         <h3 className="text-xl font-bold mb-4">Trade Analytics</h3>
                         <p className="text-gray-400 text-sm">Detailed trade analysis coming soon...</p>

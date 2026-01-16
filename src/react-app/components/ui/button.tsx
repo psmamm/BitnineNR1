@@ -6,40 +6,44 @@ import { cn } from "@/react-app/lib/utils"
  * Button Component - Bitget Style (2026)
  *
  * Colors:
- * - Primary: Teal #00D9C8 (dark text)
- * - Secondary: Transparent with #2A2A2E border
- * - Ghost: Transparent, hover #1A1A1E
+ * - Primary: WHITE (Bitget main CTA style)
+ * - Accent: Cyan #03AAC7 (for colored CTAs)
+ * - Secondary: Dark #252629
+ * - Ghost: Transparent, hover #252629
  * - Destructive: Red #F43F5E
  */
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9C8]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D0D0F] disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#03AAC7]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#151517] disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        // Primary - Bitget Teal (flat, not gradient)
-        default: "bg-[#00D9C8] text-[#0D0D0F] font-semibold hover:bg-[#00F5E1] hover:shadow-glow active:scale-[0.98]",
+        // Primary - WHITE (Bitget main CTA style)
+        default: "bg-white text-[#151517] font-medium hover:bg-[#F4F5F7] active:scale-[0.98]",
 
         // Destructive - Red
         destructive: "bg-[#F43F5E] text-white font-semibold hover:bg-[#FB7185] hover:shadow-glow-danger active:scale-[0.98]",
 
-        // Outline - Border only (like Bitget secondary)
-        outline: "border border-[#2A2A2E] bg-transparent text-white hover:bg-[#1A1A1E] hover:border-[#3A3A3E]",
+        // Outline - Border only
+        outline: "border border-[#2B2F36] bg-transparent text-white hover:bg-[#252629] hover:border-[#3A3E45]",
 
-        // Secondary - Same as outline for Bitget consistency
-        secondary: "border border-[#2A2A2E] bg-transparent text-white hover:bg-[#1A1A1E] hover:border-[#3A3A3E]",
+        // Secondary - Dark background (Bitget secondary style)
+        secondary: "bg-[#252629] text-white hover:bg-[#2B2F36]",
 
         // Ghost - No border, subtle hover
-        ghost: "text-white hover:bg-[#1A1A1E] hover:text-[#00D9C8]",
+        ghost: "text-white hover:bg-[#252629] hover:text-[#03AAC7]",
 
-        // Link style - Teal text
-        link: "text-[#00D9C8] underline-offset-4 hover:underline hover:text-[#00F5E1]",
+        // Link style - Cyan text
+        link: "text-[#03AAC7] underline-offset-4 hover:underline hover:text-[#26BFD4]",
 
-        // Success - Same as primary (teal)
-        success: "bg-[#00D9C8] text-[#0D0D0F] font-semibold hover:bg-[#00F5E1] hover:shadow-glow active:scale-[0.98]",
+        // Success/Accent - Cyan (for colored CTAs)
+        success: "bg-[#03AAC7] text-[#151517] font-semibold hover:bg-[#26BFD4] hover:shadow-glow active:scale-[0.98]",
 
-        // Premium - With glow effect
-        premium: "bg-[#00D9C8] text-[#0D0D0F] font-semibold shadow-glow hover:bg-[#00F5E1] hover:shadow-glow-lg active:scale-[0.98]",
+        // Premium - Cyan with glow effect
+        premium: "bg-[#03AAC7] text-[#151517] font-semibold shadow-glow hover:bg-[#26BFD4] hover:shadow-glow-lg active:scale-[0.98]",
+
+        // Accent - Cyan (alias for success)
+        accent: "bg-[#03AAC7] text-[#151517] font-semibold hover:bg-[#26BFD4] hover:shadow-glow active:scale-[0.98]",
       },
       size: {
         default: "h-10 px-5 py-2",

@@ -58,9 +58,9 @@ export const FRAGMENT_SHADER = `
   uniform float u_opacity;
 
   void main() {
-    // Bid color: Teal (#00D9C8) → Green (#2EAD65)
+    // Bid color: Teal (#03AAC7) → Green (#2EAD65)
     vec3 bidColor = mix(
-      vec3(0.0, 0.85, 0.78),  // #00D9C8
+      vec3(0.0, 0.85, 0.78),  // #03AAC7
       vec3(0.18, 0.68, 0.40), // #2EAD65
       v_intensity
     );

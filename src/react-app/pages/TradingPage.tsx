@@ -1,103 +1,100 @@
 /**
- * Professional Trading Terminal - Bitget Style Layout
- * Exact replica of Bitget's trading interface
+ * Professional Trading Terminal - Lighter DEX Integration
+ * Real data, no mocks. All symbols in USDC.
  */
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { Star, ChevronDown, Search, X, Loader2, LayoutGrid, Eye, EyeOff, GripVertical, Zap } from 'lucide-react';
-import { useBinanceMarkets } from '../hooks/useBinanceMarkets';
-import { useBinanceOrderbook } from '../hooks/useBinanceOrderbook';
+import { ChevronDown, Search, X, Loader2, Wallet, AlertCircle, CheckCircle2 } from 'lucide-react';
 import TopNavigation from '../components/TopNavigation';
 import { useWallet } from '../contexts/WalletContext';
+import { useLighter } from '../hooks/useLighter';
 import { LighterOnboarding } from '../components/lighter/LighterOnboarding';
-
-type ExchangeOption = 'bybit' | 'lighter';
 
 export type TradingType = 'spot' | 'margin' | 'futures';
 
-const MARKET_TABS = ['Favorites', 'Spot', 'Futures', 'Margin'] as const;
+// Lighter symbols (all USDC pairs)
+const LIGHTER_SYMBOLS = [
+  { symbol: 'BTC-USD', baseAsset: 'BTC', quoteAsset: 'USDC', tradingviewSymbol: 'BINANCE:BTCUSDT' },
+  { symbol: 'ETH-USD', baseAsset: 'ETH', quoteAsset: 'USDC', tradingviewSymbol: 'BINANCE:ETHUSDT' },
+  { symbol: 'SOL-USD', baseAsset: 'SOL', quoteAsset: 'USDC', tradingviewSymbol: 'BINANCE:SOLUSDT' },
+  { symbol: 'ARB-USD', baseAsset: 'ARB', quoteAsset: 'USDC', tradingviewSymbol: 'BINANCE:ARBUSDT' },
+  { symbol: 'DOGE-USD', baseAsset: 'DOGE', quoteAsset: 'USDC', tradingviewSymbol: 'BINANCE:DOGEUSDT' },
+  { symbol: 'AVAX-USD', baseAsset: 'AVAX', quoteAsset: 'USDC', tradingviewSymbol: 'BINANCE:AVAXUSDT' },
+  { symbol: 'LINK-USD', baseAsset: 'LINK', quoteAsset: 'USDC', tradingviewSymbol: 'BINANCE:LINKUSDT' },
+  { symbol: 'MATIC-USD', baseAsset: 'MATIC', quoteAsset: 'USDC', tradingviewSymbol: 'BINANCE:MATICUSDT' },
+];
 
 export default function TradingPage() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
 
-  const getTradingTypeFromPath = (): TradingType => {
-    const path = location.pathname;
-    if (path.includes('/trading/spot')) return 'spot';
-    if (path.includes('/trading/margin')) return 'margin';
-    if (path.includes('/trading/futures')) return 'futures';
-    return 'spot';
-  };
-
-  const tradingType: TradingType = getTradingTypeFromPath();
-  const { enhancedData, loading: marketsLoading, wsConnected } = useBinanceMarkets();
-
+  // Trading type from URL path (for future use)
+  void location.pathname; // Used by URL routing
   const urlSymbol = searchParams.get('symbol');
-  const [symbol, setSymbol] = useState(urlSymbol || 'BTCUSDT');
+  const [symbol, setSymbol] = useState(urlSymbol || 'BTC-USD');
   const [showSymbolSelector, setShowSymbolSelector] = useState(false);
   const [symbolSearch, setSymbolSearch] = useState('');
-  const [interval, setInterval] = useState('5');
-  const [favorites, setFavorites] = useState<string[]>(() => {
-    const saved = localStorage.getItem('tradingFavorites');
-    return saved ? JSON.parse(saved) : ['BTCUSDT', 'ETHUSDT', 'SOLUSDT'];
-  });
-  const [marketTab, setMarketTab] = useState<typeof MARKET_TABS[number]>('Spot');
-  const [activeBottomTab, setActiveBottomTab] = useState('positions');
-  const [orderType, setOrderType] = useState<'limit' | 'market' | 'conditional'>('limit');
-  const [side, setSide] = useState<'buy' | 'sell'>('buy');
-  const [marginMode, setMarginMode] = useState<'isolated' | 'cross'>('isolated');
-  const [leverage] = useState(15);
-  const [orderbookTab, setOrderbookTab] = useState<'orderbook' | 'trades'>('orderbook');
-  const [tradeTab, setTradeTab] = useState<'trade' | 'bots'>('trade');
-  const [selectedExchange, setSelectedExchange] = useState<ExchangeOption>('bybit');
+  const [interval, setInterval] = useState('30');
+
+  // Lighter Integration
+  const {
+    state: lighterState,
+    setSelectedSymbol,
+    placeOrder,
+    formatPrice,
+  } = useLighter(symbol);
+
+  useWallet(); // Initialize wallet context
   const [showLighterOnboarding, setShowLighterOnboarding] = useState(false);
 
-  const { lighter } = useWallet();
-
-  // Resizable & toggleable panels
-  const [showOrderbook, setShowOrderbook] = useState(true);
-  const [positionsHeight, setPositionsHeight] = useState(180);
-  const [isResizing, setIsResizing] = useState(false);
+  // Order form state
+  const [orderType, setOrderType] = useState<'limit' | 'market'>('limit');
+  const [marginMode, setMarginMode] = useState<'isolated' | 'cross'>('isolated');
+  const [leverage] = useState(10);
+  const [orderPrice, setOrderPrice] = useState('');
+  const [orderQuantity, setOrderQuantity] = useState('');
+  const [sliderValue, setSliderValue] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const symbolSelectorRef = useRef<HTMLDivElement>(null);
-  const resizeRef = useRef<HTMLDivElement>(null);
 
-  const currentPair = enhancedData[symbol];
-  const currentPrice = currentPair ? parseFloat(currentPair.lastPrice) : 0;
-  const priceChangePercent = currentPair ? parseFloat(currentPair.priceChangePercent) : 0;
-  const volume24h = currentPair ? parseFloat(currentPair.quoteVolume) : 0;
-  const high24h = currentPair ? parseFloat(currentPair.highPrice) : 0;
-  const low24h = currentPair ? parseFloat(currentPair.lowPrice) : 0;
+  // Get current symbol info
+  const currentSymbolInfo = useMemo(() => {
+    return LIGHTER_SYMBOLS.find(s => s.symbol === symbol) || LIGHTER_SYMBOLS[0];
+  }, [symbol]);
 
-  const { orderbook, connected: orderbookConnected } = useBinanceOrderbook({
-    symbol,
-    limit: 20,
-    type: tradingType === 'spot' ? 'spot' : 'futures'
-  });
+  // Filter symbols by search
+  const filteredSymbols = useMemo(() => {
+    if (!symbolSearch) return LIGHTER_SYMBOLS;
+    const search = symbolSearch.toLowerCase();
+    return LIGHTER_SYMBOLS.filter(s =>
+      s.symbol.toLowerCase().includes(search) ||
+      s.baseAsset.toLowerCase().includes(search)
+    );
+  }, [symbolSearch]);
 
-  const filteredPairs = useMemo(() => {
-    let pairs = Object.values(enhancedData);
-    pairs = pairs.filter(p => p.quoteAsset === 'USDT');
-    if (marketTab === 'Favorites') {
-      pairs = pairs.filter(p => favorites.includes(p.symbol));
-    }
-    if (symbolSearch) {
-      const search = symbolSearch.toLowerCase();
-      pairs = pairs.filter(p =>
-        p.symbol.toLowerCase().includes(search) ||
-        p.baseAsset.toLowerCase().includes(search)
-      );
-    }
-    pairs.sort((a, b) => parseFloat(b.quoteVolume || '0') - parseFloat(a.quoteVolume || '0'));
-    return pairs.slice(0, 100);
-  }, [enhancedData, symbolSearch, marketTab, favorites]);
+  // Orderbook data from Lighter
+  const orderbook = lighterState.orderbook;
+  const bids = orderbook?.bids || [];
+  const asks = orderbook?.asks || [];
+  const currentPrice = lighterState.currentPrice || 0;
 
-  useEffect(() => {
-    localStorage.setItem('tradingFavorites', JSON.stringify(favorites));
-  }, [favorites]);
+  // Max total for depth visualization
+  const maxTotal = useMemo(() => {
+    const allTotals = [...bids, ...asks].map(l => l.total);
+    return Math.max(...allTotals, 1);
+  }, [bids, asks]);
 
+  // Buy/Sell volume ratio
+  const buyVolume = useMemo(() => bids.reduce((sum, b) => sum + b.size, 0), [bids]);
+  const sellVolume = useMemo(() => asks.reduce((sum, a) => sum + a.size, 0), [asks]);
+  const totalVolume = buyVolume + sellVolume;
+  const buyPercent = totalVolume > 0 ? Math.round((buyVolume / totalVolume) * 100) : 50;
+
+  // Click outside handlers
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (symbolSelectorRef.current && !symbolSelectorRef.current.contains(e.target as Node)) {
@@ -108,35 +105,7 @@ export default function TradingPage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Resize handler for positions panel
-  const handleResizeMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsResizing(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isResizing) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const windowHeight = window.innerHeight;
-      const newHeight = windowHeight - e.clientY - 64; // 64 is TopNav height
-      setPositionsHeight(Math.max(100, Math.min(400, newHeight)));
-    };
-
-    const handleMouseUp = () => {
-      setIsResizing(false);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isResizing]);
-
-  // TradingView Widget
+  // TradingView Widget with Lighter symbol
   useEffect(() => {
     if (!chartContainerRef.current) return;
     const containerId = `tv-widget-${Date.now()}`;
@@ -157,7 +126,7 @@ export default function TradingPage() {
     script.async = true;
     script.innerHTML = JSON.stringify({
       autosize: true,
-      symbol: `BINANCE:${symbol}`,
+      symbol: currentSymbolInfo.tradingviewSymbol,
       interval: interval,
       timezone: "Etc/UTC",
       theme: "dark",
@@ -180,457 +149,409 @@ export default function TradingPage() {
         chartContainerRef.current.innerHTML = '';
       }
     };
-  }, [symbol, interval]);
+  }, [currentSymbolInfo.tradingviewSymbol, interval]);
 
-  const asks = orderbook.asks;
-  const bids = orderbook.bids;
-  const maxTotal = useMemo(() => {
-    const allTotals = [...asks, ...bids].map(l => parseFloat(l.total));
-    return Math.max(...allTotals, 1);
-  }, [asks, bids]);
-
+  // Handle symbol change
   const handleSymbolSelect = (newSymbol: string) => {
     setSymbol(newSymbol);
+    setSelectedSymbol(newSymbol);
     setShowSymbolSelector(false);
     setSymbolSearch('');
   };
 
-  const toggleFavorite = (sym: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setFavorites(prev =>
-      prev.includes(sym) ? prev.filter(s => s !== sym) : [...prev, sym]
-    );
-  };
-
-  const handleExchangeSelect = (exchange: ExchangeOption) => {
-    if (exchange === 'lighter' && !lighter.isConnected) {
+  // Handle order placement
+  const handlePlaceOrder = useCallback(async (side: 'buy' | 'sell') => {
+    if (!lighterState.isConnected) {
       setShowLighterOnboarding(true);
       return;
     }
-    setSelectedExchange(exchange);
+
+    const quantity = parseFloat(orderQuantity);
+    const price = orderType === 'market' ? undefined : parseFloat(orderPrice || String(currentPrice));
+
+    if (!quantity || quantity <= 0) {
+      setNotification({ message: 'Enter a valid quantity', type: 'error' });
+      setTimeout(() => setNotification(null), 3000);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await placeOrder({
+        symbol,
+        side,
+        type: orderType,
+        quantity,
+        price,
+        leverage,
+      });
+
+      const sideLabel = side === 'buy' ? 'Long' : 'Short';
+      setNotification({
+        message: `${sideLabel} ${quantity} ${currentSymbolInfo.baseAsset} @ ${orderType === 'market' ? 'Market' : formatPrice(price || 0)}`,
+        type: 'success'
+      });
+
+      setOrderQuantity('');
+      setSliderValue(0);
+    } catch (error) {
+      setNotification({
+        message: error instanceof Error ? error.message : 'Order failed',
+        type: 'error'
+      });
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => setNotification(null), 4000);
+    }
+  }, [lighterState.isConnected, orderQuantity, orderPrice, orderType, currentPrice, symbol, leverage, placeOrder, currentSymbolInfo.baseAsset, formatPrice]);
+
+  // Slider change
+  const handleSliderChange = (value: number) => {
+    setSliderValue(value);
+    const balance = lighterState.availableBalance || 0;
+    const maxQty = balance > 0 && currentPrice > 0 ? (balance * leverage * value / 100) / currentPrice : 0;
+    setOrderQuantity(maxQty > 0 ? maxQty.toFixed(6) : '');
   };
 
-  const formatVolume = (vol: number) => {
-    if (vol >= 1e9) return `${(vol / 1e9).toFixed(2)}B`;
-    if (vol >= 1e6) return `${(vol / 1e6).toFixed(2)}M`;
-    if (vol >= 1e3) return `${(vol / 1e3).toFixed(2)}K`;
-    return vol.toFixed(2);
-  };
-
-  const formatPrice = (p: number) => {
-    if (p >= 1000) return p.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  // Format helpers
+  const fmtPrice = (p: number) => {
+    if (p >= 1000) return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     if (p >= 1) return p.toFixed(2);
-    return p.toFixed(6);
+    return p.toFixed(4);
   };
 
-  const baseAsset = symbol.replace('USDT', '').replace('USDC', '');
+  const fmtVol = (v: number) => {
+    if (v >= 1e9) return `${(v / 1e9).toFixed(2)}B`;
+    if (v >= 1e6) return `${(v / 1e6).toFixed(2)}M`;
+    if (v >= 1e3) return `${(v / 1e3).toFixed(2)}K`;
+    return v.toFixed(2);
+  };
 
   return (
-    <div className="h-screen w-full bg-[#0b0e11] text-white flex flex-col overflow-hidden">
+    <div className="h-screen w-full bg-[#0b0e11] text-white flex flex-col overflow-hidden pt-16">
       <TopNavigation />
 
-      {/* Main Content - No scroll */}
-      <div className="flex-1 flex flex-col min-h-0">
+      {/* Symbol Bar */}
+      <div className="h-10 bg-[#0b0e11] border-b border-[#1e2329] flex items-center px-3 shrink-0">
+        {/* Symbol Selector */}
+        <div className="relative" ref={symbolSelectorRef}>
+          <button
+            className="flex items-center gap-2 hover:bg-[#1e2329] px-2 py-1 rounded"
+            onClick={() => setShowSymbolSelector(!showSymbolSelector)}
+          >
+            <span className="font-semibold text-sm">{symbol}</span>
+            <span className="text-[10px] text-[#848e9c]">Perp</span>
+            <ChevronDown className="w-3 h-3 text-[#848e9c]" />
+          </button>
 
-        {/* Symbol Header Bar */}
-        <div className="h-[52px] bg-[#161a1e] border-b border-[#2b2f36] flex items-center px-4 shrink-0">
-          <div className="relative" ref={symbolSelectorRef}>
-            <div
-              className="flex items-center gap-2 cursor-pointer hover:bg-[#1e2329] px-2 py-1 rounded transition-colors"
-              onClick={() => setShowSymbolSelector(!showSymbolSelector)}
-            >
-              <Star
-                className={`w-4 h-4 ${favorites.includes(symbol) ? 'text-[#00d9c8] fill-[#00d9c8]' : 'text-[#848e9c]'}`}
-                onClick={(e) => toggleFavorite(symbol, e)}
-              />
-              <span className="font-semibold text-base">{symbol}</span>
-              <span className="text-[10px] text-[#0ecb81] bg-[#0ecb81]/10 px-1.5 py-0.5 rounded">Perpetual</span>
-              <ChevronDown className={`w-4 h-4 transition-transform ${showSymbolSelector ? 'rotate-180' : ''}`} />
+          {showSymbolSelector && (
+            <div className="absolute top-full left-0 mt-1 w-64 bg-[#1e2329] border border-[#2b2f36] rounded shadow-xl z-50">
+              <div className="p-2 border-b border-[#2b2f36]">
+                <div className="flex items-center bg-[#0b0e11] rounded px-2 py-1">
+                  <Search className="w-3 h-3 text-[#848e9c]" />
+                  <input
+                    type="text"
+                    value={symbolSearch}
+                    onChange={(e) => setSymbolSearch(e.target.value)}
+                    placeholder="Search"
+                    className="flex-1 bg-transparent outline-none text-xs ml-2 placeholder-[#848e9c]"
+                    autoFocus
+                  />
+                  {symbolSearch && <X className="w-3 h-3 text-[#848e9c] cursor-pointer" onClick={() => setSymbolSearch('')} />}
+                </div>
+              </div>
+              <div className="max-h-60 overflow-y-auto">
+                {filteredSymbols.map((s) => (
+                  <button
+                    key={s.symbol}
+                    className={`w-full flex items-center justify-between px-3 py-2 hover:bg-[#2b2f36] text-left ${s.symbol === symbol ? 'bg-[#2b2f36]' : ''}`}
+                    onClick={() => handleSymbolSelect(s.symbol)}
+                  >
+                    <span className="text-xs font-medium">{s.baseAsset}/USDC</span>
+                    <span className="text-[10px] text-[#848e9c]">Perp</span>
+                  </button>
+                ))}
+              </div>
             </div>
+          )}
+        </div>
 
-            {showSymbolSelector && (
-              <div className="absolute top-full left-0 mt-1 w-[360px] bg-[#1e2329] border border-[#2b2f36] rounded-lg shadow-2xl z-50">
-                <div className="p-2 border-b border-[#2b2f36]">
-                  <div className="flex items-center bg-[#2b2f36] rounded px-2 py-1.5">
-                    <Search className="w-4 h-4 text-[#848e9c]" />
-                    <input
-                      type="text"
-                      value={symbolSearch}
-                      onChange={(e) => setSymbolSearch(e.target.value)}
-                      placeholder="Search"
-                      className="flex-1 bg-transparent outline-none text-sm ml-2 placeholder-[#848e9c]"
-                      autoFocus
-                    />
-                    {symbolSearch && <X className="w-4 h-4 text-[#848e9c] cursor-pointer" onClick={() => setSymbolSearch('')} />}
-                  </div>
-                </div>
-                <div className="flex gap-1 px-2 py-1.5 border-b border-[#2b2f36]">
-                  {MARKET_TABS.map((tab) => (
-                    <button key={tab} onClick={() => setMarketTab(tab)}
-                      className={`px-2 py-1 text-xs rounded ${marketTab === tab ? 'bg-[#2b2f36] text-white' : 'text-[#848e9c]'}`}>
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-                <div className="max-h-[300px] overflow-y-auto">
-                  {marketsLoading ? (
-                    <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 text-[#00d9c8] animate-spin" /></div>
-                  ) : filteredPairs.map((pair) => (
-                    <div key={pair.symbol}
-                      className={`flex items-center justify-between px-3 py-2 hover:bg-[#2b2f36] cursor-pointer ${pair.symbol === symbol ? 'bg-[#2b2f36]' : ''}`}
-                      onClick={() => handleSymbolSelect(pair.symbol)}>
-                      <div className="flex items-center gap-2">
-                        <Star className={`w-3 h-3 ${favorites.includes(pair.symbol) ? 'text-[#00d9c8] fill-[#00d9c8]' : 'text-[#848e9c]'}`}
-                          onClick={(e) => toggleFavorite(pair.symbol, e)} />
-                        <span className="text-sm">{pair.baseAsset}/USDT</span>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm font-mono">{formatPrice(parseFloat(pair.lastPrice || '0'))}</div>
-                        <div className={`text-xs ${parseFloat(pair.priceChangePercent || '0') >= 0 ? 'text-[#0ecb81]' : 'text-[#f6465d]'}`}>
-                          {parseFloat(pair.priceChangePercent || '0') >= 0 ? '+' : ''}{parseFloat(pair.priceChangePercent || '0').toFixed(2)}%
-                        </div>
-                      </div>
+        {/* Price */}
+        <div className="ml-4">
+          <span className={`text-lg font-semibold ${lighterState.ticker?.changePercent24h && lighterState.ticker.changePercent24h >= 0 ? 'text-[#0ecb81]' : 'text-[#f6465d]'}`}>
+            {fmtPrice(currentPrice)}
+          </span>
+        </div>
+
+        {/* Market Stats */}
+        <div className="ml-6 flex items-center gap-4 text-[10px]">
+          <div>
+            <span className="text-[#848e9c]">24h Change</span>
+            <div className={lighterState.ticker?.changePercent24h && lighterState.ticker.changePercent24h >= 0 ? 'text-[#0ecb81]' : 'text-[#f6465d]'}>
+              {lighterState.ticker?.changePercent24h?.toFixed(2) || '0.00'}%
+            </div>
+          </div>
+          <div>
+            <span className="text-[#848e9c]">24h High</span>
+            <div className="text-white">{fmtPrice(lighterState.ticker?.high24h || 0)}</div>
+          </div>
+          <div>
+            <span className="text-[#848e9c]">24h Low</span>
+            <div className="text-white">{fmtPrice(lighterState.ticker?.low24h || 0)}</div>
+          </div>
+          <div>
+            <span className="text-[#848e9c]">24h Vol</span>
+            <div className="text-white">{fmtVol(lighterState.ticker?.quoteVolume24h || 0)}</div>
+          </div>
+        </div>
+
+        {/* Lighter Connection Status */}
+        <div className="ml-auto flex items-center gap-2">
+          {lighterState.isConnected ? (
+            <span className="flex items-center gap-1 text-[10px] text-[#0ecb81]">
+              <span className="w-1.5 h-1.5 bg-[#0ecb81] rounded-full" />
+              Lighter
+            </span>
+          ) : (
+            <button
+              onClick={() => setShowLighterOnboarding(true)}
+              className="flex items-center gap-1 px-2 py-1 bg-[#0ecb81] hover:bg-[#1ed696] rounded text-[10px] text-black font-medium"
+            >
+              <Wallet className="w-3 h-3" />
+              Connect Lighter
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Main Layout */}
+      <div className="flex-1 flex min-h-0">
+        {/* Chart */}
+        <div className="flex-1 flex flex-col min-w-0 border-r border-[#1e2329]">
+          {/* Timeframes */}
+          <div className="h-7 bg-[#0b0e11] border-b border-[#1e2329] flex items-center px-2 text-[10px] shrink-0 gap-1">
+            {['1', '5', '15', '30', '60', '240', 'D'].map((tf) => {
+              const label = tf === '1' ? '1m' : tf === '5' ? '5m' : tf === '15' ? '15m' : tf === '30' ? '30m' : tf === '60' ? '1h' : tf === '240' ? '4h' : '1D';
+              return (
+                <button
+                  key={tf}
+                  onClick={() => setInterval(tf)}
+                  className={`px-2 py-0.5 rounded ${interval === tf ? 'bg-[#f0b90b]/20 text-[#f0b90b]' : 'text-[#848e9c] hover:text-white'}`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+          <div ref={chartContainerRef} className="flex-1 bg-[#0b0e11] min-h-0" />
+
+          {/* Positions/Orders */}
+          <div className="h-32 bg-[#0b0e11] border-t border-[#1e2329] flex flex-col shrink-0">
+            <div className="h-6 border-b border-[#1e2329] flex items-center px-2 text-[10px] gap-3">
+              <span className="text-white">Positions ({lighterState.positions.length})</span>
+              <span className="text-[#848e9c]">Orders ({lighterState.activeOrders.length})</span>
+            </div>
+            <div className="flex-1 flex items-center justify-center text-[#848e9c] text-xs">
+              {lighterState.positions.length === 0 && lighterState.activeOrders.length === 0 ? (
+                <span>No open positions or orders</span>
+              ) : (
+                <div className="w-full px-2 overflow-auto">
+                  {lighterState.positions.map((pos) => (
+                    <div key={pos.id} className="flex items-center justify-between py-1 text-[10px]">
+                      <span className={pos.side === 'long' ? 'text-[#0ecb81]' : 'text-[#f6465d]'}>{pos.symbol} {pos.side.toUpperCase()}</span>
+                      <span>{pos.size} @ {fmtPrice(pos.entryPrice)}</span>
+                      <span className={pos.unrealizedPnl >= 0 ? 'text-[#0ecb81]' : 'text-[#f6465d]'}>{pos.unrealizedPnl >= 0 ? '+' : ''}{pos.unrealizedPnl.toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-          </div>
-
-          <div className="ml-3 flex items-center gap-1">
-            <span className={`text-lg font-semibold ${priceChangePercent >= 0 ? 'text-[#0ecb81]' : 'text-[#f6465d]'}`}>
-              {formatPrice(currentPrice)}
-            </span>
-            <span className={`text-xs ${priceChangePercent >= 0 ? 'text-[#0ecb81]' : 'text-[#f6465d]'}`}>
-              {priceChangePercent >= 0 ? '+' : ''}{priceChangePercent.toFixed(2)}%
-            </span>
-          </div>
-
-          <div className="ml-4 flex items-center gap-4 text-xs text-[#848e9c]">
-            <span>Mark price <span className="text-white">{formatPrice(currentPrice)}</span></span>
-            <span>24h high <span className="text-white">{formatPrice(high24h)}</span></span>
-            <span>24h low <span className="text-white">{formatPrice(low24h)}</span></span>
-            <span>24h total <span className="text-white">{formatVolume(volume24h)}</span></span>
-          </div>
-
-          {/* Layout Controls */}
-          <div className="ml-auto flex items-center gap-2">
-            <button
-              onClick={() => setShowOrderbook(!showOrderbook)}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] transition-all duration-200 ${showOrderbook ? 'bg-[#00d9c8]/15 text-[#00d9c8] border border-[#00d9c8]/30' : 'bg-[#2b2f36] text-[#848e9c] hover:text-white hover:bg-[#363c45]'}`}
-            >
-              {showOrderbook ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-              <span className="hidden sm:inline font-medium">Orderbook</span>
-            </button>
-            <button className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-[11px] text-[#848e9c] hover:text-white transition-all duration-200 border border-transparent hover:border-[#484e57]">
-              <LayoutGrid className="w-3.5 h-3.5" />
-            </button>
-            {wsConnected && (
-              <span className="flex items-center gap-1.5 text-[10px] text-[#0ecb81] bg-[#0ecb81]/10 px-2 py-1 rounded-full">
-                <span className="w-1.5 h-1.5 bg-[#0ecb81] rounded-full animate-pulse shadow-sm shadow-[#0ecb81]" />
-                <span className="font-medium">Live</span>
-              </span>
-            )}
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Main Trading Grid */}
-        <div className="flex-1 flex min-h-0">
+        {/* Orderbook */}
+        <div className="w-44 flex flex-col bg-[#0b0e11] border-r border-[#1e2329] shrink-0">
+          <div className="h-6 border-b border-[#1e2329] flex items-center px-2 text-[10px] text-white font-medium">
+            Order Book
+          </div>
 
-          {/* Left: Chart + Positions */}
-          <div className="flex-1 flex flex-col min-w-0 border-r border-[#2b2f36]">
+          <div className="flex justify-between px-2 py-1 text-[9px] text-[#848e9c]">
+            <span>Price</span>
+            <span>Size</span>
+            <span>Total</span>
+          </div>
 
-            {/* Chart Section */}
-            <div className="flex-1 flex flex-col min-h-0">
-              {/* Single header row like Bitget */}
-              <div className="h-8 bg-[#161a1e] border-b border-[#2b2f36] flex items-center px-2 shrink-0 text-xs">
-                <span className="text-white font-medium mr-3">Chart</span>
-                <span className="text-[#848e9c] mr-3 cursor-pointer hover:text-white">About</span>
-                <span className="text-[#848e9c] mr-3 cursor-pointer hover:text-white">News</span>
-                <span className="text-[#848e9c] cursor-pointer hover:text-white">Trading data</span>
-              </div>
-
-              {/* Timeframes row */}
-              <div className="h-7 bg-[#161a1e] border-b border-[#2b2f36] flex items-center px-2 shrink-0 text-[11px]">
-                <span className="text-[#848e9c] mr-2">Time</span>
-                {['1s', '5m', '15m', '1h', '1D'].map((tf) => (
-                  <button key={tf} onClick={() => setInterval(tf === '1s' ? '1S' : tf === '5m' ? '5' : tf === '15m' ? '15' : tf === '1h' ? '60' : 'D')}
-                    className={`px-1.5 py-0.5 rounded mr-1 ${interval === (tf === '1s' ? '1S' : tf === '5m' ? '5' : tf === '15m' ? '15' : tf === '1h' ? '60' : 'D') ? 'bg-[#2b2f36] text-white' : 'text-[#848e9c] hover:text-white'}`}>
-                    {tf}
-                  </button>
-                ))}
-                <span className="ml-auto text-[#848e9c]">TradingView</span>
-              </div>
-
-              {/* Chart */}
-              <div ref={chartContainerRef} className="flex-1 bg-[#161a1e] min-h-0" />
+          <div className="flex-1 flex flex-col min-h-0 overflow-hidden text-[9px]">
+            {/* Asks */}
+            <div className="flex-1 flex flex-col justify-end overflow-hidden">
+              {asks.slice(0, 12).reverse().map((o, i) => (
+                <div key={`a${i}`} className="flex justify-between px-2 py-[1px] relative">
+                  <div className="absolute right-0 top-0 bottom-0 bg-[#f6465d]/10" style={{ width: `${(o.total / maxTotal) * 100}%` }} />
+                  <span className="text-[#f6465d] z-10 font-mono">{fmtPrice(o.price)}</span>
+                  <span className="z-10 font-mono">{o.size.toFixed(4)}</span>
+                  <span className="text-[#848e9c] z-10 font-mono">{o.total.toFixed(4)}</span>
+                </div>
+              ))}
             </div>
 
-            {/* Resize Handle */}
-            <div
-              ref={resizeRef}
-              onMouseDown={handleResizeMouseDown}
-              className={`h-1 bg-[#2b2f36] hover:bg-[#00d9c8] cursor-ns-resize transition-colors shrink-0 group flex items-center justify-center ${isResizing ? 'bg-[#00d9c8]' : ''}`}
+            {/* Spread */}
+            <div className="py-1 px-2 flex items-center justify-center border-y border-[#1e2329]">
+              <span className={`text-sm font-semibold ${lighterState.ticker?.changePercent24h && lighterState.ticker.changePercent24h >= 0 ? 'text-[#0ecb81]' : 'text-[#f6465d]'}`}>
+                {fmtPrice(currentPrice)}
+              </span>
+            </div>
+
+            {/* Bids */}
+            <div className="flex-1 overflow-hidden">
+              {bids.slice(0, 12).map((o, i) => (
+                <div key={`b${i}`} className="flex justify-between px-2 py-[1px] relative">
+                  <div className="absolute right-0 top-0 bottom-0 bg-[#0ecb81]/10" style={{ width: `${(o.total / maxTotal) * 100}%` }} />
+                  <span className="text-[#0ecb81] z-10 font-mono">{fmtPrice(o.price)}</span>
+                  <span className="z-10 font-mono">{o.size.toFixed(4)}</span>
+                  <span className="text-[#848e9c] z-10 font-mono">{o.total.toFixed(4)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Buy/Sell Ratio */}
+          <div className="h-5 border-t border-[#1e2329] flex items-center px-2">
+            <div className="flex-1 h-1 bg-[#1e2329] rounded overflow-hidden flex">
+              <div className="bg-[#0ecb81] h-full" style={{ width: `${buyPercent}%` }} />
+              <div className="bg-[#f6465d] h-full" style={{ width: `${100 - buyPercent}%` }} />
+            </div>
+            <span className="ml-2 text-[8px] text-[#848e9c]">{buyPercent}%</span>
+          </div>
+        </div>
+
+        {/* Trade Panel */}
+        <div className="w-48 flex flex-col bg-[#0b0e11] shrink-0">
+          {/* Margin & Leverage */}
+          <div className="px-2 py-1.5 border-b border-[#1e2329] flex items-center gap-1 text-[10px]">
+            <button
+              onClick={() => setMarginMode(marginMode === 'isolated' ? 'cross' : 'isolated')}
+              className="px-1.5 py-0.5 bg-[#1e2329] rounded text-white"
             >
-              <GripVertical className="w-3 h-3 text-[#848e9c] group-hover:text-white rotate-90 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-
-            {/* Positions Panel */}
-            <div style={{ height: positionsHeight }} className="bg-[#161a1e] flex flex-col shrink-0">
-              <div className="h-8 border-b border-[#2b2f36] flex items-center px-3 text-[11px] shrink-0 overflow-x-auto scrollbar-hide">
-                {['Positions (0)', 'Copy trades (0)', 'Trading bots (0)', 'Open orders (0)', 'Order history', 'Position history', 'Order details', 'Transaction history', 'Assets'].map((tab) => (
-                  <button key={tab} onClick={() => setActiveBottomTab(tab.toLowerCase().split(' ')[0])}
-                    className={`px-2 py-1.5 whitespace-nowrap transition-colors ${activeBottomTab === tab.toLowerCase().split(' ')[0] ? 'text-white border-b-2 border-[#00d9c8]' : 'text-[#848e9c] hover:text-white'}`}>
-                    {tab}
-                  </button>
-                ))}
-                <div className="ml-auto flex items-center gap-2 text-[#848e9c] text-[10px]">
-                  <label className="flex items-center gap-1 cursor-pointer hover:text-white">
-                    <input type="checkbox" className="w-3 h-3 rounded bg-[#2b2f36] border-[#363c45]" />
-                    <span>Current</span>
-                  </label>
-                  <button className="hover:text-white transition-colors">Close all</button>
-                </div>
-              </div>
-              <div className="flex-1 flex flex-col items-center justify-center text-center">
-                <div className="text-[#848e9c] text-[11px] mb-1">Available balance: <span className="text-white font-mono">0.00</span></div>
-                <div className="text-[#5a6068] text-[10px] mb-3 max-w-[300px]">Transfer funds to your futures account to get started</div>
-                <div className="flex gap-2">
-                  <button className="px-3 py-1.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-[10px] text-white transition-all duration-200 hover:scale-105 border border-transparent hover:border-[#484e57]">Deposit</button>
-                  <button className="px-3 py-1.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-[10px] text-white transition-all duration-200 hover:scale-105 border border-transparent hover:border-[#484e57]">Transfer</button>
-                  <button className="px-3 py-1.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-[10px] text-white transition-all duration-200 hover:scale-105 border border-transparent hover:border-[#484e57]">Demo</button>
-                  <button className="px-4 py-1.5 bg-gradient-to-r from-[#00d9c8] to-[#0ecb81] hover:from-[#00f5e1] hover:to-[#25e09b] rounded-lg text-[10px] text-black font-semibold transition-all duration-300 hover:scale-105 shadow-lg shadow-[#00d9c8]/20">Start Trading</button>
-                </div>
-              </div>
-            </div>
+              {marginMode === 'isolated' ? 'Isolated' : 'Cross'}
+            </button>
+            <button className="px-1.5 py-0.5 bg-[#1e2329] rounded text-[#f0b90b]">
+              {leverage}x
+            </button>
           </div>
 
-          {/* Middle: Orderbook */}
-          {showOrderbook && (
-          <div className="w-[180px] flex flex-col bg-[#161a1e] shrink-0 border-l border-[#2b2f36]">
-            <div className="h-8 border-b border-[#2b2f36] flex items-center px-2 text-xs shrink-0">
-              <button onClick={() => setOrderbookTab('orderbook')}
-                className={`mr-3 ${orderbookTab === 'orderbook' ? 'text-white' : 'text-[#848e9c]'}`}>Order book</button>
-              <button onClick={() => setOrderbookTab('trades')}
-                className={orderbookTab === 'trades' ? 'text-white' : 'text-[#848e9c]'}>Market trades</button>
-              {orderbookConnected && <span className="ml-auto w-1.5 h-1.5 bg-[#0ecb81] rounded-full" />}
-            </div>
-
-            <div className="flex justify-between px-2 py-1 text-[10px] text-[#848e9c] border-b border-[#2b2f36] shrink-0">
-              <span>Price</span>
-              <span>Quantity ({baseAsset})</span>
-              <span>Total ({baseAsset})</span>
-            </div>
-
-            <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-              {/* Asks */}
-              <div className="flex-1 flex flex-col justify-end overflow-hidden">
-                {asks.slice(0, 14).reverse().map((o, i) => (
-                  <div key={`a${i}`} className="flex justify-between px-2 py-[1px] text-[10px] relative">
-                    <div className="absolute left-0 top-0 bottom-0 bg-[#f6465d]/10" style={{ width: `${(parseFloat(o.total) / maxTotal) * 100}%` }} />
-                    <span className="text-[#f6465d] z-10 font-mono">{parseFloat(o.price).toFixed(1)}</span>
-                    <span className="z-10 font-mono text-[#eaecef]">{parseFloat(o.quantity).toFixed(4)}</span>
-                    <span className="text-[#848e9c] z-10 font-mono">{parseFloat(o.total).toFixed(4)}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Current Price */}
-              <div className="py-1 px-2 bg-[#1e2329] flex items-center gap-2 shrink-0">
-                <span className={`text-sm font-semibold ${priceChangePercent >= 0 ? 'text-[#0ecb81]' : 'text-[#f6465d]'}`}>
-                  {formatPrice(currentPrice)}
-                </span>
-                <span className="text-[10px] text-[#848e9c]">{formatPrice(currentPrice)}</span>
-              </div>
-
-              {/* Bids */}
-              <div className="flex-1 overflow-hidden">
-                {bids.slice(0, 14).map((o, i) => (
-                  <div key={`b${i}`} className="flex justify-between px-2 py-[1px] text-[10px] relative">
-                    <div className="absolute left-0 top-0 bottom-0 bg-[#0ecb81]/10" style={{ width: `${(parseFloat(o.total) / maxTotal) * 100}%` }} />
-                    <span className="text-[#0ecb81] z-10 font-mono">{parseFloat(o.price).toFixed(1)}</span>
-                    <span className="z-10 font-mono text-[#eaecef]">{parseFloat(o.quantity).toFixed(4)}</span>
-                    <span className="text-[#848e9c] z-10 font-mono">{parseFloat(o.total).toFixed(4)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+          {/* Order Type */}
+          <div className="px-2 py-1.5 border-b border-[#1e2329] flex items-center gap-2 text-[10px]">
+            <button onClick={() => setOrderType('limit')} className={orderType === 'limit' ? 'text-white' : 'text-[#848e9c]'}>Limit</button>
+            <button onClick={() => setOrderType('market')} className={orderType === 'market' ? 'text-white' : 'text-[#848e9c]'}>Market</button>
           </div>
-          )}
 
-          {/* Right: Trade Panel */}
-          <div className="w-[260px] flex flex-col bg-[#161a1e] border-l border-[#2b2f36] shrink-0">
-            {/* Trade/Bots tabs */}
-            <div className="h-9 border-b border-[#2b2f36] flex items-center px-3 text-xs shrink-0 gap-1">
-              <button onClick={() => setTradeTab('trade')}
-                className={`px-3 py-1.5 rounded-md font-semibold transition-all duration-200 ${tradeTab === 'trade' ? 'text-white bg-[#2b2f36]' : 'text-[#848e9c] hover:text-white'}`}>Trade</button>
-              <button onClick={() => setTradeTab('bots')}
-                className={`px-3 py-1.5 rounded-md font-medium transition-all duration-200 ${tradeTab === 'bots' ? 'text-white bg-[#2b2f36]' : 'text-[#848e9c] hover:text-white'}`}>Bots</button>
-            </div>
-
-            {/* Exchange Selector */}
-            <div className="px-3 py-3 border-b border-[#2b2f36] shrink-0">
-              <div className="flex items-center gap-1.5 bg-[#0b0e11] rounded-xl p-1 shadow-inner">
-                <button
-                  onClick={() => handleExchangeSelect('bybit')}
-                  className={`flex-1 py-2 px-4 rounded-lg text-xs font-semibold transition-all duration-300 ${
-                    selectedExchange === 'bybit'
-                      ? 'bg-[#2b2f36] text-white shadow-lg shadow-black/20'
-                      : 'text-[#848e9c] hover:text-white hover:bg-[#1e2329]'
-                  }`}
-                >
-                  Bybit
-                </button>
-                <button
-                  onClick={() => handleExchangeSelect('lighter')}
-                  className={`flex-1 py-2 px-4 rounded-lg text-xs font-semibold transition-all duration-300 flex items-center justify-center gap-1.5 ${
-                    selectedExchange === 'lighter'
-                      ? 'bg-gradient-to-r from-[#00d9c8]/25 to-[#0ecb81]/25 text-[#00d9c8] border border-[#00d9c8]/40 shadow-lg shadow-[#00d9c8]/10'
-                      : 'text-[#848e9c] hover:text-[#00d9c8] hover:bg-[#1e2329]'
-                  }`}
-                >
-                  <Zap className={`w-3.5 h-3.5 ${selectedExchange === 'lighter' ? 'animate-pulse' : ''}`} />
-                  Lighter
-                  {selectedExchange === 'lighter' && (
-                    <span className="text-[9px] bg-gradient-to-r from-[#0ecb81] to-[#00d9c8] text-black px-1.5 py-0.5 rounded-full font-bold ml-1 shadow-sm">
-                      0% FEES
-                    </span>
-                  )}
-                </button>
+          {/* Order Form */}
+          <div className="flex-1 overflow-auto px-2 py-1.5">
+            {/* Price */}
+            {orderType === 'limit' && (
+              <div className="mb-1.5">
+                <div className="text-[9px] text-[#848e9c] mb-0.5">Price (USDC)</div>
+                <input
+                  type="text"
+                  value={orderPrice || fmtPrice(currentPrice)}
+                  onChange={(e) => setOrderPrice(e.target.value)}
+                  className="w-full bg-[#1e2329] rounded px-2 py-1 text-[10px] text-white outline-none border border-[#2b2f36] focus:border-[#f0b90b]"
+                />
               </div>
-              {selectedExchange === 'lighter' && (
-                <div className="mt-2 text-[10px] text-[#0ecb81] flex items-center gap-1.5 bg-[#0ecb81]/5 px-2 py-1 rounded-md">
-                  <span className="w-2 h-2 bg-[#0ecb81] rounded-full animate-pulse shadow-sm shadow-[#0ecb81]" />
-                  Zero-fee trading on Arbitrum L2
-                </div>
-              )}
+            )}
+
+            {/* Quantity */}
+            <div className="mb-1.5">
+              <div className="text-[9px] text-[#848e9c] mb-0.5">Size ({currentSymbolInfo.baseAsset})</div>
+              <input
+                type="text"
+                value={orderQuantity}
+                onChange={(e) => setOrderQuantity(e.target.value)}
+                placeholder="0.00"
+                className="w-full bg-[#1e2329] rounded px-2 py-1 text-[10px] text-white outline-none border border-[#2b2f36] focus:border-[#f0b90b]"
+              />
             </div>
 
-            {/* Margin Mode & Leverage */}
-            <div className="px-3 py-2.5 border-b border-[#2b2f36] shrink-0">
-              <div className="flex items-center gap-2 text-xs">
-                <button onClick={() => setMarginMode(marginMode === 'isolated' ? 'cross' : 'isolated')}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-white font-medium transition-all duration-200 border border-transparent hover:border-[#484e57]">
-                  {marginMode === 'isolated' ? 'Isolated' : 'Cross'}
-                  <ChevronDown className="w-3 h-3 text-[#848e9c]" />
-                </button>
-                <button className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-[#00d9c8]/10 to-[#00d9c8]/5 hover:from-[#00d9c8]/20 hover:to-[#00d9c8]/10 rounded-lg text-[#00d9c8] font-bold transition-all duration-200 border border-[#00d9c8]/20">
-                  {leverage}.00x
-                </button>
-                <button className="ml-auto px-3 py-1.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-[#848e9c] hover:text-white transition-all duration-200 border border-transparent hover:border-[#484e57]">$</button>
+            {/* Slider */}
+            <div className="mb-2">
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={sliderValue}
+                onChange={(e) => handleSliderChange(parseInt(e.target.value))}
+                className="w-full h-1 bg-[#2b2f36] rounded appearance-none cursor-pointer"
+                style={{ background: `linear-gradient(to right, #f0b90b 0%, #f0b90b ${sliderValue}%, #2b2f36 ${sliderValue}%, #2b2f36 100%)` }}
+              />
+              <div className="flex justify-between text-[8px] text-[#848e9c] mt-0.5">
+                <span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>
               </div>
             </div>
 
-            {/* Order Type Tabs */}
-            <div className="px-3 py-2.5 border-b border-[#2b2f36] shrink-0">
-              <div className="flex items-center gap-1 text-xs bg-[#0b0e11] rounded-lg p-0.5">
-                <button onClick={() => setOrderType('limit')}
-                  className={`px-3 py-1.5 rounded-md transition-all duration-200 ${orderType === 'limit' ? 'bg-[#2b2f36] text-white font-semibold shadow-sm' : 'text-[#848e9c] hover:text-white'}`}>Limit</button>
-                <button onClick={() => setOrderType('market')}
-                  className={`px-3 py-1.5 rounded-md transition-all duration-200 ${orderType === 'market' ? 'bg-[#2b2f36] text-white font-semibold shadow-sm' : 'text-[#848e9c] hover:text-white'}`}>Market</button>
-                <button onClick={() => setOrderType('conditional')}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-all duration-200 ${orderType === 'conditional' ? 'bg-[#2b2f36] text-white font-semibold shadow-sm' : 'text-[#848e9c] hover:text-white'}`}>
-                  Conditional <ChevronDown className="w-3 h-3" />
-                </button>
-              </div>
-            </div>
-
-            {/* Order Form */}
-            <div className="flex-1 overflow-auto px-3 py-3">
-              <div className="text-xs text-[#848e9c] mb-3 flex justify-between items-center">
+            {/* Balance Info */}
+            <div className="mb-2 text-[9px] text-[#848e9c]">
+              <div className="flex justify-between">
                 <span>Available</span>
-                <span className="text-white font-medium">0.0000 USDT</span>
-              </div>
-
-              {/* Price Input */}
-              <div className="mb-3">
-                <div className="flex items-center justify-between text-xs text-[#848e9c] mb-1.5">
-                  <span>Price</span>
-                  <span className="text-[#00d9c8] cursor-pointer hover:text-[#00f5e1] transition-colors font-medium">Last</span>
-                </div>
-                <div className="flex items-center bg-[#1e2329] hover:bg-[#252930] rounded-lg px-3 py-2.5 border border-[#2b2f36] hover:border-[#363c45] transition-all duration-200 focus-within:border-[#00d9c8]/50">
-                  <input type="text" value={formatPrice(currentPrice)} className="flex-1 bg-transparent text-white text-sm outline-none font-mono" />
-                </div>
-              </div>
-
-              {/* Quantity Input */}
-              <div className="mb-3">
-                <div className="flex items-center justify-between text-xs text-[#848e9c] mb-1.5">
-                  <span>Quantity</span>
-                  <span className="text-white font-medium">{baseAsset}</span>
-                </div>
-                <div className="flex items-center bg-[#1e2329] hover:bg-[#252930] rounded-lg px-3 py-2.5 border border-[#2b2f36] hover:border-[#363c45] transition-all duration-200 focus-within:border-[#00d9c8]/50">
-                  <input type="text" value="0.000000" className="flex-1 bg-transparent text-white text-sm outline-none font-mono" />
-                </div>
-              </div>
-
-              {/* Slider */}
-              <div className="mb-4 relative">
-                <div className="flex justify-center items-center py-2">
-                  <div className="w-3 h-3 bg-[#00d9c8] rounded-full shadow-lg shadow-[#00d9c8]/30 cursor-pointer hover:scale-110 transition-transform" />
-                </div>
-                <input type="range" min="0" max="100" className="w-full h-1 bg-[#2b2f36] rounded-full appearance-none cursor-pointer accent-[#00d9c8]" style={{ background: 'linear-gradient(to right, #00d9c8 50%, #2b2f36 50%)' }} />
-              </div>
-
-              {/* Buy/Sell Buttons */}
-              <div className="flex gap-3 mb-4">
-                <button onClick={() => setSide('buy')}
-                  className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
-                    side === 'buy' 
-                      ? 'bg-gradient-to-r from-[#0ecb81] to-[#00d9c8] text-white shadow-lg shadow-[#0ecb81]/25 scale-[1.02]' 
-                      : 'bg-[#0ecb81]/15 text-[#0ecb81] hover:bg-[#0ecb81]/25 border border-[#0ecb81]/20'
-                  }`}>
-                  Open long
-                </button>
-                <button onClick={() => setSide('sell')}
-                  className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
-                    side === 'sell' 
-                      ? 'bg-gradient-to-r from-[#f6465d] to-[#ff6b6b] text-white shadow-lg shadow-[#f6465d]/25 scale-[1.02]' 
-                      : 'bg-[#f6465d]/15 text-[#f6465d] hover:bg-[#f6465d]/25 border border-[#f6465d]/20'
-                  }`}>
-                  Open short
-                </button>
-              </div>
-
-              {/* Max Info */}
-              <div className="flex justify-between text-[11px] text-[#5a6068] mb-2 px-1">
-                <span>Max: 0.0000 {baseAsset}</span>
-                <span>Max: 0.0000 {baseAsset}</span>
-              </div>
-
-              {/* Account Info */}
-              <div className="mt-4 pt-4 border-t border-[#2b2f36]/50">
-                <div className="flex items-center justify-between text-xs mb-3">
-                  <span className="text-[#848e9c] font-medium">Unified Trading Account</span>
-                  <span className="text-[#00d9c8] text-[10px] font-medium cursor-pointer hover:text-[#00f5e1] transition-colors">P&L</span>
-                </div>
-                <div className="text-xs text-[#848e9c] space-y-2 bg-[#0b0e11]/50 rounded-lg p-2.5">
-                  <div className="flex justify-between items-center"><span>Margin Mode</span><span className="text-white font-medium">Isolated Margin</span></div>
-                  <div className="flex justify-between items-center"><span>Margin Balance</span><span className="text-white font-mono">0.0000 USDT</span></div>
-                  <div className="flex justify-between items-center"><span>Available Balance</span><span className="text-white font-mono">0.0000 USDT</span></div>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-2 mt-4">
-                <button className="flex-1 py-2.5 bg-gradient-to-r from-[#00d9c8] to-[#0ecb81] hover:from-[#00f5e1] hover:to-[#25e09b] rounded-lg text-black text-xs font-semibold transition-all duration-300 shadow-lg shadow-[#00d9c8]/20 hover:shadow-[#00d9c8]/30 hover:scale-[1.02]">Deposit</button>
-                <button className="flex-1 py-2.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-white text-xs font-medium transition-all duration-200 border border-transparent hover:border-[#484e57]">Convert</button>
-                <button className="flex-1 py-2.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-white text-xs font-medium transition-all duration-200 border border-transparent hover:border-[#484e57]">Transfer</button>
+                <span className="text-white">{lighterState.availableBalance.toFixed(2)} USDC</span>
               </div>
             </div>
+
+            {/* Long/Short Buttons */}
+            <div className="flex gap-1 mb-2">
+              <button
+                onClick={() => handlePlaceOrder('buy')}
+                disabled={isSubmitting}
+                className="flex-1 py-1.5 bg-[#0ecb81] hover:bg-[#1ed696] rounded text-[10px] text-white font-medium disabled:opacity-50"
+              >
+                {isSubmitting ? <Loader2 className="w-3 h-3 mx-auto animate-spin" /> : 'Long'}
+              </button>
+              <button
+                onClick={() => handlePlaceOrder('sell')}
+                disabled={isSubmitting}
+                className="flex-1 py-1.5 bg-[#f6465d] hover:bg-[#ff5f73] rounded text-[10px] text-white font-medium disabled:opacity-50"
+              >
+                {isSubmitting ? <Loader2 className="w-3 h-3 mx-auto animate-spin" /> : 'Short'}
+              </button>
+            </div>
+
+            {/* Account Info */}
+            {lighterState.isConnected && (
+              <div className="border-t border-[#1e2329] pt-1.5 text-[9px]">
+                <div className="flex justify-between text-[#848e9c]">
+                  <span>Margin Used</span>
+                  <span className="text-white">{lighterState.marginUsed.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-[#848e9c]">
+                  <span>Unrealized P&L</span>
+                  <span className={lighterState.unrealizedPnl >= 0 ? 'text-[#0ecb81]' : 'text-[#f6465d]'}>
+                    {lighterState.unrealizedPnl >= 0 ? '+' : ''}{lighterState.unrealizedPnl.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Notification */}
+      {notification && (
+        <div className={`fixed bottom-4 right-4 z-50 flex items-center gap-2 px-3 py-2 rounded shadow-xl border ${
+          notification.type === 'success'
+            ? 'bg-[#0ecb81]/20 border-[#0ecb81]/50 text-[#0ecb81]'
+            : 'bg-[#f6465d]/20 border-[#f6465d]/50 text-[#f6465d]'
+        }`}>
+          {notification.type === 'success' ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+          <span className="text-xs">{notification.message}</span>
+        </div>
+      )}
 
       {/* Lighter Onboarding Modal */}
       {showLighterOnboarding && (
         <LighterOnboarding
           isOpen={showLighterOnboarding}
           onClose={() => setShowLighterOnboarding(false)}
-          onSuccess={() => {
-            setShowLighterOnboarding(false);
-            setSelectedExchange('lighter');
-          }}
+          onSuccess={() => setShowLighterOnboarding(false)}
         />
       )}
     </div>

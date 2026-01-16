@@ -162,7 +162,7 @@ export default function BitcoinHalvingPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-[#141416] rounded-xl p-8 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+          className="bg-[#1B1B1D] rounded-xl p-8 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
         >
           <div className="text-center space-y-6">
             <div className="flex items-center justify-center space-x-4 mb-4">
@@ -192,7 +192,7 @@ export default function BitcoinHalvingPage() {
             </div>
 
             {/* Countdown Timer */}
-            <div className="bg-[#141416]/50 rounded-xl p-8 border border-white/10">
+            <div className="bg-[#1B1B1D]/50 rounded-xl p-8 border border-white/10">
               <h2 className="text-2xl font-bold text-white mb-6">Countdown to Next Halving</h2>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
@@ -271,7 +271,7 @@ export default function BitcoinHalvingPage() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-[#141416] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+            className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
           >
             <div className="flex items-center space-x-3 mb-6">
               <Coins className="w-6 h-6 text-[#6B7280]" />
@@ -280,7 +280,7 @@ export default function BitcoinHalvingPage() {
 
             <div className="space-y-6">
               {/* Price */}
-              <div className="bg-[#141416]/30 rounded-xl p-4">
+              <div className="bg-[#1B1B1D]/30 rounded-xl p-4">
                 <div className="text-[#7F8C8D] text-sm mb-1">Live Price</div>
                 <div className="flex items-baseline space-x-3">
                   <span className="text-3xl font-bold text-white">
@@ -299,13 +299,13 @@ export default function BitcoinHalvingPage() {
 
               {/* Market Stats */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-[#141416]/30 rounded-xl p-4">
+                <div className="bg-[#1B1B1D]/30 rounded-xl p-4">
                   <div className="text-[#7F8C8D] text-sm">Market Cap</div>
                   <div className="text-lg font-bold text-white">
                     ${bitcoinData ? (bitcoinData.bitcoin.usd_market_cap / 1e12).toFixed(2) : '...'}T
                   </div>
                 </div>
-                <div className="bg-[#141416]/30 rounded-xl p-4">
+                <div className="bg-[#1B1B1D]/30 rounded-xl p-4">
                   <div className="text-[#7F8C8D] text-sm">24h Volume</div>
                   <div className="text-lg font-bold text-white">
                     ${bitcoinData ? (bitcoinData.bitcoin.usd_24h_vol / 1e9).toFixed(2) : '...'}B
@@ -314,12 +314,12 @@ export default function BitcoinHalvingPage() {
               </div>
 
               {/* Supply Info */}
-              <div className="bg-[#141416]/30 rounded-xl p-4">
+              <div className="bg-[#1B1B1D]/30 rounded-xl p-4">
                 <div className="text-[#7F8C8D] text-sm mb-2">Circulating Supply</div>
                 <div className="text-lg font-bold text-white mb-3">
                   {miningData ? (miningData.circulation / 1e8).toFixed(0) : '...'} BTC
                 </div>
-                <div className="w-full bg-[#141416] rounded-full h-2">
+                <div className="w-full bg-[#1B1B1D] rounded-full h-2">
                   <div 
                     className="bg-[#6A3DF4] h-2 rounded-full transition-all duration-1000"
                     style={{ 
@@ -340,7 +340,7 @@ export default function BitcoinHalvingPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-[#141416] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+            className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
           >
             <div className="flex items-center space-x-3 mb-6">
               <Hash className="w-6 h-6 text-[#6B7280]" />
@@ -348,14 +348,14 @@ export default function BitcoinHalvingPage() {
             </div>
 
             <div className="space-y-4">
-              <div className="bg-[#141416]/30 rounded-xl p-4">
+              <div className="bg-[#1B1B1D]/30 rounded-xl p-4">
                 <div className="text-[#7F8C8D] text-sm">Current Block Height</div>
                 <div className="text-2xl font-bold text-white">
                   {miningData ? miningData.blocks.toLocaleString() : '...'}
                 </div>
               </div>
 
-              <div className="bg-[#141416]/30 rounded-xl p-4">
+              <div className="bg-[#1B1B1D]/30 rounded-xl p-4">
                 <div className="text-[#7F8C8D] text-sm">Blocks Until Halving</div>
                 <div className="text-2xl font-bold text-[#F7931A]">
                   {halvingData ? halvingData.blocksUntilHalving.toLocaleString() : '...'}
@@ -363,14 +363,14 @@ export default function BitcoinHalvingPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-[#141416]/30 rounded-xl p-4">
+                <div className="bg-[#1B1B1D]/30 rounded-xl p-4">
                   <div className="text-[#7F8C8D] text-sm">Avg Block Time</div>
                   <div className="text-lg font-bold text-white">
                     {miningData && miningData.avgBlockTime ? 
                       `${Math.round(miningData.avgBlockTime / 60)} min` : '10 min'}
                   </div>
                 </div>
-                <div className="bg-[#141416]/30 rounded-xl p-4">
+                <div className="bg-[#1B1B1D]/30 rounded-xl p-4">
                   <div className="text-[#7F8C8D] text-sm">Difficulty</div>
                   <div className="text-lg font-bold text-white">
                     {miningData ? (miningData.difficulty / 1e12).toFixed(2) : '...'}T
@@ -378,7 +378,7 @@ export default function BitcoinHalvingPage() {
                 </div>
               </div>
 
-              <div className="bg-[#141416]/30 rounded-xl p-4">
+              <div className="bg-[#1B1B1D]/30 rounded-xl p-4">
                 <div className="text-[#7F8C8D] text-sm">Network Hashrate</div>
                 <div className="text-xl font-bold text-white">
                   {miningData ? (miningData.hashrate_24h / 1e18).toFixed(0) : '...'} EH/s
@@ -393,7 +393,7 @@ export default function BitcoinHalvingPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-[#141416] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+          className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
         >
           <div className="flex items-center space-x-3 mb-6">
             <History className="w-6 h-6 text-[#6B7280]" />
@@ -407,7 +407,7 @@ export default function BitcoinHalvingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * index }}
-                className="bg-[#141416]/30 rounded-xl p-6 border border-white/5"
+                className="bg-[#1B1B1D]/30 rounded-xl p-6 border border-white/5"
               >
                 <div className="text-[#6A3DF4] font-semibold mb-3">
                   Halving {index + 1}
@@ -462,7 +462,7 @@ export default function BitcoinHalvingPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-[#141416] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+          className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
         >
           <div className="flex items-center space-x-3 mb-6">
             <Newspaper className="w-6 h-6 text-[#6B7280]" />
@@ -476,7 +476,7 @@ export default function BitcoinHalvingPage() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.05 * index }}
-                className="bg-[#141416]/30 rounded-xl p-4 border border-white/5 hover:border-[#6A3DF4]/20 transition-colors cursor-pointer group"
+                className="bg-[#1B1B1D]/30 rounded-xl p-4 border border-white/5 hover:border-[#6A3DF4]/20 transition-colors cursor-pointer group"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

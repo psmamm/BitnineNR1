@@ -60,7 +60,7 @@ export default function DepositPage() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate(-1)}
-              className="p-2 hover:bg-[#1A1A1E] rounded-lg transition-colors"
+              className="p-2 hover:bg-[#252629] rounded-lg transition-colors"
             >
               <ArrowLeft className="w-5 h-5 text-[#9CA3AF]" />
             </button>
@@ -71,12 +71,12 @@ export default function DepositPage() {
           </div>
 
           {/* Deposit Method Tabs */}
-          <div className="flex items-center gap-1 bg-[#141416] rounded-xl border border-[#2A2A2E] p-1">
+          <div className="flex items-center gap-1 bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-1">
             <button
               onClick={() => setDepositMethod('crypto')}
               className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-colors ${
                 depositMethod === 'crypto'
-                  ? 'bg-[#1A1A1E] text-white'
+                  ? 'bg-[#252629] text-white'
                   : 'text-[#9CA3AF] hover:text-white'
               }`}
             >
@@ -87,7 +87,7 @@ export default function DepositPage() {
               onClick={() => setDepositMethod('fiat')}
               className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-colors ${
                 depositMethod === 'fiat'
-                  ? 'bg-[#1A1A1E] text-white'
+                  ? 'bg-[#252629] text-white'
                   : 'text-[#9CA3AF] hover:text-white'
               }`}
             >
@@ -102,10 +102,10 @@ export default function DepositPage() {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5"
+                className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5"
               >
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-6 h-6 rounded-full bg-[#00D9C8] flex items-center justify-center text-xs font-bold text-[#0D0D0F]">
+                  <div className="w-6 h-6 rounded-full bg-[#03AAC7] flex items-center justify-center text-xs font-bold text-[#151517]">
                     1
                   </div>
                   <h3 className="text-white font-medium">Select Coin</h3>
@@ -119,7 +119,7 @@ export default function DepositPage() {
                     placeholder="Search coin..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white placeholder-[#6B7280] focus:border-[#00D9C8] focus:outline-none transition-colors text-sm"
+                    className="w-full pl-10 pr-4 py-2.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors text-sm"
                   />
                 </div>
 
@@ -134,11 +134,11 @@ export default function DepositPage() {
                       }}
                       className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
                         selectedCoin === coin.symbol
-                          ? 'bg-[#00D9C8]/10 border border-[#00D9C8]'
-                          : 'bg-[#1A1A1E] border border-transparent hover:border-[#2A2A2E]'
+                          ? 'bg-[#03AAC7]/10 border border-[#03AAC7]'
+                          : 'bg-[#252629] border border-transparent hover:border-[#2B2F36]'
                       }`}
                     >
-                      <div className="w-8 h-8 rounded-full bg-[#2A2A2E] flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-full bg-[#2B2F36] flex items-center justify-center">
                         <span className="text-xs font-bold text-white">{coin.symbol.slice(0, 2)}</span>
                       </div>
                       <div className="text-left">
@@ -155,10 +155,10 @@ export default function DepositPage() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5"
+                  className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5"
                 >
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-6 h-6 rounded-full bg-[#00D9C8] flex items-center justify-center text-xs font-bold text-[#0D0D0F]">
+                    <div className="w-6 h-6 rounded-full bg-[#03AAC7] flex items-center justify-center text-xs font-bold text-[#151517]">
                       2
                     </div>
                     <h3 className="text-white font-medium">Select Network</h3>
@@ -171,8 +171,8 @@ export default function DepositPage() {
                         onClick={() => setSelectedNetwork(network)}
                         className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
                           selectedNetwork === network
-                            ? 'bg-[#00D9C8]/10 border border-[#00D9C8]'
-                            : 'bg-[#1A1A1E] border border-transparent hover:border-[#2A2A2E]'
+                            ? 'bg-[#03AAC7]/10 border border-[#03AAC7]'
+                            : 'bg-[#252629] border border-transparent hover:border-[#2B2F36]'
                         }`}
                       >
                         <div className="flex items-center gap-3">
@@ -193,10 +193,10 @@ export default function DepositPage() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5"
+                  className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5"
                 >
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-6 h-6 rounded-full bg-[#00D9C8] flex items-center justify-center text-xs font-bold text-[#0D0D0F]">
+                    <div className="w-6 h-6 rounded-full bg-[#03AAC7] flex items-center justify-center text-xs font-bold text-[#151517]">
                       3
                     </div>
                     <h3 className="text-white font-medium">Deposit Address</h3>
@@ -215,7 +215,7 @@ export default function DepositPage() {
                   {/* QR Code */}
                   <div className="flex justify-center mb-4">
                     <div className="w-40 h-40 bg-white rounded-xl flex items-center justify-center">
-                      <QrCode className="w-32 h-32 text-[#0D0D0F]" />
+                      <QrCode className="w-32 h-32 text-[#151517]" />
                     </div>
                   </div>
 
@@ -227,11 +227,11 @@ export default function DepositPage() {
                         type="text"
                         value={depositAddress || ''}
                         readOnly
-                        className="flex-1 px-4 py-3 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm font-mono"
+                        className="flex-1 px-4 py-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm font-mono"
                       />
                       <button
                         onClick={copyAddress}
-                        className="px-4 py-3 bg-[#00D9C8] hover:bg-[#00F5E1] text-[#0D0D0F] rounded-lg font-medium transition-colors"
+                        className="px-4 py-3 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-medium transition-colors"
                       >
                         {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                       </button>
@@ -261,16 +261,16 @@ export default function DepositPage() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-6 text-center"
+              className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-6 text-center"
             >
-              <div className="w-16 h-16 bg-[#00D9C8]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CreditCard className="w-8 h-8 text-[#00D9C8]" />
+              <div className="w-16 h-16 bg-[#03AAC7]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CreditCard className="w-8 h-8 text-[#03AAC7]" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">Buy Crypto with Card</h3>
               <p className="text-[#9CA3AF] text-sm mb-6 max-w-sm mx-auto">
                 Purchase crypto directly with your credit or debit card through our trusted partners.
               </p>
-              <button className="px-6 py-3 bg-[#00D9C8] hover:bg-[#00F5E1] text-[#0D0D0F] rounded-lg font-semibold transition-colors">
+              <button className="px-6 py-3 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-semibold transition-colors">
                 Coming Soon
               </button>
             </motion.div>

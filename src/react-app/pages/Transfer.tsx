@@ -65,7 +65,7 @@ export default function TransferPage() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate(-1)}
-              className="p-2 hover:bg-[#1A1A1E] rounded-lg transition-colors"
+              className="p-2 hover:bg-[#252629] rounded-lg transition-colors"
             >
               <ArrowLeft className="w-5 h-5 text-[#9CA3AF]" />
             </button>
@@ -79,7 +79,7 @@ export default function TransferPage() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 space-y-6"
+            className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5 space-y-6"
           >
             {/* From/To Selection */}
             <div className="space-y-4">
@@ -88,7 +88,7 @@ export default function TransferPage() {
                 <label className="text-[#6B7280] text-xs mb-2 block">From</label>
                 <button
                   onClick={() => setShowFromDropdown(!showFromDropdown)}
-                  className="w-full flex items-center justify-between p-3 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg hover:border-[#3A3A3E] transition-colors"
+                  className="w-full flex items-center justify-between p-3 bg-[#252629] border border-[#2B2F36] rounded-lg hover:border-[#3A3E45] transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <Wallet className="w-5 h-5 text-[#9CA3AF]" />
@@ -97,7 +97,7 @@ export default function TransferPage() {
                   <ChevronDown className="w-4 h-4 text-[#6B7280]" />
                 </button>
                 {showFromDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-[#141416] border border-[#2A2A2E] rounded-lg shadow-xl z-10">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-[#1B1B1D] border border-[#2B2F36] rounded-lg shadow-xl z-10">
                     {accounts.filter(a => a.id !== toAccount).map((account) => (
                       <button
                         key={account.id}
@@ -105,13 +105,13 @@ export default function TransferPage() {
                           setFromAccount(account.id);
                           setShowFromDropdown(false);
                         }}
-                        className={`w-full flex items-center justify-between p-3 hover:bg-[#1A1A1E] transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                          fromAccount === account.id ? 'bg-[#1A1A1E]' : ''
+                        className={`w-full flex items-center justify-between p-3 hover:bg-[#252629] transition-colors first:rounded-t-lg last:rounded-b-lg ${
+                          fromAccount === account.id ? 'bg-[#252629]' : ''
                         }`}
                       >
                         <span className="text-white">{account.name}</span>
                         {fromAccount === account.id && (
-                          <CheckCircle2 className="w-4 h-4 text-[#00D9C8]" />
+                          <CheckCircle2 className="w-4 h-4 text-[#03AAC7]" />
                         )}
                       </button>
                     ))}
@@ -123,9 +123,9 @@ export default function TransferPage() {
               <div className="flex justify-center">
                 <button
                   onClick={swapAccounts}
-                  className="p-2 bg-[#1A1A1E] hover:bg-[#222226] rounded-lg transition-colors"
+                  className="p-2 bg-[#252629] hover:bg-[#222226] rounded-lg transition-colors"
                 >
-                  <ArrowDownUp className="w-5 h-5 text-[#00D9C8]" />
+                  <ArrowDownUp className="w-5 h-5 text-[#03AAC7]" />
                 </button>
               </div>
 
@@ -134,7 +134,7 @@ export default function TransferPage() {
                 <label className="text-[#6B7280] text-xs mb-2 block">To</label>
                 <button
                   onClick={() => setShowToDropdown(!showToDropdown)}
-                  className="w-full flex items-center justify-between p-3 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg hover:border-[#3A3A3E] transition-colors"
+                  className="w-full flex items-center justify-between p-3 bg-[#252629] border border-[#2B2F36] rounded-lg hover:border-[#3A3E45] transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <Wallet className="w-5 h-5 text-[#9CA3AF]" />
@@ -143,7 +143,7 @@ export default function TransferPage() {
                   <ChevronDown className="w-4 h-4 text-[#6B7280]" />
                 </button>
                 {showToDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-[#141416] border border-[#2A2A2E] rounded-lg shadow-xl z-10">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-[#1B1B1D] border border-[#2B2F36] rounded-lg shadow-xl z-10">
                     {accounts.filter(a => a.id !== fromAccount).map((account) => (
                       <button
                         key={account.id}
@@ -151,13 +151,13 @@ export default function TransferPage() {
                           setToAccount(account.id);
                           setShowToDropdown(false);
                         }}
-                        className={`w-full flex items-center justify-between p-3 hover:bg-[#1A1A1E] transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                          toAccount === account.id ? 'bg-[#1A1A1E]' : ''
+                        className={`w-full flex items-center justify-between p-3 hover:bg-[#252629] transition-colors first:rounded-t-lg last:rounded-b-lg ${
+                          toAccount === account.id ? 'bg-[#252629]' : ''
                         }`}
                       >
                         <span className="text-white">{account.name}</span>
                         {toAccount === account.id && (
-                          <CheckCircle2 className="w-4 h-4 text-[#00D9C8]" />
+                          <CheckCircle2 className="w-4 h-4 text-[#03AAC7]" />
                         )}
                       </button>
                     ))}
@@ -167,7 +167,7 @@ export default function TransferPage() {
             </div>
 
             {/* Divider */}
-            <div className="border-t border-[#2A2A2E]" />
+            <div className="border-t border-[#2B2F36]" />
 
             {/* Coin Selection */}
             <div>
@@ -181,7 +181,7 @@ export default function TransferPage() {
                   placeholder="Search coin..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white placeholder-[#6B7280] focus:border-[#00D9C8] focus:outline-none transition-colors text-sm"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors text-sm"
                 />
               </div>
 
@@ -193,12 +193,12 @@ export default function TransferPage() {
                     onClick={() => setSelectedCoin(coin.symbol)}
                     className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
                       selectedCoin === coin.symbol
-                        ? 'bg-[#00D9C8]/10 border border-[#00D9C8]'
-                        : 'bg-[#1A1A1E] border border-transparent hover:border-[#2A2A2E]'
+                        ? 'bg-[#03AAC7]/10 border border-[#03AAC7]'
+                        : 'bg-[#252629] border border-transparent hover:border-[#2B2F36]'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#2A2A2E] flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-full bg-[#2B2F36] flex items-center justify-center">
                         <span className="text-xs font-bold text-white">{coin.symbol.slice(0, 2)}</span>
                       </div>
                       <div className="text-left">
@@ -220,7 +220,7 @@ export default function TransferPage() {
             {/* Amount Input */}
             {selectedCoin && (
               <>
-                <div className="border-t border-[#2A2A2E]" />
+                <div className="border-t border-[#2B2F36]" />
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
@@ -235,11 +235,11 @@ export default function TransferPage() {
                       placeholder="0.00"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
-                      className="w-full px-4 py-3 pr-20 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white placeholder-[#6B7280] focus:border-[#00D9C8] focus:outline-none transition-colors text-sm"
+                      className="w-full px-4 py-3 pr-20 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors text-sm"
                     />
                     <button
                       onClick={() => setAmount(String(getAvailableBalance()))}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#00D9C8] text-sm font-medium hover:text-[#00F5E1]"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#03AAC7] text-sm font-medium hover:text-[#26BFD4]"
                     >
                       MAX
                     </button>
@@ -249,7 +249,7 @@ export default function TransferPage() {
             )}
 
             {/* Info Box */}
-            <div className="bg-[#1A1A1E] rounded-lg p-4">
+            <div className="bg-[#252629] rounded-lg p-4">
               <p className="text-[#9CA3AF] text-sm">
                 Internal transfers between accounts are instant and free. No fees apply.
               </p>
@@ -258,7 +258,7 @@ export default function TransferPage() {
             {/* Submit Button */}
             <button
               disabled={!selectedCoin || !amount || parseFloat(amount) <= 0}
-              className="w-full py-3 bg-[#00D9C8] hover:bg-[#00F5E1] text-[#0D0D0F] rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Transfer
             </button>

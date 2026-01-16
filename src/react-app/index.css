@@ -3,6 +3,9 @@
    "Professional Trading Platform - Minimal, Clean, Trusted"
    ============================================================================ */
 
+/* DM Sans - Bitget Pulse Font Alternative */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
@@ -39,43 +42,43 @@
      BITGET DARK MODE - The Main Theme
      ============================================================================ */
   .dark {
-    /* Background: #0D0D0F */
-    --background: 240 8% 4%;
+    /* Background: #151517 (Bitget: rgb(21,21,23)) */
+    --background: 240 5% 9%;
     --foreground: 0 0% 100%;
 
-    /* Card: #141416 */
-    --card: 240 6% 8%;
+    /* Card: #1B1B1D (Bitget: rgb(27,27,29)) */
+    --card: 240 4% 11%;
     --card-foreground: 0 0% 100%;
 
-    /* Popover: #141416 */
-    --popover: 240 6% 8%;
+    /* Popover: #1B1B1D */
+    --popover: 240 4% 11%;
     --popover-foreground: 0 0% 100%;
 
-    /* Primary: TEAL #00D9C8 */
-    --primary: 174 100% 43%;
-    --primary-foreground: 240 8% 4%;
+    /* Primary: CYAN #03AAC7 (Bitget: rgb(3,170,199)) */
+    --primary: 189 97% 40%;
+    --primary-foreground: 240 5% 9%;
 
-    /* Secondary: #1A1A1E */
-    --secondary: 240 6% 11%;
+    /* Secondary: #252629 (Bitget: rgb(37,38,41)) */
+    --secondary: 225 5% 15%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Muted: #2A2A2E */
-    --muted: 240 5% 17%;
+    /* Muted: #2B2F36 */
+    --muted: 218 11% 19%;
     --muted-foreground: 220 9% 66%;
 
-    /* Accent: TEAL #00D9C8 */
-    --accent: 174 100% 43%;
-    --accent-foreground: 240 8% 4%;
+    /* Accent: CYAN #03AAC7 */
+    --accent: 189 97% 40%;
+    --accent-foreground: 240 5% 9%;
 
     /* Destructive: #F43F5E */
     --destructive: 350 89% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Border: #2A2A2E */
-    --border: 240 5% 17%;
-    --input: 240 6% 11%;
-    /* Ring: TEAL */
-    --ring: 174 100% 43%;
+    /* Border: #2B2F36 */
+    --border: 218 11% 19%;
+    --input: 225 5% 15%;
+    /* Ring: CYAN */
+    --ring: 189 97% 40%;
   }
 }
 
@@ -91,9 +94,9 @@
     @apply bg-background text-foreground antialiased;
   }
 
-  /* Focus states - Teal glow (Bitget style) */
+  /* Focus states - Cyan glow (Bitget style) */
   *:focus-visible {
-    @apply outline-none ring-2 ring-[#00D9C8]/50 ring-offset-2 ring-offset-background;
+    @apply outline-none ring-2 ring-[#03AAC7]/50 ring-offset-2 ring-offset-background;
   }
 }
 
@@ -113,7 +116,7 @@ body {
   min-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'DM Sans', 'Arial', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
@@ -124,12 +127,12 @@ body {
 /* Bitget Dark Mode Background */
 html.dark,
 html.dark body {
-  background-color: #0D0D0F;
+  background-color: #151517;
   color: #FFFFFF;
 }
 
 html.dark #root {
-  background-color: #0D0D0F;
+  background-color: #151517;
 }
 
 /* Light mode */
@@ -165,21 +168,21 @@ main {
    ============================================================================ */
 :root {
   /* Bitget Dark Backgrounds */
-  --bitget-bg-base: #0D0D0F;
-  --bitget-bg-card: #141416;
-  --bitget-bg-surface: #1A1A1E;
-  --bitget-bg-hover: #222226;
-  --bitget-border: #2A2A2E;
-  --bitget-border-hover: #3A3A3E;
+  --bitget-bg-base: #151517;
+  --bitget-bg-card: #1B1B1D;
+  --bitget-bg-surface: #252629;
+  --bitget-bg-hover: #2B2F36;
+  --bitget-border: #2B2F36;
+  --bitget-border-hover: #3A3E45;
 
-  /* Primary Accent - TEAL */
-  --bitget-accent: #00D9C8;
-  --bitget-accent-hover: #00F5E1;
-  --bitget-accent-muted: rgba(0, 217, 200, 0.1);
-  --bitget-accent-glow: rgba(0, 217, 200, 0.3);
+  /* Primary Accent - CYAN */
+  --bitget-accent: #03AAC7;
+  --bitget-accent-hover: #26BFD4;
+  --bitget-accent-muted: rgba(3, 170, 199, 0.1);
+  --bitget-accent-glow: rgba(3, 170, 199, 0.3);
 
   /* Profit/Loss - Same as Bitget */
-  --bitget-profit: #00D9C8;
+  --bitget-profit: #03AAC7;
   --bitget-loss: #F43F5E;
 
   /* Danger */
@@ -199,14 +202,14 @@ main {
   --bitget-text-disabled: #4B5563;
 
   /* Terminal Theme (updated to Bitget style) */
-  --terminal-bg-primary: #0D0D0F;
-  --terminal-bg-panel: #141416;
-  --terminal-border: #2A2A2E;
+  --terminal-bg-primary: #151517;
+  --terminal-bg-panel: #1B1B1D;
+  --terminal-border: #2B2F36;
   --terminal-text-primary: #FFFFFF;
   --terminal-text-muted: #9CA3AF;
-  --terminal-bid: #00D9C8;
+  --terminal-bid: #03AAC7;
   --terminal-ask: #F43F5E;
-  --terminal-accent: #00D9C8;
+  --terminal-accent: #03AAC7;
 
   /* Typography */
   --terminal-font-size: 11px;
@@ -243,20 +246,20 @@ main {
 
   /* Bitget card style */
   .card-bitget {
-    background: #141416;
-    border: 1px solid #2A2A2E;
+    background: #1B1B1D;
+    border: 1px solid #2B2F36;
     border-radius: 12px;
     transition: all 200ms ease;
   }
 
   .card-bitget:hover {
-    border-color: #3A3A3E;
+    border-color: #3A3E45;
   }
 
   /* Card with gradient (promo cards) */
   .card-promo {
-    background: linear-gradient(135deg, #1A1A1E 0%, #141416 100%);
-    border: 1px solid #2A2A2E;
+    background: linear-gradient(135deg, #252629 0%, #1B1B1D 100%);
+    border: 1px solid #2B2F36;
     border-radius: 16px;
     position: relative;
     overflow: hidden;
@@ -269,45 +272,45 @@ main {
     right: 0;
     width: 100px;
     height: 100px;
-    background: radial-gradient(circle, rgba(0, 217, 200, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(3, 170, 199, 0.1) 0%, transparent 70%);
     pointer-events: none;
   }
 
-  /* Glow effects - TEAL */
+  /* Glow effects - CYAN */
   .glow-primary {
-    box-shadow: 0 0 20px rgba(0, 217, 200, 0.3);
+    box-shadow: 0 0 20px rgba(3, 170, 199, 0.3);
   }
 
   .glow-success {
-    box-shadow: 0 0 20px rgba(0, 217, 200, 0.3);
+    box-shadow: 0 0 20px rgba(3, 170, 199, 0.3);
   }
 
   .glow-danger {
     box-shadow: 0 0 20px rgba(244, 63, 94, 0.3);
   }
 
-  /* Text glow - TEAL */
+  /* Text glow - CYAN */
   .text-glow-primary {
-    text-shadow: 0 0 20px rgba(0, 217, 200, 0.5);
+    text-shadow: 0 0 20px rgba(3, 170, 199, 0.5);
   }
 
   .text-glow-success {
-    text-shadow: 0 0 20px rgba(0, 217, 200, 0.5);
+    text-shadow: 0 0 20px rgba(3, 170, 199, 0.5);
   }
 
   .text-glow-danger {
     text-shadow: 0 0 20px rgba(244, 63, 94, 0.5);
   }
 
-  /* Gradient text - TEAL */
+  /* Gradient text - CYAN */
   .text-gradient-primary {
-    background: linear-gradient(135deg, #00D9C8 0%, #00B8A9 100%);
+    background: linear-gradient(135deg, #03AAC7 0%, #028BA3 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  /* Border gradient - TEAL */
+  /* Border gradient - CYAN */
   .border-gradient {
     position: relative;
     border: none;
@@ -319,7 +322,7 @@ main {
     inset: 0;
     padding: 1px;
     border-radius: inherit;
-    background: linear-gradient(135deg, rgba(0, 217, 200, 0.5), rgba(0, 184, 169, 0.2));
+    background: linear-gradient(135deg, rgba(3, 170, 199, 0.5), rgba(2, 139, 163, 0.2));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
@@ -341,7 +344,7 @@ main {
 
   /* Subtle glow background (for promo cards) */
   .bg-glow-teal {
-    background-image: radial-gradient(circle at top right, rgba(0, 217, 200, 0.1) 0%, transparent 50%);
+    background-image: radial-gradient(circle at top right, rgba(3, 170, 199, 0.1) 0%, transparent 50%);
   }
 
   /* Noise texture overlay */
@@ -364,39 +367,57 @@ main {
    COMPONENT STYLES
    ============================================================================ */
 
-/* Bitget Buttons */
+/* Bitget Buttons - WHITE Primary (Bitget Style) */
 .btn-primary {
-  background: #00D9C8;
-  color: #0D0D0F;
-  border-radius: 8px;
-  padding: 12px 24px;
-  font-weight: 600;
+  background: #FFFFFF;
+  color: #151517;
+  border-radius: 12px;
+  padding: 15px 24px;
+  font-weight: 500;
   border: none;
-  transition: all 200ms ease;
+  transition: all 100ms ease;
 }
 
 .btn-primary:hover {
-  background: #00F5E1;
-  box-shadow: 0 0 20px rgba(0, 217, 200, 0.3);
+  background: #F4F5F7;
 }
 
 .btn-primary:active {
   transform: scale(0.98);
 }
 
+/* Accent button (Cyan - for colored CTAs) */
+.btn-accent {
+  background: #03AAC7;
+  color: #151517;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  border: none;
+  transition: all 100ms ease;
+}
+
+.btn-accent:hover {
+  background: #26BFD4;
+  box-shadow: 0 0 20px rgba(3, 170, 199, 0.3);
+}
+
+.btn-accent:active {
+  transform: scale(0.98);
+}
+
 .btn-secondary {
-  background: transparent;
-  border: 1px solid #2A2A2E;
+  background: #252629;
+  border: none;
   color: #FFFFFF;
   border-radius: 8px;
   padding: 12px 24px;
   font-weight: 500;
-  transition: all 200ms ease;
+  transition: all 100ms ease;
 }
 
 .btn-secondary:hover {
-  background: #1A1A1E;
-  border-color: #3A3A3E;
+  background: #2B2F36;
 }
 
 .btn-ghost {
@@ -406,11 +427,11 @@ main {
   padding: 12px 24px;
   font-weight: 500;
   border-radius: 8px;
-  transition: all 150ms ease;
+  transition: all 100ms ease;
 }
 
 .btn-ghost:hover {
-  background: #1A1A1E;
+  background: #252629;
   color: #FFFFFF;
 }
 
@@ -421,7 +442,7 @@ main {
   padding: 12px 24px;
   font-weight: 600;
   border: none;
-  transition: all 200ms ease;
+  transition: all 100ms ease;
 }
 
 .btn-danger:hover {
@@ -431,16 +452,16 @@ main {
 
 /* Bitget Inputs */
 .input-bitget {
-  background: #1A1A1E;
-  border: 1px solid #2A2A2E;
+  background: #252629;
+  border: 1px solid #2B2F36;
   border-radius: 8px;
   padding: 12px 16px;
   color: #FFFFFF;
-  transition: all 200ms ease;
+  transition: all 100ms ease;
 }
 
 .input-bitget:focus {
-  border-color: #00D9C8;
+  border-color: #03AAC7;
   outline: none;
 }
 
@@ -453,18 +474,18 @@ main {
   padding: 8px 12px;
   border-radius: 8px;
   color: #9CA3AF;
-  transition: all 150ms ease;
+  transition: all 100ms ease;
   font-weight: 500;
 }
 
 .nav-item:hover {
-  background: #141416;
+  background: #1B1B1D;
   color: #FFFFFF;
 }
 
 .nav-item.active {
-  background: #141416;
-  color: #00D9C8;
+  background: #1B1B1D;
+  color: #03AAC7;
 }
 
 /* Bitget Sidebar Item */
@@ -476,17 +497,17 @@ main {
   color: #9CA3AF;
   border-radius: 8px;
   margin: 4px 8px;
-  transition: all 150ms ease;
+  transition: all 100ms ease;
 }
 
 .sidebar-item:hover {
-  background: #141416;
+  background: #1B1B1D;
   color: #FFFFFF;
 }
 
 .sidebar-item.active {
-  background: #141416;
-  color: #00D9C8;
+  background: #1B1B1D;
+  color: #03AAC7;
 }
 
 .sidebar-item .icon {
@@ -504,8 +525,8 @@ main {
 }
 
 .terminal-panel {
-  background: #141416;
-  border: 1px solid #2A2A2E;
+  background: #1B1B1D;
+  border: 1px solid #2B2F36;
   border-radius: 12px;
 }
 
@@ -535,11 +556,11 @@ main {
 }
 
 .orderbook-row:hover {
-  background: #1A1A1E;
+  background: #252629;
 }
 
 .orderbook-bid {
-  background: linear-gradient(90deg, rgba(0, 217, 200, 0.1) 0%, transparent 100%);
+  background: linear-gradient(90deg, rgba(3, 170, 199, 0.1) 0%, transparent 100%);
 }
 
 .orderbook-ask {
@@ -548,7 +569,7 @@ main {
 
 /* P&L Display - Bitget */
 .pnl-positive {
-  color: #00D9C8;
+  color: #03AAC7;
 }
 
 .pnl-negative {
@@ -563,34 +584,34 @@ main {
 .skeleton {
   background: linear-gradient(
     90deg,
-    #1A1A1E 0%,
-    #222226 50%,
-    #1A1A1E 100%
+    #252629 0%,
+    #2B2F36 50%,
+    #252629 100%
   );
   background-size: 200% 100%;
   animation: shimmer 2s linear infinite;
   border-radius: 8px;
 }
 
-/* Spinner with glow - TEAL */
+/* Spinner with glow - CYAN */
 .spinner-glow {
-  border: 2px solid rgba(0, 217, 200, 0.3);
-  border-top-color: #00D9C8;
+  border: 2px solid rgba(3, 170, 199, 0.3);
+  border-top-color: #03AAC7;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
-/* Progress bar - TEAL */
+/* Progress bar - CYAN */
 .progress-bar {
   height: 6px;
-  background: #2A2A2E;
+  background: #2B2F36;
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-bar-fill {
   height: 100%;
-  background: #00D9C8;
+  background: #03AAC7;
   border-radius: 4px;
   transition: width 300ms ease;
 }
@@ -636,17 +657,17 @@ html {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #1A1A1E;
+  background: #252629;
   border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #2A2A2E;
+  background: #2B2F36;
   border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #3A3A3E;
+  background: #3A3E45;
 }
 
 /* Hide scrollbar but keep functionality */

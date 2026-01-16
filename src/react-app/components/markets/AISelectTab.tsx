@@ -73,7 +73,7 @@ export default function AISelectTab() {
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
     >
-      <div className="bg-[#141416] rounded-xl p-4 border border-white/10">
+      <div className="bg-[#1B1B1D] rounded-xl p-4 border border-white/10">
         <div className="flex items-center space-x-3 mb-6">
           <div className="w-12 h-12 bg-[#6A3DF4]/10 rounded-xl flex items-center justify-center">
             <Brain className="w-6 h-6 text-[#6A3DF4]" />
@@ -91,7 +91,7 @@ export default function AISelectTab() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-[#141416] rounded-xl p-4 border border-white/10 hover:bg-white/5 transition-all"
+              className="bg-[#1B1B1D] rounded-xl p-4 border border-white/10 hover:bg-white/5 transition-all"
             >
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -136,7 +136,7 @@ export default function AISelectTab() {
           ))}
         </div>
 
-        <div className="mt-6 p-4 bg-[#141416] rounded-xl border border-white/10">
+        <div className="mt-6 p-4 bg-[#1B1B1D] rounded-xl border border-white/10">
           <p className="text-sm text-[#7F8C8D]">
             AI reports are updated hourly. This feature uses advanced machine learning models to analyze market data,
             technical indicators, and community sentiment.

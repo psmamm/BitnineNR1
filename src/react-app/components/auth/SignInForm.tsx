@@ -132,7 +132,7 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
 
   const cardContent = (
     <div className="space-y-3 text-center">
-      <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/5 border border-[#2A2A2E] text-[11px] uppercase tracking-[0.2em] text-gray-400">
+      <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/5 border border-[#2B2F36] text-[11px] uppercase tracking-[0.2em] text-gray-400">
         Welcome back
       </div>
       <h2 className="text-3xl font-extrabold text-white">Sign in to your account</h2>
@@ -164,12 +164,12 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
                 required
                 aria-invalid={emailTouched && !isEmailValid}
                 aria-describedby={emailTouched && !isEmailValid ? "email-error" : undefined}
-                className={`w-full rounded-xl border bg-[#141416]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${
+                className={`w-full rounded-xl border bg-[#1B1B1D]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${
                   emailTouched
                     ? isEmailValid
-                      ? 'border-[#00D9C8]/50 focus:ring-[#00D9C8]/50 focus:border-[#00D9C8]/50'
+                      ? 'border-[#03AAC7]/50 focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50'
                       : 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
-                    : 'border-[#2A2A2E] focus:ring-[#00D9C8]/50 focus:border-[#00D9C8]/50'
+                    : 'border-[#2B2F36] focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50'
                 }`}
                 placeholder="you@example.com"
                 value={email}
@@ -179,7 +179,7 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
               {emailTouched && (
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                   {isEmailValid ? (
-                    <CheckCircle className="w-4 h-4 text-[#00D9C8]" />
+                    <CheckCircle className="w-4 h-4 text-[#03AAC7]" />
                   ) : (
                     <AlertCircle className="w-4 h-4 text-red-400" />
                   )}
@@ -196,7 +196,7 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
               <label htmlFor="password" className="text-[#AAB0C0] font-medium">
                 Password
               </label>
-              <Link to="/forgot-password" className="text-[#00D9C8] hover:text-[#00F5E1] transition-colors">
+              <Link to="/forgot-password" className="text-[#03AAC7] hover:text-[#26BFD4] transition-colors">
                 Forgot your password?
               </Link>
             </div>
@@ -207,7 +207,7 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
                 required
-                className="w-full rounded-xl border border-[#2A2A2E] bg-[#141416]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00D9C8]/50 focus:border-[#00D9C8]/50 transition-all"
+                className="w-full rounded-xl border border-[#2B2F36] bg-[#1B1B1D]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50 transition-all"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -239,7 +239,7 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
             />
             <label
               htmlFor="remember-me"
-              className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-md border-2 border-white/20 bg-white/5 transition-all duration-200 hover:border-[#00D9C8]/50 hover:bg-[#00D9C8]/10 peer-checked:border-[#00D9C8] peer-checked:bg-[#00D9C8] peer-focus-visible:ring-2 peer-focus-visible:ring-[#00D9C8]/50 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#141416]"
+              className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-md border-2 border-white/20 bg-white/5 transition-all duration-200 hover:border-[#03AAC7]/50 hover:bg-[#03AAC7]/10 peer-checked:border-[#03AAC7] peer-checked:bg-[#03AAC7] peer-focus-visible:ring-2 peer-focus-visible:ring-[#03AAC7]/50 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#1B1B1D]"
             >
               <svg
                 className="h-3 w-3 text-white opacity-0 transition-opacity duration-200 peer-checked:opacity-100"
@@ -263,7 +263,7 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
             type="submit"
             variant="default"
             disabled={loading}
-            className="w-full bg-[#00D9C8] hover:bg-[#00F5E1] shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)]"
+            className="w-full bg-[#03AAC7] hover:bg-[#26BFD4] shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)]"
           >
             {loading ? (
               <>
@@ -277,10 +277,10 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[#2A2A2E]" />
+              <div className="w-full border-t border-[#2B2F36]" />
             </div>
             <div className="relative flex justify-center text-xs uppercase tracking-[0.15em] text-gray-500">
-              <span className="bg-[#141416] px-3">or</span>
+              <span className="bg-[#1B1B1D] px-3">or</span>
             </div>
           </div>
 
@@ -289,7 +289,7 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
             variant="outline"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full bg-[#141416]/50 border-[#2A2A2E] hover:bg-white/5 hover:border-white/20"
+            className="w-full bg-[#1B1B1D]/50 border-[#2B2F36] hover:bg-white/5 hover:border-white/20"
           >
             {loading ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -303,7 +303,7 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
 
       <div className="text-center text-sm text-[#7F8C8D]">
         Don't have an account?{' '}
-        <Link to="/signup" className="text-[#00D9C8] hover:text-[#00F5E1] transition-colors font-medium">
+        <Link to="/signup" className="text-[#03AAC7] hover:text-[#26BFD4] transition-colors font-medium">
           Sign up
         </Link>
       </div>
@@ -320,7 +320,7 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
   }
 
   return (
-    <div className="relative bg-[#141416] rounded-2xl border border-[#2A2A2E] shadow-[0_4px_20px_rgba(0,0,0,0.3)] p-8 space-y-8 max-w-md w-full">
+    <div className="relative bg-[#1B1B1D] rounded-2xl border border-[#2B2F36] shadow-[0_4px_20px_rgba(0,0,0,0.3)] p-8 space-y-8 max-w-md w-full">
       {/* Close button */}
       <Link
         to="/"

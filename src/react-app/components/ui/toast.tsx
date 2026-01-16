@@ -6,8 +6,8 @@ import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from "lucide-react"
  * Toast Notification System - Bitget Style (2026)
  *
  * Features:
- * - Dark background (#141416)
- * - Border (#2A2A2E)
+ * - Dark background (#1B1B1D)
+ * - Border (#2B2F36)
  * - Multiple variants (success, error, warning, info)
  * - Auto-dismiss with progress
  * - Stack multiple toasts
@@ -151,12 +151,12 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
     default: {
       icon: null,
       iconClass: "",
-      progressClass: "bg-[#00D9C8]",
+      progressClass: "bg-[#03AAC7]",
     },
     success: {
       icon: <CheckCircle className="w-5 h-5" />,
-      iconClass: "text-[#00D9C8]",
-      progressClass: "bg-[#00D9C8]",
+      iconClass: "text-[#03AAC7]",
+      progressClass: "bg-[#03AAC7]",
     },
     error: {
       icon: <AlertCircle className="w-5 h-5" />,
@@ -180,7 +180,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
   return (
     <div
       className={cn(
-        "relative w-80 bg-[#141416] border border-[#2A2A2E] rounded-xl shadow-dropdown",
+        "relative w-80 bg-[#1B1B1D] border border-[#2B2F36] rounded-xl shadow-dropdown",
         "animate-in slide-in-from-right-full fade-in duration-300",
         "overflow-hidden"
       )}
@@ -208,7 +208,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
           )}
           {toast.action && (
             <button
-              className="mt-2 text-sm font-medium text-[#00D9C8] hover:text-[#00F5E1] transition-colors"
+              className="mt-2 text-sm font-medium text-[#03AAC7] hover:text-[#26BFD4] transition-colors"
               onClick={toast.action.onClick}
             >
               {toast.action.label}
@@ -216,7 +216,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
           )}
         </div>
         <button
-          className="flex-shrink-0 p-1 rounded-lg text-[#6B7280] hover:text-white hover:bg-[#1A1A1E] transition-colors"
+          className="flex-shrink-0 p-1 rounded-lg text-[#6B7280] hover:text-white hover:bg-[#252629] transition-colors"
           onClick={onClose}
         >
           <X className="w-4 h-4" />
@@ -225,7 +225,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
 
       {/* Progress bar */}
       {duration > 0 && (
-        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#2A2A2E]">
+        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#2B2F36]">
           <div
             className={cn("h-full transition-all duration-100", config.progressClass)}
             style={{ width: `${progress}%` }}

@@ -157,7 +157,7 @@ const EXCHANGES: ExchangeInfo[] = [
     id: 'bitget',
     name: 'Bitget',
     logoUrl: EXCHANGE_LOGOS.bitget,
-    logoBgColor: '#00D9C8',
+    logoBgColor: '#03AAC7',
     category: 'crypto_cex',
     features: ['Spot', 'Futures', 'Copy Trading'],
     supported: true,
@@ -344,14 +344,14 @@ export default function ExchangeConnectionModal({
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-2xl bg-[#0D0D0F] rounded-2xl border border-[#2A2A2E] shadow-2xl overflow-hidden"
+          className="relative w-full max-w-2xl bg-[#151517] rounded-2xl border border-[#2B2F36] shadow-2xl overflow-hidden"
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-[#2A2A2E]">
+          <div className="flex items-center justify-between p-6 border-b border-[#2B2F36]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#00D9C8]/10 rounded-xl flex items-center justify-center">
-                <Link2 className="w-5 h-5 text-[#00D9C8]" />
+              <div className="w-10 h-10 bg-[#03AAC7]/10 rounded-xl flex items-center justify-center">
+                <Link2 className="w-5 h-5 text-[#03AAC7]" />
               </div>
               <div>
                 <h2 className="text-xl font-semibold text-white">
@@ -368,7 +368,7 @@ export default function ExchangeConnectionModal({
             </div>
             <button
               onClick={handleClose}
-              className="p-2 rounded-lg hover:bg-[#1A1A1E] transition-colors"
+              className="p-2 rounded-lg hover:bg-[#252629] transition-colors"
             >
               <X className="w-5 h-5 text-[#9CA3AF]" />
             </button>
@@ -387,7 +387,7 @@ export default function ExchangeConnectionModal({
                     placeholder="Search exchanges..."
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
-                    className="w-full px-4 py-3 pl-10 bg-[#141416] border border-[#2A2A2E] rounded-xl text-white placeholder:text-[#6B7280] focus:outline-none focus:border-[#00D9C8] transition-colors"
+                    className="w-full px-4 py-3 pl-10 bg-[#1B1B1D] border border-[#2B2F36] rounded-xl text-white placeholder:text-[#6B7280] focus:outline-none focus:border-[#03AAC7] transition-colors"
                   />
                 </div>
 
@@ -397,8 +397,8 @@ export default function ExchangeConnectionModal({
                     onClick={() => setSelectedCategory(null)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       !selectedCategory
-                        ? 'bg-[#00D9C8] text-[#0D0D0F]'
-                        : 'bg-[#1A1A1E] text-[#9CA3AF] hover:text-white'
+                        ? 'bg-[#03AAC7] text-[#151517]'
+                        : 'bg-[#252629] text-[#9CA3AF] hover:text-white'
                     }`}
                   >
                     All
@@ -409,8 +409,8 @@ export default function ExchangeConnectionModal({
                       onClick={() => setSelectedCategory(key)}
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                         selectedCategory === key
-                          ? 'bg-[#00D9C8] text-[#0D0D0F]'
-                          : 'bg-[#1A1A1E] text-[#9CA3AF] hover:text-white'
+                          ? 'bg-[#03AAC7] text-[#151517]'
+                          : 'bg-[#252629] text-[#9CA3AF] hover:text-white'
                       }`}
                     >
                       {CATEGORY_LABELS[key]}
@@ -430,7 +430,7 @@ export default function ExchangeConnectionModal({
                           key={exchange.id}
                           onClick={() => handleSelectExchange(exchange)}
                           disabled={!exchange.supported}
-                          className={`relative flex items-center gap-3 p-4 bg-[#141416] border border-[#2A2A2E] rounded-xl hover:border-[#00D9C8]/50 hover:bg-[#1A1A1E] transition-all group text-left ${
+                          className={`relative flex items-center gap-3 p-4 bg-[#1B1B1D] border border-[#2B2F36] rounded-xl hover:border-[#03AAC7]/50 hover:bg-[#252629] transition-all group text-left ${
                             !exchange.supported ? 'opacity-50 cursor-not-allowed' : ''
                           }`}
                         >
@@ -447,7 +447,7 @@ export default function ExchangeConnectionModal({
                                 {exchange.name}
                               </span>
                               {exchange.supported && (
-                                <Check className="w-4 h-4 text-[#00D9C8]" />
+                                <Check className="w-4 h-4 text-[#03AAC7]" />
                               )}
                             </div>
                             <p className="text-xs text-[#6B7280] truncate">
@@ -455,10 +455,10 @@ export default function ExchangeConnectionModal({
                             </p>
                           </div>
 
-                          <ChevronRight className="w-4 h-4 text-[#6B7280] group-hover:text-[#00D9C8] transition-colors" />
+                          <ChevronRight className="w-4 h-4 text-[#6B7280] group-hover:text-[#03AAC7] transition-colors" />
 
                           {!exchange.supported && (
-                            <span className="absolute top-2 right-2 px-2 py-0.5 text-xs bg-[#00D9C8]/20 text-[#00D9C8] rounded">
+                            <span className="absolute top-2 right-2 px-2 py-0.5 text-xs bg-[#03AAC7]/20 text-[#03AAC7] rounded">
                               Soon
                             </span>
                           )}
@@ -486,7 +486,7 @@ export default function ExchangeConnectionModal({
             {step === 'credentials' && selectedExchange && (
               <div className="space-y-6">
                 {/* Exchange Info */}
-                <div className="flex items-center gap-4 p-4 bg-[#141416] rounded-xl border border-[#2A2A2E]">
+                <div className="flex items-center gap-4 p-4 bg-[#1B1B1D] rounded-xl border border-[#2B2F36]">
                   <img
                     src={selectedExchange.logoUrl}
                     alt={selectedExchange.name}
@@ -505,7 +505,7 @@ export default function ExchangeConnectionModal({
                       href={selectedExchange.apiDocsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="ml-auto flex items-center gap-1 text-sm text-[#00D9C8] hover:underline"
+                      className="ml-auto flex items-center gap-1 text-sm text-[#03AAC7] hover:underline"
                     >
                       API Docs <ExternalLink className="w-4 h-4" />
                     </a>
@@ -513,8 +513,8 @@ export default function ExchangeConnectionModal({
                 </div>
 
                 {/* Security Notice */}
-                <div className="flex items-start gap-3 p-4 bg-[#00D9C8]/10 rounded-xl border border-[#00D9C8]/20">
-                  <Shield className="w-5 h-5 text-[#00D9C8] flex-shrink-0 mt-0.5" />
+                <div className="flex items-start gap-3 p-4 bg-[#03AAC7]/10 rounded-xl border border-[#03AAC7]/20">
+                  <Shield className="w-5 h-5 text-[#03AAC7] flex-shrink-0 mt-0.5" />
                   <p className="text-sm text-[#9CA3AF]">
                     Your API keys are encrypted and stored securely. We only require read-only access to sync your trades.
                   </p>
@@ -534,7 +534,7 @@ export default function ExchangeConnectionModal({
                         value={credentials.apiKey}
                         onChange={e => setCredentials(c => ({ ...c, apiKey: e.target.value }))}
                         placeholder="Enter your API key"
-                        className="w-full px-4 py-3 pl-10 bg-[#141416] border border-[#2A2A2E] rounded-xl text-white placeholder:text-[#6B7280] focus:outline-none focus:border-[#00D9C8] transition-colors"
+                        className="w-full px-4 py-3 pl-10 bg-[#1B1B1D] border border-[#2B2F36] rounded-xl text-white placeholder:text-[#6B7280] focus:outline-none focus:border-[#03AAC7] transition-colors"
                       />
                     </div>
                   </div>
@@ -551,7 +551,7 @@ export default function ExchangeConnectionModal({
                         value={credentials.apiSecret}
                         onChange={e => setCredentials(c => ({ ...c, apiSecret: e.target.value }))}
                         placeholder="Enter your API secret"
-                        className="w-full px-4 py-3 pl-10 pr-10 bg-[#141416] border border-[#2A2A2E] rounded-xl text-white placeholder:text-[#6B7280] focus:outline-none focus:border-[#00D9C8] transition-colors"
+                        className="w-full px-4 py-3 pl-10 pr-10 bg-[#1B1B1D] border border-[#2B2F36] rounded-xl text-white placeholder:text-[#6B7280] focus:outline-none focus:border-[#03AAC7] transition-colors"
                       />
                       <button
                         type="button"
@@ -572,14 +572,14 @@ export default function ExchangeConnectionModal({
                     <div>
                       <label className="block text-sm font-medium mb-2 text-[#9CA3AF]">
                         Passphrase
-                        <span className="text-[#00D9C8] ml-1">(Required)</span>
+                        <span className="text-[#03AAC7] ml-1">(Required)</span>
                       </label>
                       <input
                         type="password"
                         value={credentials.passphrase}
                         onChange={e => setCredentials(c => ({ ...c, passphrase: e.target.value }))}
                         placeholder="Enter your API passphrase"
-                        className="w-full px-4 py-3 bg-[#141416] border border-[#2A2A2E] rounded-xl text-white placeholder:text-[#6B7280] focus:outline-none focus:border-[#00D9C8] transition-colors"
+                        className="w-full px-4 py-3 bg-[#1B1B1D] border border-[#2B2F36] rounded-xl text-white placeholder:text-[#6B7280] focus:outline-none focus:border-[#03AAC7] transition-colors"
                       />
                     </div>
                   )}
@@ -593,7 +593,7 @@ export default function ExchangeConnectionModal({
                       className="sr-only"
                     />
                     <div className={`w-10 h-6 rounded-full transition-colors ${
-                      credentials.testnet ? 'bg-[#00D9C8]' : 'bg-[#2A2A2E]'
+                      credentials.testnet ? 'bg-[#03AAC7]' : 'bg-[#2B2F36]'
                     }`}>
                       <div className={`w-4 h-4 bg-white rounded-full mt-1 transition-transform ${
                         credentials.testnet ? 'translate-x-5' : 'translate-x-1'
@@ -626,9 +626,9 @@ export default function ExchangeConnectionModal({
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="w-20 h-20 mx-auto mb-6 bg-[#00D9C8]/20 rounded-full flex items-center justify-center"
+                  className="w-20 h-20 mx-auto mb-6 bg-[#03AAC7]/20 rounded-full flex items-center justify-center"
                 >
-                  <Check className="w-10 h-10 text-[#00D9C8]" />
+                  <Check className="w-10 h-10 text-[#03AAC7]" />
                 </motion.div>
                 <h3 className="text-xl font-semibold mb-2 text-white">
                   Connection Successful!
@@ -642,7 +642,7 @@ export default function ExchangeConnectionModal({
 
           {/* Footer */}
           {step !== 'testing' && (
-            <div className="flex items-center justify-between p-6 border-t border-[#2A2A2E]">
+            <div className="flex items-center justify-between p-6 border-t border-[#2B2F36]">
               {step === 'credentials' ? (
                 <>
                   <button
@@ -654,7 +654,7 @@ export default function ExchangeConnectionModal({
                   <button
                     onClick={handleTestConnection}
                     disabled={testing || !credentials.apiKey || !credentials.apiSecret}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-[#00D9C8] hover:bg-[#00F5E1] text-[#0D0D0F] font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {testing ? (
                       <>

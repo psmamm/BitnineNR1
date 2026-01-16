@@ -100,7 +100,7 @@ export default function AssetsPage() {
     <DashboardLayout>
       <div className="min-h-screen flex">
         {/* Left Sidebar */}
-        <div className="w-[200px] border-r border-[#2A2A2E] flex-shrink-0">
+        <div className="w-[200px] border-r border-[#2B2F36] flex-shrink-0">
           <div className="sticky top-0 py-4">
             {/* Assets Header */}
             <div className="flex items-center gap-2 px-4 py-3 text-white font-medium">
@@ -115,7 +115,7 @@ export default function AssetsPage() {
                   {/* Section Header */}
                   <button
                     onClick={() => section.expandable && toggleSection(section.id)}
-                    className="w-full flex items-center justify-between px-4 py-2.5 text-[#9CA3AF] hover:text-white hover:bg-[#141416] transition-colors"
+                    className="w-full flex items-center justify-between px-4 py-2.5 text-[#9CA3AF] hover:text-white hover:bg-[#1B1B1D] transition-colors"
                   >
                     <div className="flex items-center gap-2">
                       <section.icon className="w-4 h-4" />
@@ -139,7 +139,7 @@ export default function AssetsPage() {
                           onClick={() => navigate(item.path)}
                           className={`w-full text-left px-4 py-2 text-sm transition-colors ${
                             location.pathname === item.path
-                              ? 'text-[#00D9C8]'
+                              ? 'text-[#03AAC7]'
                               : 'text-[#9CA3AF] hover:text-white'
                           }`}
                         >
@@ -169,7 +169,7 @@ export default function AssetsPage() {
               </h1>
               <button
                 onClick={() => navigate('/deposit')}
-                className="px-6 py-2.5 bg-transparent border border-[#2A2A2E] hover:border-[#3A3A3E] text-white rounded-lg font-medium transition-colors"
+                className="px-6 py-2.5 bg-transparent border border-[#2B2F36] hover:border-[#3A3E45] text-white rounded-lg font-medium transition-colors"
               >
                 Deposit now
               </button>
@@ -179,8 +179,8 @@ export default function AssetsPage() {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="relative">
                   {/* Wallet illustration */}
-                  <div className="w-32 h-24 bg-gradient-to-br from-[#1A1A1E] to-[#2A2A2E] rounded-xl border border-[#3A3A3E] shadow-xl flex items-center justify-center">
-                    <Wallet className="w-12 h-12 text-[#00D9C8]" />
+                  <div className="w-32 h-24 bg-gradient-to-br from-[#252629] to-[#2B2F36] rounded-xl border border-[#3A3E45] shadow-xl flex items-center justify-center">
+                    <Wallet className="w-12 h-12 text-[#03AAC7]" />
                   </div>
                   {/* Floating coins */}
                   <div className="absolute -top-4 -right-4 w-10 h-10 bg-[#F7931A] rounded-full flex items-center justify-center text-white font-bold shadow-lg">
@@ -189,7 +189,7 @@ export default function AssetsPage() {
                   <div className="absolute -bottom-2 -left-6 w-8 h-8 bg-[#627EEA] rounded-full flex items-center justify-center text-white font-bold shadow-lg">
                     Ξ
                   </div>
-                  <div className="absolute top-0 -left-8 w-6 h-6 bg-[#00D9C8] rounded-full flex items-center justify-center text-[#0D0D0F] font-bold text-xs shadow-lg">
+                  <div className="absolute top-0 -left-8 w-6 h-6 bg-[#03AAC7] rounded-full flex items-center justify-center text-[#151517] font-bold text-xs shadow-lg">
                     $
                   </div>
                 </div>
@@ -204,7 +204,7 @@ export default function AssetsPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 hover:border-[#3A3A3E] transition-colors cursor-pointer"
+              className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5 hover:border-[#3A3E45] transition-colors cursor-pointer"
               onClick={() => navigate('/loans')}
             >
               <div className="flex items-start justify-between">
@@ -213,8 +213,8 @@ export default function AssetsPage() {
                   <p className="text-[#9CA3AF] text-sm mb-3">VIP only: Up to 20% off interest rates</p>
                   <span className="text-[#6B7280] text-xs">Crypto Loans</span>
                 </div>
-                <div className="w-12 h-12 bg-[#1A1A1E] rounded-lg flex items-center justify-center">
-                  <Percent className="w-6 h-6 text-[#00D9C8]" />
+                <div className="w-12 h-12 bg-[#252629] rounded-lg flex items-center justify-center">
+                  <Percent className="w-6 h-6 text-[#03AAC7]" />
                 </div>
               </div>
             </motion.div>
@@ -224,7 +224,7 @@ export default function AssetsPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
-              className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-5 hover:border-[#3A3A3E] transition-colors cursor-pointer"
+              className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5 hover:border-[#3A3E45] transition-colors cursor-pointer"
               onClick={() => navigate('/earn')}
             >
               <div className="flex items-start justify-between">
@@ -233,8 +233,8 @@ export default function AssetsPage() {
                   <p className="text-[#9CA3AF] text-sm mb-3">Earn steady returns on your deposits</p>
                   <span className="text-[#6B7280] text-xs">Savings</span>
                 </div>
-                <div className="w-12 h-12 bg-[#1A1A1E] rounded-lg flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6 text-[#00D9C8]" />
+                <div className="w-12 h-12 bg-[#252629] rounded-lg flex items-center justify-center">
+                  <BarChart3 className="w-6 h-6 text-[#03AAC7]" />
                 </div>
               </div>
             </motion.div>
@@ -245,10 +245,10 @@ export default function AssetsPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-[#141416] rounded-xl border border-[#2A2A2E]"
+            className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36]"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#2A2A2E]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#2B2F36]">
               <h3 className="text-white font-semibold">Recommended</h3>
               <button className="text-[#9CA3AF] hover:text-white transition-colors">
                 <ChevronRight className="w-5 h-5" />
@@ -267,20 +267,20 @@ export default function AssetsPage() {
             {recommendedProducts.map((product, index) => (
               <div
                 key={index}
-                className="grid grid-cols-4 gap-4 px-6 py-4 border-t border-[#2A2A2E] hover:bg-[#1A1A1E] transition-colors items-center"
+                className="grid grid-cols-4 gap-4 px-6 py-4 border-t border-[#2B2F36] hover:bg-[#252629] transition-colors items-center"
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold ${
                     product.coin.includes('BTC') ? 'bg-[#F7931A]' :
                     product.coin.includes('USD') ? 'bg-[#26A17B]' :
-                    'bg-[#2A2A2E]'
+                    'bg-[#2B2F36]'
                   }`}>
                     {product.icon}
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-white font-medium">{product.coin}</span>
                     {product.isNew && (
-                      <span className="px-1.5 py-0.5 bg-[#00D9C8]/20 text-[#00D9C8] text-[10px] font-medium rounded">
+                      <span className="px-1.5 py-0.5 bg-[#03AAC7]/20 text-[#03AAC7] text-[10px] font-medium rounded">
                         New
                       </span>
                     )}
@@ -291,7 +291,7 @@ export default function AssetsPage() {
                   {product.apr} <span className="text-[#6B7280] text-xs">APR</span>
                 </div>
                 <div className="text-right">
-                  <button className="text-[#00D9C8] hover:text-[#00F5E1] text-sm font-medium transition-colors">
+                  <button className="text-[#03AAC7] hover:text-[#26BFD4] text-sm font-medium transition-colors">
                     Subscribe
                   </button>
                 </div>
@@ -304,7 +304,7 @@ export default function AssetsPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="bg-[#141416] rounded-xl border border-[#2A2A2E] p-6"
+            className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-6"
           >
             <h3 className="text-white font-semibold mb-6">Your funds are secure with us</h3>
 
@@ -314,7 +314,7 @@ export default function AssetsPage() {
                 <div>
                   <h4 className="text-white font-semibold mb-1">$400 million Protection Fund</h4>
                   <p className="text-[#9CA3AF] text-sm mb-2">Your security, our priority</p>
-                  <button className="text-[#00D9C8] hover:text-[#00F5E1] text-sm font-medium transition-colors flex items-center gap-1">
+                  <button className="text-[#03AAC7] hover:text-[#26BFD4] text-sm font-medium transition-colors flex items-center gap-1">
                     View more <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -324,11 +324,11 @@ export default function AssetsPage() {
               </div>
 
               {/* Proof of Reserves */}
-              <div className="flex items-start justify-between border-l border-[#2A2A2E] pl-8">
+              <div className="flex items-start justify-between border-l border-[#2B2F36] pl-8">
                 <div>
                   <h4 className="text-white font-semibold mb-1">Proof of Reserves</h4>
                   <p className="text-[#9CA3AF] text-sm mb-2">1:1 reserve of all users' funds on our platform</p>
-                  <button className="text-[#00D9C8] hover:text-[#00F5E1] text-sm font-medium transition-colors flex items-center gap-1">
+                  <button className="text-[#03AAC7] hover:text-[#26BFD4] text-sm font-medium transition-colors flex items-center gap-1">
                     View my audit <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>

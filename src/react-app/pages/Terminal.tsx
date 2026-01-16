@@ -165,7 +165,7 @@ export default function Terminal() {
           {/* Resize Handle */}
           <div
             onMouseDown={handleChartResize}
-            className="w-1 bg-[#2B2F36] hover:bg-[#00D9C8] transition-colors cursor-col-resize shrink-0"
+            className="w-1 bg-[#2B2F36] hover:bg-[#03AAC7] transition-colors cursor-col-resize shrink-0"
           />
 
           {/* Right Side Panels */}
@@ -181,7 +181,7 @@ export default function Terminal() {
             {/* Resize Handle */}
             <div
               onMouseDown={handleOrderbookResize}
-              className="h-1 bg-[#2B2F36] hover:bg-[#00D9C8] transition-colors cursor-row-resize shrink-0"
+              className="h-1 bg-[#2B2F36] hover:bg-[#03AAC7] transition-colors cursor-row-resize shrink-0"
             />
 
             {/* Deal Ticket Panel */}
@@ -199,7 +199,7 @@ export default function Terminal() {
           <>
             <div
               onMouseDown={handleBottomResize}
-              className="h-1 bg-[#2B2F36] hover:bg-[#00D9C8] transition-colors cursor-row-resize relative group shrink-0"
+              className="h-1 bg-[#2B2F36] hover:bg-[#03AAC7] transition-colors cursor-row-resize relative group shrink-0"
             >
               <button
                 onClick={() => setIsBottomPanelCollapsed(true)}

@@ -303,7 +303,7 @@ export default function RiskLockdownOverlay() {
               <div className="p-4 overflow-y-auto max-h-[60vh]">
                 {historyLoading ? (
                   <div className="flex items-center justify-center py-8">
-                    <div className="w-6 h-6 border-2 border-[#00D9C8] border-t-transparent rounded-full animate-spin" />
+                    <div className="w-6 h-6 border-2 border-[#03AAC7] border-t-transparent rounded-full animate-spin" />
                   </div>
                 ) : history.length === 0 ? (
                   <div className="text-center py-8">

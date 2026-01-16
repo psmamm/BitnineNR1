@@ -52,7 +52,7 @@ export function TradingPanel({
     const leveragePercentage = ((leverage - 1) / 99) * 100;
 
     return (
-        <div className="w-80 bg-[#141416] rounded-2xl border border-white/10 flex flex-col shrink-0 shadow-xl shadow-black/20">
+        <div className="w-80 bg-[#1B1B1D] rounded-2xl border border-white/10 flex flex-col shrink-0 shadow-xl shadow-black/20">
             {/* Account Info */}
             <div className="p-5 border-b border-white/5 space-y-4">
                 <div>
@@ -185,7 +185,7 @@ export function TradingPanel({
                                 type="checkbox"
                                 checked={isLimitOrder}
                                 onChange={(e) => onLimitOrderChange(e.target.checked)}
-                                className="peer appearance-none w-4 h-4 rounded-md border-2 border-white/20 bg-[#141416] checked:bg-[#6A3DF4] checked:border-[#6A3DF4] transition-all duration-200 hover:border-[#6A3DF4]/50"
+                                className="peer appearance-none w-4 h-4 rounded-md border-2 border-white/20 bg-[#1B1B1D] checked:bg-[#6A3DF4] checked:border-[#6A3DF4] transition-all duration-200 hover:border-[#6A3DF4]/50"
                             />
                             <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
                                 <polyline points="20 6 9 17 4 12"></polyline>
@@ -219,7 +219,7 @@ export function TradingPanel({
                                 type="checkbox"
                                 checked={isTpSlEnabled}
                                 onChange={(e) => onTpSlChange(e.target.checked)}
-                                className="peer appearance-none w-4 h-4 rounded-md border-2 border-white/20 bg-[#141416] checked:bg-[#6A3DF4] checked:border-[#6A3DF4] transition-all duration-200 hover:border-[#6A3DF4]/50"
+                                className="peer appearance-none w-4 h-4 rounded-md border-2 border-white/20 bg-[#1B1B1D] checked:bg-[#6A3DF4] checked:border-[#6A3DF4] transition-all duration-200 hover:border-[#6A3DF4]/50"
                             />
                             <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
                                 <polyline points="20 6 9 17 4 12"></polyline>
@@ -269,7 +269,7 @@ export function TradingPanel({
                         <Button
                             variant="default"
                             onClick={() => onExecuteTrade('Long')}
-                            className="w-full h-14 bg-gradient-to-r from-[#0ecb81] to-[#00d9c8] hover:from-[#25e09b] hover:to-[#00f5e1] text-white font-bold text-base rounded-xl shadow-lg shadow-[#0ecb81]/30 hover:shadow-[#0ecb81]/50 transition-all duration-300 border-0"
+                            className="w-full h-14 bg-gradient-to-r from-[#0ecb81] to-[#03AAC7] hover:from-[#25e09b] hover:to-[#26BFD4] text-white font-bold text-base rounded-xl shadow-lg shadow-[#0ecb81]/30 hover:shadow-[#0ecb81]/50 transition-all duration-300 border-0"
                             disabled={!gameStarted || gameOver || exchangeOutage}
                         >
                             Open Long

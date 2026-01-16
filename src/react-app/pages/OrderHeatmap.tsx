@@ -63,7 +63,7 @@ export default function OrderHeatmapPage() {
 
     // Gradient Background
     const bgGradient = ctx.createLinearGradient(0, 0, 0, height);
-    bgGradient.addColorStop(0, '#141416');
+    bgGradient.addColorStop(0, '#1B1B1D');
     bgGradient.addColorStop(1, '#151925');
     ctx.fillStyle = bgGradient;
     ctx.fillRect(0, 0, width, height);
@@ -174,7 +174,7 @@ export default function OrderHeatmapPage() {
     <DashboardLayout>
       <div className="space-y-6 max-w-7xl mx-auto">
         {/* Header & Controls */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-[#141416] p-4 rounded-2xl border border-white/5">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-[#1B1B1D] p-4 rounded-2xl border border-white/5">
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-[#6A3DF4]/10 rounded-xl">
               <BarChart3 className="w-6 h-6 text-[#6A3DF4]" />
@@ -207,7 +207,7 @@ export default function OrderHeatmapPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
           {/* Depth Chart (Takes up 2 columns) */}
-          <div className="lg:col-span-2 bg-[#141416] rounded-2xl border border-white/5 p-4 flex flex-col">
+          <div className="lg:col-span-2 bg-[#1B1B1D] rounded-2xl border border-white/5 p-4 flex flex-col">
             <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
               <Activity className="w-4 h-4 text-[#6A3DF4]" />
               Depth Chart
@@ -221,10 +221,10 @@ export default function OrderHeatmapPage() {
           </div>
 
           {/* Order Book List (Takes up 1 column) */}
-          <div className="bg-[#141416] rounded-2xl border border-white/5 p-4 flex flex-col h-[500px]">
+          <div className="bg-[#1B1B1D] rounded-2xl border border-white/5 p-4 flex flex-col h-[500px]">
             <h3 className="text-white font-semibold mb-4">Order Book</h3>
             <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
-              <div className="grid grid-cols-2 gap-4 text-xs font-medium text-[#7F8C8D] mb-2 sticky top-0 bg-[#141416] py-2">
+              <div className="grid grid-cols-2 gap-4 text-xs font-medium text-[#7F8C8D] mb-2 sticky top-0 bg-[#1B1B1D] py-2">
                 <div>Price (USDT)</div>
                 <div className="text-right">Amount</div>
               </div>
@@ -258,14 +258,14 @@ export default function OrderHeatmapPage() {
         </div>
 
         {/* Recent Trades Table */}
-        <div className="bg-[#141416] rounded-2xl border border-white/5 overflow-hidden">
+        <div className="bg-[#1B1B1D] rounded-2xl border border-white/5 overflow-hidden">
           <div className="p-4 border-b border-white/5 flex justify-between items-center">
             <h3 className="text-white font-semibold">Recent Trades</h3>
             <span className="text-xs text-[#7F8C8D]">Last {liveOrders.length} trades</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="text-[#7F8C8D] bg-[#141416]/50">
+              <thead className="text-[#7F8C8D] bg-[#1B1B1D]/50">
                 <tr>
                   <th className="px-4 py-3 font-medium">Time</th>
                   <th className="px-4 py-3 font-medium">Price</th>

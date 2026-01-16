@@ -107,7 +107,7 @@ export default function TradingViewMarketOverview({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex items-center justify-center bg-[#141416]/30 rounded-xl border border-[#2A2A2E] p-8"
+        className="flex items-center justify-center bg-[#1B1B1D]/30 rounded-xl border border-[#2B2F36] p-8"
         style={{ 
           width: typeof width === 'number' ? `${width}px` : width, 
           height: typeof height === 'number' ? `${height}px` : height 
@@ -127,7 +127,7 @@ export default function TradingViewMarketOverview({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
-      className="relative bg-[#141416] rounded-xl border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)] overflow-hidden"
+      className="relative bg-[#1B1B1D] rounded-xl border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)] overflow-hidden"
     >
       {/* Loading overlay */}
       {!isLoaded && (
@@ -135,10 +135,10 @@ export default function TradingViewMarketOverview({
           initial={{ opacity: 1 }}
           animate={{ opacity: 0 }}
           transition={{ delay: 8, duration: 0.5 }}
-          className="absolute inset-0 flex items-center justify-center bg-[#141416]/80 z-10 rounded-xl"
+          className="absolute inset-0 flex items-center justify-center bg-[#1B1B1D]/80 z-10 rounded-xl"
         >
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-[#00D9C8] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#03AAC7] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <div className="text-white font-semibold mb-2">Loading Market Overview</div>
             <div className="text-[#7F8C8D] text-sm">Comprehensive crypto market data</div>
             <div className="text-[#AAB0C0] text-xs mt-2">Powered by TradingView</div>
@@ -150,8 +150,8 @@ export default function TradingViewMarketOverview({
       <div className="p-6 border-b border-white/5">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-[#00D9C8]/10 rounded-lg flex items-center justify-center">
-              <span className="text-[#00D9C8] font-bold text-lg">📊</span>
+            <div className="w-8 h-8 bg-[#03AAC7]/10 rounded-lg flex items-center justify-center">
+              <span className="text-[#03AAC7] font-bold text-lg">📊</span>
             </div>
             <div>
               <h3 className="text-xl font-semibold text-white">Crypto Market Screener</h3>
@@ -164,7 +164,7 @@ export default function TradingViewMarketOverview({
       {/* TradingView container */}
       <div
         ref={containerRef}
-        className="w-full bg-[#141416]/30"
+        className="w-full bg-[#1B1B1D]/30"
         style={{
           width: typeof width === 'number' ? `${width}px` : width,
           minHeight: typeof height === 'number' ? `${height}px` : height

@@ -55,10 +55,10 @@ export default function SecuritySection({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
-      className="bg-[#141416] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+      className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
     >
       <div className="flex items-center space-x-3 mb-6">
-        <div className="bg-[#00D9C8]/10 p-2 rounded-xl">
+        <div className="bg-[#03AAC7]/10 p-2 rounded-xl">
           <Shield className="w-6 h-6 text-[#6B7280]" />
         </div>
         <h3 className="text-xl font-semibold text-white">Security</h3>
@@ -70,7 +70,7 @@ export default function SecuritySection({
           <div>
             <h4 className="text-white font-medium flex items-center space-x-2">
               <span>Two-Factor Authentication</span>
-              {twoFactorEnabled && <CheckCircle className="w-4 h-4 text-[#00D9C8]" />}
+              {twoFactorEnabled && <CheckCircle className="w-4 h-4 text-[#03AAC7]" />}
               {!twoFactorEnabled && <AlertTriangle className="w-4 h-4 text-[#F39C12]" />}
             </h4>
             <p className="text-[#AAB0C0] text-sm">
@@ -87,7 +87,7 @@ export default function SecuritySection({
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               twoFactorEnabled 
                 ? 'bg-[#F43F5E] hover:bg-[#C0392B] text-white' 
-                : 'bg-[#00D9C8] hover:bg-[#27AE60] text-white'
+                : 'bg-[#03AAC7] hover:bg-[#27AE60] text-white'
             }`}
           >
             {twoFactorEnabled ? 'Disable' : 'Enable'}
@@ -105,7 +105,7 @@ export default function SecuritySection({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setShowPasswordForm(!showPasswordForm)}
-              className="bg-[#00D9C8] hover:bg-[#00F5E1] text-white px-4 py-2 rounded-xl text-sm font-medium transition-all"
+              className="bg-[#03AAC7] hover:bg-[#26BFD4] text-white px-4 py-2 rounded-xl text-sm font-medium transition-all"
             >
               Change Password
             </motion.button>
@@ -117,7 +117,7 @@ export default function SecuritySection({
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               onSubmit={handlePasswordSubmit}
-              className="space-y-4 bg-[#141416]/30 rounded-xl p-4 border border-white/5"
+              className="space-y-4 bg-[#1B1B1D]/30 rounded-xl p-4 border border-white/5"
             >
               <div>
                 <label className="block text-[#7F8C8D] text-sm font-medium mb-2">Current Password</label>
@@ -126,7 +126,7 @@ export default function SecuritySection({
                     type={showPassword.current ? 'text' : 'password'}
                     value={passwords.current}
                     onChange={(e) => setPasswords(prev => ({ ...prev, current: e.target.value }))}
-                    className="w-full px-3 py-2 bg-[#141416]/50 border border-[#2A2A2E] rounded-xl text-white focus:outline-none focus:border-[#00D9C8] transition-all pr-10"
+                    className="w-full px-3 py-2 bg-[#1B1B1D]/50 border border-[#2B2F36] rounded-xl text-white focus:outline-none focus:border-[#03AAC7] transition-all pr-10"
                     required
                   />
                   <button
@@ -146,7 +146,7 @@ export default function SecuritySection({
                     type={showPassword.new ? 'text' : 'password'}
                     value={passwords.new}
                     onChange={(e) => setPasswords(prev => ({ ...prev, new: e.target.value }))}
-                    className="w-full px-3 py-2 bg-[#141416]/50 border border-[#2A2A2E] rounded-xl text-white focus:outline-none focus:border-[#00D9C8] transition-all pr-10"
+                    className="w-full px-3 py-2 bg-[#1B1B1D]/50 border border-[#2B2F36] rounded-xl text-white focus:outline-none focus:border-[#03AAC7] transition-all pr-10"
                     required
                     minLength={8}
                   />
@@ -167,7 +167,7 @@ export default function SecuritySection({
                     type={showPassword.confirm ? 'text' : 'password'}
                     value={passwords.confirm}
                     onChange={(e) => setPasswords(prev => ({ ...prev, confirm: e.target.value }))}
-                    className="w-full px-3 py-2 bg-[#141416]/50 border border-[#2A2A2E] rounded-xl text-white focus:outline-none focus:border-[#00D9C8] transition-all pr-10"
+                    className="w-full px-3 py-2 bg-[#1B1B1D]/50 border border-[#2B2F36] rounded-xl text-white focus:outline-none focus:border-[#03AAC7] transition-all pr-10"
                     required
                     minLength={8}
                   />
@@ -186,7 +186,7 @@ export default function SecuritySection({
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   type="submit"
-                  className="bg-[#00D9C8] hover:bg-[#27AE60] text-white px-4 py-2 rounded-xl text-sm font-medium transition-all"
+                  className="bg-[#03AAC7] hover:bg-[#27AE60] text-white px-4 py-2 rounded-xl text-sm font-medium transition-all"
                 >
                   Update Password
                 </motion.button>
@@ -195,7 +195,7 @@ export default function SecuritySection({
                   whileTap={{ scale: 0.98 }}
                   type="button"
                   onClick={() => setShowPasswordForm(false)}
-                  className="bg-[#141416]/50 hover:bg-[#141416]/70 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all border border-[#2A2A2E] hover:border-white/20"
+                  className="bg-[#1B1B1D]/50 hover:bg-[#1B1B1D]/70 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all border border-[#2B2F36] hover:border-white/20"
                 >
                   Cancel
                 </motion.button>
@@ -213,7 +213,7 @@ export default function SecuritySection({
           <motion.button 
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="bg-[#141416]/50 hover:bg-[#141416]/70 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all border border-[#2A2A2E] hover:border-white/20"
+            className="bg-[#1B1B1D]/50 hover:bg-[#1B1B1D]/70 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all border border-[#2B2F36] hover:border-white/20"
           >
             View Sessions
           </motion.button>

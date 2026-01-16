@@ -129,10 +129,10 @@ const PERMISSION_LEVELS = [
     label: 'Full Auto',
     description: 'Autonomous AI',
     icon: CircuitBoard,
-    bg: 'bg-[#00D9C8]',
-    bgLight: 'bg-[#00D9C8]/10',
-    text: 'text-[#00D9C8]',
-    ring: 'ring-[#00D9C8]/30',
+    bg: 'bg-[#03AAC7]',
+    bgLight: 'bg-[#03AAC7]/10',
+    text: 'text-[#03AAC7]',
+    ring: 'ring-[#03AAC7]/30',
   },
 ];
 
@@ -394,7 +394,7 @@ export default function AIClonePage() {
         {/* Hero Section */}
         <motion.div
           variants={itemVariants}
-          className="relative overflow-hidden rounded-3xl bg-[#0d0d0f] border border-zinc-800/50"
+          className="relative overflow-hidden rounded-3xl bg-[#151517] border border-zinc-800/50"
         >
           {/* Grid Pattern Overlay */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
@@ -409,7 +409,7 @@ export default function AIClonePage() {
                   </div>
                   {config?.is_active && (
                     <motion.span
-                      className="absolute -bottom-1 -right-1 w-6 h-6 bg-[#00D9C8] rounded-full flex items-center justify-center border-2 border-[#0a0a0c]"
+                      className="absolute -bottom-1 -right-1 w-6 h-6 bg-[#03AAC7] rounded-full flex items-center justify-center border-2 border-[#0a0a0c]"
                       animate={{ scale: [1, 1.1, 1] }}
                       transition={{ duration: 1.5, repeat: Infinity }}
                     >
@@ -428,12 +428,12 @@ export default function AIClonePage() {
                     </span>
                     {config?.is_active ? (
                       <motion.span
-                        className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#00D9C8]/10 border border-[#00D9C8]/30 text-[#00D9C8] text-xs font-medium"
+                        className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#03AAC7]/10 border border-[#03AAC7]/30 text-[#03AAC7] text-xs font-medium"
                         animate={{ borderColor: ['rgba(0,217,200,0.3)', 'rgba(0,217,200,0.6)', 'rgba(0,217,200,0.3)'] }}
                         transition={{ duration: 2, repeat: Infinity }}
                       >
                         <motion.span
-                          className="w-2 h-2 rounded-full bg-[#00D9C8]"
+                          className="w-2 h-2 rounded-full bg-[#03AAC7]"
                           animate={{ opacity: [1, 0.5, 1] }}
                           transition={{ duration: 1, repeat: Infinity }}
                         />
@@ -455,7 +455,7 @@ export default function AIClonePage() {
                   <Button
                     variant="outline"
                     size="icon"
-                    className="w-12 h-12 rounded-xl border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800/50 hover:border-[#00D9C8]/50 transition-all"
+                    className="w-12 h-12 rounded-xl border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800/50 hover:border-[#03AAC7]/50 transition-all"
                   >
                     <BarChart3 className="h-5 w-5 text-zinc-400" />
                   </Button>
@@ -464,7 +464,7 @@ export default function AIClonePage() {
                   variant="outline"
                   size="icon"
                   onClick={() => setShowSettings(!showSettings)}
-                  className="w-12 h-12 rounded-xl border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800/50 hover:border-[#00D9C8]/50 transition-all"
+                  className="w-12 h-12 rounded-xl border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800/50 hover:border-[#03AAC7]/50 transition-all"
                 >
                   <Settings className="h-5 w-5 text-zinc-400" />
                 </Button>
@@ -473,7 +473,7 @@ export default function AIClonePage() {
                   className={`h-12 px-6 rounded-xl font-semibold transition-all ${
                     config?.is_active
                       ? 'bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20'
-                      : 'bg-[#00D9C8] text-black hover:bg-[#00D9C8]/90'
+                      : 'bg-[#03AAC7] text-black hover:bg-[#03AAC7]/90'
                   }`}
                 >
                   {config?.is_active ? (
@@ -494,7 +494,7 @@ export default function AIClonePage() {
         {/* Stats Grid */}
         <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'Patterns', value: stats?.totalPatterns || 0, icon: Crosshair, color: 'text-[#00D9C8]', bg: 'bg-[#00D9C8]/10', suffix: '' },
+            { label: 'Patterns', value: stats?.totalPatterns || 0, icon: Crosshair, color: 'text-[#03AAC7]', bg: 'bg-[#03AAC7]/10', suffix: '' },
             { label: 'Confidence', value: ((stats?.avgConfidence || 0) * 100).toFixed(0), icon: Gauge, color: 'text-amber-500', bg: 'bg-amber-500/10', suffix: '%' },
             { label: 'Trades', value: stats?.executedTrades || 0, icon: LineChart, color: 'text-blue-500', bg: 'bg-blue-500/10', suffix: '', extra: `${((stats?.winRate || 0) * 100).toFixed(0)}% WR` },
             { label: 'P&L', value: (stats?.totalPnl || 0).toFixed(2), icon: (stats?.totalPnl || 0) >= 0 ? TrendingUp : TrendingDown, color: (stats?.totalPnl || 0) >= 0 ? 'text-emerald-500' : 'text-red-500', bg: (stats?.totalPnl || 0) >= 0 ? 'bg-emerald-500/10' : 'bg-red-500/10', prefix: (stats?.totalPnl || 0) >= 0 ? '+$' : '$' },
@@ -527,8 +527,8 @@ export default function AIClonePage() {
           className="relative overflow-hidden rounded-3xl bg-zinc-900/50 border border-zinc-800/50 p-6"
         >
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 rounded-xl bg-[#00D9C8]/15 flex items-center justify-center">
-              <SlidersHorizontal className="h-6 w-6 text-[#00D9C8]" />
+            <div className="w-12 h-12 rounded-xl bg-[#03AAC7]/15 flex items-center justify-center">
+              <SlidersHorizontal className="h-6 w-6 text-[#03AAC7]" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-white">Permission Level</h2>
@@ -638,7 +638,7 @@ export default function AIClonePage() {
                       >
                         {/* Confidence Bar */}
                         <div
-                          className="absolute top-0 left-0 h-1 rounded-t-2xl bg-[#00D9C8]"
+                          className="absolute top-0 left-0 h-1 rounded-t-2xl bg-[#03AAC7]"
                           style={{ width: `${suggestion.confidence * 100}%` }}
                         />
 
@@ -693,7 +693,7 @@ export default function AIClonePage() {
                               size="sm"
                               onClick={() => handleSuggestionAction(suggestion.id, 'approve', suggestion)}
                               disabled={executingSuggestion === suggestion.id}
-                              className="h-9 px-5 bg-[#00D9C8] text-black font-bold hover:bg-[#00D9C8]/90 transition-all"
+                              className="h-9 px-5 bg-[#03AAC7] text-black font-bold hover:bg-[#03AAC7]/90 transition-all"
                             >
                               {executingSuggestion === suggestion.id ? (
                                 <RefreshCw className="h-4 w-4 animate-spin" />
@@ -721,8 +721,8 @@ export default function AIClonePage() {
           >
             <div className="flex items-center justify-between p-6 border-b border-zinc-800/50">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#00D9C8]/15 flex items-center justify-center">
-                  <Network className="h-6 w-6 text-[#00D9C8]" />
+                <div className="w-12 h-12 rounded-xl bg-[#03AAC7]/15 flex items-center justify-center">
+                  <Network className="h-6 w-6 text-[#03AAC7]" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-white">Patterns</h2>
@@ -733,7 +733,7 @@ export default function AIClonePage() {
                 size="sm"
                 onClick={handleStartTraining}
                 disabled={isTraining}
-                className="h-10 px-5 bg-[#00D9C8] text-black font-bold hover:bg-[#00D9C8]/90"
+                className="h-10 px-5 bg-[#03AAC7] text-black font-bold hover:bg-[#03AAC7]/90"
               >
                 {isTraining ? (
                   <><RefreshCw className="h-4 w-4 mr-2 animate-spin" /> Training...</>
@@ -776,7 +776,7 @@ export default function AIClonePage() {
                         <div>
                           <div className="flex items-center gap-2">
                             <span className="font-mono font-bold text-white">{pattern.symbol}</span>
-                            <span className="text-xs px-2 py-0.5 rounded-md bg-[#00D9C8]/10 text-[#00D9C8] font-medium">
+                            <span className="text-xs px-2 py-0.5 rounded-md bg-[#03AAC7]/10 text-[#03AAC7] font-medium">
                               {pattern.setup_type}
                             </span>
                           </div>
@@ -810,8 +810,8 @@ export default function AIClonePage() {
               className="rounded-3xl bg-zinc-900/50 border border-zinc-800/50 overflow-hidden"
             >
               <div className="flex items-center gap-4 p-6 border-b border-zinc-800/50">
-                <div className="w-12 h-12 rounded-xl bg-[#00D9C8]/15 flex items-center justify-center">
-                  <Lock className="h-6 w-6 text-[#00D9C8]" />
+                <div className="w-12 h-12 rounded-xl bg-[#03AAC7]/15 flex items-center justify-center">
+                  <Lock className="h-6 w-6 text-[#03AAC7]" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-white">Risk Settings</h2>

@@ -13,7 +13,7 @@ interface MarketSparklineProps {
 export default function MarketSparkline({
   data,
   symbol,
-  color = '#00D9C8',
+  color = '#03AAC7',
   width = 120,
   height = 40,
   showTradingView = false
@@ -122,7 +122,7 @@ export default function MarketSparkline({
           theme="dark"
         />
         <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className="w-3 h-3 bg-[#00D9C8] rounded-full flex items-center justify-center">
+          <div className="w-3 h-3 bg-[#03AAC7] rounded-full flex items-center justify-center">
             <span className="text-white text-xs">↺</span>
           </div>
         </div>
@@ -156,7 +156,7 @@ export default function MarketSparkline({
       />
       {symbol && (
         <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className="w-3 h-3 bg-[#00D9C8] rounded-full flex items-center justify-center">
+          <div className="w-3 h-3 bg-[#03AAC7] rounded-full flex items-center justify-center">
             <span className="text-white text-xs">📈</span>
           </div>
         </div>

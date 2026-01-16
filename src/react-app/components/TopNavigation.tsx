@@ -235,15 +235,15 @@ export default function TopNavigation() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b transition-colors bg-[#0D0D0F] border-[#2A2A2E]">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b transition-colors bg-[#151517] border-[#2B2F36]">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Left Section - Logo */}
           <div className="flex items-center space-x-6">
             {/* Logo - Bitget style */}
             <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
-              <div className="w-8 h-8 bg-[#00D9C8] rounded-lg flex items-center justify-center">
-                <BarChart3 className="w-5 h-5 text-[#0D0D0F]" />
+              <div className="w-8 h-8 bg-[#03AAC7] rounded-lg flex items-center justify-center">
+                <BarChart3 className="w-5 h-5 text-[#151517]" />
               </div>
               <span className="text-xl font-bold text-white">CIRCL</span>
             </div>
@@ -251,7 +251,7 @@ export default function TopNavigation() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="lg:hidden p-2 rounded-lg transition-colors text-[#9CA3AF] hover:text-white hover:bg-[#1A1A1E]"
+              className="lg:hidden p-2 rounded-lg transition-colors text-[#9CA3AF] hover:text-white hover:bg-[#252629]"
             >
               {showMobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -268,7 +268,7 @@ export default function TopNavigation() {
                       onClick={() => hasDropdown ? toggleDropdown(item.name) : navigate(item.path)}
                       className={`
                         flex items-center space-x-1 px-3 py-2 text-sm font-medium rounded-lg transition-all
-                        ${isActive ? 'text-[#00D9C8] bg-[#141416]' : 'text-white hover:text-[#00D9C8] hover:bg-[#1A1A1E]'}
+                        ${isActive ? 'text-[#03AAC7] bg-[#1B1B1D]' : 'text-white hover:text-[#03AAC7] hover:bg-[#252629]'}
                       `}
                     >
                       <span>{item.name}</span>
@@ -282,7 +282,7 @@ export default function TopNavigation() {
                       <motion.div
                         initial={{ scaleX: 0 }}
                         animate={{ scaleX: 1 }}
-                        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-[#00D9C8] rounded-full"
+                        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-[#03AAC7] rounded-full"
                         style={{ bottom: '-2px' }}
                       />
                     )}
@@ -294,11 +294,11 @@ export default function TopNavigation() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-2 bg-[#141416] border border-[#2A2A2E] rounded-xl shadow-2xl z-50 flex"
+                        className="absolute top-full left-0 mt-2 bg-[#1B1B1D] border border-[#2B2F36] rounded-xl shadow-2xl z-50 flex"
                         style={{ width: '620px' }}
                       >
                         {/* Left Column - Trade & Explore Options */}
-                        <div className="w-[280px] border-r border-[#2A2A2E] py-3">
+                        <div className="w-[280px] border-r border-[#2B2F36] py-3">
                           {/* Trade Section */}
                           <div className="px-4 mb-2">
                             <span className="text-[#6B7280] text-xs font-medium uppercase tracking-wider">Trade</span>
@@ -308,11 +308,11 @@ export default function TopNavigation() {
                               navigate('/trading/spot');
                               toggleDropdown(item.name);
                             }}
-                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all group"
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all group"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
-                                <Coins className="w-4 h-4 text-[#00D9C8]" />
+                              <div className="w-8 h-8 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
+                                <Coins className="w-4 h-4 text-[#03AAC7]" />
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-medium">Spot</span>
@@ -326,11 +326,11 @@ export default function TopNavigation() {
                               navigate('/trading/margin');
                               toggleDropdown(item.name);
                             }}
-                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all group"
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all group"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
-                                <Layers className="w-4 h-4 text-[#00D9C8]" />
+                              <div className="w-8 h-8 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
+                                <Layers className="w-4 h-4 text-[#03AAC7]" />
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-medium">Margin</span>
@@ -344,11 +344,11 @@ export default function TopNavigation() {
                               navigate('/trading/futures');
                               toggleDropdown(item.name);
                             }}
-                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all group"
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all group"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
-                                <LineChart className="w-4 h-4 text-[#00D9C8]" />
+                              <div className="w-8 h-8 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
+                                <LineChart className="w-4 h-4 text-[#03AAC7]" />
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-medium">Futures</span>
@@ -362,11 +362,11 @@ export default function TopNavigation() {
                               navigate('/convert');
                               toggleDropdown(item.name);
                             }}
-                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all group"
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all group"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
-                                <RefreshCw className="w-4 h-4 text-[#00D9C8]" />
+                              <div className="w-8 h-8 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
+                                <RefreshCw className="w-4 h-4 text-[#03AAC7]" />
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-medium">Convert & Block Trade</span>
@@ -385,11 +385,11 @@ export default function TopNavigation() {
                               navigate('/launchpad');
                               toggleDropdown(item.name);
                             }}
-                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all group"
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all group"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
-                                <Rocket className="w-4 h-4 text-[#00D9C8]" />
+                              <div className="w-8 h-8 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
+                                <Rocket className="w-4 h-4 text-[#03AAC7]" />
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-medium">Launchhub</span>
@@ -403,11 +403,11 @@ export default function TopNavigation() {
                               navigate('/copy-trading');
                               toggleDropdown(item.name);
                             }}
-                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all group"
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all group"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
-                                <Users className="w-4 h-4 text-[#00D9C8]" />
+                              <div className="w-8 h-8 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
+                                <Users className="w-4 h-4 text-[#03AAC7]" />
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-medium">Copy</span>
@@ -421,11 +421,11 @@ export default function TopNavigation() {
                               navigate('/trading-bots');
                               toggleDropdown(item.name);
                             }}
-                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all group"
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all group"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#00D9C8]/10 flex items-center justify-center">
-                                <Bot className="w-4 h-4 text-[#00D9C8]" />
+                              <div className="w-8 h-8 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
+                                <Bot className="w-4 h-4 text-[#03AAC7]" />
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-medium">Bots</span>
@@ -464,7 +464,7 @@ export default function TopNavigation() {
                                 value={tradeSearch}
                                 onChange={(e) => setTradeSearch(e.target.value)}
                                 placeholder="Search"
-                                className="w-full pl-9 pr-3 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm placeholder-[#6B7280] focus:outline-none focus:border-[#00D9C8] transition-colors"
+                                className="w-full pl-9 pr-3 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm placeholder-[#6B7280] focus:outline-none focus:border-[#03AAC7] transition-colors"
                               />
                             </div>
                           </div>
@@ -478,7 +478,7 @@ export default function TopNavigation() {
                                   navigate(`/trading/spot?symbol=${pair.symbol}`);
                                   toggleDropdown(item.name);
                                 }}
-                                className="w-full flex items-center gap-3 px-4 py-2 hover:bg-[#1A1A1E] transition-colors"
+                                className="w-full flex items-center gap-3 px-4 py-2 hover:bg-[#252629] transition-colors"
                               >
                                 <img
                                   src={getCoinLogo(pair.symbol)}
@@ -507,18 +507,18 @@ export default function TopNavigation() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        className="absolute top-full left-0 mt-2 w-48 bg-[#141416] border border-[#2A2A2E] rounded-xl shadow-dropdown py-2 z-50"
+                        className="absolute top-full left-0 mt-2 w-48 bg-[#1B1B1D] border border-[#2B2F36] rounded-xl shadow-dropdown py-2 z-50"
                       >
                         <Link
                           to={item.path}
-                          className="block px-4 py-2.5 text-sm text-[#9CA3AF] hover:text-white hover:bg-[#1A1A1E] transition-colors"
+                          className="block px-4 py-2.5 text-sm text-[#9CA3AF] hover:text-white hover:bg-[#252629] transition-colors"
                           onClick={() => toggleDropdown(item.name)}
                         >
                           Overview
                         </Link>
                         <Link
                           to={`${item.path}/advanced`}
-                          className="block px-4 py-2.5 text-sm text-[#9CA3AF] hover:text-white hover:bg-[#1A1A1E] transition-colors"
+                          className="block px-4 py-2.5 text-sm text-[#9CA3AF] hover:text-white hover:bg-[#252629] transition-colors"
                           onClick={() => toggleDropdown(item.name)}
                         >
                           Advanced
@@ -535,7 +535,7 @@ export default function TopNavigation() {
                   onClick={() => setShowMoreDropdown(!showMoreDropdown)}
                   className={`
                     flex items-center space-x-1 px-3 py-2 text-sm font-medium rounded-lg transition-all
-                    ${showMoreDropdown ? 'text-[#00D9C8] bg-[#141416]' : 'text-white hover:text-[#00D9C8] hover:bg-[#1A1A1E]'}
+                    ${showMoreDropdown ? 'text-[#03AAC7] bg-[#1B1B1D]' : 'text-white hover:text-[#03AAC7] hover:bg-[#252629]'}
                   `}
                 >
                   <span>More</span>
@@ -550,7 +550,7 @@ export default function TopNavigation() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute top-full left-0 mt-2 w-[600px] bg-[#141416] border border-[#2A2A2E] rounded-xl shadow-2xl z-50"
+                      className="absolute top-full left-0 mt-2 w-[600px] bg-[#1B1B1D] border border-[#2B2F36] rounded-xl shadow-2xl z-50"
                     >
                       <div className="p-4 grid grid-cols-3 gap-4">
                         {moreMenuItems.map((section) => (
@@ -566,10 +566,10 @@ export default function TopNavigation() {
                                     navigate(item.path);
                                     setShowMoreDropdown(false);
                                   }}
-                                  className="w-full flex items-center gap-3 px-2 py-2.5 rounded-lg hover:bg-[#1A1A1E] transition-colors group"
+                                  className="w-full flex items-center gap-3 px-2 py-2.5 rounded-lg hover:bg-[#252629] transition-colors group"
                                 >
-                                  <div className="w-8 h-8 rounded-lg bg-[#1A1A1E] group-hover:bg-[#00D9C8]/10 flex items-center justify-center transition-colors">
-                                    <item.icon className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#00D9C8]" />
+                                  <div className="w-8 h-8 rounded-lg bg-[#252629] group-hover:bg-[#03AAC7]/10 flex items-center justify-center transition-colors">
+                                    <item.icon className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#03AAC7]" />
                                   </div>
                                   <div className="text-left">
                                     <span className="block text-sm text-white">{item.name}</span>
@@ -589,12 +589,12 @@ export default function TopNavigation() {
           </div>
 
           {/* Right Section - Bitget style */}
-          <div className="flex items-center rounded-lg px-3 py-2 space-x-2 bg-[#141416]">
+          <div className="flex items-center rounded-lg px-3 py-2 space-x-2 bg-[#1B1B1D]">
             {/* Search Icon Button */}
             <div className="relative hidden md:block">
               <button
                 onClick={() => setShowSearchDropdown(!showSearchDropdown)}
-                className="flex items-center justify-center w-8 h-8 text-[#9CA3AF] hover:text-white hover:bg-[#1A1A1E] rounded-lg transition-colors"
+                className="flex items-center justify-center w-8 h-8 text-[#9CA3AF] hover:text-white hover:bg-[#252629] rounded-lg transition-colors"
               >
                 <Search className="h-4 w-4" />
               </button>
@@ -607,11 +607,11 @@ export default function TopNavigation() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute top-full right-0 mt-2 w-80 bg-[#141416] border border-[#2A2A2E] rounded-xl shadow-dropdown z-50"
+                    className="absolute top-full right-0 mt-2 w-80 bg-[#1B1B1D] border border-[#2B2F36] rounded-xl shadow-dropdown z-50"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {/* Search Input */}
-                    <div className="p-4 border-b border-[#2A2A2E]">
+                    <div className="p-4 border-b border-[#2B2F36]">
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                           <Search className="h-4 w-4 text-[#6B7280]" />
@@ -626,7 +626,7 @@ export default function TopNavigation() {
                             }
                           }}
                           placeholder={t('Search trades, symbols...')}
-                          className="w-full pl-10 pr-4 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm placeholder-[#6B7280] focus:outline-none focus:border-[#00D9C8] transition-all"
+                          className="w-full pl-10 pr-4 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm placeholder-[#6B7280] focus:outline-none focus:border-[#03AAC7] transition-all"
                           autoFocus
                         />
                       </div>
@@ -642,7 +642,7 @@ export default function TopNavigation() {
                               setSearchQuery('');
                               setShowSearchDropdown(false);
                             }}
-                            className="w-full flex items-center space-x-3 px-3 py-2.5 text-[#9CA3AF] hover:text-white hover:bg-[#1A1A1E] rounded-lg transition-all text-left"
+                            className="w-full flex items-center space-x-3 px-3 py-2.5 text-[#9CA3AF] hover:text-white hover:bg-[#252629] rounded-lg transition-all text-left"
                           >
                             <TrendingUp className="w-4 h-4" />
                             <div>
@@ -656,7 +656,7 @@ export default function TopNavigation() {
                               setSearchQuery('');
                               setShowSearchDropdown(false);
                             }}
-                            className="w-full flex items-center space-x-3 px-3 py-2.5 text-[#9CA3AF] hover:text-white hover:bg-[#1A1A1E] rounded-lg transition-all text-left"
+                            className="w-full flex items-center space-x-3 px-3 py-2.5 text-[#9CA3AF] hover:text-white hover:bg-[#252629] rounded-lg transition-all text-left"
                           >
                             <BarChart3 className="w-4 h-4" />
                             <div>
@@ -670,7 +670,7 @@ export default function TopNavigation() {
                               setSearchQuery('');
                               setShowSearchDropdown(false);
                             }}
-                            className="w-full flex items-center space-x-3 px-3 py-2.5 text-[#9CA3AF] hover:text-white hover:bg-[#1A1A1E] rounded-lg transition-all text-left"
+                            className="w-full flex items-center space-x-3 px-3 py-2.5 text-[#9CA3AF] hover:text-white hover:bg-[#252629] rounded-lg transition-all text-left"
                           >
                             <FileText className="w-4 h-4" />
                             <div>
@@ -691,7 +691,7 @@ export default function TopNavigation() {
               <div className="relative">
                 <button
                   onClick={() => setShowWalletDropdown(!showWalletDropdown)}
-                  className="flex items-center space-x-1.5 p-2 text-[#9CA3AF] hover:text-white hover:bg-[#1A1A1E] rounded-lg transition-colors"
+                  className="flex items-center space-x-1.5 p-2 text-[#9CA3AF] hover:text-white hover:bg-[#252629] rounded-lg transition-colors"
                 >
                   <Wallet className="w-5 h-5" />
                   <ChevronDown className={`w-4 h-4 transition-transform ${showWalletDropdown ? 'rotate-180' : ''}`} />
@@ -705,15 +705,15 @@ export default function TopNavigation() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-80 bg-[#141416] border border-[#2A2A2E] rounded-xl shadow-2xl z-50"
+                      className="absolute right-0 mt-2 w-80 bg-[#1B1B1D] border border-[#2B2F36] rounded-xl shadow-2xl z-50"
                     >
                       {/* Total Asset Value */}
-                      <div className="p-4 border-b border-[#2A2A2E]">
+                      <div className="p-4 border-b border-[#2B2F36]">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-[#9CA3AF] text-sm">Total asset value (USD)</span>
                           <button
                             onClick={() => setShowBalanceNav(!showBalanceNav)}
-                            className="p-1 hover:bg-[#1A1A1E] rounded transition-colors"
+                            className="p-1 hover:bg-[#252629] rounded transition-colors"
                           >
                             {showBalanceNav ? (
                               <Eye className="w-4 h-4 text-[#6B7280]" />
@@ -726,22 +726,22 @@ export default function TopNavigation() {
                           <span className="text-2xl font-semibold text-white">
                             {showBalanceNav ? '0.00' : '****'}
                           </span>
-                          <span className="text-[#00D9C8] text-sm">≈ 0.000 BTC</span>
+                          <span className="text-[#03AAC7] text-sm">≈ 0.000 BTC</span>
                         </div>
                       </div>
 
                       {/* Quick Action Buttons */}
-                      <div className="p-4 border-b border-[#2A2A2E]">
+                      <div className="p-4 border-b border-[#2B2F36]">
                         <div className="grid grid-cols-3 gap-2">
                           <button
                             onClick={() => {
                               navigate('/deposit');
                               setShowWalletDropdown(false);
                             }}
-                            className="flex flex-col items-center gap-1.5 p-3 bg-[#1A1A1E] rounded-lg hover:bg-[#222226] transition-colors"
+                            className="flex flex-col items-center gap-1.5 p-3 bg-[#252629] rounded-lg hover:bg-[#222226] transition-colors"
                           >
-                            <div className="w-8 h-8 rounded-full bg-[#00D9C8]/10 flex items-center justify-center">
-                              <ArrowDown className="w-4 h-4 text-[#00D9C8]" />
+                            <div className="w-8 h-8 rounded-full bg-[#03AAC7]/10 flex items-center justify-center">
+                              <ArrowDown className="w-4 h-4 text-[#03AAC7]" />
                             </div>
                             <span className="text-white text-xs font-medium">Deposit</span>
                           </button>
@@ -750,10 +750,10 @@ export default function TopNavigation() {
                               navigate('/withdraw');
                               setShowWalletDropdown(false);
                             }}
-                            className="flex flex-col items-center gap-1.5 p-3 bg-[#1A1A1E] rounded-lg hover:bg-[#222226] transition-colors"
+                            className="flex flex-col items-center gap-1.5 p-3 bg-[#252629] rounded-lg hover:bg-[#222226] transition-colors"
                           >
-                            <div className="w-8 h-8 rounded-full bg-[#00D9C8]/10 flex items-center justify-center">
-                              <ArrowUp className="w-4 h-4 text-[#00D9C8]" />
+                            <div className="w-8 h-8 rounded-full bg-[#03AAC7]/10 flex items-center justify-center">
+                              <ArrowUp className="w-4 h-4 text-[#03AAC7]" />
                             </div>
                             <span className="text-white text-xs font-medium">Withdraw</span>
                           </button>
@@ -762,10 +762,10 @@ export default function TopNavigation() {
                               navigate('/transfer');
                               setShowWalletDropdown(false);
                             }}
-                            className="flex flex-col items-center gap-1.5 p-3 bg-[#1A1A1E] rounded-lg hover:bg-[#222226] transition-colors"
+                            className="flex flex-col items-center gap-1.5 p-3 bg-[#252629] rounded-lg hover:bg-[#222226] transition-colors"
                           >
-                            <div className="w-8 h-8 rounded-full bg-[#00D9C8]/10 flex items-center justify-center">
-                              <ArrowLeftRight className="w-4 h-4 text-[#00D9C8]" />
+                            <div className="w-8 h-8 rounded-full bg-[#03AAC7]/10 flex items-center justify-center">
+                              <ArrowLeftRight className="w-4 h-4 text-[#03AAC7]" />
                             </div>
                             <span className="text-white text-xs font-medium">Transfer</span>
                           </button>
@@ -779,7 +779,7 @@ export default function TopNavigation() {
                             navigate('/assets');
                             setShowWalletDropdown(false);
                           }}
-                          className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                          className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all"
                         >
                           <CircleDollarSign className="w-5 h-5 text-[#9CA3AF]" />
                           <div className="flex-1 text-left">
@@ -792,7 +792,7 @@ export default function TopNavigation() {
                             navigate('/spot-assets');
                             setShowWalletDropdown(false);
                           }}
-                          className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                          className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all"
                         >
                           <Coins className="w-5 h-5 text-[#9CA3AF]" />
                           <div className="flex-1 text-left">
@@ -805,7 +805,7 @@ export default function TopNavigation() {
                             navigate('/margin-assets');
                             setShowWalletDropdown(false);
                           }}
-                          className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                          className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all"
                         >
                           <Layers className="w-5 h-5 text-[#9CA3AF]" />
                           <div className="flex-1 text-left">
@@ -818,7 +818,7 @@ export default function TopNavigation() {
                             navigate('/futures-assets');
                             setShowWalletDropdown(false);
                           }}
-                          className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                          className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all"
                         >
                           <LineChart className="w-5 h-5 text-[#9CA3AF]" />
                           <div className="flex-1 text-left">
@@ -831,7 +831,7 @@ export default function TopNavigation() {
                             navigate('/copy-trading');
                             setShowWalletDropdown(false);
                           }}
-                          className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                          className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all"
                         >
                           <Users className="w-5 h-5 text-[#9CA3AF]" />
                           <div className="flex-1 text-left">
@@ -842,13 +842,13 @@ export default function TopNavigation() {
                       </div>
 
                       {/* View All Assets Button */}
-                      <div className="p-3 border-t border-[#2A2A2E]">
+                      <div className="p-3 border-t border-[#2B2F36]">
                         <button
                           onClick={() => {
                             navigate('/assets');
                             setShowWalletDropdown(false);
                           }}
-                          className="w-full py-2.5 bg-[#1A1A1E] hover:bg-[#222226] text-white rounded-lg font-medium transition-colors"
+                          className="w-full py-2.5 bg-[#252629] hover:bg-[#222226] text-white rounded-lg font-medium transition-colors"
                         >
                           View all assets
                         </button>
@@ -867,7 +867,7 @@ export default function TopNavigation() {
                 <div className="relative">
                   <button
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
-                    className="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full overflow-hidden border-2 border-[#2A2A2E] hover:border-[#00D9C8] transition-colors bg-[#1A1A1E] flex items-center justify-center"
+                    className="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full overflow-hidden border-2 border-[#2B2F36] hover:border-[#03AAC7] transition-colors bg-[#252629] flex items-center justify-center"
                   >
                     {user?.photoURL?.startsWith('http') || user?.photoURL?.startsWith('data:') ? (
                       <img
@@ -890,12 +890,12 @@ export default function TopNavigation() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute right-0 mt-2 w-72 bg-[#141416] border border-[#2A2A2E] rounded-xl shadow-2xl z-50"
+                        className="absolute right-0 mt-2 w-72 bg-[#1B1B1D] border border-[#2B2F36] rounded-xl shadow-2xl z-50"
                       >
                         {/* Profile Header */}
                         <div className="p-4">
                           <div className="flex items-center space-x-3">
-                            <div className="w-12 h-12 aspect-square flex-shrink-0 rounded-full overflow-hidden border-2 border-[#2A2A2E]">
+                            <div className="w-12 h-12 aspect-square flex-shrink-0 rounded-full overflow-hidden border-2 border-[#2B2F36]">
                               {user?.photoURL?.startsWith('http') || user?.photoURL?.startsWith('data:') ? (
                                 <img
                                   src={user.photoURL}
@@ -903,7 +903,7 @@ export default function TopNavigation() {
                                   className="w-full h-full object-cover"
                                 />
                               ) : (
-                                <div className="w-full h-full bg-[#1A1A1E] flex items-center justify-center">
+                                <div className="w-full h-full bg-[#252629] flex items-center justify-center">
                                   <span className="text-[#9CA3AF] font-semibold text-xl">
                                     {user?.displayName?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'U'}
                                   </span>
@@ -922,10 +922,10 @@ export default function TopNavigation() {
                                     e.stopPropagation();
                                     copyToClipboard(userUID, 'uid');
                                   }}
-                                  className="p-0.5 hover:bg-[#1A1A1E] rounded transition-colors"
+                                  className="p-0.5 hover:bg-[#252629] rounded transition-colors"
                                 >
                                   {copiedUID ? (
-                                    <Check className="w-3 h-3 text-[#00D9C8]" />
+                                    <Check className="w-3 h-3 text-[#03AAC7]" />
                                   ) : (
                                     <Copy className="w-3 h-3 text-[#6B7280]" />
                                   )}
@@ -936,11 +936,11 @@ export default function TopNavigation() {
 
                           {/* Badges */}
                           <div className="flex items-center space-x-2 mt-3">
-                            <span className="px-2.5 py-1 bg-[#00D9C8]/10 text-[#00D9C8] text-xs font-medium rounded-full flex items-center gap-1">
+                            <span className="px-2.5 py-1 bg-[#03AAC7]/10 text-[#03AAC7] text-xs font-medium rounded-full flex items-center gap-1">
                               <ShieldCheck className="w-3 h-3" />
                               Verified
                             </span>
-                            <span className="px-2.5 py-1 bg-[#2A2A2E] text-[#9CA3AF] text-xs font-medium rounded-full flex items-center gap-1">
+                            <span className="px-2.5 py-1 bg-[#2B2F36] text-[#9CA3AF] text-xs font-medium rounded-full flex items-center gap-1">
                               <Shield className="w-3 h-3" />
                               VIP
                             </span>
@@ -954,7 +954,7 @@ export default function TopNavigation() {
                               navigate('/dashboard');
                               setShowProfileMenu(false);
                             }}
-                            className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                            className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all"
                           >
                             <LayoutGrid className="w-5 h-5 text-[#9CA3AF]" />
                             <span>Dashboard</span>
@@ -965,7 +965,7 @@ export default function TopNavigation() {
                               navigate('/settings');
                               setShowProfileMenu(false);
                             }}
-                            className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                            className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all"
                           >
                             <CreditCard className="w-5 h-5 text-[#9CA3AF]" />
                             <span>Identity verification</span>
@@ -976,7 +976,7 @@ export default function TopNavigation() {
                               navigate('/settings?section=security');
                               setShowProfileMenu(false);
                             }}
-                            className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                            className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all"
                           >
                             <ShieldCheck className="w-5 h-5 text-[#9CA3AF]" />
                             <span>Security settings</span>
@@ -987,13 +987,13 @@ export default function TopNavigation() {
                               navigate('/rewards');
                               setShowProfileMenu(false);
                             }}
-                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all"
                           >
                             <div className="flex items-center space-x-3">
                               <Gift className="w-5 h-5 text-[#9CA3AF]" />
                               <span>Rewards Center</span>
                             </div>
-                            <span className="text-[#00D9C8] text-sm">0 points</span>
+                            <span className="text-[#03AAC7] text-sm">0 points</span>
                           </button>
 
                           <button
@@ -1001,7 +1001,7 @@ export default function TopNavigation() {
                               navigate('/vouchers');
                               setShowProfileMenu(false);
                             }}
-                            className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                            className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all"
                           >
                             <Ticket className="w-5 h-5 text-[#9CA3AF]" />
                             <span>Voucher</span>
@@ -1009,7 +1009,7 @@ export default function TopNavigation() {
                         </div>
 
                         {/* Referral Section */}
-                        <div className="mx-4 mb-3 p-3 bg-[#1A1A1E] rounded-lg">
+                        <div className="mx-4 mb-3 p-3 bg-[#252629] rounded-lg">
                           <div className="flex items-center justify-between">
                             <div>
                               <p className="text-[#6B7280] text-xs">Become a Premier Inviter and enjoy...</p>
@@ -1021,15 +1021,15 @@ export default function TopNavigation() {
                                   e.stopPropagation();
                                   copyToClipboard(referralCode, 'referral');
                                 }}
-                                className="p-2 hover:bg-[#2A2A2E] rounded-lg transition-colors"
+                                className="p-2 hover:bg-[#2B2F36] rounded-lg transition-colors"
                               >
                                 {copiedReferral ? (
-                                  <Check className="w-4 h-4 text-[#00D9C8]" />
+                                  <Check className="w-4 h-4 text-[#03AAC7]" />
                                 ) : (
                                   <Copy className="w-4 h-4 text-[#6B7280]" />
                                 )}
                               </button>
-                              <div className="w-8 h-8 bg-[#2A2A2E] rounded-full flex items-center justify-center">
+                              <div className="w-8 h-8 bg-[#2B2F36] rounded-full flex items-center justify-center">
                                 <User className="w-4 h-4 text-[#6B7280]" />
                               </div>
                             </div>
@@ -1037,13 +1037,13 @@ export default function TopNavigation() {
                         </div>
 
                         {/* Bottom Menu Items */}
-                        <div className="py-2 border-t border-[#2A2A2E]">
+                        <div className="py-2 border-t border-[#2B2F36]">
                           <button
                             onClick={() => {
                               navigate('/settings?section=api');
                               setShowProfileMenu(false);
                             }}
-                            className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                            className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all"
                           >
                             <Link2 className="w-5 h-5 text-[#9CA3AF]" />
                             <span>Exchange Connections</span>
@@ -1054,7 +1054,7 @@ export default function TopNavigation() {
                               navigate('/settings');
                               setShowProfileMenu(false);
                             }}
-                            className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#1A1A1E] transition-all"
+                            className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all"
                           >
                             <SlidersHorizontal className="w-5 h-5 text-[#9CA3AF]" />
                             <span>Settings</span>
@@ -1062,13 +1062,13 @@ export default function TopNavigation() {
                         </div>
 
                         {/* Logout Button */}
-                        <div className="p-3 border-t border-[#2A2A2E]">
+                        <div className="p-3 border-t border-[#2B2F36]">
                           <button
                             onClick={() => {
                               handleLogout();
                               setShowProfileMenu(false);
                             }}
-                            className="w-full py-2.5 bg-[#1A1A1E] hover:bg-[#222226] text-white rounded-lg font-medium transition-colors"
+                            className="w-full py-2.5 bg-[#252629] hover:bg-[#222226] text-white rounded-lg font-medium transition-colors"
                           >
                             Log out
                           </button>
@@ -1082,11 +1082,11 @@ export default function TopNavigation() {
                 <div className="relative">
                   <button
                     onClick={() => setShowNotifications(!showNotifications)}
-                    className="p-2 text-[#9CA3AF] hover:text-white hover:bg-[#1A1A1E] rounded-lg transition-colors relative"
+                    className="p-2 text-[#9CA3AF] hover:text-white hover:bg-[#252629] rounded-lg transition-colors relative"
                   >
                     <Bell className="w-5 h-5" />
                     {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 w-2 h-2 bg-[#00D9C8] rounded-full"></span>
+                      <span className="absolute top-1 right-1 w-2 h-2 bg-[#03AAC7] rounded-full"></span>
                     )}
                   </button>
 
@@ -1098,9 +1098,9 @@ export default function TopNavigation() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute right-0 mt-2 w-80 bg-[#141416] border border-[#2A2A2E] rounded-xl shadow-dropdown z-50"
+                        className="absolute right-0 mt-2 w-80 bg-[#1B1B1D] border border-[#2B2F36] rounded-xl shadow-dropdown z-50"
                       >
-                        <div className="p-4 border-b border-[#2A2A2E]">
+                        <div className="p-4 border-b border-[#2B2F36]">
                           <h3 className="text-white font-semibold">Notifications</h3>
                           <p className="text-[#6B7280] text-sm">{unreadCount} new messages</p>
                         </div>
@@ -1112,7 +1112,7 @@ export default function TopNavigation() {
                               return (
                                 <div
                                   key={notification.id}
-                                  className={`p-4 border-b border-[#2A2A2E] hover:bg-[#1A1A1E] transition-colors cursor-pointer ${!notification.read ? 'bg-[#00D9C8]/5' : ''
+                                  className={`p-4 border-b border-[#2B2F36] hover:bg-[#252629] transition-colors cursor-pointer ${!notification.read ? 'bg-[#03AAC7]/5' : ''
                                     }`}
                                   onClick={() => {
                                     if (!notification.read) {
@@ -1125,13 +1125,13 @@ export default function TopNavigation() {
                                   }}
                                 >
                                   <div className="flex items-start space-x-3">
-                                    <div className={`p-2 rounded-lg ${notification.type === 'trade' ? 'bg-[#00D9C8]/10 text-[#00D9C8]' :
-                                        notification.type === 'performance' ? 'bg-[#00D9C8]/10 text-[#00D9C8]' :
+                                    <div className={`p-2 rounded-lg ${notification.type === 'trade' ? 'bg-[#03AAC7]/10 text-[#03AAC7]' :
+                                        notification.type === 'performance' ? 'bg-[#03AAC7]/10 text-[#03AAC7]' :
                                           notification.type === 'strategy' ? 'bg-[#F59E0B]/10 text-[#F59E0B]' :
-                                            notification.type === 'market' ? 'bg-[#00D9C8]/10 text-[#00D9C8]' :
-                                              notification.type === 'goal' ? 'bg-[#00D9C8]/10 text-[#00D9C8]' :
+                                            notification.type === 'market' ? 'bg-[#03AAC7]/10 text-[#03AAC7]' :
+                                              notification.type === 'goal' ? 'bg-[#03AAC7]/10 text-[#03AAC7]' :
                                                 notification.type === 'whale' ? 'bg-[#F43F5E]/10 text-[#F43F5E]' :
-                                                  'bg-[#2A2A2E] text-[#9CA3AF]'
+                                                  'bg-[#2B2F36] text-[#9CA3AF]'
                                       }`}>
                                       <IconComponent className="w-4 h-4" />
                                     </div>
@@ -1148,7 +1148,7 @@ export default function TopNavigation() {
                                               navigate(notification.action!.url);
                                               setShowNotifications(false);
                                             }}
-                                            className="text-[#00D9C8] hover:text-[#00F5E1] text-xs font-medium px-2 py-1 rounded-md hover:bg-[#00D9C8]/10 transition-all"
+                                            className="text-[#03AAC7] hover:text-[#26BFD4] text-xs font-medium px-2 py-1 rounded-md hover:bg-[#03AAC7]/10 transition-all"
                                           >
                                             {notification.action.label}
                                           </button>
@@ -1156,7 +1156,7 @@ export default function TopNavigation() {
                                       </div>
                                     </div>
                                     {!notification.read && (
-                                      <div className="w-2 h-2 bg-[#00D9C8] rounded-full mt-2" />
+                                      <div className="w-2 h-2 bg-[#03AAC7] rounded-full mt-2" />
                                     )}
                                   </div>
                                 </div>
@@ -1171,10 +1171,10 @@ export default function TopNavigation() {
                         </div>
 
                         {notifications.length > 0 && (
-                          <div className="p-4 border-t border-[#2A2A2E] space-y-2">
+                          <div className="p-4 border-t border-[#2B2F36] space-y-2">
                             <button
                               onClick={markAllAsRead}
-                              className="w-full text-[#00D9C8] hover:text-[#00F5E1] text-sm font-medium transition-colors py-2 px-3 rounded-lg hover:bg-[#00D9C8]/10"
+                              className="w-full text-[#03AAC7] hover:text-[#26BFD4] text-sm font-medium transition-colors py-2 px-3 rounded-lg hover:bg-[#03AAC7]/10"
                             >
                               Mark all as read
                             </button>
@@ -1183,7 +1183,7 @@ export default function TopNavigation() {
                                 navigate('/settings');
                                 setShowNotifications(false);
                               }}
-                              className="w-full text-[#9CA3AF] hover:text-white text-sm transition-colors py-2 px-3 rounded-lg hover:bg-[#1A1A1E]"
+                              className="w-full text-[#9CA3AF] hover:text-white text-sm transition-colors py-2 px-3 rounded-lg hover:bg-[#252629]"
                             >
                               Notification Settings
                             </button>
@@ -1198,13 +1198,13 @@ export default function TopNavigation() {
               <>
                 <button
                   onClick={() => navigate('/login')}
-                  className="px-4 py-2 text-sm font-medium text-white hover:text-[#00D9C8] hover:bg-[#1A1A1E] rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-white hover:text-[#03AAC7] hover:bg-[#252629] rounded-lg transition-colors"
                 >
                   Login
                 </button>
                 <button
                   onClick={() => navigate('/signup')}
-                  className="px-4 py-2 text-sm font-semibold text-[#0D0D0F] bg-[#00D9C8] hover:bg-[#00F5E1] rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-semibold text-[#151517] bg-[#03AAC7] hover:bg-[#26BFD4] rounded-lg transition-colors"
                 >
                   Sign Up
                 </button>
@@ -1212,12 +1212,12 @@ export default function TopNavigation() {
             )}
 
             {/* Utility Icons - Bitget style */}
-            <div className="hidden md:flex items-center space-x-1 border-l border-[#2A2A2E] pl-2 ml-1">
+            <div className="hidden md:flex items-center space-x-1 border-l border-[#2B2F36] pl-2 ml-1">
               {/* Language Dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setShowLanguageCurrency(!showLanguageCurrency)}
-                  className="p-2 text-[#9CA3AF] hover:text-white hover:bg-[#1A1A1E] rounded-lg transition-colors"
+                  className="p-2 text-[#9CA3AF] hover:text-white hover:bg-[#252629] rounded-lg transition-colors"
                 >
                   <Globe className="w-5 h-5" />
                 </button>
@@ -1230,7 +1230,7 @@ export default function TopNavigation() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-80 bg-[#141416] border border-[#2A2A2E] rounded-xl shadow-dropdown z-[100]"
+                      className="absolute right-0 mt-2 w-80 bg-[#1B1B1D] border border-[#2B2F36] rounded-xl shadow-dropdown z-[100]"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <div className="p-4">
@@ -1241,7 +1241,7 @@ export default function TopNavigation() {
                             value={languageSearch}
                             onChange={(e) => setLanguageSearch(e.target.value)}
                             placeholder={t('Search')}
-                            className="w-full px-3 py-2 bg-[#1A1A1E] border border-[#2A2A2E] rounded-lg text-white text-sm placeholder-[#6B7280] focus:outline-none focus:border-[#00D9C8] transition-all"
+                            className="w-full px-3 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm placeholder-[#6B7280] focus:outline-none focus:border-[#03AAC7] transition-all"
                           />
                         </div>
                         <div className="max-h-80 overflow-y-auto">
@@ -1253,8 +1253,8 @@ export default function TopNavigation() {
                                 setShowLanguageCurrency(false);
                               }}
                               className={`w-full text-left px-3 py-2 rounded-lg transition-all ${language === lang
-                                  ? 'text-[#00D9C8] font-medium bg-[#00D9C8]/10'
-                                  : 'text-[#9CA3AF] hover:text-white hover:bg-[#1A1A1E]'
+                                  ? 'text-[#03AAC7] font-medium bg-[#03AAC7]/10'
+                                  : 'text-[#9CA3AF] hover:text-white hover:bg-[#252629]'
                                 }`}
                             >
                               {lang}
@@ -1280,7 +1280,7 @@ export default function TopNavigation() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden border-t border-[#2A2A2E] bg-[#0D0D0F]"
+            className="lg:hidden border-t border-[#2B2F36] bg-[#151517]"
           >
             <div className="px-4 py-4 space-y-1">
               {navigation.map((item) => {
@@ -1292,7 +1292,7 @@ export default function TopNavigation() {
                     onClick={() => setShowMobileMenu(false)}
                     className={`
                       block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors
-                      ${isActive ? 'bg-[#141416] text-[#00D9C8]' : 'text-white hover:text-[#00D9C8] hover:bg-[#1A1A1E]'}
+                      ${isActive ? 'bg-[#1B1B1D] text-[#03AAC7]' : 'text-white hover:text-[#03AAC7] hover:bg-[#252629]'}
                     `}
                   >
                     {item.name}

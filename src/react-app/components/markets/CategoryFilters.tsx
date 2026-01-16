@@ -106,7 +106,7 @@ export default function CategoryFilters({
               className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
                 activeSubFilter === filter.id
                   ? 'bg-[#6A3DF4]/20 text-[#6A3DF4] border border-[#6A3DF4]/30'
-                  : 'bg-[#141416]/50 text-[#7F8C8D] hover:text-[#AAB0C0] hover:bg-[#141416]/70 border border-white/10'
+                  : 'bg-[#1B1B1D]/50 text-[#7F8C8D] hover:text-[#AAB0C0] hover:bg-[#1B1B1D]/70 border border-white/10'
               }`}
             >
               {filter.icon && <span className="text-[#E74C3C]">{filter.icon}</span>}

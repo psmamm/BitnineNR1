@@ -133,7 +133,7 @@ export default function CandlestickChart({
       const bodyHeight = Math.abs(bodyBottom - bodyTop);
       
       // Draw wick
-      ctx.strokeStyle = isGreen ? '#00D9C8' : '#F43F5E';
+      ctx.strokeStyle = isGreen ? '#03AAC7' : '#F43F5E';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(x, highY);
@@ -141,7 +141,7 @@ export default function CandlestickChart({
       ctx.stroke();
       
       // Draw body
-      ctx.fillStyle = isGreen ? '#00D9C8' : '#F43F5E';
+      ctx.fillStyle = isGreen ? '#03AAC7' : '#F43F5E';
       if (bodyHeight < 1) {
         // Draw line for doji
         ctx.lineWidth = 2;
@@ -186,7 +186,7 @@ export default function CandlestickChart({
 
     // Draw crosshair on hover
     if (mousePos) {
-      ctx.strokeStyle = '#00D9C8';
+      ctx.strokeStyle = '#03AAC7';
       ctx.lineWidth = 1;
       ctx.setLineDash([2, 2]);
       
@@ -251,7 +251,7 @@ export default function CandlestickChart({
 
   if (!data || data.length === 0) {
     return (
-      <div className={`${className} flex items-center justify-center bg-[#141416]/50 rounded-xl`} style={{ width, height }}>
+      <div className={`${className} flex items-center justify-center bg-[#1B1B1D]/50 rounded-xl`} style={{ width, height }}>
         <div className="text-center">
           <div className="text-[#7F8C8D] text-sm">No chart data available</div>
           <div className="text-[#AAB0C0] text-xs mt-1">Loading {interval} candlestick data...</div>
@@ -275,7 +275,7 @@ export default function CandlestickChart({
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="absolute bg-[#141416] border border-[#2A2A2E] rounded-lg p-3 pointer-events-none z-10 shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+          className="absolute bg-[#1B1B1D] border border-[#2B2F36] rounded-lg p-3 pointer-events-none z-10 shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
           style={{
             left: Math.min(mousePos.x + 10, width - 200),
             top: Math.max(mousePos.y - 100, 10)
@@ -289,7 +289,7 @@ export default function CandlestickChart({
             </div>
             <div className="flex justify-between items-center">
               <span className="text-[#7F8C8D]">High:</span>
-              <span className="text-[#00D9C8] font-medium">{formatPrice(hoveredCandle.high)}</span>
+              <span className="text-[#03AAC7] font-medium">{formatPrice(hoveredCandle.high)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-[#7F8C8D]">Low:</span>

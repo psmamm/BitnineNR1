@@ -77,7 +77,7 @@ export default function TokenUnlockTab() {
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
     >
-      <div className="bg-[#141416] rounded-xl p-4 border border-white/10">
+      <div className="bg-[#1B1B1D] rounded-xl p-4 border border-white/10">
         <div className="flex items-center space-x-3 mb-6">
           <div className="w-12 h-12 bg-[#6A3DF4]/10 rounded-xl flex items-center justify-center">
             <Calendar className="w-6 h-6 text-[#6A3DF4]" />
@@ -90,7 +90,7 @@ export default function TokenUnlockTab() {
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-[#141416]/30 border-b border-white/10">
+            <thead className="bg-[#1B1B1D]/30 border-b border-white/10">
               <tr className="text-sm font-medium text-[#7F8C8D]">
                 <th className="text-left py-4 px-4">Token</th>
                 <th className="text-left py-4 px-4">Unlock Date</th>
@@ -107,7 +107,7 @@ export default function TokenUnlockTab() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="hover:bg-[#141416]/30 transition-colors"
+                  className="hover:bg-[#1B1B1D]/30 transition-colors"
                 >
                   <td className="py-4 px-4">
                     <div>
@@ -146,7 +146,7 @@ export default function TokenUnlockTab() {
           </table>
         </div>
 
-        <div className="mt-6 p-4 bg-[#141416] rounded-xl border border-white/10">
+        <div className="mt-6 p-4 bg-[#1B1B1D] rounded-xl border border-white/10">
           <p className="text-sm text-[#7F8C8D]">
             Token unlock schedules can significantly impact token prices. High-impact unlocks may cause increased
             selling pressure. Monitor these events closely.
