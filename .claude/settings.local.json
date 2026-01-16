@@ -22,7 +22,9 @@
       "WebFetch(domain:circl.pages.dev)",
       "Bash(claude mcp list:*)",
       "Bash(claude mcp add:*)",
-      "Bash(wrangler d1 execute:*)"
+      "Bash(wrangler d1 execute:*)",
+      "Bash(npm i:*)",
+      "Bash(head:*)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Leand\\Desktop\\CIRCL"

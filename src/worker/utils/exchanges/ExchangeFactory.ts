@@ -18,6 +18,7 @@ import { BybitExchangeV2 } from './BybitExchangeV2';
 import { CoinbaseExchange } from './CoinbaseExchange';
 import { KrakenExchange } from './KrakenExchange';
 import { OKXExchange } from './OKXExchange';
+import { LighterExchange } from './LighterExchange';
 
 // ============================================================================
 // Types
@@ -159,6 +160,16 @@ const EXCHANGE_REGISTRY: Record<ExchangeId, ExchangeInfo> = {
     website: 'https://hyperliquid.xyz',
     apiDocs: 'https://hyperliquid.gitbook.io/',
     supported: false
+  },
+  lighter: {
+    id: 'lighter',
+    name: 'Lighter',
+    logo: '/exchanges/lighter.svg',
+    assetClasses: ['crypto'],
+    features: ['perpetuals', 'zero_fee', 'orderbook', 'leverage'],
+    website: 'https://lighter.xyz',
+    apiDocs: 'https://docs.lighter.xyz/',
+    supported: true
   },
 
   // Stock Brokers
@@ -364,6 +375,17 @@ export class ExchangeFactory {
       case 'bitget': {
         const exchange = new BitgetExchange(credentials, assetClass);
         exchange.setProductType(market === 'futures' ? 'USDT-FUTURES' : 'SPOT');
+        return exchange;
+      }
+
+      case 'lighter': {
+        const lighterCreds = credentials as { apiKey: string; apiSecret: string; accountIndex?: number; walletAddress?: string };
+        const exchange = new LighterExchange({
+          apiKey: lighterCreds.apiKey,
+          apiSecret: lighterCreds.apiSecret,
+          accountIndex: lighterCreds.accountIndex,
+          walletAddress: lighterCreds.walletAddress
+        }, assetClass);
         return exchange;
       }
 

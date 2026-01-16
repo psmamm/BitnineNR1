@@ -1,24 +1,30 @@
 /**
  * Terminal Deal Ticket Component
- * 
- * Bybit UTA 2.0 style Deal Ticket with Risk-First methodology.
+ *
+ * Multi-exchange Deal Ticket with Risk-First methodology.
+ * Supports: Bybit, Lighter DEX
  * Features:
+ * - Exchange selector (Bybit | Lighter)
  * - Tabs: Market, Limit, Conditional
  * - Risk-First Input (Primary)
  * - On-the-fly position size calculation
  * - Kill Switch integration
  * - Order execution with latency monitoring
+ * - 0% fees badge for Lighter DEX
  */
 
 import { useState, useEffect, useMemo } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Zap } from 'lucide-react';
 import { useSymbol } from '../../contexts/SymbolContext';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import { calculatePositionSize, type PositionSizeResult } from '../../utils/riskCalculator';
 import { useApiMutation } from '../../hooks/useApi';
 import { useKillSwitch } from '../../hooks/useKillSwitch';
+import { useLighterOrders } from '../../hooks/useLighterOrders';
+import { useLighterConnectionStatus } from '../../hooks/useLighterBalance';
 
 type OrderType = 'Market' | 'Limit' | 'Conditional';
+type Exchange = 'bybit' | 'lighter';
 
 interface TerminalDealTicketProps {
   currentPrice: number;
@@ -27,7 +33,11 @@ interface TerminalDealTicketProps {
 export function TerminalDealTicket({ currentPrice }: TerminalDealTicketProps) {
   const { symbol } = useSymbol();
   const baseAsset = symbol.replace(/USDT$|USD$|BUSD$/, '');
-  
+
+  // Exchange selection
+  const [selectedExchange, setSelectedExchange] = useState<Exchange>('bybit');
+  const [showExchangeDropdown, setShowExchangeDropdown] = useState(false);
+
   const [orderType, setOrderType] = useState<OrderType>('Limit');
   const [price, setPrice] = useState<number>(currentPrice);
   const [stopLoss, setStopLoss] = useState<number>(currentPrice * 0.98);
@@ -39,7 +49,14 @@ export function TerminalDealTicket({ currentPrice }: TerminalDealTicketProps) {
   const [availableBalance, setAvailableBalance] = useState<number>(0);
   const [orderLatency, setOrderLatency] = useState<number | null>(null);
 
-  const { mutate: placeOrder, loading: isPlacingOrder } = useApiMutation('/api/orders/bybit', { method: 'POST' });
+  // Exchange-specific hooks
+  const { mutate: placeBybitOrder, loading: isPlacingBybitOrder } = useApiMutation('/api/orders/bybit', { method: 'POST' });
+  const { placeOrder: placeLighterOrder } = useLighterOrders();
+  const { status: lighterStatus } = useLighterConnectionStatus();
+  const [isPlacingLighterOrder, setIsPlacingLighterOrder] = useState(false);
+
+  const isPlacingOrder = selectedExchange === 'bybit' ? isPlacingBybitOrder : isPlacingLighterOrder;
+  const isLighterConnected = lighterStatus?.connected ?? false;
   
   // Kill Switch integration
   const { killSwitch } = useKillSwitch({ calculatedRisk: riskAmount });
@@ -72,56 +89,90 @@ export function TerminalDealTicket({ currentPrice }: TerminalDealTicketProps) {
 
   const handleBuyLong = async () => {
     if (!positionSizeResult.isValid || isKillSwitchActive) return;
+    if (selectedExchange === 'lighter' && !isLighterConnected) return;
 
     const startTime = performance.now();
-    
+
     try {
-      await placeOrder({
-        symbol,
-        side: 'Buy',
-        orderType: orderType.toLowerCase(),
-        qty: positionSizeResult.positionSize,
-        price: orderType === 'Market' ? undefined : price,
-        stopLoss,
-        takeProfit,
-        leverage,
-        marginMode,
-      });
-      
+      if (selectedExchange === 'lighter') {
+        setIsPlacingLighterOrder(true);
+        await placeLighterOrder({
+          symbol: symbol.replace('USDT', '-USDT'), // Lighter uses BTC-USDT format
+          side: 'buy',
+          type: orderType.toLowerCase() as 'market' | 'limit' | 'stop' | 'stop_limit',
+          quantity: positionSizeResult.positionSize,
+          price: orderType === 'Market' ? undefined : price,
+          stopLoss,
+          takeProfit,
+          leverage,
+        });
+        setIsPlacingLighterOrder(false);
+      } else {
+        await placeBybitOrder({
+          symbol,
+          side: 'Buy',
+          orderType: orderType.toLowerCase(),
+          qty: positionSizeResult.positionSize,
+          price: orderType === 'Market' ? undefined : price,
+          stopLoss,
+          takeProfit,
+          leverage,
+          marginMode,
+        });
+      }
+
       const latency = performance.now() - startTime;
       setOrderLatency(latency);
-      
+
       // Reset latency display after 3 seconds
       setTimeout(() => setOrderLatency(null), 3000);
     } catch (error) {
       console.error('Order placement failed:', error);
+      setIsPlacingLighterOrder(false);
     }
   };
 
   const handleSellShort = async () => {
     if (!positionSizeResult.isValid || isKillSwitchActive) return;
+    if (selectedExchange === 'lighter' && !isLighterConnected) return;
 
     const startTime = performance.now();
-    
+
     try {
-      await placeOrder({
-        symbol,
-        side: 'Sell',
-        orderType: orderType.toLowerCase(),
-        qty: positionSizeResult.positionSize,
-        price: orderType === 'Market' ? undefined : price,
-        stopLoss,
-        takeProfit,
-        leverage,
-        marginMode,
-      });
-      
+      if (selectedExchange === 'lighter') {
+        setIsPlacingLighterOrder(true);
+        await placeLighterOrder({
+          symbol: symbol.replace('USDT', '-USDT'), // Lighter uses BTC-USDT format
+          side: 'sell',
+          type: orderType.toLowerCase() as 'market' | 'limit' | 'stop' | 'stop_limit',
+          quantity: positionSizeResult.positionSize,
+          price: orderType === 'Market' ? undefined : price,
+          stopLoss,
+          takeProfit,
+          leverage,
+        });
+        setIsPlacingLighterOrder(false);
+      } else {
+        await placeBybitOrder({
+          symbol,
+          side: 'Sell',
+          orderType: orderType.toLowerCase(),
+          qty: positionSizeResult.positionSize,
+          price: orderType === 'Market' ? undefined : price,
+          stopLoss,
+          takeProfit,
+          leverage,
+          marginMode,
+        });
+      }
+
       const latency = performance.now() - startTime;
       setOrderLatency(latency);
-      
+
       setTimeout(() => setOrderLatency(null), 3000);
     } catch (error) {
       console.error('Order placement failed:', error);
+      setIsPlacingLighterOrder(false);
     }
   };
 
@@ -143,6 +194,64 @@ export function TerminalDealTicket({ currentPrice }: TerminalDealTicketProps) {
           </div>
         </div>
       )}
+
+      {/* Exchange Selector */}
+      <div className="flex items-center justify-between px-3 py-2 border-b border-[#2B2F36]">
+        <div className="relative">
+          <button
+            onClick={() => setShowExchangeDropdown(!showExchangeDropdown)}
+            className="flex items-center gap-2 text-[#EAECEF] hover:text-white bg-[#2B2F36] px-3 py-1.5 rounded text-xs transition-colors"
+          >
+            <span className="font-medium">
+              {selectedExchange === 'bybit' ? 'Bybit' : 'Lighter'}
+            </span>
+            {selectedExchange === 'lighter' && (
+              <span className="flex items-center gap-1 text-[10px] text-[#10B981] bg-[#10B981]/10 px-1.5 py-0.5 rounded">
+                <Zap size={10} />
+                0% FEE
+              </span>
+            )}
+            <ChevronDown className="w-3 h-3" />
+          </button>
+
+          {showExchangeDropdown && (
+            <div className="absolute left-0 top-full mt-1 bg-[#2B2F36] rounded shadow-xl z-50 w-40 border border-[#161A1E]">
+              <button
+                onClick={() => {
+                  setSelectedExchange('bybit');
+                  setShowExchangeDropdown(false);
+                }}
+                className={`w-full text-left px-3 py-2 text-xs transition-colors ${
+                  selectedExchange === 'bybit'
+                    ? 'bg-[#00D9C8]/10 text-[#00D9C8]'
+                    : 'text-[#EAECEF] hover:bg-[#161A1E]'
+                }`}
+              >
+                Bybit
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedExchange('lighter');
+                  setShowExchangeDropdown(false);
+                }}
+                className={`w-full text-left px-3 py-2 text-xs transition-colors flex items-center justify-between ${
+                  selectedExchange === 'lighter'
+                    ? 'bg-[#00D9C8]/10 text-[#00D9C8]'
+                    : 'text-[#EAECEF] hover:bg-[#161A1E]'
+                }`}
+              >
+                <span>Lighter</span>
+                <span className="text-[10px] text-[#10B981]">0% FEE</span>
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Lighter connection warning */}
+        {selectedExchange === 'lighter' && !isLighterConnected && (
+          <div className="text-[10px] text-[#F6465D]">Not connected</div>
+        )}
+      </div>
 
       {/* Order Type Tabs */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-[#2B2F36]">
@@ -336,14 +445,24 @@ export function TerminalDealTicket({ currentPrice }: TerminalDealTicketProps) {
         <div className="flex gap-2">
           <button
             onClick={handleBuyLong}
-            disabled={!positionSizeResult.isValid || isKillSwitchActive || isPlacingOrder}
+            disabled={
+              !positionSizeResult.isValid ||
+              isKillSwitchActive ||
+              isPlacingOrder ||
+              (selectedExchange === 'lighter' && !isLighterConnected)
+            }
             className="flex-1 bg-[#2EAD65] hover:bg-[#26965a] disabled:bg-[#2B2F36] disabled:text-[#848E9C] disabled:cursor-not-allowed text-white font-medium py-2.5 rounded text-sm transition-colors"
           >
             {isPlacingOrder ? 'Placing...' : 'Buy/Long'}
           </button>
           <button
             onClick={handleSellShort}
-            disabled={!positionSizeResult.isValid || isKillSwitchActive || isPlacingOrder}
+            disabled={
+              !positionSizeResult.isValid ||
+              isKillSwitchActive ||
+              isPlacingOrder ||
+              (selectedExchange === 'lighter' && !isLighterConnected)
+            }
             className="flex-1 bg-[#F6465D] hover:bg-[#d93d52] disabled:bg-[#2B2F36] disabled:text-[#848E9C] disabled:cursor-not-allowed text-white font-medium py-2.5 rounded text-sm transition-colors"
           >
             {isPlacingOrder ? 'Placing...' : 'Sell/Short'}

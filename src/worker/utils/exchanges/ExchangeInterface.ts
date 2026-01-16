@@ -16,7 +16,7 @@ export type ExchangeId =
   // Crypto CEXs
   | 'bybit' | 'binance' | 'coinbase' | 'kraken' | 'okx' | 'bitget'
   // Crypto DEXs
-  | 'uniswap' | 'jupiter' | 'dydx' | 'gmx' | 'hyperliquid'
+  | 'uniswap' | 'jupiter' | 'dydx' | 'gmx' | 'hyperliquid' | 'lighter'
   // Stock Brokers
   | 'interactive_brokers' | 'td_ameritrade' | 'robinhood' | 'webull' | 'fidelity'
   // Forex
@@ -407,6 +407,7 @@ export abstract class ExchangeInterface {
       dydx: 'dYdX',
       gmx: 'GMX',
       hyperliquid: 'Hyperliquid',
+      lighter: 'Lighter',
       interactive_brokers: 'Interactive Brokers',
       td_ameritrade: 'TD Ameritrade',
       robinhood: 'Robinhood',

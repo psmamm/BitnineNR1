@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { logger } from '@/react-app/utils/logger';
 
 export interface OrderbookLevel {
   price: string;
@@ -100,12 +101,12 @@ export function useBinanceOrderbook({
             spreadPercent
           });
         } catch (e) {
-          console.error('[Orderbook] Parse error:', e);
+          logger.error('[Orderbook] Parse error:', e);
         }
       };
 
       ws.onerror = (event) => {
-        console.error('[Orderbook] WebSocket error:', event);
+        logger.error('[Orderbook] WebSocket error:', event);
         setError('Connection error');
       };
 

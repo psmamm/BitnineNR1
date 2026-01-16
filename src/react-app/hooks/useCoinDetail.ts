@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { apiConfig } from '@/react-app/config/apiConfig';
+import { logger } from '@/react-app/utils/logger';
 
 export interface CoinDetailData {
   symbol: string;
@@ -370,12 +371,12 @@ export function useCoinDetail(symbol: string) {
             } : null);
           }
         } catch (err) {
-          console.error('Failed to parse WebSocket message:', err);
+          logger.error('Failed to parse WebSocket message:', err);
         }
       };
-      
+
       ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        logger.error('WebSocket error:', error);
         setWsConnected(false);
       };
       

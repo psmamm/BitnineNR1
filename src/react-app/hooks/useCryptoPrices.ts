@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { logger } from '@/react-app/utils/logger';
 
 export interface CryptoPrice {
   symbol: string;
@@ -233,12 +234,12 @@ export function useCryptoPrices() {
           }
         }
       } catch (error) {
-        console.error('WebSocket message error:', error);
+        logger.error('WebSocket message error:', error);
       }
     };
 
     ws.onerror = () => {
-      console.error('WebSocket connection error');
+      logger.error('WebSocket connection error');
     };
 
     return () => {

@@ -13,6 +13,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import type { OrderbookData, OrderbookLevel, BybitOrderbookSnapshot, BybitOrderbookDelta, Symbol } from '../types/terminal';
+import { logger } from '@/react-app/utils/logger';
 
 interface UseBybitOrderbookResult {
   orderbook: OrderbookData | null;
@@ -187,12 +188,12 @@ export function useBybitOrderbook(symbol: string): UseBybitOrderbookResult {
             }
           }
         } catch (err) {
-          console.error('Error parsing WebSocket message:', err);
+          logger.error('Error parsing WebSocket message:', err);
         }
       };
 
       ws.onerror = (err) => {
-        console.error('WebSocket error:', err);
+        logger.error('WebSocket error:', err);
         setError('WebSocket connection error');
         setIsLoading(false);
       };

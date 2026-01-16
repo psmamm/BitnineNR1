@@ -27,10 +27,12 @@ Als CTO bist du verantwortlich für:
 
 ### URLs
 - **Production Frontend:** https://circl.pages.dev
-- **Production Backend:** https://circl.workers.dev (Cloudflare Workers)
-- **Preview/Staging:** https://c498b7d9.circl.pages.dev/
+- **Production Backend:** Cloudflare Workers (über Pages Functions)
+- **Preview/Staging:** https://5b548a38.circl.pages.dev/
 - **Development Frontend:** http://localhost:5173
 - **Development Backend:** http://localhost:8787
+
+**WICHTIG:** Preview-URLs (z.B. `*.circl.pages.dev`) funktionieren nur wenn der Worker auch deployed ist. Bei "Internal Server Error" oder JSON-Parse-Fehlern: Backend mit `wrangler deploy` deployen!
 
 ### Test Account
 - **Email:** [Ahmed_Khalid2001@gmx.de]

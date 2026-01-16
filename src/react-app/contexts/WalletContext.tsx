@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState, useCallback, ReactNode 
 import { createPublicClient, http, formatEther, type Address, type Chain } from 'viem';
 import { mainnet, bsc, polygon, arbitrum, optimism, avalanche } from 'viem/chains';
 import { Connection, PublicKey } from '@solana/web3.js';
+import { useAuth } from './AuthContext';
+import { logger } from '../utils/logger';
 
 export type WalletType = 'metamask' | 'trustwallet' | 'phantom' | 'coinbase' | 'walletconnect' | null;
 export type ChainType = 'ethereum' | 'bsc' | 'polygon' | 'arbitrum' | 'optimism' | 'avalanche' | 'solana';
@@ -16,12 +18,25 @@ export interface WalletState {
   error: string | null;
 }
 
+export interface LighterConnectionState {
+  isConnected: boolean;
+  accountIndex: number | null;
+  walletAddress: string | null;
+  isLoading: boolean;
+  error: string | null;
+}
+
 interface WalletContextType {
   wallet: WalletState;
   connectWallet: (walletType: WalletType, chain?: ChainType) => Promise<void>;
   disconnectWallet: () => void;
   switchChain: (chain: ChainType) => Promise<void>;
   refreshBalance: () => Promise<void>;
+  // Lighter DEX integration
+  lighter: LighterConnectionState;
+  connectToLighter: (accountIndex: number, apiKey: string, apiSecret: string) => Promise<void>;
+  disconnectLighter: () => Promise<void>;
+  refreshLighterStatus: () => Promise<void>;
 }
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
@@ -61,7 +76,11 @@ const getSolanaConnection = async (): Promise<Connection> => {
   return new Connection(SOLANA_RPC_ENDPOINTS[0], 'confirmed');
 };
 
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
 export function WalletProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+
   const [wallet, setWallet] = useState<WalletState>({
     isConnected: false,
     walletType: null,
@@ -69,6 +88,15 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     chain: null,
     chainId: null,
     balance: null,
+    error: null,
+  });
+
+  // Lighter DEX connection state
+  const [lighter, setLighter] = useState<LighterConnectionState>({
+    isConnected: false,
+    accountIndex: null,
+    walletAddress: null,
+    isLoading: false,
     error: null,
   });
 
@@ -420,6 +448,192 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     }
   }, [wallet.isConnected, wallet.address, wallet.chain]);
 
+  // Check Lighter connection status on mount and when user changes
+  const refreshLighterStatus = useCallback(async () => {
+    if (!user) {
+      setLighter({
+        isConnected: false,
+        accountIndex: null,
+        walletAddress: null,
+        isLoading: false,
+        error: null,
+      });
+      return;
+    }
+
+    try {
+      setLighter(prev => ({ ...prev, isLoading: true, error: null }));
+
+      const token = await user?.getIdToken();
+      const response = await fetch(`${API_BASE}/api/lighter/connection-status`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          // Not connected
+          setLighter({
+            isConnected: false,
+            accountIndex: null,
+            walletAddress: null,
+            isLoading: false,
+            error: null,
+          });
+          return;
+        }
+        throw new Error(`Failed to check Lighter status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      setLighter({
+        isConnected: data.connected || false,
+        accountIndex: data.accountIndex ?? null,
+        walletAddress: data.walletAddress ?? null,
+        isLoading: false,
+        error: null,
+      });
+
+      // Also persist to localStorage
+      if (data.connected) {
+        localStorage.setItem('lighter-connection', JSON.stringify({
+          accountIndex: data.accountIndex,
+          walletAddress: data.walletAddress,
+        }));
+      }
+    } catch (err) {
+      logger.error('Error checking Lighter status:', err);
+      setLighter(prev => ({
+        ...prev,
+        isLoading: false,
+        error: err instanceof Error ? err.message : 'Failed to check Lighter status',
+      }));
+    }
+  }, [user]);
+
+  // Connect to Lighter DEX
+  const connectToLighter = useCallback(async (
+    accountIndex: number,
+    apiKey: string,
+    apiSecret: string
+  ) => {
+    if (!user) {
+      throw new Error('Must be logged in to connect to Lighter');
+    }
+
+    if (!wallet.isConnected || !wallet.address) {
+      throw new Error('Must connect a wallet first');
+    }
+
+    try {
+      setLighter(prev => ({ ...prev, isLoading: true, error: null }));
+
+      const token = await user?.getIdToken();
+      const response = await fetch(`${API_BASE}/api/lighter/connect-wallet`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          wallet_address: wallet.address,
+          account_index: accountIndex,
+          api_key: apiKey,
+          api_secret: apiSecret,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Failed to connect to Lighter');
+      }
+
+      setLighter({
+        isConnected: true,
+        accountIndex: accountIndex,
+        walletAddress: wallet.address,
+        isLoading: false,
+        error: null,
+      });
+
+      // Persist to localStorage
+      localStorage.setItem('lighter-connection', JSON.stringify({
+        accountIndex,
+        walletAddress: wallet.address,
+      }));
+
+      logger.log('Successfully connected to Lighter DEX', { accountIndex });
+    } catch (err) {
+      logger.error('Error connecting to Lighter:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to connect to Lighter';
+      setLighter(prev => ({
+        ...prev,
+        isLoading: false,
+        error: errorMessage,
+      }));
+      throw err;
+    }
+  }, [user, wallet.isConnected, wallet.address]);
+
+  // Disconnect from Lighter DEX
+  const disconnectLighter = useCallback(async () => {
+    if (!user) return;
+
+    try {
+      setLighter(prev => ({ ...prev, isLoading: true, error: null }));
+
+      const token = await user?.getIdToken();
+      const response = await fetch(`${API_BASE}/api/lighter/disconnect`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to disconnect from Lighter');
+      }
+
+      setLighter({
+        isConnected: false,
+        accountIndex: null,
+        walletAddress: null,
+        isLoading: false,
+        error: null,
+      });
+
+      localStorage.removeItem('lighter-connection');
+      logger.log('Disconnected from Lighter DEX');
+    } catch (err) {
+      logger.error('Error disconnecting from Lighter:', err);
+      setLighter(prev => ({
+        ...prev,
+        isLoading: false,
+        error: err instanceof Error ? err.message : 'Failed to disconnect',
+      }));
+      throw err;
+    }
+  }, [user]);
+
+  // Check Lighter status on mount and when user changes
+  useEffect(() => {
+    if (user) {
+      refreshLighterStatus();
+    } else {
+      setLighter({
+        isConnected: false,
+        accountIndex: null,
+        walletAddress: null,
+        isLoading: false,
+        error: null,
+      });
+    }
+  }, [user, refreshLighterStatus]);
+
   return (
     <WalletContext.Provider
       value={{
@@ -428,6 +642,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         disconnectWallet,
         switchChain,
         refreshBalance,
+        // Lighter
+        lighter,
+        connectToLighter,
+        disconnectLighter,
+        refreshLighterStatus,
       }}
     >
       {children}

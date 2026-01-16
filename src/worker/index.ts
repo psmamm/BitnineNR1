@@ -22,6 +22,7 @@ import { subscriptionsRouter } from "./routes/subscriptions";
 import { discipline } from "./routes/discipline";
 import { twoFactorRouter } from "./routes/two-factor";
 import { securityRouter } from "./routes/security";
+import { lighterRouter } from "./routes/lighter";
 import { errorHandlerMiddleware } from "./utils/errorHandler";
 import type { D1Database, R2Bucket } from "@cloudflare/workers-types";
 
@@ -1221,5 +1222,6 @@ app.route('/api/subscriptions', subscriptionsRouter);
 app.route('/api/discipline', discipline);
 app.route('/api/2fa', twoFactorRouter);
 app.route('/api/security', securityRouter);
+app.route('/api/lighter', lighterRouter);
 
 export default app;

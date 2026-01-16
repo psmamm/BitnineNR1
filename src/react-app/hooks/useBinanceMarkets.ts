@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { apiConfig } from '@/react-app/config/apiConfig';
 import { getLogoUrl } from '@/react-app/utils/coinLogos';
+import { logger } from '@/react-app/utils/logger';
 
 export interface BinanceSymbol {
   symbol: string;
@@ -390,12 +391,12 @@ export function useBinanceMarkets() {
             });
           }
         } catch (err) {
-          console.error('Failed to parse WebSocket message:', err);
+          logger.error('Failed to parse WebSocket message:', err);
         }
       };
-      
+
       ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        logger.error('WebSocket error:', error);
         setWsConnected(false);
       };
       

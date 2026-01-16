@@ -5,10 +5,14 @@
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { Star, ChevronDown, Search, X, Loader2, LayoutGrid, Eye, EyeOff, GripVertical } from 'lucide-react';
+import { Star, ChevronDown, Search, X, Loader2, LayoutGrid, Eye, EyeOff, GripVertical, Zap } from 'lucide-react';
 import { useBinanceMarkets } from '../hooks/useBinanceMarkets';
 import { useBinanceOrderbook } from '../hooks/useBinanceOrderbook';
 import TopNavigation from '../components/TopNavigation';
+import { useWallet } from '../contexts/WalletContext';
+import { LighterOnboarding } from '../components/lighter/LighterOnboarding';
+
+type ExchangeOption = 'bybit' | 'lighter';
 
 export type TradingType = 'spot' | 'margin' | 'futures';
 
@@ -46,6 +50,10 @@ export default function TradingPage() {
   const [leverage] = useState(15);
   const [orderbookTab, setOrderbookTab] = useState<'orderbook' | 'trades'>('orderbook');
   const [tradeTab, setTradeTab] = useState<'trade' | 'bots'>('trade');
+  const [selectedExchange, setSelectedExchange] = useState<ExchangeOption>('bybit');
+  const [showLighterOnboarding, setShowLighterOnboarding] = useState(false);
+
+  const { lighter } = useWallet();
 
   // Resizable & toggleable panels
   const [showOrderbook, setShowOrderbook] = useState(true);
@@ -194,6 +202,14 @@ export default function TradingPage() {
     );
   };
 
+  const handleExchangeSelect = (exchange: ExchangeOption) => {
+    if (exchange === 'lighter' && !lighter.isConnected) {
+      setShowLighterOnboarding(true);
+      return;
+    }
+    setSelectedExchange(exchange);
+  };
+
   const formatVolume = (vol: number) => {
     if (vol >= 1e9) return `${(vol / 1e9).toFixed(2)}B`;
     if (vol >= 1e6) return `${(vol / 1e6).toFixed(2)}M`;
@@ -301,17 +317,18 @@ export default function TradingPage() {
           <div className="ml-auto flex items-center gap-2">
             <button
               onClick={() => setShowOrderbook(!showOrderbook)}
-              className={`flex items-center gap-1.5 px-2 py-1 rounded text-[11px] transition-colors ${showOrderbook ? 'bg-[#00d9c8]/10 text-[#00d9c8]' : 'bg-[#2b2f36] text-[#848e9c] hover:text-white'}`}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] transition-all duration-200 ${showOrderbook ? 'bg-[#00d9c8]/15 text-[#00d9c8] border border-[#00d9c8]/30' : 'bg-[#2b2f36] text-[#848e9c] hover:text-white hover:bg-[#363c45]'}`}
             >
-              {showOrderbook ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
-              <span className="hidden sm:inline">Orderbook</span>
+              {showOrderbook ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+              <span className="hidden sm:inline font-medium">Orderbook</span>
             </button>
-            <button className="flex items-center gap-1.5 px-2 py-1 bg-[#2b2f36] hover:bg-[#363c45] rounded text-[11px] text-[#848e9c] hover:text-white transition-colors">
-              <LayoutGrid className="w-3 h-3" />
+            <button className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-[11px] text-[#848e9c] hover:text-white transition-all duration-200 border border-transparent hover:border-[#484e57]">
+              <LayoutGrid className="w-3.5 h-3.5" />
             </button>
             {wsConnected && (
-              <span className="flex items-center gap-1 text-[10px] text-[#0ecb81]">
-                <span className="w-1.5 h-1.5 bg-[#0ecb81] rounded-full animate-pulse" />
+              <span className="flex items-center gap-1.5 text-[10px] text-[#0ecb81] bg-[#0ecb81]/10 px-2 py-1 rounded-full">
+                <span className="w-1.5 h-1.5 bg-[#0ecb81] rounded-full animate-pulse shadow-sm shadow-[#0ecb81]" />
+                <span className="font-medium">Live</span>
               </span>
             )}
           </div>
@@ -376,13 +393,13 @@ export default function TradingPage() {
                 </div>
               </div>
               <div className="flex-1 flex flex-col items-center justify-center text-center">
-                <div className="text-[#848e9c] text-[11px] mb-0.5">Available balance: 0.00</div>
-                <div className="text-[#5a6068] text-[10px] mb-2 max-w-[300px]">Transfer funds to your futures account to get started</div>
-                <div className="flex gap-1.5">
-                  <button className="px-2.5 py-1 bg-[#2b2f36] hover:bg-[#363c45] rounded text-[10px] text-white transition-colors">Deposit</button>
-                  <button className="px-2.5 py-1 bg-[#2b2f36] hover:bg-[#363c45] rounded text-[10px] text-white transition-colors">Transfer</button>
-                  <button className="px-2.5 py-1 bg-[#2b2f36] hover:bg-[#363c45] rounded text-[10px] text-white transition-colors">Demo</button>
-                  <button className="px-2.5 py-1 bg-[#00d9c8] hover:bg-[#00c4b5] rounded text-[10px] text-black font-medium transition-colors">Start Trading</button>
+                <div className="text-[#848e9c] text-[11px] mb-1">Available balance: <span className="text-white font-mono">0.00</span></div>
+                <div className="text-[#5a6068] text-[10px] mb-3 max-w-[300px]">Transfer funds to your futures account to get started</div>
+                <div className="flex gap-2">
+                  <button className="px-3 py-1.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-[10px] text-white transition-all duration-200 hover:scale-105 border border-transparent hover:border-[#484e57]">Deposit</button>
+                  <button className="px-3 py-1.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-[10px] text-white transition-all duration-200 hover:scale-105 border border-transparent hover:border-[#484e57]">Transfer</button>
+                  <button className="px-3 py-1.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-[10px] text-white transition-all duration-200 hover:scale-105 border border-transparent hover:border-[#484e57]">Demo</button>
+                  <button className="px-4 py-1.5 bg-gradient-to-r from-[#00d9c8] to-[#0ecb81] hover:from-[#00f5e1] hover:to-[#25e09b] rounded-lg text-[10px] text-black font-semibold transition-all duration-300 hover:scale-105 shadow-lg shadow-[#00d9c8]/20">Start Trading</button>
                 </div>
               </div>
             </div>
@@ -444,117 +461,178 @@ export default function TradingPage() {
           {/* Right: Trade Panel */}
           <div className="w-[260px] flex flex-col bg-[#161a1e] border-l border-[#2b2f36] shrink-0">
             {/* Trade/Bots tabs */}
-            <div className="h-8 border-b border-[#2b2f36] flex items-center px-3 text-xs shrink-0">
+            <div className="h-9 border-b border-[#2b2f36] flex items-center px-3 text-xs shrink-0 gap-1">
               <button onClick={() => setTradeTab('trade')}
-                className={`mr-4 font-medium ${tradeTab === 'trade' ? 'text-white' : 'text-[#848e9c]'}`}>Trade</button>
+                className={`px-3 py-1.5 rounded-md font-semibold transition-all duration-200 ${tradeTab === 'trade' ? 'text-white bg-[#2b2f36]' : 'text-[#848e9c] hover:text-white'}`}>Trade</button>
               <button onClick={() => setTradeTab('bots')}
-                className={tradeTab === 'bots' ? 'text-white' : 'text-[#848e9c]'}>Bots</button>
+                className={`px-3 py-1.5 rounded-md font-medium transition-all duration-200 ${tradeTab === 'bots' ? 'text-white bg-[#2b2f36]' : 'text-[#848e9c] hover:text-white'}`}>Bots</button>
+            </div>
+
+            {/* Exchange Selector */}
+            <div className="px-3 py-3 border-b border-[#2b2f36] shrink-0">
+              <div className="flex items-center gap-1.5 bg-[#0b0e11] rounded-xl p-1 shadow-inner">
+                <button
+                  onClick={() => handleExchangeSelect('bybit')}
+                  className={`flex-1 py-2 px-4 rounded-lg text-xs font-semibold transition-all duration-300 ${
+                    selectedExchange === 'bybit'
+                      ? 'bg-[#2b2f36] text-white shadow-lg shadow-black/20'
+                      : 'text-[#848e9c] hover:text-white hover:bg-[#1e2329]'
+                  }`}
+                >
+                  Bybit
+                </button>
+                <button
+                  onClick={() => handleExchangeSelect('lighter')}
+                  className={`flex-1 py-2 px-4 rounded-lg text-xs font-semibold transition-all duration-300 flex items-center justify-center gap-1.5 ${
+                    selectedExchange === 'lighter'
+                      ? 'bg-gradient-to-r from-[#00d9c8]/25 to-[#0ecb81]/25 text-[#00d9c8] border border-[#00d9c8]/40 shadow-lg shadow-[#00d9c8]/10'
+                      : 'text-[#848e9c] hover:text-[#00d9c8] hover:bg-[#1e2329]'
+                  }`}
+                >
+                  <Zap className={`w-3.5 h-3.5 ${selectedExchange === 'lighter' ? 'animate-pulse' : ''}`} />
+                  Lighter
+                  {selectedExchange === 'lighter' && (
+                    <span className="text-[9px] bg-gradient-to-r from-[#0ecb81] to-[#00d9c8] text-black px-1.5 py-0.5 rounded-full font-bold ml-1 shadow-sm">
+                      0% FEES
+                    </span>
+                  )}
+                </button>
+              </div>
+              {selectedExchange === 'lighter' && (
+                <div className="mt-2 text-[10px] text-[#0ecb81] flex items-center gap-1.5 bg-[#0ecb81]/5 px-2 py-1 rounded-md">
+                  <span className="w-2 h-2 bg-[#0ecb81] rounded-full animate-pulse shadow-sm shadow-[#0ecb81]" />
+                  Zero-fee trading on Arbitrum L2
+                </div>
+              )}
             </div>
 
             {/* Margin Mode & Leverage */}
-            <div className="px-3 py-2 border-b border-[#2b2f36] shrink-0">
+            <div className="px-3 py-2.5 border-b border-[#2b2f36] shrink-0">
               <div className="flex items-center gap-2 text-xs">
                 <button onClick={() => setMarginMode(marginMode === 'isolated' ? 'cross' : 'isolated')}
-                  className="flex items-center gap-1 px-2 py-1 bg-[#2b2f36] rounded text-white">
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-white font-medium transition-all duration-200 border border-transparent hover:border-[#484e57]">
                   {marginMode === 'isolated' ? 'Isolated' : 'Cross'}
-                  <ChevronDown className="w-3 h-3" />
+                  <ChevronDown className="w-3 h-3 text-[#848e9c]" />
                 </button>
-                <button className="flex items-center gap-1 px-2 py-1 bg-[#2b2f36] rounded text-[#00d9c8] font-medium">
+                <button className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-[#00d9c8]/10 to-[#00d9c8]/5 hover:from-[#00d9c8]/20 hover:to-[#00d9c8]/10 rounded-lg text-[#00d9c8] font-bold transition-all duration-200 border border-[#00d9c8]/20">
                   {leverage}.00x
                 </button>
-                <button className="ml-auto px-2 py-1 bg-[#2b2f36] rounded text-[#848e9c]">$</button>
+                <button className="ml-auto px-3 py-1.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-[#848e9c] hover:text-white transition-all duration-200 border border-transparent hover:border-[#484e57]">$</button>
               </div>
             </div>
 
             {/* Order Type Tabs */}
-            <div className="px-3 py-2 border-b border-[#2b2f36] shrink-0">
-              <div className="flex items-center gap-2 text-xs">
+            <div className="px-3 py-2.5 border-b border-[#2b2f36] shrink-0">
+              <div className="flex items-center gap-1 text-xs bg-[#0b0e11] rounded-lg p-0.5">
                 <button onClick={() => setOrderType('limit')}
-                  className={orderType === 'limit' ? 'text-white font-medium' : 'text-[#848e9c]'}>Limit</button>
+                  className={`px-3 py-1.5 rounded-md transition-all duration-200 ${orderType === 'limit' ? 'bg-[#2b2f36] text-white font-semibold shadow-sm' : 'text-[#848e9c] hover:text-white'}`}>Limit</button>
                 <button onClick={() => setOrderType('market')}
-                  className={orderType === 'market' ? 'text-white font-medium' : 'text-[#848e9c]'}>Market</button>
+                  className={`px-3 py-1.5 rounded-md transition-all duration-200 ${orderType === 'market' ? 'bg-[#2b2f36] text-white font-semibold shadow-sm' : 'text-[#848e9c] hover:text-white'}`}>Market</button>
                 <button onClick={() => setOrderType('conditional')}
-                  className={`flex items-center gap-1 ${orderType === 'conditional' ? 'text-white font-medium' : 'text-[#848e9c]'}`}>
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-all duration-200 ${orderType === 'conditional' ? 'bg-[#2b2f36] text-white font-semibold shadow-sm' : 'text-[#848e9c] hover:text-white'}`}>
                   Conditional <ChevronDown className="w-3 h-3" />
                 </button>
               </div>
             </div>
 
             {/* Order Form */}
-            <div className="flex-1 overflow-auto px-3 py-2">
-              <div className="text-xs text-[#848e9c] mb-2 flex justify-between">
+            <div className="flex-1 overflow-auto px-3 py-3">
+              <div className="text-xs text-[#848e9c] mb-3 flex justify-between items-center">
                 <span>Available</span>
-                <span className="text-white">0.0000 USDT</span>
+                <span className="text-white font-medium">0.0000 USDT</span>
               </div>
 
               {/* Price Input */}
-              <div className="mb-2">
-                <div className="flex items-center justify-between text-xs text-[#848e9c] mb-1">
+              <div className="mb-3">
+                <div className="flex items-center justify-between text-xs text-[#848e9c] mb-1.5">
                   <span>Price</span>
-                  <span className="text-[#00d9c8] cursor-pointer">Last</span>
+                  <span className="text-[#00d9c8] cursor-pointer hover:text-[#00f5e1] transition-colors font-medium">Last</span>
                 </div>
-                <div className="flex items-center bg-[#2b2f36] rounded px-2 py-1.5">
-                  <input type="text" value={formatPrice(currentPrice)} className="flex-1 bg-transparent text-white text-sm outline-none" />
+                <div className="flex items-center bg-[#1e2329] hover:bg-[#252930] rounded-lg px-3 py-2.5 border border-[#2b2f36] hover:border-[#363c45] transition-all duration-200 focus-within:border-[#00d9c8]/50">
+                  <input type="text" value={formatPrice(currentPrice)} className="flex-1 bg-transparent text-white text-sm outline-none font-mono" />
                 </div>
               </div>
 
               {/* Quantity Input */}
-              <div className="mb-2">
-                <div className="flex items-center justify-between text-xs text-[#848e9c] mb-1">
+              <div className="mb-3">
+                <div className="flex items-center justify-between text-xs text-[#848e9c] mb-1.5">
                   <span>Quantity</span>
-                  <span className="text-white">{baseAsset}</span>
+                  <span className="text-white font-medium">{baseAsset}</span>
                 </div>
-                <div className="flex items-center bg-[#2b2f36] rounded px-2 py-1.5">
-                  <input type="text" value="0.000000" className="flex-1 bg-transparent text-white text-sm outline-none" />
+                <div className="flex items-center bg-[#1e2329] hover:bg-[#252930] rounded-lg px-3 py-2.5 border border-[#2b2f36] hover:border-[#363c45] transition-all duration-200 focus-within:border-[#00d9c8]/50">
+                  <input type="text" value="0.000000" className="flex-1 bg-transparent text-white text-sm outline-none font-mono" />
                 </div>
               </div>
 
               {/* Slider */}
-              <div className="mb-3">
-                <input type="range" min="0" max="100" className="w-full h-1 bg-[#2b2f36] rounded-lg appearance-none cursor-pointer" />
+              <div className="mb-4 relative">
+                <div className="flex justify-center items-center py-2">
+                  <div className="w-3 h-3 bg-[#00d9c8] rounded-full shadow-lg shadow-[#00d9c8]/30 cursor-pointer hover:scale-110 transition-transform" />
+                </div>
+                <input type="range" min="0" max="100" className="w-full h-1 bg-[#2b2f36] rounded-full appearance-none cursor-pointer accent-[#00d9c8]" style={{ background: 'linear-gradient(to right, #00d9c8 50%, #2b2f36 50%)' }} />
               </div>
 
               {/* Buy/Sell Buttons */}
-              <div className="flex gap-2 mb-3">
+              <div className="flex gap-3 mb-4">
                 <button onClick={() => setSide('buy')}
-                  className={`flex-1 py-2.5 rounded text-sm font-medium ${side === 'buy' ? 'bg-[#0ecb81] text-white' : 'bg-[#0ecb81]/20 text-[#0ecb81]'}`}>
+                  className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                    side === 'buy' 
+                      ? 'bg-gradient-to-r from-[#0ecb81] to-[#00d9c8] text-white shadow-lg shadow-[#0ecb81]/25 scale-[1.02]' 
+                      : 'bg-[#0ecb81]/15 text-[#0ecb81] hover:bg-[#0ecb81]/25 border border-[#0ecb81]/20'
+                  }`}>
                   Open long
                 </button>
                 <button onClick={() => setSide('sell')}
-                  className={`flex-1 py-2.5 rounded text-sm font-medium ${side === 'sell' ? 'bg-[#f6465d] text-white' : 'bg-[#f6465d]/20 text-[#f6465d]'}`}>
+                  className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                    side === 'sell' 
+                      ? 'bg-gradient-to-r from-[#f6465d] to-[#ff6b6b] text-white shadow-lg shadow-[#f6465d]/25 scale-[1.02]' 
+                      : 'bg-[#f6465d]/15 text-[#f6465d] hover:bg-[#f6465d]/25 border border-[#f6465d]/20'
+                  }`}>
                   Open short
                 </button>
               </div>
 
               {/* Max Info */}
-              <div className="flex justify-between text-xs text-[#848e9c] mb-1">
+              <div className="flex justify-between text-[11px] text-[#5a6068] mb-2 px-1">
                 <span>Max: 0.0000 {baseAsset}</span>
                 <span>Max: 0.0000 {baseAsset}</span>
               </div>
 
               {/* Account Info */}
-              <div className="mt-4 pt-3 border-t border-[#2b2f36]">
-                <div className="flex items-center justify-between text-xs mb-2">
-                  <span className="text-[#848e9c]">Unified Trading Account</span>
-                  <span className="text-[#848e9c]">P&L</span>
+              <div className="mt-4 pt-4 border-t border-[#2b2f36]/50">
+                <div className="flex items-center justify-between text-xs mb-3">
+                  <span className="text-[#848e9c] font-medium">Unified Trading Account</span>
+                  <span className="text-[#00d9c8] text-[10px] font-medium cursor-pointer hover:text-[#00f5e1] transition-colors">P&L</span>
                 </div>
-                <div className="text-xs text-[#848e9c] space-y-1">
-                  <div className="flex justify-between"><span>Margin Mode</span><span className="text-white">Isolated Margin</span></div>
-                  <div className="flex justify-between"><span>Margin Balance</span><span className="text-white">0.0000 USDT</span></div>
-                  <div className="flex justify-between"><span>Available Balance</span><span className="text-white">0.0000 USDT</span></div>
+                <div className="text-xs text-[#848e9c] space-y-2 bg-[#0b0e11]/50 rounded-lg p-2.5">
+                  <div className="flex justify-between items-center"><span>Margin Mode</span><span className="text-white font-medium">Isolated Margin</span></div>
+                  <div className="flex justify-between items-center"><span>Margin Balance</span><span className="text-white font-mono">0.0000 USDT</span></div>
+                  <div className="flex justify-between items-center"><span>Available Balance</span><span className="text-white font-mono">0.0000 USDT</span></div>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-2 mt-3">
-                <button className="flex-1 py-2 bg-[#00d9c8] hover:bg-[#00f5e1] rounded text-black text-xs font-medium">Deposit</button>
-                <button className="flex-1 py-2 bg-[#2b2f36] hover:bg-[#363c45] rounded text-white text-xs">Convert</button>
-                <button className="flex-1 py-2 bg-[#2b2f36] hover:bg-[#363c45] rounded text-white text-xs">Transfer</button>
+              <div className="flex gap-2 mt-4">
+                <button className="flex-1 py-2.5 bg-gradient-to-r from-[#00d9c8] to-[#0ecb81] hover:from-[#00f5e1] hover:to-[#25e09b] rounded-lg text-black text-xs font-semibold transition-all duration-300 shadow-lg shadow-[#00d9c8]/20 hover:shadow-[#00d9c8]/30 hover:scale-[1.02]">Deposit</button>
+                <button className="flex-1 py-2.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-white text-xs font-medium transition-all duration-200 border border-transparent hover:border-[#484e57]">Convert</button>
+                <button className="flex-1 py-2.5 bg-[#2b2f36] hover:bg-[#363c45] rounded-lg text-white text-xs font-medium transition-all duration-200 border border-transparent hover:border-[#484e57]">Transfer</button>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Lighter Onboarding Modal */}
+      {showLighterOnboarding && (
+        <LighterOnboarding
+          isOpen={showLighterOnboarding}
+          onClose={() => setShowLighterOnboarding(false)}
+          onSuccess={() => {
+            setShowLighterOnboarding(false);
+            setSelectedExchange('lighter');
+          }}
+        />
+      )}
     </div>
   );
 }
