@@ -25,7 +25,8 @@
       "Bash(wrangler d1 execute:*)",
       "Bash(npm i:*)",
       "Bash(head:*)",
-      "Bash(npx vite --host)"
+      "Bash(npx vite --host)",
+      "Bash(cd:*)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Leand\\Desktop\\CIRCL"
