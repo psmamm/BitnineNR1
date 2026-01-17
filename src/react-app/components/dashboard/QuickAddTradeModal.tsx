@@ -5,7 +5,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import { buildApiUrl } from '../../hooks/useApi';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getCardBg, getCardBorder, getTextColor } from '../../utils/themeUtils';
-import VoiceRecorder from '../ui/VoiceRecorder';
 
 interface QuickAddTradeModalProps {
   isOpen: boolean;
@@ -333,10 +332,6 @@ export default function QuickAddTradeModal({ isOpen, onClose, onSuccess }: Quick
                     <label className={`block text-sm font-medium ${getTextColor(theme, 'secondary')}`}>
                       Trade Notes & Psychology
                     </label>
-                    <VoiceRecorder
-                      onTranscriptionComplete={handleTranscriptionComplete}
-                      className="ml-2"
-                    />
                   </div>
                   <textarea
                     value={formData.voice_transcription}

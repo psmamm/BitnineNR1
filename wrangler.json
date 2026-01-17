@@ -19,7 +19,6 @@
     "binding": "AI"
   },
   "vars": {
-    "HUME_API_KEY": "tcuE0Oy2KQEvKvm3Ahjw6CEra9Z9hYx55nxGipZhLcWkEBNm",
     "POLYGON_RPC_URL": "https://polygon-rpc.com",
     "SBT_CONTRACT_ADDRESS": ""
   }

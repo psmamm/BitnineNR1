@@ -33,7 +33,6 @@ import {
   PlayCircle,
   BookOpen
 } from "lucide-react";
-import { VoiceRecorder } from "@/react-app/components/journal/VoiceRecorder";
 import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useTrades, useCreateTrade, useUpdateTrade, useDailyStats, type Trade as TradeEntity } from "@/react-app/hooks/useTrades";
 import { useWalletTransactions } from "@/react-app/hooks/useWalletTransactions";
@@ -1083,7 +1082,15 @@ export default function JournalPage() {
         {/* Voice Notes Tab Content */}
         {activeJournalTab === 'voice' && (
           <div className="bg-[#1B1B1D] rounded-xl p-6 border border-[#2B2F36]">
-            <VoiceRecorder />
+            <div className="text-center py-12">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-[#03AAC7]/20 to-[#03AAC7]/20 flex items-center justify-center">
+                <Mic className="w-8 h-8 text-[#03AAC7]" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Voice Notes</h3>
+              <p className="text-[#7F8C8D] max-w-md mx-auto">
+                Voice recording feature coming soon.
+              </p>
+            </div>
           </div>
         )}
 
