@@ -30,7 +30,7 @@ export default function StatCard({
   
   const getChangeColor = () => {
     if (change === "N/A") return theme === 'dark' ? "text-[#AAB0C0]" : "text-gray-500";
-    return changeType === 'positive' ? 'text-[#03AAC7]' : 'text-[#F43F5E]';
+    return changeType === 'positive' ? 'text-[#FCD535]' : 'text-[#F43F5E]';
   };
 
   const getChangeIcon = () => {
@@ -43,11 +43,11 @@ export default function StatCard({
   const getProgressColor = () => {
     if (title === "Win Rate") {
       const percentage = parseFloat(value);
-      if (percentage >= 70) return 'from-[#03AAC7] to-[#27AE60]';
-      if (percentage >= 50) return 'from-[#03AAC7] to-[#26BFD4]';
+      if (percentage >= 70) return 'from-[#FCD535] to-[#27AE60]';
+      if (percentage >= 50) return 'from-[#FCD535] to-[#FFE066]';
       return 'from-[#F43F5E] to-[#C0392B]';
     }
-    return 'from-[#03AAC7] to-[#26BFD4]';
+    return 'from-[#FCD535] to-[#FFE066]';
   };
 
   const isClickable = !!onClick;
@@ -65,17 +65,17 @@ export default function StatCard({
     >
       {/* Gradient overlay for clickable cards */}
       {isClickable && (
-        <div className="absolute inset-0 bg-gradient-to-br from-[#03AAC7]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#FCD535]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       )}
 
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-3 sm:mb-4">
           <div className={`p-2 sm:p-2.5 rounded-lg border transition-all duration-300 ${
             loading 
-              ? 'bg-[#03AAC7]/20 border-[#03AAC7]/30 animate-pulse' 
-              : 'bg-[#03AAC7]/10 border-[#03AAC7]/20 group-hover:bg-[#03AAC7]/20 group-hover:border-[#03AAC7]/40'
+              ? 'bg-[#FCD535]/20 border-[#FCD535]/30 animate-pulse' 
+              : 'bg-[#FCD535]/10 border-[#FCD535]/20 group-hover:bg-[#FCD535]/20 group-hover:border-[#FCD535]/40'
           }`}>
-            <Icon className={`w-4 h-4 sm:w-5 sm:h-5 text-[#03AAC7] ${loading ? 'animate-pulse' : ''}`} />
+            <Icon className={`w-4 h-4 sm:w-5 sm:h-5 text-[#FCD535] ${loading ? 'animate-pulse' : ''}`} />
           </div>
           
           {!loading && change !== "N/A" && (
@@ -130,8 +130,8 @@ export default function StatCard({
         {title === "Profit Factor" && value !== "..." && !loading && (
           <div className="mt-2">
             <span className={`text-[10px] sm:text-xs font-semibold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full ${
-              parseFloat(value) >= 1.5 ? 'bg-[#03AAC7]/10 text-[#03AAC7]' :
-              parseFloat(value) >= 1.0 ? 'bg-[#03AAC7]/10 text-[#03AAC7]' : 'bg-[#F43F5E]/10 text-[#F43F5E]'
+              parseFloat(value) >= 1.5 ? 'bg-[#FCD535]/10 text-[#FCD535]' :
+              parseFloat(value) >= 1.0 ? 'bg-[#FCD535]/10 text-[#FCD535]' : 'bg-[#F43F5E]/10 text-[#F43F5E]'
             }`}>
               {parseFloat(value) >= 1.5 ? 'Excellent' :
                parseFloat(value) >= 1.0 ? 'Good' : 'Needs Improvement'}
@@ -146,7 +146,7 @@ export default function StatCard({
               {trend.slice(-7).map((point, index) => (
                 <div
                   key={index}
-                  className="bg-[#03AAC7] rounded-sm flex-1 opacity-70 group-hover:opacity-100 transition-opacity"
+                  className="bg-[#FCD535] rounded-sm flex-1 opacity-70 group-hover:opacity-100 transition-opacity"
                   style={{ height: `${Math.max(10, (point / Math.max(...trend)) * 100)}%` }}
                 />
               ))}
@@ -158,7 +158,7 @@ export default function StatCard({
         {/* Click indicator */}
         {isClickable && (
           <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Activity className="w-4 h-4 text-[#03AAC7]" />
+            <Activity className="w-4 h-4 text-[#FCD535]" />
           </div>
         )}
       </div>

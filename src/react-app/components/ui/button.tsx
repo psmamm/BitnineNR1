@@ -3,47 +3,53 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/react-app/lib/utils"
 
 /**
- * Button Component - Bitget Style (2026)
+ * Button Component - Binance Style (2026)
  *
  * Colors:
- * - Primary: WHITE (Bitget main CTA style)
- * - Accent: Cyan #03AAC7 (for colored CTAs)
- * - Secondary: Dark #252629
- * - Ghost: Transparent, hover #252629
- * - Destructive: Red #F43F5E
+ * - Primary: Yellow #FCD535 (Binance CTA)
+ * - Secondary: Dark #2B3139
+ * - Success/Buy: Green #0ECB81
+ * - Destructive/Sell: Red #F6465D
+ * - Ghost: Transparent
  */
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#03AAC7]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#151517] disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-dark disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        // Primary - WHITE (Bitget main CTA style)
-        default: "bg-white text-[#151517] font-medium hover:bg-[#F4F5F7] active:scale-[0.98]",
+        // Primary - Yellow (Binance main CTA)
+        default: "bg-brand text-surface-dark font-semibold hover:bg-brand-hover active:scale-[0.98]",
 
-        // Destructive - Red
-        destructive: "bg-[#F43F5E] text-white font-semibold hover:bg-[#FB7185] hover:shadow-glow-danger active:scale-[0.98]",
+        // Destructive/Sell - Red
+        destructive: "bg-loss text-white font-semibold hover:bg-loss-hover hover:shadow-glow-red active:scale-[0.98]",
 
         // Outline - Border only
-        outline: "border border-[#2B2F36] bg-transparent text-white hover:bg-[#252629] hover:border-[#3A3E45]",
+        outline: "border border-border-default bg-transparent text-text-primary hover:bg-surface-light hover:border-border-hover",
 
-        // Secondary - Dark background (Bitget secondary style)
-        secondary: "bg-[#252629] text-white hover:bg-[#2B2F36]",
+        // Secondary - Dark background
+        secondary: "bg-surface-light text-text-primary hover:bg-surface-hover",
 
         // Ghost - No border, subtle hover
-        ghost: "text-white hover:bg-[#252629] hover:text-[#03AAC7]",
+        ghost: "text-text-primary hover:bg-surface-light hover:text-brand",
 
-        // Link style - Cyan text
-        link: "text-[#03AAC7] underline-offset-4 hover:underline hover:text-[#26BFD4]",
+        // Link style - Yellow text
+        link: "text-brand underline-offset-4 hover:underline hover:text-brand-hover",
 
-        // Success/Accent - Cyan (for colored CTAs)
-        success: "bg-[#03AAC7] text-[#151517] font-semibold hover:bg-[#26BFD4] hover:shadow-glow active:scale-[0.98]",
+        // Success/Buy - Green
+        success: "bg-profit text-white font-semibold hover:bg-profit-hover hover:shadow-glow-green active:scale-[0.98]",
 
-        // Premium - Cyan with glow effect
-        premium: "bg-[#03AAC7] text-[#151517] font-semibold shadow-glow hover:bg-[#26BFD4] hover:shadow-glow-lg active:scale-[0.98]",
+        // Premium - Yellow with glow
+        premium: "bg-brand text-surface-dark font-semibold shadow-glow-yellow hover:bg-brand-hover active:scale-[0.98]",
 
-        // Accent - Cyan (alias for success)
-        accent: "bg-[#03AAC7] text-[#151517] font-semibold hover:bg-[#26BFD4] hover:shadow-glow active:scale-[0.98]",
+        // Accent - Yellow (alias for default)
+        accent: "bg-brand text-surface-dark font-semibold hover:bg-brand-hover hover:shadow-glow-yellow active:scale-[0.98]",
+
+        // Buy button - Green
+        buy: "bg-profit text-white font-semibold hover:bg-profit-hover active:scale-[0.98]",
+
+        // Sell button - Red
+        sell: "bg-loss text-white font-semibold hover:bg-loss-hover active:scale-[0.98]",
       },
       size: {
         default: "h-10 px-5 py-2",

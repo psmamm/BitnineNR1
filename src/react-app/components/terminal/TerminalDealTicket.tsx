@@ -223,7 +223,7 @@ export function TerminalDealTicket({ currentPrice }: TerminalDealTicketProps) {
                 }}
                 className={`w-full text-left px-3 py-2 text-xs transition-colors ${
                   selectedExchange === 'bybit'
-                    ? 'bg-[#03AAC7]/10 text-[#03AAC7]'
+                    ? 'bg-[#FCD535]/10 text-[#FCD535]'
                     : 'text-[#EAECEF] hover:bg-[#161A1E]'
                 }`}
               >
@@ -236,7 +236,7 @@ export function TerminalDealTicket({ currentPrice }: TerminalDealTicketProps) {
                 }}
                 className={`w-full text-left px-3 py-2 text-xs transition-colors flex items-center justify-between ${
                   selectedExchange === 'lighter'
-                    ? 'bg-[#03AAC7]/10 text-[#03AAC7]'
+                    ? 'bg-[#FCD535]/10 text-[#FCD535]'
                     : 'text-[#EAECEF] hover:bg-[#161A1E]'
                 }`}
               >
@@ -281,7 +281,7 @@ export function TerminalDealTicket({ currentPrice }: TerminalDealTicketProps) {
                     onClick={() => setMarginMode('cross')}
                     className={`flex-1 text-xs py-1 rounded transition-colors ${
                       marginMode === 'cross'
-                        ? 'bg-[#03AAC7] text-black'
+                        ? 'bg-[#FCD535] text-black'
                         : 'bg-[#161A1E] text-[#848E9C] hover:text-[#EAECEF]'
                     }`}
                   >
@@ -291,7 +291,7 @@ export function TerminalDealTicket({ currentPrice }: TerminalDealTicketProps) {
                     onClick={() => setMarginMode('isolated')}
                     className={`flex-1 text-xs py-1 rounded transition-colors ${
                       marginMode === 'isolated'
-                        ? 'bg-[#03AAC7] text-black'
+                        ? 'bg-[#FCD535] text-black'
                         : 'bg-[#161A1E] text-[#848E9C] hover:text-[#EAECEF]'
                     }`}
                   >
@@ -308,13 +308,13 @@ export function TerminalDealTicket({ currentPrice }: TerminalDealTicketProps) {
                 />
                 <div className="flex justify-between text-[10px] text-[#848E9C] mt-1">
                   <span>1x</span>
-                  <span className="text-[#03AAC7]">{leverage}x</span>
+                  <span className="text-[#FCD535]">{leverage}x</span>
                   <span>100x</span>
                 </div>
               </div>
               <button
                 onClick={() => setShowMarginDropdown(false)}
-                className="w-full text-xs py-1.5 text-[#03AAC7] hover:bg-[#161A1E] transition-colors"
+                className="w-full text-xs py-1.5 text-[#FCD535] hover:bg-[#161A1E] transition-colors"
               >
                 Confirm
               </button>
@@ -330,7 +330,7 @@ export function TerminalDealTicket({ currentPrice }: TerminalDealTicketProps) {
           <div className="flex justify-between text-[#848E9C] mb-1">
             <span>Price</span>
             {orderType === 'Market' && (
-              <span className="text-[#03AAC7] cursor-pointer hover:underline" onClick={() => setPrice(currentPrice)}>
+              <span className="text-[#FCD535] cursor-pointer hover:underline" onClick={() => setPrice(currentPrice)}>
                 Last
               </span>
             )}
@@ -342,7 +342,7 @@ export function TerminalDealTicket({ currentPrice }: TerminalDealTicketProps) {
               onChange={(e) => setPrice(Number(e.target.value))}
               disabled={orderType === 'Market'}
               placeholder={orderType === 'Market' ? 'Market' : ''}
-              className="w-full bg-[#2B2F36] rounded px-3 py-2 text-[#EAECEF] text-xs focus:outline-none focus:ring-1 focus:ring-[#03AAC7] disabled:text-[#848E9C] disabled:cursor-not-allowed"
+              className="w-full bg-[#2B2F36] rounded px-3 py-2 text-[#EAECEF] text-xs focus:outline-none focus:ring-1 focus:ring-[#FCD535] disabled:text-[#848E9C] disabled:cursor-not-allowed"
             />
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#848E9C]">USDT</span>
           </div>
@@ -352,14 +352,14 @@ export function TerminalDealTicket({ currentPrice }: TerminalDealTicketProps) {
         <div>
           <div className="flex justify-between text-[#848E9C] mb-1">
             <span>Risk Amount</span>
-            <span className="text-[#03AAC7]">$</span>
+            <span className="text-[#FCD535]">$</span>
           </div>
           <div className="relative">
             <input
               type="number"
               value={riskAmount}
               onChange={(e) => setRiskAmount(Number(e.target.value))}
-              className="w-full bg-[#2B2F36] rounded px-3 py-2 text-[#EAECEF] text-xs focus:outline-none focus:ring-2 focus:ring-[#03AAC7]"
+              className="w-full bg-[#2B2F36] rounded px-3 py-2 text-[#EAECEF] text-xs focus:outline-none focus:ring-2 focus:ring-[#FCD535]"
             />
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#848E9C]">USDT</span>
           </div>

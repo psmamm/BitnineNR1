@@ -9,7 +9,7 @@ interface RiskFlowCircleProps {
 }
 
 const statusColors: Record<RiskSnapshot['status'], string> = {
-  safe: '#03AAC7',
+  safe: '#FCD535',
   warn: '#F39C12',
   tilt: '#F43F5E'
 };
@@ -58,12 +58,12 @@ export function RiskFlowCircle({ snapshot, settings, onAdjustSettings }: RiskFlo
 
       <div className="flex-1 space-y-2">
         <div className="flex items-center gap-2 text-sm text-white font-semibold">
-          <ShieldAlert className="w-4 h-4 text-[#03AAC7]" />
+          <ShieldAlert className="w-4 h-4 text-[#FCD535]" />
           <span>Daily Loss Limit</span>
           <span className="text-[#7F8C8D] font-normal">{settings.dailyLossLimitPct}%</span>
         </div>
         <div className="text-sm text-[#AAB0C0]">
-          Today P&L: <span className={snapshot.dailyPnl <= 0 ? 'text-[#F43F5E]' : 'text-[#03AAC7]'}>${snapshot.dailyPnl.toFixed(2)}</span> / ${snapshot.dailyLimit.toFixed(2)}
+          Today P&L: <span className={snapshot.dailyPnl <= 0 ? 'text-[#F43F5E]' : 'text-[#FCD535]'}>${snapshot.dailyPnl.toFixed(2)}</span> / ${snapshot.dailyLimit.toFixed(2)}
         </div>
         <div className="text-sm text-[#AAB0C0]">
           Suggested Size: <span className="text-white font-semibold">{snapshot.recommendedSize.toFixed(2)}</span>
@@ -87,7 +87,7 @@ export function RiskFlowCircle({ snapshot, settings, onAdjustSettings }: RiskFlo
           {onAdjustSettings && (
             <button
               onClick={onAdjustSettings}
-              className="text-xs text-[#03AAC7] hover:text-white transition-colors"
+              className="text-xs text-[#FCD535] hover:text-white transition-colors"
             >
               Adjust rules
             </button>

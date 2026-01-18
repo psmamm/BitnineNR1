@@ -118,7 +118,7 @@ export default function FuturesAssetsPage() {
             </button>
             <button
               onClick={() => navigate('/transfer')}
-              className="px-4 py-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg font-medium transition-colors flex items-center gap-2"
             >
               <ArrowDownRight className="w-4 h-4" />
               Transfer In
@@ -252,7 +252,7 @@ export default function FuturesAssetsPage() {
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-48 pl-10 pr-4 py-1.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none text-sm"
+                className="w-48 pl-10 pr-4 py-1.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#FCD535] focus:outline-none text-sm"
               />
             </div>
           </div>
@@ -323,7 +323,7 @@ export default function FuturesAssetsPage() {
                         <div className="flex items-center justify-center gap-2">
                           <button
                             onClick={() => handleClosePosition(position.symbol)}
-                            className="px-3 py-1.5 text-[#03AAC7] hover:bg-[#03AAC7]/10 rounded text-sm font-medium transition-colors"
+                            className="px-3 py-1.5 text-[#FCD535] hover:bg-[#FCD535]/10 rounded text-sm font-medium transition-colors"
                           >
                             Close
                           </button>
@@ -348,7 +348,7 @@ export default function FuturesAssetsPage() {
               </p>
               <button
                 onClick={() => navigate('/trading/futures')}
-                className="px-6 py-2.5 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-medium transition-colors"
+                className="px-6 py-2.5 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg font-medium transition-colors"
               >
                 Start Trading
               </button>
@@ -422,7 +422,7 @@ export default function FuturesAssetsPage() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[#6B7280]">VIP Level</span>
-                <span className="text-[#03AAC7] font-medium">Standard</span>
+                <span className="text-[#FCD535] font-medium">Standard</span>
               </div>
             </div>
           </motion.div>

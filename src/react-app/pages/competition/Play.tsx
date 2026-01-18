@@ -718,7 +718,7 @@ export default function CompetitionPage() {
 
                                 <button
                                     onClick={resetReplay}
-                                    className="w-full bg- from-[#03AAC7] to-[#03AAC7] hover:from-[#5A2DE4] hover:to-[#7B4CE6] text-white py-3 rounded-lg font-bold transition-all"
+                                    className="w-full bg- from-[#FCD535] to-[#FCD535] hover:from-[#5A2DE4] hover:to-[#7B4CE6] text-white py-3 rounded-lg font-bold transition-all"
                                 >
                                     Play Again
                                 </button>

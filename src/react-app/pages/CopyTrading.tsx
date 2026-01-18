@@ -135,12 +135,12 @@ export default function CopyTradingPage() {
             className="bg-gradient-to-r from-[#1B1B1D] to-[#252629] rounded-2xl border border-[#2B2F36] p-8 relative overflow-hidden"
           >
             {/* Background decoration */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#03AAC7]/5 rounded-full blur-3xl" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#FCD535]/5 rounded-full blur-3xl" />
 
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-4">
-                <Trophy className="w-6 h-6 text-[#03AAC7]" />
-                <span className="text-[#03AAC7] font-medium">Copy Trading</span>
+                <Trophy className="w-6 h-6 text-[#FCD535]" />
+                <span className="text-[#FCD535] font-medium">Copy Trading</span>
               </div>
               <h1 className="text-3xl font-bold text-white mb-2">
                 Follow the Best Traders
@@ -149,7 +149,7 @@ export default function CopyTradingPage() {
                 Automatically copy trades from elite traders and grow your portfolio with minimal effort.
               </p>
               <div className="flex items-center gap-4">
-                <button className="px-6 py-3 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-semibold transition-colors">
+                <button className="px-6 py-3 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg font-semibold transition-colors">
                   Become a Trader
                 </button>
                 <button className="px-6 py-3 bg-[#252629] hover:bg-[#222226] text-white border border-[#2B2F36] rounded-lg font-medium transition-colors">
@@ -170,7 +170,7 @@ export default function CopyTradingPage() {
                 className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5"
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <stat.icon className="w-5 h-5 text-[#03AAC7]" />
+                  <stat.icon className="w-5 h-5 text-[#FCD535]" />
                   <span className="text-[#6B7280] text-sm">{stat.label}</span>
                 </div>
                 <p className="text-2xl font-bold text-white">{stat.value}</p>
@@ -224,7 +224,7 @@ export default function CopyTradingPage() {
                   placeholder="Search traders..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2.5 bg-[#1B1B1D] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors text-sm w-64"
+                  className="pl-10 pr-4 py-2.5 bg-[#1B1B1D] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#FCD535] focus:outline-none transition-colors text-sm w-64"
                 />
               </div>
 
@@ -233,7 +233,7 @@ export default function CopyTradingPage() {
                 onClick={() => setShowFilters(!showFilters)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-colors ${
                   showFilters
-                    ? 'bg-[#03AAC7]/10 border-[#03AAC7] text-[#03AAC7]'
+                    ? 'bg-[#FCD535]/10 border-[#FCD535] text-[#FCD535]'
                     : 'bg-[#1B1B1D] border-[#2B2F36] text-[#9CA3AF] hover:text-white'
                 }`}
               >
@@ -290,7 +290,7 @@ export default function CopyTradingPage() {
                     <div className="flex items-center gap-2">
                       <span className="text-white font-medium">{trader.name}</span>
                       {trader.verified && (
-                        <Shield className="w-4 h-4 text-[#03AAC7]" />
+                        <Shield className="w-4 h-4 text-[#FCD535]" />
                       )}
                     </div>
                     <div className="flex items-center gap-2 mt-1">
@@ -308,7 +308,7 @@ export default function CopyTradingPage() {
 
                 {/* ROI */}
                 <div className="text-right">
-                  <span className={`text-lg font-bold ${trader.roi > 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
+                  <span className={`text-lg font-bold ${trader.roi > 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]'}`}>
                     {trader.roi > 0 ? '+' : ''}{trader.roi.toFixed(1)}%
                   </span>
                 </div>
@@ -335,7 +335,7 @@ export default function CopyTradingPage() {
                       e.stopPropagation();
                       // Copy action
                     }}
-                    className="px-4 py-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg text-sm font-medium transition-colors"
+                    className="px-4 py-2 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg text-sm font-medium transition-colors"
                   >
                     Copy
                   </button>

@@ -156,7 +156,7 @@ export default function LaunchpadPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-white flex items-center gap-3">
-              <Rocket className="w-7 h-7 text-[#03AAC7]" />
+              <Rocket className="w-7 h-7 text-[#FCD535]" />
               Launchpad
             </h1>
             <p className="text-[#9CA3AF] text-sm mt-1">Discover and participate in token launches</p>
@@ -179,7 +179,7 @@ export default function LaunchpadPage() {
               className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-4"
             >
               <div className="flex items-center gap-2 mb-2">
-                <stat.icon className="w-4 h-4 text-[#03AAC7]" />
+                <stat.icon className="w-4 h-4 text-[#FCD535]" />
                 <span className="text-[#6B7280] text-sm">{stat.label}</span>
               </div>
               <span className="text-xl font-semibold text-white">{stat.value}</span>
@@ -200,7 +200,7 @@ export default function LaunchpadPage() {
               onClick={() => setActiveFilter(filter.id as LaunchStatus | 'all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeFilter === filter.id
-                  ? 'bg-[#03AAC7] text-[#151517]'
+                  ? 'bg-[#FCD535] text-[#151517]'
                   : 'text-[#9CA3AF] hover:text-white'
               }`}
             >
@@ -225,7 +225,7 @@ export default function LaunchpadPage() {
                 <div className="p-5 border-b border-[#2B2F36]">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#03AAC7] to-[#26BFD4] flex items-center justify-center text-white font-bold text-lg">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FCD535] to-[#FFE066] flex items-center justify-center text-white font-bold text-lg">
                         {project.logo}
                       </div>
                       <div>
@@ -265,7 +265,7 @@ export default function LaunchpadPage() {
                       </div>
                       <div className="h-2 bg-[#252629] rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-[#03AAC7] rounded-full transition-all"
+                          className="h-full bg-[#FCD535] rounded-full transition-all"
                           style={{ width: `${project.progress}%` }}
                         />
                       </div>
@@ -295,7 +295,7 @@ export default function LaunchpadPage() {
                   <button
                     className={`w-full py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 ${
                       project.status === 'live'
-                        ? 'bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517]'
+                        ? 'bg-[#FCD535] hover:bg-[#FFE066] text-[#151517]'
                         : project.status === 'upcoming'
                         ? 'bg-[#252629] hover:bg-[#2B2F36] text-white'
                         : 'bg-[#252629] text-[#6B7280] cursor-not-allowed'

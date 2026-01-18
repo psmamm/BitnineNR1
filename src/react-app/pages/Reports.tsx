@@ -100,7 +100,7 @@ export default function ReportsPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <RefreshCw className="w-16 h-16 text-[#03AAC7] animate-spin mx-auto mb-4" />
+            <RefreshCw className="w-16 h-16 text-[#FCD535] animate-spin mx-auto mb-4" />
             <p className="text-white text-lg font-medium">Loading Reports...</p>
             <p className="text-[#7F8C8D] text-sm mt-2">Analyzing your trading performance</p>
           </div>
@@ -129,7 +129,7 @@ export default function ReportsPage() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => window.location.reload()}
-              className="flex items-center justify-center space-x-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-white px-6 py-3 rounded-xl font-medium transition-all mx-auto"
+              className="flex items-center justify-center space-x-2 bg-[#FCD535] hover:bg-[#FFE066] text-white px-6 py-3 rounded-xl font-medium transition-all mx-auto"
             >
               <RefreshCw className="w-4 h-4" />
               <span>Retry</span>
@@ -151,7 +151,7 @@ export default function ReportsPage() {
         >
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center space-x-4 mb-6 sm:mb-0">
-              <div className="bg-[#03AAC7]/10 p-3 rounded-xl">
+              <div className="bg-[#FCD535]/10 p-3 rounded-xl">
                 <BarChart3 className="w-8 h-8 text-[#6B7280]" />
               </div>
               <div>
@@ -164,7 +164,7 @@ export default function ReportsPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleExportReport}
-                className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-white px-4 py-3 rounded-xl font-medium transition-all shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)]"
+                className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-[#FCD535] hover:bg-[#FFE066] text-white px-4 py-3 rounded-xl font-medium transition-all shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)]"
               >
                 <Download className="w-4 h-4" />
                 <span>Export Report</span>
@@ -191,16 +191,16 @@ export default function ReportsPage() {
         >
           <div className="bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36]">
             <h3 className="text-[#7F8C8D] text-sm font-medium mb-2">Total P&L</h3>
-            <p className={`text-2xl font-bold ${keyMetrics.totalPnl >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
+            <p className={`text-2xl font-bold ${keyMetrics.totalPnl >= 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]'}`}>
               {keyMetrics.totalPnl >= 0 ? '+' : ''}${keyMetrics.totalPnl}
             </p>
             <div className="flex items-center space-x-1 mt-1">
               {keyMetrics.change.totalPnl >= 0 ? (
-                <TrendingUp className="w-3 h-3 text-[#03AAC7]" />
+                <TrendingUp className="w-3 h-3 text-[#FCD535]" />
               ) : (
                 <TrendingDown className="w-3 h-3 text-[#F43F5E]" />
               )}
-              <p className={`text-sm ${keyMetrics.change.totalPnl >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
+              <p className={`text-sm ${keyMetrics.change.totalPnl >= 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]'}`}>
                 {keyMetrics.change.totalPnl >= 0 ? '+' : ''}{keyMetrics.change.totalPnl.toFixed(1)}% this month
               </p>
             </div>
@@ -211,11 +211,11 @@ export default function ReportsPage() {
             <p className="text-2xl font-bold text-white">{keyMetrics.winRate}%</p>
             <div className="flex items-center space-x-1 mt-1">
               {keyMetrics.change.winRate >= 0 ? (
-                <TrendingUp className="w-3 h-3 text-[#03AAC7]" />
+                <TrendingUp className="w-3 h-3 text-[#FCD535]" />
               ) : (
                 <TrendingDown className="w-3 h-3 text-[#F43F5E]" />
               )}
-              <p className={`text-sm ${keyMetrics.change.winRate >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
+              <p className={`text-sm ${keyMetrics.change.winRate >= 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]'}`}>
                 {keyMetrics.change.winRate >= 0 ? '+' : ''}{keyMetrics.change.winRate.toFixed(1)}% vs last month
               </p>
             </div>
@@ -228,11 +228,11 @@ export default function ReportsPage() {
             </p>
             <div className="flex items-center space-x-1 mt-1">
               {keyMetrics.change.avgTrade >= 0 ? (
-                <TrendingUp className="w-3 h-3 text-[#03AAC7]" />
+                <TrendingUp className="w-3 h-3 text-[#FCD535]" />
               ) : (
                 <TrendingDown className="w-3 h-3 text-[#F43F5E]" />
               )}
-              <p className={`text-sm ${keyMetrics.change.avgTrade >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
+              <p className={`text-sm ${keyMetrics.change.avgTrade >= 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]'}`}>
                 {keyMetrics.change.avgTrade >= 0 ? '+' : ''}{formatCurrency(keyMetrics.change.avgTrade)} vs last month
               </p>
             </div>
@@ -241,8 +241,8 @@ export default function ReportsPage() {
           <div className="bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36]">
             <h3 className="text-[#7F8C8D] text-sm font-medium mb-2">Sharpe Ratio</h3>
             <p className="text-2xl font-bold text-white">{keyMetrics.sharpeRatio}</p>
-            <p className={`text-sm mt-1 ${keyMetrics.sharpeRatio > 2 ? 'text-[#03AAC7]' :
-                keyMetrics.sharpeRatio > 1 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'
+            <p className={`text-sm mt-1 ${keyMetrics.sharpeRatio > 2 ? 'text-[#FCD535]' :
+                keyMetrics.sharpeRatio > 1 ? 'text-[#FCD535]' : 'text-[#F43F5E]'
               }`}>
               {keyMetrics.sharpeRatio > 2 ? 'Excellent' :
                 keyMetrics.sharpeRatio > 1 ? 'Good' :
@@ -270,7 +270,7 @@ export default function ReportsPage() {
                   <Tooltip content={<CustomTooltip />} />
                   <Bar
                     dataKey="profit"
-                    fill="#03AAC7"
+                    fill="#FCD535"
                     radius={[4, 4, 0, 0]}
                   />
                 </BarChart>
@@ -308,7 +308,7 @@ export default function ReportsPage() {
             </div>
             <div className="flex justify-center space-x-6 mt-4">
               <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-[#03AAC7] rounded-full"></div>
+                <div className="w-3 h-3 bg-[#FCD535] rounded-full"></div>
                 <span className="text-[#AAB0C0] text-sm">Wins ({winLossData[0]?.value}%)</span>
               </div>
               <div className="flex items-center space-x-2">
@@ -335,7 +335,7 @@ export default function ReportsPage() {
                   <Tooltip content={<CustomTooltip />} />
                   <Bar
                     dataKey="profit"
-                    fill="#03AAC7"
+                    fill="#FCD535"
                     radius={[0, 4, 4, 0]}
                   />
                 </BarChart>
@@ -357,7 +357,7 @@ export default function ReportsPage() {
                 <h3 className="text-xl font-semibold text-white">Monte Carlo Survival</h3>
                 <p className="text-[#7F8C8D] text-sm">Probability of staying within drawdown cap</p>
               </div>
-              <PlayCircle className="w-5 h-5 text-[#03AAC7]" />
+              <PlayCircle className="w-5 h-5 text-[#FCD535]" />
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <label className="text-[#AAB0C0] flex flex-col gap-1">
@@ -400,7 +400,7 @@ export default function ReportsPage() {
             <div className="flex items-center justify-between pt-2">
               <button
                 onClick={() => monteCarlo.simulate(mcParams)}
-                className="bg-[#03AAC7] hover:bg-[#26BFD4] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                className="bg-[#FCD535] hover:bg-[#FFE066] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
               >
                 Run simulation
               </button>
@@ -454,7 +454,7 @@ export default function ReportsPage() {
             <div className="flex items-center justify-between pt-2">
               <button
                 onClick={() => monteCarlo.runWhatIf(whatIfParams)}
-                className="bg-[#03AAC7] hover:bg-[#26BFD4] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                className="bg-[#FCD535] hover:bg-[#FFE066] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
               >
                 Run what-if
               </button>
@@ -472,7 +472,7 @@ export default function ReportsPage() {
                 </div>
                 <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-lg p-3">
                   <div className="text-[#7F8C8D] text-xs">Delta</div>
-                  <div className={`text-xl font-bold ${monteCarlo.whatIfResult.delta >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
+                  <div className={`text-xl font-bold ${monteCarlo.whatIfResult.delta >= 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]'}`}>
                     {monteCarlo.whatIfResult.delta >= 0 ? '+' : ''}{formatCurrency(monteCarlo.whatIfResult.delta)}
                   </div>
                 </div>
@@ -509,9 +509,9 @@ export default function ReportsPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{row.period}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#AAB0C0]">{row.trades}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#AAB0C0]">{row.winRate}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#03AAC7] hidden md:table-cell">{row.avgWin}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#FCD535] hidden md:table-cell">{row.avgWin}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#F43F5E] hidden md:table-cell">{row.avgLoss}</td>
-                    <td className={`px-6 py-4 whitespace-nowrap text-sm font-semibold ${row.pnl > 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'
+                    <td className={`px-6 py-4 whitespace-nowrap text-sm font-semibold ${row.pnl > 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]'
                       }`}>
                       {row.pnl > 0 ? '+' : ''}{formatCurrency(row.pnl)}
                     </td>

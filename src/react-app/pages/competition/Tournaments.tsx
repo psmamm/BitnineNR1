@@ -133,9 +133,9 @@ export default function TournamentsPage() {
                 };
             default:
                 return {
-                    bg: 'bg-[#03AAC7]/20',
-                    border: 'border-[#03AAC7]/50',
-                    text: 'text-[#03AAC7]',
+                    bg: 'bg-[#FCD535]/20',
+                    border: 'border-[#FCD535]/50',
+                    text: 'text-[#FCD535]',
                     icon: Trophy
                 };
         }
@@ -195,7 +195,7 @@ export default function TournamentsPage() {
                 {/* Visual Element / Icon */}
                 <div className="flex items-center justify-center py-8 px-4">
                     <div className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5">
-                        <TrendingUp className="w-12 h-12 text-[#03AAC7]" />
+                        <TrendingUp className="w-12 h-12 text-[#FCD535]" />
                     </div>
                 </div>
 
@@ -228,7 +228,7 @@ export default function TournamentsPage() {
                         </div>
                         <div className="flex items-center justify-between">
                             <span>Winner Takes</span>
-                            <span className="text-[#03AAC7] font-bold">
+                            <span className="text-[#FCD535] font-bold">
                                 ${prizePool > 0 ? prizePool.toFixed(2) : '0.00'} USDT
                             </span>
                         </div>
@@ -242,7 +242,7 @@ export default function TournamentsPage() {
                         whileTap={{ scale: 0.98 }}
                         onClick={handleEnterTournament}
                         disabled={joining || tournament.status === 'completed'}
-                        className="w-full bg-[#03AAC7] hover:bg-[#03AAC7] disabled:bg-gray-700 disabled:cursor-not-allowed text-white py-3 rounded-xl font-bold text-sm transition-all shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)]"
+                        className="w-full bg-[#FCD535] hover:bg-[#FCD535] disabled:bg-gray-700 disabled:cursor-not-allowed text-white py-3 rounded-xl font-bold text-sm transition-all shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)]"
                     >
                         {joining ? 'Joining...' : tournament.status === 'completed' ? 'Completed' : `Enter for $${entryFee > 0 ? entryFee.toFixed(2) : '0.00'} USDT`}
                     </motion.button>
@@ -265,8 +265,8 @@ export default function TournamentsPage() {
                     {/* Header */}
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-4">
-                            <div className="bg-[#03AAC7]/20 p-3 rounded-xl">
-                                <Trophy className="w-8 h-8 text-[#03AAC7]" />
+                            <div className="bg-[#FCD535]/20 p-3 rounded-xl">
+                                <Trophy className="w-8 h-8 text-[#FCD535]" />
                             </div>
                             <div>
                                 <h1 className="text-4xl font-bold mb-2">Tournaments</h1>
@@ -282,11 +282,11 @@ export default function TournamentsPage() {
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleSeedTournaments}
                                 disabled={seeding}
-                                className="bg-[#1B1B1D] border border-[#2B2F36] hover:border-[#03AAC7]/50 text-gray-400 hover:text-white px-4 py-2 rounded-lg text-sm transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="bg-[#1B1B1D] border border-[#2B2F36] hover:border-[#FCD535]/50 text-gray-400 hover:text-white px-4 py-2 rounded-lg text-sm transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {seeding ? (
                                     <>
-                                        <div className="w-4 h-4 border-2 border-[#03AAC7]/30 border-t-[#03AAC7] rounded-full animate-spin" />
+                                        <div className="w-4 h-4 border-2 border-[#FCD535]/30 border-t-[#FCD535] rounded-full animate-spin" />
                                         <span>Creating...</span>
                                     </>
                                 ) : (
@@ -327,7 +327,7 @@ export default function TournamentsPage() {
                                 onClick={() => setActiveTab(tab.id as 'active' | 'ready' | 'completed')}
                                 className={`px-6 py-3 border-b-2 transition-colors flex items-center gap-2 ${
                                     activeTab === tab.id
-                                        ? 'border-[#03AAC7] text-white'
+                                        ? 'border-[#FCD535] text-white'
                                         : 'border-transparent text-gray-400 hover:text-white'
                                 }`}
                             >
@@ -348,7 +348,7 @@ export default function TournamentsPage() {
                             >
                                 {activeLoading ? (
                                     <div className="text-center py-12">
-                                        <div className="w-8 h-8 border-4 border-[#03AAC7]/30 border-t-[#03AAC7] rounded-full animate-spin mx-auto mb-3" />
+                                        <div className="w-8 h-8 border-4 border-[#FCD535]/30 border-t-[#FCD535] rounded-full animate-spin mx-auto mb-3" />
                                         <p className="text-gray-400">Loading tournaments...</p>
                                     </div>
                                 ) : activeTournaments.length === 0 ? (
@@ -374,7 +374,7 @@ export default function TournamentsPage() {
                             >
                                 {readyLoading ? (
                                     <div className="text-center py-12">
-                                        <div className="w-8 h-8 border-4 border-[#03AAC7]/30 border-t-[#03AAC7] rounded-full animate-spin mx-auto mb-3" />
+                                        <div className="w-8 h-8 border-4 border-[#FCD535]/30 border-t-[#FCD535] rounded-full animate-spin mx-auto mb-3" />
                                         <p className="text-gray-400">Loading tournaments...</p>
                                     </div>
                                 ) : readyTournaments.length === 0 ? (
@@ -400,7 +400,7 @@ export default function TournamentsPage() {
                             >
                                 {completedLoading ? (
                                     <div className="text-center py-12">
-                                        <div className="w-8 h-8 border-4 border-[#03AAC7]/30 border-t-[#03AAC7] rounded-full animate-spin mx-auto mb-3" />
+                                        <div className="w-8 h-8 border-4 border-[#FCD535]/30 border-t-[#FCD535] rounded-full animate-spin mx-auto mb-3" />
                                         <p className="text-gray-400">Loading tournaments...</p>
                                     </div>
                                 ) : completedTournaments.length === 0 ? (
@@ -454,7 +454,7 @@ export default function TournamentsPage() {
                                                 type="text"
                                                 value={createForm.name}
                                                 onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
-                                                className="w-full bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#03AAC7]"
+                                                className="w-full bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#FCD535]"
                                                 placeholder="e.g., BTC Championship"
                                             />
                                         </div>
@@ -467,7 +467,7 @@ export default function TournamentsPage() {
                                                 type="text"
                                                 value={createForm.symbol}
                                                 onChange={(e) => setCreateForm({ ...createForm, symbol: e.target.value.toUpperCase() })}
-                                                className="w-full bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#03AAC7]"
+                                                className="w-full bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#FCD535]"
                                                 placeholder="BTCUSDT"
                                             />
                                         </div>
@@ -479,7 +479,7 @@ export default function TournamentsPage() {
                                             <textarea
                                                 value={createForm.description}
                                                 onChange={(e) => setCreateForm({ ...createForm, description: e.target.value })}
-                                                className="w-full bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#03AAC7]"
+                                                className="w-full bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#FCD535]"
                                                 rows={3}
                                                 placeholder="Tournament description..."
                                             />
@@ -494,7 +494,7 @@ export default function TournamentsPage() {
                                                     type="number"
                                                     value={createForm.timeLimit}
                                                     onChange={(e) => setCreateForm({ ...createForm, timeLimit: parseInt(e.target.value) || 60 })}
-                                                    className="w-full bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#03AAC7]"
+                                                    className="w-full bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#FCD535]"
                                                 />
                                             </div>
                                             <div>
@@ -505,7 +505,7 @@ export default function TournamentsPage() {
                                                     type="number"
                                                     value={createForm.maxParticipants}
                                                     onChange={(e) => setCreateForm({ ...createForm, maxParticipants: parseInt(e.target.value) || 1000 })}
-                                                    className="w-full bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#03AAC7]"
+                                                    className="w-full bg-[#1B1B1D] border border-[#2B2F36] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#FCD535]"
                                                 />
                                             </div>
                                         </div>
@@ -554,7 +554,7 @@ export default function TournamentsPage() {
                                                     alert('Failed to create tournament. Please try again.');
                                                 }
                                             }}
-                                            className="flex-1 bg- from-[#03AAC7] to-[#03AAC7] hover:from-[#5A2DE4] hover:to-[#7B4CE6] text-white py-3 rounded-lg font-bold transition-all"
+                                            className="flex-1 bg- from-[#FCD535] to-[#FCD535] hover:from-[#5A2DE4] hover:to-[#7B4CE6] text-white py-3 rounded-lg font-bold transition-all"
                                         >
                                             Create
                                         </button>

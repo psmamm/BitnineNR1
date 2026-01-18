@@ -306,9 +306,9 @@ export default function AlphaHubPage() {
       case 'wallet_to_exchange':
         return <ArrowDownLeft className="w-4 h-4 text-[#F43F5E]" />;
       case 'exchange_to_wallet':
-        return <ArrowUpRight className="w-4 h-4 text-[#03AAC7]" />;
+        return <ArrowUpRight className="w-4 h-4 text-[#FCD535]" />;
       default:
-        return <ArrowRightLeft className="w-4 h-4 text-[#03AAC7]" />;
+        return <ArrowRightLeft className="w-4 h-4 text-[#FCD535]" />;
     }
   };
 
@@ -317,9 +317,9 @@ export default function AlphaHubPage() {
       case 'wallet_to_exchange':
         return 'bg-[#F43F5E]/10 text-[#F43F5E] border-[#F43F5E]/20';
       case 'exchange_to_wallet':
-        return 'bg-[#03AAC7]/10 text-[#03AAC7] border-[#03AAC7]/20';
+        return 'bg-[#FCD535]/10 text-[#FCD535] border-[#FCD535]/20';
       default:
-        return 'bg-[#03AAC7]/10 text-[#03AAC7] border-[#03AAC7]/20';
+        return 'bg-[#FCD535]/10 text-[#FCD535] border-[#FCD535]/20';
     }
   };
 
@@ -346,8 +346,8 @@ export default function AlphaHubPage() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="mb-2 lg:mb-0">
               <div className="flex items-center space-x-4 mb-4">
-                <div className="w-12 h-12 bg-[#03AAC7]/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Eye className="w-6 h-6 text-[#03AAC7]" />
+                <div className="w-12 h-12 bg-[#FCD535]/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Eye className="w-6 h-6 text-[#FCD535]" />
                 </div>
                 <div>
                   <h1 className="text-3xl sm:text-4xl font-bold text-white">
@@ -361,17 +361,17 @@ export default function AlphaHubPage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-              <div className={`flex items-center space-x-2 px-3 py-2 rounded-lg border ${isConnected ? 'bg-[#03AAC7]/10 border-[#03AAC7]/20' : 'bg-[#F43F5E]/10 border-[#F43F5E]/20'}`}>
-                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-[#03AAC7] animate-pulse' : 'bg-[#F43F5E]'}`} />
-                <span className={`text-sm font-medium ${isConnected ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>{isConnected ? 'LIVE' : 'OFFLINE'}</span>
+              <div className={`flex items-center space-x-2 px-3 py-2 rounded-lg border ${isConnected ? 'bg-[#FCD535]/10 border-[#FCD535]/20' : 'bg-[#F43F5E]/10 border-[#F43F5E]/20'}`}>
+                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-[#FCD535] animate-pulse' : 'bg-[#F43F5E]'}`} />
+                <span className={`text-sm font-medium ${isConnected ? 'text-[#FCD535]' : 'text-[#F43F5E]'}`}>{isConnected ? 'LIVE' : 'OFFLINE'}</span>
               </div>
-              <div className="flex items-center space-x-2 px-3 py-2 bg-[#03AAC7]/10 border border-[#03AAC7]/20 rounded-lg">
-                <Globe className="w-4 h-4 text-[#03AAC7]" />
-                <span className="text-[#03AAC7] text-sm font-medium">7 Chains</span>
+              <div className="flex items-center space-x-2 px-3 py-2 bg-[#FCD535]/10 border border-[#FCD535]/20 rounded-lg">
+                <Globe className="w-4 h-4 text-[#FCD535]" />
+                <span className="text-[#FCD535] text-sm font-medium">7 Chains</span>
               </div>
               <button
                 onClick={handleRefresh}
-                className="flex items-center space-x-2 bg-[#03AAC7] hover:from-[#5A2DE3] hover:to-[#7A4CFF] text-white px-4 py-2 rounded-lg font-medium transition-all"
+                className="flex items-center space-x-2 bg-[#FCD535] hover:from-[#5A2DE3] hover:to-[#7A4CFF] text-white px-4 py-2 rounded-lg font-medium transition-all"
               >
                 <RefreshCw className={`w-4 h-4 ${whaleLoading || marketLoading || newsLoading ? 'animate-spin' : ''}`} />
                 <span>Refresh</span>
@@ -387,7 +387,7 @@ export default function AlphaHubPage() {
               initial={{ opacity: 0, scale: 0.95, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
-              className="bg-[#03AAC7] rounded-2xl p-4 border border-[#03AAC7]/30 shadow-[0_0_30px_rgba(106,61,244,0.3)]"
+              className="bg-[#FCD535] rounded-2xl p-4 border border-[#FCD535]/30 shadow-[0_0_30px_rgba(106,61,244,0.3)]"
             >
               <div className="flex items-center space-x-3">
                 <div className="flex items-center space-x-2">
@@ -425,17 +425,17 @@ export default function AlphaHubPage() {
               <div className="bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36]">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-[#03AAC7]/10 rounded-xl flex items-center justify-center">
-                      <Activity className="w-5 h-5 text-[#03AAC7]" />
+                    <div className="w-10 h-10 bg-[#FCD535]/10 rounded-xl flex items-center justify-center">
+                      <Activity className="w-5 h-5 text-[#FCD535]" />
                     </div>
                     <div>
                       <h2 className="text-xl font-semibold text-white">🐋 Whale Tracker</h2>
                       <p className="text-[#7F8C8D] text-sm">Real-time • Transactions &gt; $100K • Bybit WebSocket</p>
                     </div>
                   </div>
-                  <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg ${isConnected ? 'bg-[#03AAC7]/10' : 'bg-[#F43F5E]/10'}`}>
-                    <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-[#03AAC7] animate-pulse' : 'bg-[#F43F5E]'}`} />
-                    <span className={`text-sm font-semibold ${isConnected ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>{isConnected ? 'LIVE' : 'RECONNECTING...'}</span>
+                  <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg ${isConnected ? 'bg-[#FCD535]/10' : 'bg-[#F43F5E]/10'}`}>
+                    <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-[#FCD535] animate-pulse' : 'bg-[#F43F5E]'}`} />
+                    <span className={`text-sm font-semibold ${isConnected ? 'text-[#FCD535]' : 'text-[#F43F5E]'}`}>{isConnected ? 'LIVE' : 'RECONNECTING...'}</span>
                   </div>
                 </div>
 
@@ -443,7 +443,7 @@ export default function AlphaHubPage() {
                 <div className="bg-[#1B1B1D] rounded-xl p-4 font-mono text-sm max-h-[600px] overflow-y-auto custom-scrollbar">
                 {whaleLoading ? (
                   <div className="text-center py-12">
-                    <RefreshCw className="w-8 h-8 text-[#03AAC7] animate-spin mx-auto mb-3" />
+                    <RefreshCw className="w-8 h-8 text-[#FCD535] animate-spin mx-auto mb-3" />
                     <p className="text-[#7F8C8D] text-base">Connecting to Bybit WebSocket...</p>
                     <p className="text-[#AAB0C0] text-sm mt-2">BTC • ETH • SOL • BNB • XRP • ADA • DOGE • AVAX</p>
                   </div>
@@ -456,11 +456,11 @@ export default function AlphaHubPage() {
                     <p className="text-[#7F8C8D] text-sm">Click refresh to reconnect</p>
                   </div>
                 ) : whaleTransactions.length === 0 ? (
-                  <div className="text-center py-16 bg-[#03AAC7]/5 border border-[#03AAC7]/20 rounded-xl">
-                    <div className="w-20 h-20 bg-[#03AAC7]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <div className="text-center py-16 bg-[#FCD535]/5 border border-[#FCD535]/20 rounded-xl">
+                    <div className="w-20 h-20 bg-[#FCD535]/10 rounded-full flex items-center justify-center mx-auto mb-6">
                       <span className="text-5xl">🐋</span>
                     </div>
-                    <p className="text-[#03AAC7] text-lg font-semibold mb-2">Waiting for whale activity &gt;$100K...</p>
+                    <p className="text-[#FCD535] text-lg font-semibold mb-2">Waiting for whale activity &gt;$100K...</p>
                     <p className="text-[#7F8C8D] text-sm">Feed updates in real-time when whales make moves</p>
                     <div className="flex justify-center space-x-4 mt-4 text-xs text-[#AAB0C0]">
                       <span>BTC</span>
@@ -486,7 +486,7 @@ export default function AlphaHubPage() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-[#1B1B1D] rounded-xl border border-[#2B2F36] hover:bg-white/5 transition-all group cursor-pointer gap-4 ${transaction.usdValue >= 1000000 ? 'border-[#03AAC7]/30' : ''
+                        className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-[#1B1B1D] rounded-xl border border-[#2B2F36] hover:bg-white/5 transition-all group cursor-pointer gap-4 ${transaction.usdValue >= 1000000 ? 'border-[#FCD535]/30' : ''
                           }`}
                         onClick={() => window.open(transaction.blockchainExplorerUrl, '_blank')}
                       >
@@ -507,7 +507,7 @@ export default function AlphaHubPage() {
                             />
                             <div>
                               <div className="flex items-center space-x-2">
-                                <span className="text-[#03AAC7] font-bold">{transaction.coin}</span>
+                                <span className="text-[#FCD535] font-bold">{transaction.coin}</span>
                                 <span className="text-white">
                                   {formatAmount(transaction.amount)} {transaction.coin}
                                 </span>
@@ -532,12 +532,12 @@ export default function AlphaHubPage() {
                                 e.stopPropagation();
                                 copyToClipboard(transaction.hash);
                               }}
-                              className="text-[#7F8C8D] hover:text-[#03AAC7] text-xs font-mono px-2 py-1 rounded hover:bg-[#03AAC7]/10 transition-colors"
+                              className="text-[#7F8C8D] hover:text-[#FCD535] text-xs font-mono px-2 py-1 rounded hover:bg-[#FCD535]/10 transition-colors"
                             >
                               {shortenHash(transaction.hash)}
                             </button>
                             <Copy
-                              className="w-3 h-3 text-[#7F8C8D] hover:text-[#03AAC7] cursor-pointer"
+                              className="w-3 h-3 text-[#7F8C8D] hover:text-[#FCD535] cursor-pointer"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 copyToClipboard(transaction.hash);
@@ -545,7 +545,7 @@ export default function AlphaHubPage() {
                             />
                           </div>
 
-                          <ExternalLink className="w-4 h-4 text-[#7F8C8D] group-hover:text-[#03AAC7] transition-colors hidden sm:block" />
+                          <ExternalLink className="w-4 h-4 text-[#7F8C8D] group-hover:text-[#FCD535] transition-colors hidden sm:block" />
                         </div>
                       </motion.div>
                     ))}
@@ -575,8 +575,8 @@ export default function AlphaHubPage() {
             {/* Smart Money Alerts */}
             <div className="bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36]">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-[#03AAC7]/10 rounded-lg flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-[#03AAC7]" />
+                <div className="w-8 h-8 bg-[#FCD535]/10 rounded-lg flex items-center justify-center">
+                  <Zap className="w-4 h-4 text-[#FCD535]" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-white">Smart Money Alerts</h3>
@@ -609,18 +609,18 @@ export default function AlphaHubPage() {
                         <div className="flex items-center justify-between mt-2">
                           <span className="text-[#7F8C8D] text-xs font-mono">{alert.walletId}</span>
                           <span className={`px-2 py-1 rounded text-xs font-semibold ${alert.outcome === 'buy'
-                            ? 'bg-[#03AAC7]/10 text-[#03AAC7]'
+                            ? 'bg-[#FCD535]/10 text-[#FCD535]'
                             : 'bg-[#F43F5E]/10 text-[#F43F5E]'
                             }`}>
                             {alert.outcome === 'buy' ? 'Accumulation' : 'Offload'}
                           </span>
                         </div>
                         <div className="flex items-center justify-between mt-1">
-                          <span className="text-[#03AAC7] text-xs font-medium">{formatUSD(alert.usdValue)}</span>
+                          <span className="text-[#FCD535] text-xs font-medium">{formatUSD(alert.usdValue)}</span>
                           <span className="text-[#7F8C8D] text-xs">{formatTimeAgo(alert.timestamp)}</span>
                         </div>
                       </div>
-                      <ExternalLink className="w-3 h-3 text-[#7F8C8D] group-hover:text-[#03AAC7] transition-colors mt-1 flex-shrink-0" />
+                      <ExternalLink className="w-3 h-3 text-[#7F8C8D] group-hover:text-[#FCD535] transition-colors mt-1 flex-shrink-0" />
                     </div>
                   </motion.div>
                 ))}
@@ -630,8 +630,8 @@ export default function AlphaHubPage() {
             {/* Market Overview */}
             <div className="bg-[#1B1B1D] rounded-xl p-4 border border-[#2B2F36]">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-[#03AAC7]/10 rounded-lg flex items-center justify-center">
-                  <BarChart3 className="w-4 h-4 text-[#03AAC7]" />
+                <div className="w-8 h-8 bg-[#FCD535]/10 rounded-lg flex items-center justify-center">
+                  <BarChart3 className="w-4 h-4 text-[#FCD535]" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-white">Market Overview</h3>
@@ -655,7 +655,7 @@ export default function AlphaHubPage() {
                       />
                       <div className="flex-1 min-w-0">
                         <div className="text-white text-sm font-medium">{coin.symbol}</div>
-                        <div className={`text-xs font-medium ${coin.change24h >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'
+                        <div className={`text-xs font-medium ${coin.change24h >= 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]'
                           }`}>
                           {coin.change24h >= 0 ? '+' : ''}{coin.change24h.toFixed(1)}%
                         </div>
@@ -681,7 +681,7 @@ export default function AlphaHubPage() {
                 </div>
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-[#7F8C8D]">Exchange Outflows</span>
-                  <span className="text-[#03AAC7] font-semibold">
+                  <span className="text-[#FCD535] font-semibold">
                     {whaleTransactions.filter(t => t.transferType === 'exchange_to_wallet').length}
                   </span>
                 </div>
@@ -699,8 +699,8 @@ export default function AlphaHubPage() {
         >
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-[#03AAC7]/10 rounded-xl flex items-center justify-center">
-                <Newspaper className="w-5 h-5 text-[#03AAC7]" />
+              <div className="w-10 h-10 bg-[#FCD535]/10 rounded-xl flex items-center justify-center">
+                <Newspaper className="w-5 h-5 text-[#FCD535]" />
               </div>
               <div>
                 <h2 className="text-xl font-semibold text-white">Crypto News</h2>
@@ -708,8 +708,8 @@ export default function AlphaHubPage() {
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-[#03AAC7] rounded-full animate-pulse" />
-              <span className="text-[#03AAC7] text-sm font-semibold">LIVE</span>
+              <div className="w-2 h-2 bg-[#FCD535] rounded-full animate-pulse" />
+              <span className="text-[#FCD535] text-sm font-semibold">LIVE</span>
             </div>
           </div>
 
@@ -722,18 +722,18 @@ export default function AlphaHubPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 className={`p-4 rounded-xl border cursor-pointer transition-all duration-200 hover:bg-white/5 ${item.isBreaking
-                  ? 'bg-[#03AAC7]/5 border-[#03AAC7]/30'
+                  ? 'bg-[#FCD535]/5 border-[#FCD535]/30'
                   : 'bg-[#1B1B1D] border-[#2B2F36]'
                   }`}
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
-                    <h3 className={`font-medium line-clamp-2 pr-2 ${item.isBreaking ? 'text-[#03AAC7]' : 'text-white'
+                    <h3 className={`font-medium line-clamp-2 pr-2 ${item.isBreaking ? 'text-[#FCD535]' : 'text-white'
                       }`}>
                       {item.headline}
                     </h3>
                     {item.isBreaking && (
-                      <div className="px-2 py-1 bg-[#03AAC7] text-white text-xs rounded-full font-medium flex-shrink-0">
+                      <div className="px-2 py-1 bg-[#FCD535] text-white text-xs rounded-full font-medium flex-shrink-0">
                         Breaking
                       </div>
                     )}
@@ -744,7 +744,7 @@ export default function AlphaHubPage() {
                   </p>
 
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs font-medium ${item.source === 'WatcherGuru' ? 'text-[#03AAC7]' : 'text-[#7F8C8D]'
+                    <span className={`text-xs font-medium ${item.source === 'WatcherGuru' ? 'text-[#FCD535]' : 'text-[#7F8C8D]'
                       }`}>
                       {item.source}
                     </span>

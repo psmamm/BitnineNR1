@@ -46,7 +46,7 @@ export default function SubscriptionSection({
       className="bg-[#1B1B1D] rounded-xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
     >
       <div className="flex items-center space-x-3 mb-6">
-        <div className="bg-[#03AAC7]/10 p-2 rounded-xl">
+        <div className="bg-[#FCD535]/10 p-2 rounded-xl">
           <CreditCard className="w-6 h-6 text-[#6B7280]" />
         </div>
         <h3 className="text-xl font-semibold text-white">Subscription</h3>
@@ -59,12 +59,12 @@ export default function SubscriptionSection({
           <div className={`border rounded-xl p-4 ${
             isBasicPlan 
               ? 'bg-[#F39C12]/10 border-[#F39C12]/20' 
-              : 'bg-[#03AAC7]/10 border-[#03AAC7]/20'
+              : 'bg-[#FCD535]/10 border-[#FCD535]/20'
           }`}>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">
                 <span className={`font-semibold ${
-                  isBasicPlan ? 'text-[#F39C12]' : 'text-[#03AAC7]'
+                  isBasicPlan ? 'text-[#F39C12]' : 'text-[#FCD535]'
                 }`}>
                   {subscription.plan}
                 </span>
@@ -107,7 +107,7 @@ export default function SubscriptionSection({
                 <div 
                   className={`h-2 rounded-full ${
                     tradeUsagePercent > 80 ? 'bg-[#F43F5E]' : 
-                    tradeUsagePercent > 60 ? 'bg-[#F39C12]' : 'bg-[#03AAC7]'
+                    tradeUsagePercent > 60 ? 'bg-[#F39C12]' : 'bg-[#FCD535]'
                   }`}
                   style={{ width: `${Math.min(tradeUsagePercent, 100)}%` }}
                 ></div>
@@ -125,7 +125,7 @@ export default function SubscriptionSection({
                 <div 
                   className={`h-2 rounded-full ${
                     apiUsagePercent > 80 ? 'bg-[#F43F5E]' : 
-                    apiUsagePercent > 60 ? 'bg-[#F39C12]' : 'bg-[#03AAC7]'
+                    apiUsagePercent > 60 ? 'bg-[#F39C12]' : 'bg-[#FCD535]'
                   }`}
                   style={{ width: `${Math.min(apiUsagePercent, 100)}%` }}
                 ></div>
@@ -142,7 +142,7 @@ export default function SubscriptionSection({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={onUpgrade}
-            className="bg-gradient-to-r from-[#03AAC7] to-[#26BFD4] hover:from-[#26BFD4] hover:to-[#03AAC7] text-white px-6 py-2 rounded-xl font-medium transition-all shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)] flex items-center space-x-2"
+            className="bg-gradient-to-r from-[#FCD535] to-[#FFE066] hover:from-[#FFE066] hover:to-[#FCD535] text-white px-6 py-2 rounded-xl font-medium transition-all shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)] flex items-center space-x-2"
           >
             <Zap className="w-4 h-4" />
             <span>Upgrade to Pro</span>
@@ -152,7 +152,7 @@ export default function SubscriptionSection({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={onUpgrade}
-            className="bg-[#03AAC7] hover:bg-[#26BFD4] text-white px-6 py-2 rounded-xl font-medium transition-all shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)] flex items-center space-x-2"
+            className="bg-[#FCD535] hover:bg-[#FFE066] text-white px-6 py-2 rounded-xl font-medium transition-all shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)] flex items-center space-x-2"
           >
             <TrendingUp className="w-4 h-4" />
             <span>Upgrade Plan</span>
@@ -178,20 +178,20 @@ export default function SubscriptionSection({
         >
           <h5 className="text-white font-medium mb-3">Pro Plan Benefits</h5>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-            <div className="flex items-center space-x-2 text-[#03AAC7]">
-              <div className="w-1.5 h-1.5 bg-[#03AAC7] rounded-full"></div>
+            <div className="flex items-center space-x-2 text-[#FCD535]">
+              <div className="w-1.5 h-1.5 bg-[#FCD535] rounded-full"></div>
               <span>Unlimited trades</span>
             </div>
-            <div className="flex items-center space-x-2 text-[#03AAC7]">
-              <div className="w-1.5 h-1.5 bg-[#03AAC7] rounded-full"></div>
+            <div className="flex items-center space-x-2 text-[#FCD535]">
+              <div className="w-1.5 h-1.5 bg-[#FCD535] rounded-full"></div>
               <span>Advanced analytics</span>
             </div>
-            <div className="flex items-center space-x-2 text-[#03AAC7]">
-              <div className="w-1.5 h-1.5 bg-[#03AAC7] rounded-full"></div>
+            <div className="flex items-center space-x-2 text-[#FCD535]">
+              <div className="w-1.5 h-1.5 bg-[#FCD535] rounded-full"></div>
               <span>Real-time data feeds</span>
             </div>
-            <div className="flex items-center space-x-2 text-[#03AAC7]">
-              <div className="w-1.5 h-1.5 bg-[#03AAC7] rounded-full"></div>
+            <div className="flex items-center space-x-2 text-[#FCD535]">
+              <div className="w-1.5 h-1.5 bg-[#FCD535] rounded-full"></div>
               <span>Priority support</span>
             </div>
           </div>

@@ -342,7 +342,7 @@ export default function AIInsightsPage() {
         {/* Header */}
         <motion.div variants={itemVariants} className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#03AAC7] to-[#00A89C] flex items-center justify-center shadow-lg shadow-[#03AAC7]/20">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#FCD535] to-[#00A89C] flex items-center justify-center shadow-lg shadow-[#FCD535]/20">
               <BarChart3 className="w-7 h-7 text-white" />
             </div>
             <div>
@@ -360,7 +360,7 @@ export default function AIInsightsPage() {
                   onClick={() => setTimeRange(range)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     timeRange === range
-                      ? 'bg-[#03AAC7] text-black'
+                      ? 'bg-[#FCD535] text-black'
                       : 'text-zinc-400 hover:text-white'
                   }`}
                 >
@@ -373,7 +373,7 @@ export default function AIInsightsPage() {
               variant="outline"
               size="icon"
               onClick={() => fetchInsights()}
-              className="w-12 h-12 rounded-xl border-zinc-800 hover:border-[#03AAC7]/50"
+              className="w-12 h-12 rounded-xl border-zinc-800 hover:border-[#FCD535]/50"
             >
               <RefreshCw className="w-5 h-5 text-zinc-400" />
             </Button>
@@ -384,8 +384,8 @@ export default function AIInsightsPage() {
         <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="relative overflow-hidden rounded-2xl bg-zinc-900/50 border border-zinc-800/50 p-5">
             <div className="flex items-center justify-between mb-3">
-              <div className="w-11 h-11 rounded-xl bg-[#03AAC7]/10 flex items-center justify-center">
-                <Target className="w-5 h-5 text-[#03AAC7]" />
+              <div className="w-11 h-11 rounded-xl bg-[#FCD535]/10 flex items-center justify-center">
+                <Target className="w-5 h-5 text-[#FCD535]" />
               </div>
               <span className="text-xs text-zinc-500">Patterns</span>
             </div>
@@ -440,8 +440,8 @@ export default function AIInsightsPage() {
         >
           <div className="flex items-center justify-between p-6 border-b border-zinc-800/50">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#03AAC7]/15 flex items-center justify-center">
-                <PieChart className="w-6 h-6 text-[#03AAC7]" />
+              <div className="w-12 h-12 rounded-xl bg-[#FCD535]/15 flex items-center justify-center">
+                <PieChart className="w-6 h-6 text-[#FCD535]" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-white">Pattern Performance by Asset</h2>
@@ -471,7 +471,7 @@ export default function AIInsightsPage() {
                     onClick={() => setSelectedAsset(stat.symbol)}
                     className={`group flex items-center justify-between p-4 rounded-xl border transition-all cursor-pointer ${
                       selectedAsset === stat.symbol
-                        ? 'bg-[#03AAC7]/10 border-[#03AAC7]/30'
+                        ? 'bg-[#FCD535]/10 border-[#FCD535]/30'
                         : 'bg-zinc-800/30 border-zinc-700/50 hover:border-zinc-600/50'
                     }`}
                   >
@@ -676,11 +676,11 @@ export default function AIInsightsPage() {
               </div>
 
               {/* Best Day Highlight */}
-              <div className="mt-4 p-4 rounded-xl bg-[#03AAC7]/5 border border-[#03AAC7]/20">
+              <div className="mt-4 p-4 rounded-xl bg-[#FCD535]/5 border border-[#FCD535]/20">
                 <div className="flex items-center gap-3">
-                  <Award className="w-5 h-5 text-[#03AAC7]" />
+                  <Award className="w-5 h-5 text-[#FCD535]" />
                   <div>
-                    <p className="text-sm text-[#03AAC7] font-medium">
+                    <p className="text-sm text-[#FCD535] font-medium">
                       Best Day: {insights?.summary.best_day}
                     </p>
                     <p className="text-xs text-zinc-500">
@@ -830,7 +830,7 @@ export default function AIInsightsPage() {
                         <p className="text-xs text-zinc-500">Trades</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-lg font-mono font-bold text-[#03AAC7]">
+                        <p className="text-lg font-mono font-bold text-[#FCD535]">
                           {training.patterns_found}
                         </p>
                         <p className="text-xs text-zinc-500">New</p>
@@ -868,19 +868,19 @@ export default function AIInsightsPage() {
         {/* Recommendations */}
         <motion.div
           variants={itemVariants}
-          className="rounded-3xl bg-[#03AAC7]/5 border border-[#03AAC7]/20 p-6"
+          className="rounded-3xl bg-[#FCD535]/5 border border-[#FCD535]/20 p-6"
         >
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#03AAC7]/20 flex items-center justify-center">
-              <Zap className="w-6 h-6 text-[#03AAC7]" />
+            <div className="w-12 h-12 rounded-xl bg-[#FCD535]/20 flex items-center justify-center">
+              <Zap className="w-6 h-6 text-[#FCD535]" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-[#03AAC7]">AI Recommendations</h3>
+              <h3 className="text-lg font-bold text-[#FCD535]">AI Recommendations</h3>
               <ul className="mt-3 space-y-2">
                 <li className="flex items-start gap-2 text-sm text-zinc-300">
                   <ArrowUpRight className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
                   Focus on trading during{' '}
-                  <span className="font-medium text-[#03AAC7]">
+                  <span className="font-medium text-[#FCD535]">
                     {insights?.summary.best_session?.replace('_', ' ')} session
                   </span>{' '}
                   for highest win rates
@@ -888,7 +888,7 @@ export default function AIInsightsPage() {
                 <li className="flex items-start gap-2 text-sm text-zinc-300">
                   <ArrowUpRight className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
                   Your best performing asset is{' '}
-                  <span className="font-mono font-medium text-[#03AAC7]">
+                  <span className="font-mono font-medium text-[#FCD535]">
                     {insights?.summary.best_asset}
                   </span>{' '}
                   - consider increasing position sizes

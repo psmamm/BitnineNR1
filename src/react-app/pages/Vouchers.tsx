@@ -116,7 +116,7 @@ export default function VouchersPage() {
   const getTypeConfig = (type: VoucherType) => {
     switch (type) {
       case 'trading':
-        return { color: 'text-[#03AAC7]', label: 'Trading' };
+        return { color: 'text-[#FCD535]', label: 'Trading' };
       case 'fee':
         return { color: 'text-[#8B5CF6]', label: 'Fee Discount' };
       case 'bonus':
@@ -214,7 +214,7 @@ export default function VouchersPage() {
           className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5"
         >
           <div className="flex items-center gap-2 mb-4">
-            <Plus className="w-5 h-5 text-[#03AAC7]" />
+            <Plus className="w-5 h-5 text-[#FCD535]" />
             <h3 className="text-white font-semibold">Redeem Voucher Code</h3>
           </div>
           <div className="flex gap-3">
@@ -224,13 +224,13 @@ export default function VouchersPage() {
                 placeholder="Enter voucher code"
                 value={voucherCode}
                 onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
-                className="w-full px-4 py-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none uppercase tracking-wider"
+                className="w-full px-4 py-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#FCD535] focus:outline-none uppercase tracking-wider"
               />
             </div>
             <button
               onClick={handleRedeem}
               disabled={!voucherCode.trim() || isRedeeming}
-              className="px-6 py-3 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isRedeeming ? 'Redeeming...' : 'Redeem'}
             </button>
@@ -250,7 +250,7 @@ export default function VouchersPage() {
               onClick={() => setActiveTab(tab.id as VoucherStatus | 'all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeTab === tab.id
-                  ? 'bg-[#03AAC7] text-[#151517]'
+                  ? 'bg-[#FCD535] text-[#151517]'
                   : 'text-[#9CA3AF] hover:text-white'
               }`}
             >
@@ -321,7 +321,7 @@ export default function VouchersPage() {
                         </div>
 
                         {voucher.status === 'active' && (
-                          <button className="px-4 py-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-medium text-sm transition-colors">
+                          <button className="px-4 py-2 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg font-medium text-sm transition-colors">
                             Use Now
                           </button>
                         )}

@@ -174,7 +174,7 @@ export default function SpotAssetsPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-white flex items-center gap-3">
-              <Wallet className="w-7 h-7 text-[#03AAC7]" />
+              <Wallet className="w-7 h-7 text-[#FCD535]" />
               Spot Assets
               {portfolioLoading && <Loader2 className="w-5 h-5 animate-spin text-[#6B7280]" />}
             </h1>
@@ -209,7 +209,7 @@ export default function SpotAssetsPage() {
             </button>
             <button
               onClick={() => navigate('/deposit')}
-              className="px-4 py-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg font-medium transition-colors flex items-center gap-2"
             >
               <ArrowDownRight className="w-4 h-4" />
               Deposit
@@ -270,7 +270,7 @@ export default function SpotAssetsPage() {
               placeholder="Search assets..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-64 pl-10 pr-4 py-2 bg-[#1B1B1D] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none text-sm"
+              className="w-64 pl-10 pr-4 py-2 bg-[#1B1B1D] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#FCD535] focus:outline-none text-sm"
             />
           </div>
           <label className="flex items-center gap-2 cursor-pointer">
@@ -278,7 +278,7 @@ export default function SpotAssetsPage() {
               type="checkbox"
               checked={hideSmallBalances}
               onChange={(e) => setHideSmallBalances(e.target.checked)}
-              className="w-4 h-4 rounded border-[#2B2F36] bg-[#1B1B1D] text-[#03AAC7] focus:ring-[#03AAC7] focus:ring-offset-0"
+              className="w-4 h-4 rounded border-[#2B2F36] bg-[#1B1B1D] text-[#FCD535] focus:ring-[#FCD535] focus:ring-offset-0"
             />
             <span className="text-[#9CA3AF] text-sm">Hide small balances</span>
           </label>
@@ -351,7 +351,7 @@ export default function SpotAssetsPage() {
                     <div className="flex items-center justify-center gap-2">
                       <button
                         onClick={() => navigate('/trading')}
-                        className="px-3 py-1.5 text-[#03AAC7] hover:bg-[#03AAC7]/10 rounded text-sm font-medium transition-colors"
+                        className="px-3 py-1.5 text-[#FCD535] hover:bg-[#FCD535]/10 rounded text-sm font-medium transition-colors"
                       >
                         Trade
                       </button>
@@ -386,7 +386,7 @@ export default function SpotAssetsPage() {
                   <div className="flex items-center justify-center gap-3">
                     <button
                       onClick={() => navigate('/settings')}
-                      className="px-4 py-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-medium transition-colors"
+                      className="px-4 py-2 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg font-medium transition-colors"
                     >
                       Connect Wallet
                     </button>

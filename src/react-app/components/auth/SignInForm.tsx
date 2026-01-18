@@ -88,14 +88,14 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
     try {
       const { error } = await signIn(email, password);
       if (error) throw error;
-      
+
       // Handle remember me
       if (rememberMe) {
         localStorage.setItem('rememberedEmail', email);
       } else {
         localStorage.removeItem('rememberedEmail');
       }
-      
+
       navigate('/dashboard');
     } catch (error: unknown) {
       const errorMessage = error && typeof error === 'object' && 'code' in error && typeof error.code === 'string'
@@ -132,18 +132,18 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
 
   const cardContent = (
     <div className="space-y-3 text-center">
-      <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/5 border border-[#2B2F36] text-[11px] uppercase tracking-[0.2em] text-gray-400">
+      <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/5 border border-border-default text-[11px] uppercase tracking-[0.2em] text-text-secondary">
         Welcome back
       </div>
-      <h2 className="text-3xl font-extrabold text-white">Sign in to your account</h2>
-      <p className="text-sm text-[#7F8C8D]">Manage trades, track PnL and get started right away.</p>
+      <h2 className="text-3xl font-extrabold text-text-primary">Sign in to your account</h2>
+      <p className="text-sm text-text-tertiary">Manage trades, track PnL and get started right away.</p>
     </div>
   );
 
   const formContent = (
     <>
       {error && (
-        <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl text-sm flex items-center gap-2" role="alert">
+        <div className="bg-loss/10 border border-loss/30 text-loss px-4 py-3 rounded-xl text-sm flex items-center gap-2" role="alert">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
@@ -152,7 +152,7 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
       <form className="space-y-5" onSubmit={handleSubmit}>
         <div className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="email-address" className="text-sm text-[#AAB0C0] font-medium">
+            <label htmlFor="email-address" className="text-sm text-text-secondary font-medium">
               Email address
             </label>
             <div className="relative">
@@ -164,12 +164,12 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
                 required
                 aria-invalid={emailTouched && !isEmailValid}
                 aria-describedby={emailTouched && !isEmailValid ? "email-error" : undefined}
-                className={`w-full rounded-xl border bg-[#1B1B1D]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${
+                className={`w-full rounded-xl border bg-surface/50 px-4 py-3 pr-10 text-text-primary placeholder-text-tertiary focus:outline-none focus:ring-2 transition-all ${
                   emailTouched
                     ? isEmailValid
-                      ? 'border-[#03AAC7]/50 focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50'
-                      : 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
-                    : 'border-[#2B2F36] focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50'
+                      ? 'border-profit/50 focus:ring-profit/50 focus:border-profit/50'
+                      : 'border-loss/50 focus:ring-loss/50 focus:border-loss/50'
+                    : 'border-border-default focus:ring-brand/50 focus:border-brand/50'
                 }`}
                 placeholder="you@example.com"
                 value={email}
@@ -179,24 +179,24 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
               {emailTouched && (
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                   {isEmailValid ? (
-                    <CheckCircle className="w-4 h-4 text-[#03AAC7]" />
+                    <CheckCircle className="w-4 h-4 text-profit" />
                   ) : (
-                    <AlertCircle className="w-4 h-4 text-red-400" />
+                    <AlertCircle className="w-4 h-4 text-loss" />
                   )}
                 </div>
               )}
             </div>
             {emailTouched && !isEmailValid && (
-              <p id="email-error" className="text-xs text-red-400 mt-1">Please enter a valid email address</p>
+              <p id="email-error" className="text-xs text-loss mt-1">Please enter a valid email address</p>
             )}
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
-              <label htmlFor="password" className="text-[#AAB0C0] font-medium">
+              <label htmlFor="password" className="text-text-secondary font-medium">
                 Password
               </label>
-              <Link to="/forgot-password" className="text-[#03AAC7] hover:text-[#26BFD4] transition-colors">
+              <Link to="/forgot-password" className="text-brand hover:text-brand-hover transition-colors">
                 Forgot your password?
               </Link>
             </div>
@@ -207,8 +207,8 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
                 required
-                className="w-full rounded-xl border border-[#2B2F36] bg-[#1B1B1D]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50 transition-all"
-                placeholder="••••••••"
+                className="w-full rounded-xl border border-border-default bg-surface/50 px-4 py-3 pr-10 text-text-primary placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand/50 transition-all"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -217,7 +217,7 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
                 variant="ghost"
                 size="icon"
                 onClick={togglePasswordVisibility}
-                className="absolute inset-y-0 right-0 text-gray-400 hover:text-white h-auto"
+                className="absolute inset-y-0 right-0 text-text-tertiary hover:text-text-primary h-auto"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -239,10 +239,10 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
             />
             <label
               htmlFor="remember-me"
-              className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-md border-2 border-white/20 bg-white/5 transition-all duration-200 hover:border-[#03AAC7]/50 hover:bg-[#03AAC7]/10 peer-checked:border-[#03AAC7] peer-checked:bg-[#03AAC7] peer-focus-visible:ring-2 peer-focus-visible:ring-[#03AAC7]/50 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#1B1B1D]"
+              className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-md border-2 border-white/20 bg-white/5 transition-all duration-200 hover:border-brand/50 hover:bg-brand/10 peer-checked:border-brand peer-checked:bg-brand peer-focus-visible:ring-2 peer-focus-visible:ring-brand/50 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-surface"
             >
               <svg
-                className="h-3 w-3 text-white opacity-0 transition-opacity duration-200 peer-checked:opacity-100"
+                className="h-3 w-3 text-surface-dark opacity-0 transition-opacity duration-200 peer-checked:opacity-100"
                 style={{ opacity: rememberMe ? 1 : 0 }}
                 fill="none"
                 viewBox="0 0 24 24"
@@ -253,7 +253,7 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
               </svg>
             </label>
           </div>
-          <label htmlFor="remember-me" className="ml-3 text-sm text-[#AAB0C0] cursor-pointer select-none hover:text-white transition-colors">
+          <label htmlFor="remember-me" className="ml-3 text-sm text-text-secondary cursor-pointer select-none hover:text-text-primary transition-colors">
             Remember me
           </label>
         </div>
@@ -263,7 +263,7 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
             type="submit"
             variant="default"
             disabled={loading}
-            className="w-full bg-[#03AAC7] hover:bg-[#26BFD4] shadow-lg hover:shadow-[0_4px_20px_rgba(106,61,244,0.4)]"
+            className="w-full shadow-glow-yellow"
           >
             {loading ? (
               <>
@@ -277,10 +277,10 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[#2B2F36]" />
+              <div className="w-full border-t border-border-default" />
             </div>
-            <div className="relative flex justify-center text-xs uppercase tracking-[0.15em] text-gray-500">
-              <span className="bg-[#1B1B1D] px-3">or</span>
+            <div className="relative flex justify-center text-xs uppercase tracking-[0.15em] text-text-tertiary">
+              <span className="bg-surface px-3">or</span>
             </div>
           </div>
 
@@ -289,7 +289,7 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
             variant="outline"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full bg-[#1B1B1D]/50 border-[#2B2F36] hover:bg-white/5 hover:border-white/20"
+            className="w-full"
           >
             {loading ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -301,9 +301,9 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
         </div>
       </form>
 
-      <div className="text-center text-sm text-[#7F8C8D]">
+      <div className="text-center text-sm text-text-tertiary">
         Don't have an account?{' '}
-        <Link to="/signup" className="text-[#03AAC7] hover:text-[#26BFD4] transition-colors font-medium">
+        <Link to="/signup" className="text-brand hover:text-brand-hover transition-colors font-medium">
           Sign up
         </Link>
       </div>
@@ -320,11 +320,11 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
   }
 
   return (
-    <div className="relative bg-[#1B1B1D] rounded-2xl border border-[#2B2F36] shadow-[0_4px_20px_rgba(0,0,0,0.3)] p-8 space-y-8 max-w-md w-full">
+    <div className="relative bg-surface rounded-2xl border border-border-default shadow-lg p-8 space-y-8 max-w-md w-full">
       {/* Close button */}
       <Link
         to="/"
-        className="absolute top-4 right-4 p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+        className="absolute top-4 right-4 p-2 rounded-lg text-text-tertiary hover:text-text-primary hover:bg-white/5 transition-all"
       >
         <X className="w-5 h-5" />
       </Link>
@@ -338,12 +338,3 @@ export const SignInForm = ({ layout = 'card' }: SignInFormProps) => {
 };
 
 export default SignInForm;
-
-
-
-
-
-
-
-
-

@@ -165,13 +165,13 @@ export const ForgotPasswordForm = () => {
           <div className="space-y-4">
             {/* Success Icon */}
             <div className="flex justify-center">
-              <div className="w-16 h-16 bg-[#03AAC7]/10 rounded-full flex items-center justify-center">
-                <Mail className="w-8 h-8 text-[#03AAC7]" />
+              <div className="w-16 h-16 bg-[#FCD535]/10 rounded-full flex items-center justify-center">
+                <Mail className="w-8 h-8 text-[#FCD535]" />
               </div>
             </div>
 
             {/* Success Message */}
-            <div className="bg-[#03AAC7]/10 border border-[#03AAC7]/30 text-[#03AAC7] px-4 py-3 rounded-xl text-sm flex items-center gap-2" role="alert">
+            <div className="bg-[#FCD535]/10 border border-[#FCD535]/30 text-[#FCD535] px-4 py-3 rounded-xl text-sm flex items-center gap-2" role="alert">
               <CheckCircle className="w-4 h-4 flex-shrink-0" />
               <span>{message}</span>
             </div>
@@ -208,7 +208,7 @@ export const ForgotPasswordForm = () => {
             {/* Back to login */}
             <Link
               to="/login"
-              className="w-full flex items-center justify-center gap-2 text-[#03AAC7] hover:text-[#26BFD4] transition-colors text-sm font-medium"
+              className="w-full flex items-center justify-center gap-2 text-[#FCD535] hover:text-[#FFE066] transition-colors text-sm font-medium"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to sign in</span>
@@ -243,9 +243,9 @@ export const ForgotPasswordForm = () => {
                     className={`w-full rounded-xl border bg-[#1B1B1D]/50 px-4 py-3 pr-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${
                       emailTouched
                         ? isEmailValid
-                          ? 'border-[#03AAC7]/50 focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50'
+                          ? 'border-[#FCD535]/50 focus:ring-[#FCD535]/50 focus:border-[#FCD535]/50'
                           : 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
-                        : 'border-[#2B2F36] focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50'
+                        : 'border-[#2B2F36] focus:ring-[#FCD535]/50 focus:border-[#FCD535]/50'
                     }`}
                     placeholder="you@example.com"
                     value={email}
@@ -255,7 +255,7 @@ export const ForgotPasswordForm = () => {
                   {emailTouched && (
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                       {isEmailValid ? (
-                        <CheckCircle className="w-4 h-4 text-[#03AAC7]" />
+                        <CheckCircle className="w-4 h-4 text-[#FCD535]" />
                       ) : (
                         <AlertCircle className="w-4 h-4 text-red-400" />
                       )}
@@ -270,7 +270,7 @@ export const ForgotPasswordForm = () => {
               <button
                 type="submit"
                 disabled={loading || cooldown > 0}
-                className="w-full rounded-xl bg-[#03AAC7] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#03AAC7]/20 hover:shadow-[#03AAC7]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full rounded-xl bg-[#FCD535] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#FCD535]/20 hover:shadow-[#FCD535]/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
@@ -287,7 +287,7 @@ export const ForgotPasswordForm = () => {
 
             <div className="text-center text-sm text-[#7F8C8D]">
               Remembered your password?{' '}
-              <Link to="/login" className="text-[#03AAC7] hover:text-[#03AAC7] transition-colors font-medium">
+              <Link to="/login" className="text-[#FCD535] hover:text-[#FCD535] transition-colors font-medium">
                 Back to sign in
               </Link>
             </div>

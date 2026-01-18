@@ -111,7 +111,7 @@ export default function TransferPage() {
                       >
                         <span className="text-white">{account.name}</span>
                         {fromAccount === account.id && (
-                          <CheckCircle2 className="w-4 h-4 text-[#03AAC7]" />
+                          <CheckCircle2 className="w-4 h-4 text-[#FCD535]" />
                         )}
                       </button>
                     ))}
@@ -125,7 +125,7 @@ export default function TransferPage() {
                   onClick={swapAccounts}
                   className="p-2 bg-[#252629] hover:bg-[#222226] rounded-lg transition-colors"
                 >
-                  <ArrowDownUp className="w-5 h-5 text-[#03AAC7]" />
+                  <ArrowDownUp className="w-5 h-5 text-[#FCD535]" />
                 </button>
               </div>
 
@@ -157,7 +157,7 @@ export default function TransferPage() {
                       >
                         <span className="text-white">{account.name}</span>
                         {toAccount === account.id && (
-                          <CheckCircle2 className="w-4 h-4 text-[#03AAC7]" />
+                          <CheckCircle2 className="w-4 h-4 text-[#FCD535]" />
                         )}
                       </button>
                     ))}
@@ -181,7 +181,7 @@ export default function TransferPage() {
                   placeholder="Search coin..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors text-sm"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#FCD535] focus:outline-none transition-colors text-sm"
                 />
               </div>
 
@@ -193,7 +193,7 @@ export default function TransferPage() {
                     onClick={() => setSelectedCoin(coin.symbol)}
                     className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
                       selectedCoin === coin.symbol
-                        ? 'bg-[#03AAC7]/10 border border-[#03AAC7]'
+                        ? 'bg-[#FCD535]/10 border border-[#FCD535]'
                         : 'bg-[#252629] border border-transparent hover:border-[#2B2F36]'
                     }`}
                   >
@@ -235,11 +235,11 @@ export default function TransferPage() {
                       placeholder="0.00"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
-                      className="w-full px-4 py-3 pr-20 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors text-sm"
+                      className="w-full px-4 py-3 pr-20 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#FCD535] focus:outline-none transition-colors text-sm"
                     />
                     <button
                       onClick={() => setAmount(String(getAvailableBalance()))}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#03AAC7] text-sm font-medium hover:text-[#26BFD4]"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#FCD535] text-sm font-medium hover:text-[#FFE066]"
                     >
                       MAX
                     </button>
@@ -258,7 +258,7 @@ export default function TransferPage() {
             {/* Submit Button */}
             <button
               disabled={!selectedCoin || !amount || parseFloat(amount) <= 0}
-              className="w-full py-3 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Transfer
             </button>

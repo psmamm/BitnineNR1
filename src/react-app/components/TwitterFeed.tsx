@@ -74,8 +74,8 @@ export default function TwitterFeed() {
     <div className="bg-[#1B1B1D] rounded-2xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-[#03AAC7]/10 rounded-xl flex items-center justify-center">
-            <Twitter className="w-5 h-5 text-[#03AAC7]" />
+          <div className="w-10 h-10 bg-[#FCD535]/10 rounded-xl flex items-center justify-center">
+            <Twitter className="w-5 h-5 text-[#FCD535]" />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-white">Live Crypto Intel</h3>
@@ -85,7 +85,7 @@ export default function TwitterFeed() {
         <button
           onClick={fetchTwitterPosts}
           disabled={loading}
-          className="p-2 bg-[#1B1B1D]/50 hover:bg-[#1B1B1D]/70 border border-[#2B2F36] hover:border-[#03AAC7]/50 rounded-xl text-[#6B7280] transition-colors disabled:opacity-50"
+          className="p-2 bg-[#1B1B1D]/50 hover:bg-[#1B1B1D]/70 border border-[#2B2F36] hover:border-[#FCD535]/50 rounded-xl text-[#6B7280] transition-colors disabled:opacity-50"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         </button>
@@ -94,19 +94,19 @@ export default function TwitterFeed() {
       <div className="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">
         {loading && posts.length === 0 ? (
           <div className="text-center py-8">
-            <RefreshCw className="w-6 h-6 text-[#03AAC7] animate-spin mx-auto mb-3" />
+            <RefreshCw className="w-6 h-6 text-[#FCD535] animate-spin mx-auto mb-3" />
             <p className="text-[#7F8C8D] text-sm">Loading latest posts...</p>
           </div>
         ) : error ? (
           <div className="text-center py-8 text-[#7F8C8D] text-sm">
-            <div className="bg-[#03AAC7]/10 border border-[#03AAC7]/20 rounded-xl p-4">
-              <p className="text-[#03AAC7] font-semibold mb-2">⚠️ {error}</p>
+            <div className="bg-[#FCD535]/10 border border-[#FCD535]/20 rounded-xl p-4">
+              <p className="text-[#FCD535] font-semibold mb-2">⚠️ {error}</p>
               <p className="text-xs text-[#7F8C8D] mb-3">
                 To enable real Twitter posts, add TWITTER_BEARER_TOKEN to your Cloudflare Worker secrets.
               </p>
               <button
                 onClick={fetchTwitterPosts}
-                className="px-4 py-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-white text-xs rounded-lg transition-colors"
+                className="px-4 py-2 bg-[#FCD535] hover:bg-[#FFE066] text-white text-xs rounded-lg transition-colors"
               >
                 Try again
               </button>
@@ -124,7 +124,7 @@ export default function TwitterFeed() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
               onClick={() => window.open(post.url, '_blank')}
-              className="p-3 bg-[#1B1B1D]/50 rounded-lg border border-[#2B2F36] hover:border-[#03AAC7]/50 cursor-pointer transition-all group"
+              className="p-3 bg-[#1B1B1D]/50 rounded-lg border border-[#2B2F36] hover:border-[#FCD535]/50 cursor-pointer transition-all group"
             >
               <div className="flex items-start space-x-3">
                 <img
@@ -155,7 +155,7 @@ export default function TwitterFeed() {
                     </div>
                   )}
                 </div>
-                <ExternalLink className="w-3 h-3 text-[#7F8C8D] group-hover:text-[#03AAC7] transition-colors mt-1 flex-shrink-0" />
+                <ExternalLink className="w-3 h-3 text-[#7F8C8D] group-hover:text-[#FCD535] transition-colors mt-1 flex-shrink-0" />
               </div>
             </motion.div>
           ))

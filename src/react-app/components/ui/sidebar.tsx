@@ -190,7 +190,7 @@ const SidebarItem = React.forwardRef<HTMLDivElement, SidebarItemProps>(
           "flex items-center gap-3 px-3 py-2.5 mx-1 rounded-lg cursor-pointer",
           "text-sm transition-colors duration-150",
           active
-            ? "bg-[#1B1B1D] text-[#03AAC7]"
+            ? "bg-[#1B1B1D] text-[#FCD535]"
             : "text-[#9CA3AF] hover:bg-[#1B1B1D] hover:text-white",
           disabled && "opacity-50 cursor-not-allowed hover:bg-transparent hover:text-[#9CA3AF]",
           collapsed && "justify-center px-2",
@@ -204,7 +204,7 @@ const SidebarItem = React.forwardRef<HTMLDivElement, SidebarItemProps>(
         {icon && (
           <span className={cn(
             "flex-shrink-0 w-5 h-5 flex items-center justify-center",
-            active ? "text-[#03AAC7]" : "opacity-70"
+            active ? "text-[#FCD535]" : "opacity-70"
           )}>
             {icon}
           </span>

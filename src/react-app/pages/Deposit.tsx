@@ -105,7 +105,7 @@ export default function DepositPage() {
                 className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5"
               >
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-6 h-6 rounded-full bg-[#03AAC7] flex items-center justify-center text-xs font-bold text-[#151517]">
+                  <div className="w-6 h-6 rounded-full bg-[#FCD535] flex items-center justify-center text-xs font-bold text-[#151517]">
                     1
                   </div>
                   <h3 className="text-white font-medium">Select Coin</h3>
@@ -119,7 +119,7 @@ export default function DepositPage() {
                     placeholder="Search coin..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors text-sm"
+                    className="w-full pl-10 pr-4 py-2.5 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#FCD535] focus:outline-none transition-colors text-sm"
                   />
                 </div>
 
@@ -134,7 +134,7 @@ export default function DepositPage() {
                       }}
                       className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
                         selectedCoin === coin.symbol
-                          ? 'bg-[#03AAC7]/10 border border-[#03AAC7]'
+                          ? 'bg-[#FCD535]/10 border border-[#FCD535]'
                           : 'bg-[#252629] border border-transparent hover:border-[#2B2F36]'
                       }`}
                     >
@@ -158,7 +158,7 @@ export default function DepositPage() {
                   className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5"
                 >
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-6 h-6 rounded-full bg-[#03AAC7] flex items-center justify-center text-xs font-bold text-[#151517]">
+                    <div className="w-6 h-6 rounded-full bg-[#FCD535] flex items-center justify-center text-xs font-bold text-[#151517]">
                       2
                     </div>
                     <h3 className="text-white font-medium">Select Network</h3>
@@ -171,7 +171,7 @@ export default function DepositPage() {
                         onClick={() => setSelectedNetwork(network)}
                         className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
                           selectedNetwork === network
-                            ? 'bg-[#03AAC7]/10 border border-[#03AAC7]'
+                            ? 'bg-[#FCD535]/10 border border-[#FCD535]'
                             : 'bg-[#252629] border border-transparent hover:border-[#2B2F36]'
                         }`}
                       >
@@ -196,7 +196,7 @@ export default function DepositPage() {
                   className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5"
                 >
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-6 h-6 rounded-full bg-[#03AAC7] flex items-center justify-center text-xs font-bold text-[#151517]">
+                    <div className="w-6 h-6 rounded-full bg-[#FCD535] flex items-center justify-center text-xs font-bold text-[#151517]">
                       3
                     </div>
                     <h3 className="text-white font-medium">Deposit Address</h3>
@@ -231,7 +231,7 @@ export default function DepositPage() {
                       />
                       <button
                         onClick={copyAddress}
-                        className="px-4 py-3 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-medium transition-colors"
+                        className="px-4 py-3 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg font-medium transition-colors"
                       >
                         {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                       </button>
@@ -263,14 +263,14 @@ export default function DepositPage() {
               animate={{ opacity: 1, y: 0 }}
               className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-6 text-center"
             >
-              <div className="w-16 h-16 bg-[#03AAC7]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CreditCard className="w-8 h-8 text-[#03AAC7]" />
+              <div className="w-16 h-16 bg-[#FCD535]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CreditCard className="w-8 h-8 text-[#FCD535]" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">Buy Crypto with Card</h3>
               <p className="text-[#9CA3AF] text-sm mb-6 max-w-sm mx-auto">
                 Purchase crypto directly with your credit or debit card through our trusted partners.
               </p>
-              <button className="px-6 py-3 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-semibold transition-colors">
+              <button className="px-6 py-3 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg font-semibold transition-colors">
                 Coming Soon
               </button>
             </motion.div>

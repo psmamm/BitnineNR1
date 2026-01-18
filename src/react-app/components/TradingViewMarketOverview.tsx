@@ -138,7 +138,7 @@ export default function TradingViewMarketOverview({
           className="absolute inset-0 flex items-center justify-center bg-[#1B1B1D]/80 z-10 rounded-xl"
         >
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-[#03AAC7] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#FCD535] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <div className="text-white font-semibold mb-2">Loading Market Overview</div>
             <div className="text-[#7F8C8D] text-sm">Comprehensive crypto market data</div>
             <div className="text-[#AAB0C0] text-xs mt-2">Powered by TradingView</div>
@@ -150,8 +150,8 @@ export default function TradingViewMarketOverview({
       <div className="p-6 border-b border-white/5">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-[#03AAC7]/10 rounded-lg flex items-center justify-center">
-              <span className="text-[#03AAC7] font-bold text-lg">📊</span>
+            <div className="w-8 h-8 bg-[#FCD535]/10 rounded-lg flex items-center justify-center">
+              <span className="text-[#FCD535] font-bold text-lg">📊</span>
             </div>
             <div>
               <h3 className="text-xl font-semibold text-white">Crypto Market Screener</h3>

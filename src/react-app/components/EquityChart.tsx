@@ -141,10 +141,10 @@ export default function EquityChart() {
           <Line 
             type="monotone" 
             dataKey="value" 
-            stroke="#03AAC7" 
+            stroke="#FCD535" 
             strokeWidth={2}
             dot={false}
-            activeDot={{ r: 4, stroke: '#03AAC7', strokeWidth: 2, fill: '#03AAC7' }}
+            activeDot={{ r: 4, stroke: '#FCD535', strokeWidth: 2, fill: '#FCD535' }}
           />
         </LineChart>
       </ResponsiveContainer>

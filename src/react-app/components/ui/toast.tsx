@@ -151,12 +151,12 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
     default: {
       icon: null,
       iconClass: "",
-      progressClass: "bg-[#03AAC7]",
+      progressClass: "bg-[#FCD535]",
     },
     success: {
       icon: <CheckCircle className="w-5 h-5" />,
-      iconClass: "text-[#03AAC7]",
-      progressClass: "bg-[#03AAC7]",
+      iconClass: "text-[#FCD535]",
+      progressClass: "bg-[#FCD535]",
     },
     error: {
       icon: <AlertCircle className="w-5 h-5" />,
@@ -208,7 +208,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
           )}
           {toast.action && (
             <button
-              className="mt-2 text-sm font-medium text-[#03AAC7] hover:text-[#26BFD4] transition-colors"
+              className="mt-2 text-sm font-medium text-[#FCD535] hover:text-[#FFE066] transition-colors"
               onClick={toast.action.onClick}
             >
               {toast.action.label}

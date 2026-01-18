@@ -76,7 +76,7 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
     }
 
     const statusColorMap = {
-      online: "bg-[#03AAC7]",
+      online: "bg-[#FCD535]",
       offline: "bg-[#6B7280]",
       away: "bg-[#F59E0B]",
       busy: "bg-[#F43F5E]",
@@ -189,7 +189,7 @@ const UserProfile = ({
             {name}
           </span>
           {verified && (
-            <span className="text-[#03AAC7]">
+            <span className="text-[#FCD535]">
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"

@@ -41,11 +41,11 @@ export function TerminalHeader({
       <div className="flex items-center gap-6 flex-1">
         {/* Symbol Selector */}
         <div className="relative flex items-center gap-2">
-          <Star className="w-4 h-4 text-[#848E9C] hover:text-[#03AAC7] cursor-pointer" />
+          <Star className="w-4 h-4 text-[#848E9C] hover:text-[#FCD535] cursor-pointer" />
           <div className="relative">
             <button
               onClick={() => setIsSymbolDropdownOpen(!isSymbolDropdownOpen)}
-              className="flex items-center gap-2 text-[#EAECEF] font-semibold text-lg hover:text-[#03AAC7] transition-colors"
+              className="flex items-center gap-2 text-[#EAECEF] font-semibold text-lg hover:text-[#FCD535] transition-colors"
             >
               <span>{symbol}</span>
               <span className="text-[#848E9C] text-xs bg-[#2B2F36] px-1.5 py-0.5 rounded">Perpetual</span>
@@ -62,7 +62,7 @@ export function TerminalHeader({
                       setIsSymbolDropdownOpen(false);
                     }}
                     className={`w-full text-left px-4 py-2 text-sm hover:bg-[#2B2F36] transition-colors ${
-                      sym === symbol ? 'text-[#03AAC7]' : 'text-[#EAECEF]'
+                      sym === symbol ? 'text-[#FCD535]' : 'text-[#EAECEF]'
                     }`}
                   >
                     {sym}
@@ -132,7 +132,7 @@ export function TerminalHeader({
             onClick={onAICloneToggle}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
               isAIClonePanelOpen
-                ? 'bg-[#03AAC7]/20 text-[#03AAC7] border border-[#03AAC7]/50'
+                ? 'bg-[#FCD535]/20 text-[#FCD535] border border-[#FCD535]/50'
                 : 'bg-[#2B2F36]/50 text-[#848E9C] hover:text-[#EAECEF] border border-transparent hover:border-[#2B2F36]'
             }`}
           >

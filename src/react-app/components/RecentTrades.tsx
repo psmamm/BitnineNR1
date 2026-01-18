@@ -81,8 +81,8 @@ export default function RecentTrades() {
     <div className={`${getCardBg(theme)} rounded-lg p-3 sm:p-4 border ${getCardBorder(theme)}`}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2 sm:space-x-3">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#03AAC7]/10 rounded-lg flex items-center justify-center">
-            <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-[#03AAC7]" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#FCD535]/10 rounded-lg flex items-center justify-center">
+            <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-[#FCD535]" />
           </div>
           <div>
             <h2 className={`text-base sm:text-lg font-semibold ${getTextColor(theme, 'primary')}`}>Recent Trades</h2>
@@ -91,7 +91,7 @@ export default function RecentTrades() {
         </div>
         <Link 
           to="/journal" 
-          className="px-3 sm:px-4 py-1.5 sm:py-2 bg-[#03AAC7]/20 hover:bg-[#03AAC7]/30 text-[#03AAC7] rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center space-x-1.5 sm:space-x-2"
+          className="px-3 sm:px-4 py-1.5 sm:py-2 bg-[#FCD535]/20 hover:bg-[#FCD535]/30 text-[#FCD535] rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center space-x-1.5 sm:space-x-2"
         >
           <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           <span>View All</span>
@@ -102,7 +102,7 @@ export default function RecentTrades() {
         <div className="text-center py-8 sm:py-12">
           <div className={`${getTextColor(theme, 'muted')} mb-2 text-sm sm:text-base`}>No trades yet</div>
           <p className={`${getTextColor(theme, 'muted')} text-xs sm:text-sm`}>
-            Start by <Link to="/journal" className="text-[#03AAC7] hover:text-[#26BFD4] transition-colors">adding your first trade</Link>
+            Start by <Link to="/journal" className="text-[#FCD535] hover:text-[#FFE066] transition-colors">adding your first trade</Link>
           </p>
         </div>
       ) : (
@@ -116,7 +116,7 @@ export default function RecentTrades() {
               className={`flex items-center space-x-3 p-2.5 sm:p-3 ${getCardBg(theme)} ${getHoverBg(theme)} border ${getCardBorder(theme)} rounded-lg transition-all duration-200 group`}
             >
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#03AAC7]/10 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#FCD535]/10 rounded-lg flex items-center justify-center">
                   <span className={`${getTextColor(theme, 'secondary')} text-sm sm:text-base font-medium`}>
                     {getAssetIcon(trade.asset_type || 'stocks')}
                   </span>
@@ -128,7 +128,7 @@ export default function RecentTrades() {
                   <h3 className={`${getTextColor(theme, 'primary')} text-sm sm:text-base font-medium truncate`}>{trade.symbol}</h3>
                   <div className={`flex items-center space-x-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium flex-shrink-0 ${
                     trade.direction === 'long' 
-                      ? 'bg-[#03AAC7]/20 text-[#03AAC7]' 
+                      ? 'bg-[#FCD535]/20 text-[#FCD535]' 
                       : 'bg-[#F43F5E]/20 text-[#F43F5E]'
                   }`}>
                     {trade.direction === 'long' ? (
@@ -151,14 +151,14 @@ export default function RecentTrades() {
               <div className="text-right flex-shrink-0">
                 {trade.is_closed && trade.pnl !== null ? (
                   <div className={`text-xs sm:text-sm font-semibold ${
-                    (trade.pnl ?? 0) >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'
+                    (trade.pnl ?? 0) >= 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]'
                   }`}>
                     {(trade.pnl ?? 0) >= 0 ? '+' : ''}${(trade.pnl ?? 0).toFixed(2)}
                   </div>
                 ) : (
                   <div className="flex items-center space-x-1">
-                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#03AAC7] rounded-full animate-pulse" />
-                    <span className="text-[#03AAC7] text-xs sm:text-sm font-medium">Open</span>
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#FCD535] rounded-full animate-pulse" />
+                    <span className="text-[#FCD535] text-xs sm:text-sm font-medium">Open</span>
                   </div>
                 )}
                 <div className={`${getTextColor(theme, 'muted')} text-[10px] sm:text-xs mt-0.5 sm:mt-1 truncate max-w-[80px]`}>

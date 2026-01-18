@@ -42,7 +42,7 @@ export default function DailyChallengePage() {
             <DashboardLayout>
                 <div className="min-h-screen bg-[#1B1B1D] flex items-center justify-center">
                     <div className="text-center">
-                        <div className="w-12 h-12 border-4 border-[#03AAC7]/30 border-t-[#03AAC7] rounded-full animate-spin mx-auto mb-4" />
+                        <div className="w-12 h-12 border-4 border-[#FCD535]/30 border-t-[#FCD535] rounded-full animate-spin mx-auto mb-4" />
                         <p className="text-gray-400">Loading daily challenge...</p>
                     </div>
                 </div>
@@ -57,16 +57,16 @@ export default function DailyChallengePage() {
                     {/* Header */}
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-4">
-                            <div className="bg-[#03AAC7]/20 p-3 rounded-xl">
-                                <Trophy className="w-8 h-8 text-[#03AAC7]" />
+                            <div className="bg-[#FCD535]/20 p-3 rounded-xl">
+                                <Trophy className="w-8 h-8 text-[#FCD535]" />
                             </div>
                             <div>
                                 <h1 className="text-4xl font-bold mb-2">Daily Challenge</h1>
                                 <div className="flex items-center gap-3">
-                                    <span className="px-3 py-1 bg-[#03AAC7]/20 text-[#03AAC7] rounded-lg text-sm font-medium">
+                                    <span className="px-3 py-1 bg-[#FCD535]/20 text-[#FCD535] rounded-lg text-sm font-medium">
                                         24 Hour Challenge
                                     </span>
-                                    <span className="px-3 py-1 bg-[#03AAC7]/20 text-[#03AAC7] rounded-lg text-sm font-medium flex items-center gap-2">
+                                    <span className="px-3 py-1 bg-[#FCD535]/20 text-[#FCD535] rounded-lg text-sm font-medium flex items-center gap-2">
                                         <Users className="w-4 h-4" />
                                         {challenge?.participantCount || 0} participants
                                     </span>
@@ -78,7 +78,7 @@ export default function DailyChallengePage() {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleJoin}
-                                className="bg- from-[#03AAC7] to-[#03AAC7] hover:from-[#5A2DE4] hover:to-[#7B4CE6] text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2"
+                                className="bg- from-[#FCD535] to-[#FCD535] hover:from-[#5A2DE4] hover:to-[#7B4CE6] text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2"
                             >
                                 <Play className="w-5 h-5" />
                                 Start Challenge
@@ -105,8 +105,8 @@ export default function DailyChallengePage() {
                                 </button>
                             </div>
                             <div className="flex items-center gap-3">
-                                <Clock className="w-6 h-6 text-[#03AAC7]" />
-                                <div className="text-4xl font-bold text-[#03AAC7] font-mono">
+                                <Clock className="w-6 h-6 text-[#FCD535]" />
+                                <div className="text-4xl font-bold text-[#FCD535] font-mono">
                                     {formatTime(timeRemaining)}
                                 </div>
                             </div>
@@ -152,14 +152,14 @@ export default function DailyChallengePage() {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.2 }}
-                                    className="bg- from-[#03AAC7]/20 to-[#03AAC7]/20 border-2 border-[#03AAC7]/50 rounded-2xl p-6 text-center transform scale-105"
+                                    className="bg- from-[#FCD535]/20 to-[#FCD535]/20 border-2 border-[#FCD535]/50 rounded-2xl p-6 text-center transform scale-105"
                                 >
                                     <div className="flex justify-center mb-4">
                                         <div className="bg-yellow-500/20 p-4 rounded-full">
                                             <Crown className="w-8 h-8 text-yellow-500" />
                                         </div>
                                     </div>
-                                    <div className="w-20 h-20 bg- from-[#03AAC7] to-[#03AAC7] rounded-full mx-auto mb-3 flex items-center justify-center text-2xl font-bold">
+                                    <div className="w-20 h-20 bg- from-[#FCD535] to-[#FCD535] rounded-full mx-auto mb-3 flex items-center justify-center text-2xl font-bold">
                                         {top3[0].username.charAt(0).toUpperCase()}
                                     </div>
                                     <h3 className="font-bold mb-1 text-lg">{top3[0].username}</h3>
@@ -212,7 +212,7 @@ export default function DailyChallengePage() {
                     <div className="bg-[#1B1B1D] border border-[#2B2F36] rounded-2xl overflow-hidden">
                         <div className="p-6 border-b border-[#2B2F36] flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <TrendingUp className="w-6 h-6 text-[#03AAC7]" />
+                                <TrendingUp className="w-6 h-6 text-[#FCD535]" />
                                 <h2 className="text-2xl font-bold">Daily Challenge Leaderboard</h2>
                             </div>
                             <span className="text-sm text-gray-400">Live Rankings & Trade Analysis</span>
@@ -255,7 +255,7 @@ export default function DailyChallengePage() {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-10 h-10 bg-[#03AAC7]/20 rounded-full flex items-center justify-center">
+                                                        <div className="w-10 h-10 bg-[#FCD535]/20 rounded-full flex items-center justify-center">
                                                             {participant.username.charAt(0).toUpperCase()}
                                                         </div>
                                                         <span className="font-medium">{participant.username}</span>

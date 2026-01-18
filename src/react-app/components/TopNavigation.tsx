@@ -242,7 +242,7 @@ export default function TopNavigation() {
           <div className="flex items-center space-x-6">
             {/* Logo - Bitget style */}
             <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
-              <div className="w-8 h-8 bg-[#03AAC7] rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-[#FCD535] rounded-lg flex items-center justify-center">
                 <BarChart3 className="w-5 h-5 text-[#151517]" />
               </div>
               <span className="text-xl font-bold text-white">CIRCL</span>
@@ -268,7 +268,7 @@ export default function TopNavigation() {
                       onClick={() => hasDropdown ? toggleDropdown(item.name) : navigate(item.path)}
                       className={`
                         flex items-center space-x-1 px-3 py-2 text-sm font-medium rounded-lg transition-all
-                        ${isActive ? 'text-[#03AAC7] bg-[#1B1B1D]' : 'text-white hover:text-[#03AAC7] hover:bg-[#252629]'}
+                        ${isActive ? 'text-[#FCD535] bg-[#1B1B1D]' : 'text-white hover:text-[#FCD535] hover:bg-[#252629]'}
                       `}
                     >
                       <span>{item.name}</span>
@@ -282,7 +282,7 @@ export default function TopNavigation() {
                       <motion.div
                         initial={{ scaleX: 0 }}
                         animate={{ scaleX: 1 }}
-                        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-[#03AAC7] rounded-full"
+                        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-[#FCD535] rounded-full"
                         style={{ bottom: '-2px' }}
                       />
                     )}
@@ -311,8 +311,8 @@ export default function TopNavigation() {
                             className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all group"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
-                                <Coins className="w-4 h-4 text-[#03AAC7]" />
+                              <div className="w-8 h-8 rounded-lg bg-[#FCD535]/10 flex items-center justify-center">
+                                <Coins className="w-4 h-4 text-[#FCD535]" />
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-medium">Spot</span>
@@ -329,8 +329,8 @@ export default function TopNavigation() {
                             className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all group"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
-                                <Layers className="w-4 h-4 text-[#03AAC7]" />
+                              <div className="w-8 h-8 rounded-lg bg-[#FCD535]/10 flex items-center justify-center">
+                                <Layers className="w-4 h-4 text-[#FCD535]" />
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-medium">Margin</span>
@@ -347,8 +347,8 @@ export default function TopNavigation() {
                             className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all group"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
-                                <LineChart className="w-4 h-4 text-[#03AAC7]" />
+                              <div className="w-8 h-8 rounded-lg bg-[#FCD535]/10 flex items-center justify-center">
+                                <LineChart className="w-4 h-4 text-[#FCD535]" />
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-medium">Futures</span>
@@ -365,8 +365,8 @@ export default function TopNavigation() {
                             className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all group"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
-                                <RefreshCw className="w-4 h-4 text-[#03AAC7]" />
+                              <div className="w-8 h-8 rounded-lg bg-[#FCD535]/10 flex items-center justify-center">
+                                <RefreshCw className="w-4 h-4 text-[#FCD535]" />
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-medium">Convert & Block Trade</span>
@@ -388,8 +388,8 @@ export default function TopNavigation() {
                             className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all group"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
-                                <Rocket className="w-4 h-4 text-[#03AAC7]" />
+                              <div className="w-8 h-8 rounded-lg bg-[#FCD535]/10 flex items-center justify-center">
+                                <Rocket className="w-4 h-4 text-[#FCD535]" />
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-medium">Launchhub</span>
@@ -406,8 +406,8 @@ export default function TopNavigation() {
                             className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all group"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
-                                <Users className="w-4 h-4 text-[#03AAC7]" />
+                              <div className="w-8 h-8 rounded-lg bg-[#FCD535]/10 flex items-center justify-center">
+                                <Users className="w-4 h-4 text-[#FCD535]" />
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-medium">Copy</span>
@@ -424,8 +424,8 @@ export default function TopNavigation() {
                             className="w-full flex items-center justify-between px-4 py-2.5 text-[#E5E7EB] hover:bg-[#252629] transition-all group"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
-                                <Bot className="w-4 h-4 text-[#03AAC7]" />
+                              <div className="w-8 h-8 rounded-lg bg-[#FCD535]/10 flex items-center justify-center">
+                                <Bot className="w-4 h-4 text-[#FCD535]" />
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-medium">Bots</span>
@@ -464,7 +464,7 @@ export default function TopNavigation() {
                                 value={tradeSearch}
                                 onChange={(e) => setTradeSearch(e.target.value)}
                                 placeholder="Search"
-                                className="w-full pl-9 pr-3 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm placeholder-[#6B7280] focus:outline-none focus:border-[#03AAC7] transition-colors"
+                                className="w-full pl-9 pr-3 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm placeholder-[#6B7280] focus:outline-none focus:border-[#FCD535] transition-colors"
                               />
                             </div>
                           </div>
@@ -535,7 +535,7 @@ export default function TopNavigation() {
                   onClick={() => setShowMoreDropdown(!showMoreDropdown)}
                   className={`
                     flex items-center space-x-1 px-3 py-2 text-sm font-medium rounded-lg transition-all
-                    ${showMoreDropdown ? 'text-[#03AAC7] bg-[#1B1B1D]' : 'text-white hover:text-[#03AAC7] hover:bg-[#252629]'}
+                    ${showMoreDropdown ? 'text-[#FCD535] bg-[#1B1B1D]' : 'text-white hover:text-[#FCD535] hover:bg-[#252629]'}
                   `}
                 >
                   <span>More</span>
@@ -568,8 +568,8 @@ export default function TopNavigation() {
                                   }}
                                   className="w-full flex items-center gap-3 px-2 py-2.5 rounded-lg hover:bg-[#252629] transition-colors group"
                                 >
-                                  <div className="w-8 h-8 rounded-lg bg-[#252629] group-hover:bg-[#03AAC7]/10 flex items-center justify-center transition-colors">
-                                    <item.icon className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#03AAC7]" />
+                                  <div className="w-8 h-8 rounded-lg bg-[#252629] group-hover:bg-[#FCD535]/10 flex items-center justify-center transition-colors">
+                                    <item.icon className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#FCD535]" />
                                   </div>
                                   <div className="text-left">
                                     <span className="block text-sm text-white">{item.name}</span>
@@ -626,7 +626,7 @@ export default function TopNavigation() {
                             }
                           }}
                           placeholder={t('Search trades, symbols...')}
-                          className="w-full pl-10 pr-4 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm placeholder-[#6B7280] focus:outline-none focus:border-[#03AAC7] transition-all"
+                          className="w-full pl-10 pr-4 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm placeholder-[#6B7280] focus:outline-none focus:border-[#FCD535] transition-all"
                           autoFocus
                         />
                       </div>
@@ -726,7 +726,7 @@ export default function TopNavigation() {
                           <span className="text-2xl font-semibold text-white">
                             {showBalanceNav ? '0.00' : '****'}
                           </span>
-                          <span className="text-[#03AAC7] text-sm">≈ 0.000 BTC</span>
+                          <span className="text-[#FCD535] text-sm">≈ 0.000 BTC</span>
                         </div>
                       </div>
 
@@ -740,8 +740,8 @@ export default function TopNavigation() {
                             }}
                             className="flex flex-col items-center gap-1.5 p-3 bg-[#252629] rounded-lg hover:bg-[#222226] transition-colors"
                           >
-                            <div className="w-8 h-8 rounded-full bg-[#03AAC7]/10 flex items-center justify-center">
-                              <ArrowDown className="w-4 h-4 text-[#03AAC7]" />
+                            <div className="w-8 h-8 rounded-full bg-[#FCD535]/10 flex items-center justify-center">
+                              <ArrowDown className="w-4 h-4 text-[#FCD535]" />
                             </div>
                             <span className="text-white text-xs font-medium">Deposit</span>
                           </button>
@@ -752,8 +752,8 @@ export default function TopNavigation() {
                             }}
                             className="flex flex-col items-center gap-1.5 p-3 bg-[#252629] rounded-lg hover:bg-[#222226] transition-colors"
                           >
-                            <div className="w-8 h-8 rounded-full bg-[#03AAC7]/10 flex items-center justify-center">
-                              <ArrowUp className="w-4 h-4 text-[#03AAC7]" />
+                            <div className="w-8 h-8 rounded-full bg-[#FCD535]/10 flex items-center justify-center">
+                              <ArrowUp className="w-4 h-4 text-[#FCD535]" />
                             </div>
                             <span className="text-white text-xs font-medium">Withdraw</span>
                           </button>
@@ -764,8 +764,8 @@ export default function TopNavigation() {
                             }}
                             className="flex flex-col items-center gap-1.5 p-3 bg-[#252629] rounded-lg hover:bg-[#222226] transition-colors"
                           >
-                            <div className="w-8 h-8 rounded-full bg-[#03AAC7]/10 flex items-center justify-center">
-                              <ArrowLeftRight className="w-4 h-4 text-[#03AAC7]" />
+                            <div className="w-8 h-8 rounded-full bg-[#FCD535]/10 flex items-center justify-center">
+                              <ArrowLeftRight className="w-4 h-4 text-[#FCD535]" />
                             </div>
                             <span className="text-white text-xs font-medium">Transfer</span>
                           </button>
@@ -867,7 +867,7 @@ export default function TopNavigation() {
                 <div className="relative">
                   <button
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
-                    className="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full overflow-hidden border-2 border-[#2B2F36] hover:border-[#03AAC7] transition-colors bg-[#252629] flex items-center justify-center"
+                    className="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full overflow-hidden border-2 border-[#2B2F36] hover:border-[#FCD535] transition-colors bg-[#252629] flex items-center justify-center"
                   >
                     {user?.photoURL?.startsWith('http') || user?.photoURL?.startsWith('data:') ? (
                       <img
@@ -925,7 +925,7 @@ export default function TopNavigation() {
                                   className="p-0.5 hover:bg-[#252629] rounded transition-colors"
                                 >
                                   {copiedUID ? (
-                                    <Check className="w-3 h-3 text-[#03AAC7]" />
+                                    <Check className="w-3 h-3 text-[#FCD535]" />
                                   ) : (
                                     <Copy className="w-3 h-3 text-[#6B7280]" />
                                   )}
@@ -936,7 +936,7 @@ export default function TopNavigation() {
 
                           {/* Badges */}
                           <div className="flex items-center space-x-2 mt-3">
-                            <span className="px-2.5 py-1 bg-[#03AAC7]/10 text-[#03AAC7] text-xs font-medium rounded-full flex items-center gap-1">
+                            <span className="px-2.5 py-1 bg-[#FCD535]/10 text-[#FCD535] text-xs font-medium rounded-full flex items-center gap-1">
                               <ShieldCheck className="w-3 h-3" />
                               Verified
                             </span>
@@ -993,7 +993,7 @@ export default function TopNavigation() {
                               <Gift className="w-5 h-5 text-[#9CA3AF]" />
                               <span>Rewards Center</span>
                             </div>
-                            <span className="text-[#03AAC7] text-sm">0 points</span>
+                            <span className="text-[#FCD535] text-sm">0 points</span>
                           </button>
 
                           <button
@@ -1024,7 +1024,7 @@ export default function TopNavigation() {
                                 className="p-2 hover:bg-[#2B2F36] rounded-lg transition-colors"
                               >
                                 {copiedReferral ? (
-                                  <Check className="w-4 h-4 text-[#03AAC7]" />
+                                  <Check className="w-4 h-4 text-[#FCD535]" />
                                 ) : (
                                   <Copy className="w-4 h-4 text-[#6B7280]" />
                                 )}
@@ -1086,7 +1086,7 @@ export default function TopNavigation() {
                   >
                     <Bell className="w-5 h-5" />
                     {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 w-2 h-2 bg-[#03AAC7] rounded-full"></span>
+                      <span className="absolute top-1 right-1 w-2 h-2 bg-[#FCD535] rounded-full"></span>
                     )}
                   </button>
 
@@ -1112,7 +1112,7 @@ export default function TopNavigation() {
                               return (
                                 <div
                                   key={notification.id}
-                                  className={`p-4 border-b border-[#2B2F36] hover:bg-[#252629] transition-colors cursor-pointer ${!notification.read ? 'bg-[#03AAC7]/5' : ''
+                                  className={`p-4 border-b border-[#2B2F36] hover:bg-[#252629] transition-colors cursor-pointer ${!notification.read ? 'bg-[#FCD535]/5' : ''
                                     }`}
                                   onClick={() => {
                                     if (!notification.read) {
@@ -1125,11 +1125,11 @@ export default function TopNavigation() {
                                   }}
                                 >
                                   <div className="flex items-start space-x-3">
-                                    <div className={`p-2 rounded-lg ${notification.type === 'trade' ? 'bg-[#03AAC7]/10 text-[#03AAC7]' :
-                                        notification.type === 'performance' ? 'bg-[#03AAC7]/10 text-[#03AAC7]' :
+                                    <div className={`p-2 rounded-lg ${notification.type === 'trade' ? 'bg-[#FCD535]/10 text-[#FCD535]' :
+                                        notification.type === 'performance' ? 'bg-[#FCD535]/10 text-[#FCD535]' :
                                           notification.type === 'strategy' ? 'bg-[#F59E0B]/10 text-[#F59E0B]' :
-                                            notification.type === 'market' ? 'bg-[#03AAC7]/10 text-[#03AAC7]' :
-                                              notification.type === 'goal' ? 'bg-[#03AAC7]/10 text-[#03AAC7]' :
+                                            notification.type === 'market' ? 'bg-[#FCD535]/10 text-[#FCD535]' :
+                                              notification.type === 'goal' ? 'bg-[#FCD535]/10 text-[#FCD535]' :
                                                 notification.type === 'whale' ? 'bg-[#F43F5E]/10 text-[#F43F5E]' :
                                                   'bg-[#2B2F36] text-[#9CA3AF]'
                                       }`}>
@@ -1148,7 +1148,7 @@ export default function TopNavigation() {
                                               navigate(notification.action!.url);
                                               setShowNotifications(false);
                                             }}
-                                            className="text-[#03AAC7] hover:text-[#26BFD4] text-xs font-medium px-2 py-1 rounded-md hover:bg-[#03AAC7]/10 transition-all"
+                                            className="text-[#FCD535] hover:text-[#FFE066] text-xs font-medium px-2 py-1 rounded-md hover:bg-[#FCD535]/10 transition-all"
                                           >
                                             {notification.action.label}
                                           </button>
@@ -1156,7 +1156,7 @@ export default function TopNavigation() {
                                       </div>
                                     </div>
                                     {!notification.read && (
-                                      <div className="w-2 h-2 bg-[#03AAC7] rounded-full mt-2" />
+                                      <div className="w-2 h-2 bg-[#FCD535] rounded-full mt-2" />
                                     )}
                                   </div>
                                 </div>
@@ -1174,7 +1174,7 @@ export default function TopNavigation() {
                           <div className="p-4 border-t border-[#2B2F36] space-y-2">
                             <button
                               onClick={markAllAsRead}
-                              className="w-full text-[#03AAC7] hover:text-[#26BFD4] text-sm font-medium transition-colors py-2 px-3 rounded-lg hover:bg-[#03AAC7]/10"
+                              className="w-full text-[#FCD535] hover:text-[#FFE066] text-sm font-medium transition-colors py-2 px-3 rounded-lg hover:bg-[#FCD535]/10"
                             >
                               Mark all as read
                             </button>
@@ -1198,13 +1198,13 @@ export default function TopNavigation() {
               <>
                 <button
                   onClick={() => navigate('/login')}
-                  className="px-4 py-2 text-sm font-medium text-white hover:text-[#03AAC7] hover:bg-[#252629] rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-white hover:text-[#FCD535] hover:bg-[#252629] rounded-lg transition-colors"
                 >
                   Login
                 </button>
                 <button
                   onClick={() => navigate('/signup')}
-                  className="px-4 py-2 text-sm font-semibold text-[#151517] bg-[#03AAC7] hover:bg-[#26BFD4] rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-semibold text-[#151517] bg-[#FCD535] hover:bg-[#FFE066] rounded-lg transition-colors"
                 >
                   Sign Up
                 </button>
@@ -1241,7 +1241,7 @@ export default function TopNavigation() {
                             value={languageSearch}
                             onChange={(e) => setLanguageSearch(e.target.value)}
                             placeholder={t('Search')}
-                            className="w-full px-3 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm placeholder-[#6B7280] focus:outline-none focus:border-[#03AAC7] transition-all"
+                            className="w-full px-3 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm placeholder-[#6B7280] focus:outline-none focus:border-[#FCD535] transition-all"
                           />
                         </div>
                         <div className="max-h-80 overflow-y-auto">
@@ -1253,7 +1253,7 @@ export default function TopNavigation() {
                                 setShowLanguageCurrency(false);
                               }}
                               className={`w-full text-left px-3 py-2 rounded-lg transition-all ${language === lang
-                                  ? 'text-[#03AAC7] font-medium bg-[#03AAC7]/10'
+                                  ? 'text-[#FCD535] font-medium bg-[#FCD535]/10'
                                   : 'text-[#9CA3AF] hover:text-white hover:bg-[#252629]'
                                 }`}
                             >
@@ -1292,7 +1292,7 @@ export default function TopNavigation() {
                     onClick={() => setShowMobileMenu(false)}
                     className={`
                       block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors
-                      ${isActive ? 'bg-[#1B1B1D] text-[#03AAC7]' : 'text-white hover:text-[#03AAC7] hover:bg-[#252629]'}
+                      ${isActive ? 'bg-[#1B1B1D] text-[#FCD535]' : 'text-white hover:text-[#FCD535] hover:bg-[#252629]'}
                     `}
                   >
                     {item.name}

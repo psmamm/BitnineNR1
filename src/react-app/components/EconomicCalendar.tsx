@@ -80,8 +80,8 @@ export default function EconomicCalendar() {
   return (
     <div className="bg-[#1B1B1D] rounded-2xl p-6 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
       <div className="flex items-center space-x-3 mb-4">
-        <div className="w-8 h-8 bg-[#03AAC7]/10 rounded-lg flex items-center justify-center">
-          <Calendar className="w-4 h-4 text-[#03AAC7]" />
+        <div className="w-8 h-8 bg-[#FCD535]/10 rounded-lg flex items-center justify-center">
+          <Calendar className="w-4 h-4 text-[#FCD535]" />
         </div>
         <div>
           <h3 className="text-lg font-semibold text-white">Economic Calendar</h3>
@@ -91,7 +91,7 @@ export default function EconomicCalendar() {
 
       {loading ? (
         <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#03AAC7]"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FCD535]"></div>
         </div>
       ) : (
         <div className="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">
@@ -106,13 +106,13 @@ export default function EconomicCalendar() {
                 key={event.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-[#1B1B1D] rounded-lg p-4 border border-white/5 hover:border-[#03AAC7]/30 transition-colors"
+                className="bg-[#1B1B1D] rounded-lg p-4 border border-white/5 hover:border-[#FCD535]/30 transition-colors"
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <h4 className="text-white font-medium text-sm mb-1">{event.title}</h4>
                     <div className="flex items-center space-x-2 text-xs text-gray-400">
-                      <span className="font-medium text-[#03AAC7]">{event.country}</span>
+                      <span className="font-medium text-[#FCD535]">{event.country}</span>
                       <span>•</span>
                       <span>{event.time}</span>
                     </div>

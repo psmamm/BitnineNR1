@@ -132,8 +132,8 @@ export default function WalletConnect() {
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center space-x-2 px-4 py-2 bg-[#1B1B1D] border border-[#2B2F36] rounded-xl hover:bg-white/5 transition-all"
         >
-          <div className="w-2 h-2 bg-[#03AAC7] rounded-full animate-pulse" />
-          <Wallet className="w-4 h-4 text-[#03AAC7]" />
+          <div className="w-2 h-2 bg-[#FCD535] rounded-full animate-pulse" />
+          <Wallet className="w-4 h-4 text-[#FCD535]" />
           <span className="text-white text-sm font-medium">{formatAddress(wallet.address!)}</span>
           <ChevronDown className={`w-4 h-4 text-[#7F8C8D] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </motion.button>
@@ -174,7 +174,7 @@ export default function WalletConnect() {
                       className="p-1.5 hover:bg-white/5 rounded transition-colors"
                     >
                       {copied ? (
-                        <Check className="w-4 h-4 text-[#03AAC7]" />
+                        <Check className="w-4 h-4 text-[#FCD535]" />
                       ) : (
                         <Copy className="w-4 h-4 text-[#7F8C8D]" />
                       )}
@@ -193,7 +193,7 @@ export default function WalletConnect() {
                           onClick={() => switchChain(chain)}
                           className={`px-3 py-2 text-xs rounded-lg border transition-all ${
                             wallet.chain === chain
-                              ? 'bg-[#03AAC7]/20 border-[#03AAC7] text-white'
+                              ? 'bg-[#FCD535]/20 border-[#FCD535] text-white'
                               : 'bg-[#1B1B1D] border-[#2B2F36] text-[#7F8C8D] hover:bg-white/5'
                           }`}
                         >
@@ -226,7 +226,7 @@ export default function WalletConnect() {
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-4 py-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-white rounded-xl font-medium transition-all"
+        className="flex items-center space-x-2 px-4 py-2 bg-[#FCD535] hover:bg-[#FFE066] text-white rounded-xl font-medium transition-all"
       >
         <Wallet className="w-4 h-4" />
         <span>Connect Wallet</span>
@@ -288,7 +288,7 @@ export default function WalletConnect() {
                             </div>
                           </div>
                           {connecting === walletOption.type ? (
-                            <div className="w-4 h-4 border-2 border-[#03AAC7] border-t-transparent rounded-full animate-spin" />
+                            <div className="w-4 h-4 border-2 border-[#FCD535] border-t-transparent rounded-full animate-spin" />
                           ) : walletOption.installed ? (
                             <ExternalLink className="w-4 h-4 text-[#7F8C8D]" />
                           ) : (
@@ -331,7 +331,7 @@ export default function WalletConnect() {
                           </div>
                         </div>
                         {connecting === 'phantom' ? (
-                          <div className="w-4 h-4 border-2 border-[#03AAC7] border-t-transparent rounded-full animate-spin" />
+                          <div className="w-4 h-4 border-2 border-[#FCD535] border-t-transparent rounded-full animate-spin" />
                         ) : walletOption.installed ? (
                           <ExternalLink className="w-4 h-4 text-[#7F8C8D]" />
                         ) : (

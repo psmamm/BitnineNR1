@@ -25,7 +25,7 @@ const badgeVariants = cva(
         default: "bg-[#2B2F36] text-[#9CA3AF]",
 
         // Verified - Cyan (Bitget style)
-        verified: "bg-[#03AAC7]/10 text-[#03AAC7]",
+        verified: "bg-[#FCD535]/10 text-[#FCD535]",
 
         // VIP levels
         vip: "bg-[#2B2F36] text-[#9CA3AF]",
@@ -33,7 +33,7 @@ const badgeVariants = cva(
         "vip-platinum": "bg-[#9CA3AF]/10 text-[#9CA3AF]",
 
         // Status colors
-        success: "bg-[#03AAC7]/10 text-[#03AAC7]",
+        success: "bg-[#FCD535]/10 text-[#FCD535]",
         warning: "bg-[#F59E0B]/10 text-[#F59E0B]",
         danger: "bg-[#F43F5E]/10 text-[#F43F5E]",
 
@@ -41,7 +41,7 @@ const badgeVariants = cva(
         outline: "border border-[#2B2F36] text-[#9CA3AF]",
 
         // Pro/Premium
-        pro: "bg-gradient-to-r from-[#03AAC7] to-[#028BA3] text-[#151517] font-semibold",
+        pro: "bg-gradient-to-r from-[#FCD535] to-[#028BA3] text-[#151517] font-semibold",
         elite: "bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-[#151517] font-semibold",
       },
       size: {
@@ -137,7 +137,7 @@ interface StatusBadgeProps {
 
 const StatusBadge = ({ status, size = "default", showText = true, className }: StatusBadgeProps) => {
   const statusConfig = {
-    online: { variant: "success" as const, text: "Online", dot: "bg-[#03AAC7]" },
+    online: { variant: "success" as const, text: "Online", dot: "bg-[#FCD535]" },
     offline: { variant: "default" as const, text: "Offline", dot: "bg-[#6B7280]" },
     away: { variant: "warning" as const, text: "Away", dot: "bg-[#F59E0B]" },
     busy: { variant: "danger" as const, text: "Busy", dot: "bg-[#F43F5E]" },

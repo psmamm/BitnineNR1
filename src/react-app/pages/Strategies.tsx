@@ -633,7 +633,7 @@ export default function StrategiesPage() {
                     border-radius: 10px;
                   }
                   .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: linear-gradient(180deg, #26BFD4 0%, #6366F1 100%);
+                    background: linear-gradient(180deg, #FFE066 0%, #6366F1 100%);
                     border-radius: 10px;
                   }
                   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
@@ -769,7 +769,7 @@ export default function StrategiesPage() {
                       className="w-full px-5 py-4 bg-gradient-to-br from-gray-700/90 to-gray-800/90 backdrop-blur-sm border-2 border-gray-600/30 hover:border-gray-500/50 rounded-2xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all resize-none shadow-lg custom-scrollbar"
                       style={{
                         scrollbarWidth: 'thin',
-                        scrollbarColor: '#26BFD4 #1F2937'
+                        scrollbarColor: '#FFE066 #1F2937'
                       }}
                     />
                   </div>
@@ -788,7 +788,7 @@ export default function StrategiesPage() {
                       className="w-full px-5 py-4 bg-gradient-to-br from-gray-700/90 to-gray-800/90 backdrop-blur-sm border-2 border-gray-600/30 hover:border-gray-500/50 rounded-2xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all resize-none shadow-lg custom-scrollbar"
                       style={{
                         scrollbarWidth: 'thin',
-                        scrollbarColor: '#26BFD4 #1F2937'
+                        scrollbarColor: '#FFE066 #1F2937'
                       }}
                     />
                   </div>

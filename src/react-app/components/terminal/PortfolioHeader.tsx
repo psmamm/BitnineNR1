@@ -29,9 +29,9 @@ export function PortfolioHeader() {
       {/* Portfolio Summary */}
       <div
         onClick={() => setShowDropdown(!showDropdown)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#2B2F36]/50 hover:bg-[#2B2F36] transition-colors cursor-pointer border border-[#2B2F36] hover:border-[#03AAC7]/30"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#2B2F36]/50 hover:bg-[#2B2F36] transition-colors cursor-pointer border border-[#2B2F36] hover:border-[#FCD535]/30"
       >
-        <Wallet className="w-4 h-4 text-[#03AAC7]" />
+        <Wallet className="w-4 h-4 text-[#FCD535]" />
 
         {loading ? (
           <div className="flex items-center gap-2">
@@ -87,7 +87,7 @@ export function PortfolioHeader() {
               </div>
               <div>
                 <span className="text-[10px] text-[#848E9C]">Available</span>
-                <p className="text-lg font-mono font-semibold text-[#03AAC7]">
+                <p className="text-lg font-mono font-semibold text-[#FCD535]">
                   {formatCurrency(portfolio.availableBalanceUsd)}
                 </p>
               </div>

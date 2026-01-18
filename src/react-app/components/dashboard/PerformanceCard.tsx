@@ -142,7 +142,7 @@ export default function PerformanceCard({ refreshTrigger }: PerformanceCardProps
           </div>
           <button
             onClick={refetch}
-            className="px-4 py-2 bg-[#03AAC7]/20 hover:bg-[#03AAC7]/30 border border-[#03AAC7]/30 rounded-lg text-[#03AAC7] text-sm font-medium transition-colors"
+            className="px-4 py-2 bg-[#FCD535]/20 hover:bg-[#FCD535]/30 border border-[#FCD535]/30 rounded-lg text-[#FCD535] text-sm font-medium transition-colors"
           >
             Retry
           </button>
@@ -227,7 +227,7 @@ export default function PerformanceCard({ refreshTrigger }: PerformanceCardProps
           <div className="mb-6">
             <div className={`w-full ${theme === 'dark' ? 'bg-black/30' : 'bg-gray-800/30'} rounded-full h-2 border border-white/5 overflow-hidden`}>
               <motion.div
-                className="bg-gradient-to-r from-[#03AAC7] to-[#26BFD4] h-2 rounded-full"
+                className="bg-gradient-to-r from-[#FCD535] to-[#FFE066] h-2 rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${progressAnimation}%` }}
                 transition={{ 
@@ -252,7 +252,7 @@ export default function PerformanceCard({ refreshTrigger }: PerformanceCardProps
         <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
           <div>
             <div className="flex items-center space-x-2 mb-1">
-              <Award className="w-4 h-4 text-[#03AAC7]" />
+              <Award className="w-4 h-4 text-[#FCD535]" />
               <span className={`${getTextColor(theme, 'muted')} text-xs uppercase tracking-wider`}>
                 Reputation
               </span>
@@ -264,7 +264,7 @@ export default function PerformanceCard({ refreshTrigger }: PerformanceCardProps
           
           <div>
             <div className="flex items-center space-x-2 mb-1">
-              <TrendingUp className="w-4 h-4 text-[#03AAC7]" />
+              <TrendingUp className="w-4 h-4 text-[#FCD535]" />
               <span className={`${getTextColor(theme, 'muted')} text-xs uppercase tracking-wider`}>
                 Streak
               </span>

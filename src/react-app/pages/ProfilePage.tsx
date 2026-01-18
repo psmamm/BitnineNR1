@@ -97,7 +97,7 @@ export default function ProfilePage() {
       <DashboardLayout>
         <div className="flex items-center justify-center h-screen">
           <div className="text-center">
-            <RefreshCw className="w-16 h-16 text-[#03AAC7] animate-spin mx-auto mb-4" />
+            <RefreshCw className="w-16 h-16 text-[#FCD535] animate-spin mx-auto mb-4" />
             <p className="text-zinc-400">Loading profile...</p>
           </div>
         </div>
@@ -125,7 +125,7 @@ export default function ProfilePage() {
             <p className="text-red-400">{error || 'Failed to load profile'}</p>
             <Button
               onClick={() => window.location.reload()}
-              className="mt-4 bg-[#03AAC7] hover:bg-[#00A89C]"
+              className="mt-4 bg-[#FCD535] hover:bg-[#00A89C]"
             >
               Retry
             </Button>
@@ -150,7 +150,7 @@ export default function ProfilePage() {
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8">
           <div className="flex items-start gap-6">
             {/* Avatar */}
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#03AAC7] to-[#00A89C] flex items-center justify-center text-3xl font-bold text-white">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#FCD535] to-[#00A89C] flex items-center justify-center text-3xl font-bold text-white">
               {profile.name?.charAt(0).toUpperCase() || 'U'}
             </div>
 
@@ -163,7 +163,7 @@ export default function ProfilePage() {
                     value={editedName}
                     onChange={(e) => setEditedName(e.target.value)}
                     placeholder="Enter your name"
-                    className="text-2xl font-bold bg-zinc-800 text-white px-3 py-1 rounded border border-zinc-700 focus:border-[#03AAC7] outline-none"
+                    className="text-2xl font-bold bg-zinc-800 text-white px-3 py-1 rounded border border-zinc-700 focus:border-[#FCD535] outline-none"
                   />
                 ) : (
                   <h2 className="text-2xl font-bold text-white">{profile.name}</h2>
@@ -175,7 +175,7 @@ export default function ProfilePage() {
                       size="sm"
                       onClick={handleSave}
                       disabled={saving || !editedName.trim()}
-                      className="bg-[#03AAC7] hover:bg-[#00A89C]"
+                      className="bg-[#FCD535] hover:bg-[#00A89C]"
                     >
                       {saving ? (
                         <RefreshCw className="w-4 h-4 animate-spin" />
@@ -232,7 +232,7 @@ export default function ProfilePage() {
           {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-zinc-800">
             <div className="text-center">
-              <p className="text-3xl font-bold text-[#03AAC7]">{profile.xp}</p>
+              <p className="text-3xl font-bold text-[#FCD535]">{profile.xp}</p>
               <p className="text-xs text-zinc-500 mt-1">Experience Points</p>
             </div>
             <div className="text-center">

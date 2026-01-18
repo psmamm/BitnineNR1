@@ -21,9 +21,9 @@ export default function NotFoundPage() {
             transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
             className="w-32 h-32 mx-auto mb-8 relative"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#03AAC7]/20 to-[#03AAC7]/5 rounded-full" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[#FCD535]/20 to-[#FCD535]/5 rounded-full" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <Search className="w-16 h-16 text-[#03AAC7]" />
+              <Search className="w-16 h-16 text-[#FCD535]" />
             </div>
             {/* Floating elements */}
             <motion.div
@@ -64,7 +64,7 @@ export default function NotFoundPage() {
             </button>
             <button
               onClick={() => navigate('/dashboard')}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-semibold transition-colors"
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg font-semibold transition-colors"
             >
               <Home className="w-4 h-4" />
               Dashboard

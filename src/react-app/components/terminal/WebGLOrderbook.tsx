@@ -213,7 +213,7 @@ export function WebGLOrderbook({ onPriceClick }: WebGLOrderbookProps) {
                 onClick={() => setTickSize(tick)}
                 className={`px-1.5 py-0.5 text-[10px] rounded transition-colors ${
                   tickSize === tick
-                    ? 'bg-[#2B2F36] text-[#03AAC7]'
+                    ? 'bg-[#2B2F36] text-[#FCD535]'
                     : 'text-[#848E9C] hover:text-[#EAECEF]'
                 }`}
               >

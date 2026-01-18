@@ -133,7 +133,7 @@ export default function CandlestickChart({
       const bodyHeight = Math.abs(bodyBottom - bodyTop);
       
       // Draw wick
-      ctx.strokeStyle = isGreen ? '#03AAC7' : '#F43F5E';
+      ctx.strokeStyle = isGreen ? '#FCD535' : '#F43F5E';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(x, highY);
@@ -141,7 +141,7 @@ export default function CandlestickChart({
       ctx.stroke();
       
       // Draw body
-      ctx.fillStyle = isGreen ? '#03AAC7' : '#F43F5E';
+      ctx.fillStyle = isGreen ? '#FCD535' : '#F43F5E';
       if (bodyHeight < 1) {
         // Draw line for doji
         ctx.lineWidth = 2;
@@ -186,7 +186,7 @@ export default function CandlestickChart({
 
     // Draw crosshair on hover
     if (mousePos) {
-      ctx.strokeStyle = '#03AAC7';
+      ctx.strokeStyle = '#FCD535';
       ctx.lineWidth = 1;
       ctx.setLineDash([2, 2]);
       
@@ -289,7 +289,7 @@ export default function CandlestickChart({
             </div>
             <div className="flex justify-between items-center">
               <span className="text-[#7F8C8D]">High:</span>
-              <span className="text-[#03AAC7] font-medium">{formatPrice(hoveredCandle.high)}</span>
+              <span className="text-[#FCD535] font-medium">{formatPrice(hoveredCandle.high)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-[#7F8C8D]">Low:</span>

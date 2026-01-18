@@ -82,7 +82,7 @@ export default function DashboardHeader({ onSearchChange }: DashboardHeaderProps
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
               placeholder="Search trades, symbols..."
-              className="w-full md:w-80 pl-10 pr-4 py-2 bg-[#1B1B1D]/50 border border-[#2B2F36] rounded-xl text-white placeholder-[#7F8C8D] focus:outline-none focus:ring-2 focus:ring-[#03AAC7]/50 focus:border-[#03AAC7]/50 transition-all"
+              className="w-full md:w-80 pl-10 pr-4 py-2 bg-[#1B1B1D]/50 border border-[#2B2F36] rounded-xl text-white placeholder-[#7F8C8D] focus:outline-none focus:ring-2 focus:ring-[#FCD535]/50 focus:border-[#FCD535]/50 transition-all"
             />
           </div>
 
@@ -122,12 +122,12 @@ export default function DashboardHeader({ onSearchChange }: DashboardHeaderProps
                         return (
                           <div
                             key={notification.id}
-                            className={`p-4 border-b border-white/5 hover:bg-[#2A2F42] transition-colors ${!notification.read ? 'bg-[#03AAC7]/5' : ''
+                            className={`p-4 border-b border-white/5 hover:bg-[#2A2F42] transition-colors ${!notification.read ? 'bg-[#FCD535]/5' : ''
                               }`}
                           >
                             <div className="flex items-start space-x-3">
-                              <div className={`p-2 rounded-lg ${notification.type === 'trade' ? 'bg-[#03AAC7]/20 text-[#03AAC7]' :
-                                notification.type === 'performance' ? 'bg-[#03AAC7]/20 text-[#03AAC7]' :
+                              <div className={`p-2 rounded-lg ${notification.type === 'trade' ? 'bg-[#FCD535]/20 text-[#FCD535]' :
+                                notification.type === 'performance' ? 'bg-[#FCD535]/20 text-[#FCD535]' :
                                   notification.type === 'strategy' ? 'bg-[#F39C12]/20 text-[#F39C12]' :
                                     notification.type === 'market' ? 'bg-[#3498DB]/20 text-[#3498DB]' :
                                       notification.type === 'goal' ? 'bg-[#9B59B6]/20 text-[#9B59B6]' :
@@ -148,7 +148,7 @@ export default function DashboardHeader({ onSearchChange }: DashboardHeaderProps
                                         navigate(notification.action!.url);
                                         setShowNotifications(false);
                                       }}
-                                      className="text-[#03AAC7] hover:text-[#26BFD4] text-xs font-medium px-2 py-1 rounded-md hover:bg-[#03AAC7]/10 transition-all"
+                                      className="text-[#FCD535] hover:text-[#FFE066] text-xs font-medium px-2 py-1 rounded-md hover:bg-[#FCD535]/10 transition-all"
                                     >
                                       {notification.action.label}
                                     </button>
@@ -156,7 +156,7 @@ export default function DashboardHeader({ onSearchChange }: DashboardHeaderProps
                                 </div>
                               </div>
                               {!notification.read && (
-                                <div className="w-2 h-2 bg-[#03AAC7] rounded-full mt-2" />
+                                <div className="w-2 h-2 bg-[#FCD535] rounded-full mt-2" />
                               )}
                             </div>
                           </div>
@@ -167,7 +167,7 @@ export default function DashboardHeader({ onSearchChange }: DashboardHeaderProps
                     <div className="p-4 border-t border-white/5 space-y-2">
                       <button
                         onClick={markAllAsRead}
-                        className="w-full text-[#03AAC7] hover:text-[#26BFD4] text-sm font-medium transition-colors py-2 px-3 rounded-lg hover:bg-[#03AAC7]/10"
+                        className="w-full text-[#FCD535] hover:text-[#FFE066] text-sm font-medium transition-colors py-2 px-3 rounded-lg hover:bg-[#FCD535]/10"
                       >
                         Mark all as read
                       </button>
@@ -192,7 +192,7 @@ export default function DashboardHeader({ onSearchChange }: DashboardHeaderProps
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
                 className="flex items-center space-x-3 px-3 py-2 hover:bg-[#2A2F42] rounded-lg transition-all group"
               >
-                <div className="w-8 h-8 bg-[#03AAC7] rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-[#FCD535] rounded-full flex items-center justify-center">
                   {user?.photoURL?.startsWith('http') || user?.photoURL?.startsWith('data:') ? (
                     <img
                       src={user.photoURL}
@@ -226,7 +226,7 @@ export default function DashboardHeader({ onSearchChange }: DashboardHeaderProps
                   >
                     <div className="p-4 border-b border-white/5">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-[#03AAC7] rounded-full flex items-center justify-center">
+                        <div className="w-10 h-10 bg-[#FCD535] rounded-full flex items-center justify-center">
                           {user?.photoURL?.startsWith('http') || user?.photoURL?.startsWith('data:') ? (
                             <img
                               src={user.photoURL}

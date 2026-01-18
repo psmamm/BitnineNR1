@@ -138,7 +138,7 @@ export default function CoinDetailPage() {
     if (percent === undefined || percent === null) return 'text-[#7F8C8D]';
     const num = typeof percent === 'string' ? parseFloat(percent) : percent;
     if (isNaN(num)) return 'text-[#7F8C8D]';
-    return num >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]';
+    return num >= 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]';
   };
 
   const formatVolume = (volume: string): string => {
@@ -178,13 +178,13 @@ export default function CoinDetailPage() {
               <div className="flex items-center space-x-6">
                 <button
                   onClick={() => navigate('/markets')}
-                  className="w-10 h-10 bg-[#1B1B1D]/50 border border-[#2B2F36] hover:border-[#03AAC7]/50 rounded-xl flex items-center justify-center text-[#AAB0C0] hover:text-white transition-colors"
+                  className="w-10 h-10 bg-[#1B1B1D]/50 border border-[#2B2F36] hover:border-[#FCD535]/50 rounded-xl flex items-center justify-center text-[#AAB0C0] hover:text-white transition-colors"
                 >
                   <ArrowLeft className="w-5 h-5" />
                 </button>
 
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-[#03AAC7]/10 rounded-xl flex items-center justify-center overflow-hidden">
+                  <div className="w-12 h-12 bg-[#FCD535]/10 rounded-xl flex items-center justify-center overflow-hidden">
                     <img
                       src={`https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32/color/${coinData?.baseAsset.toLowerCase()}.png`}
                       alt={coinData?.baseAsset}
@@ -243,8 +243,8 @@ export default function CoinDetailPage() {
               <div className="flex items-center space-x-4">
                 {/* Live indicator */}
                 <div className="flex items-center space-x-2">
-                  <div className={`w-2 h-2 rounded-full ${wsConnected ? 'bg-[#03AAC7] animate-pulse' : 'bg-[#F43F5E]'}`} />
-                  <span className={`text-sm font-medium ${wsConnected ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
+                  <div className={`w-2 h-2 rounded-full ${wsConnected ? 'bg-[#FCD535] animate-pulse' : 'bg-[#F43F5E]'}`} />
+                  <span className={`text-sm font-medium ${wsConnected ? 'text-[#FCD535]' : 'text-[#F43F5E]'}`}>
                     {wsConnected ? 'LIVE' : 'OFFLINE'}
                   </span>
                 </div>
@@ -253,7 +253,7 @@ export default function CoinDetailPage() {
                 <button
                   onClick={refetch}
                   disabled={loading}
-                  className="flex items-center space-x-2 bg-[#1B1B1D]/50 hover:bg-[#1B1B1D]/70 border border-[#2B2F36] hover:border-[#03AAC7]/50 text-[#AAB0C0] hover:text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+                  className="flex items-center space-x-2 bg-[#1B1B1D]/50 hover:bg-[#1B1B1D]/70 border border-[#2B2F36] hover:border-[#FCD535]/50 text-[#AAB0C0] hover:text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
                 >
                   <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                   <span>Refresh</span>
@@ -274,7 +274,7 @@ export default function CoinDetailPage() {
             >
               <div className="flex items-center justify-between mb-4 h-10">
                 <div className="flex items-center space-x-3">
-                  <BarChart3 className="w-6 h-6 text-[#03AAC7]" />
+                  <BarChart3 className="w-6 h-6 text-[#FCD535]" />
                   <h2 className="text-xl font-semibold text-white">Price Chart</h2>
 
                   {/* Chart Type Selector */}
@@ -282,7 +282,7 @@ export default function CoinDetailPage() {
                     <button
                       onClick={() => setChartType('tradingview')}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${chartType === 'tradingview'
-                          ? 'bg-[#03AAC7] text-white'
+                          ? 'bg-[#FCD535] text-white'
                           : 'bg-[#1B1B1D]/50 text-[#AAB0C0] hover:bg-[#1B1B1D]/70 border border-[#2B2F36]'
                         }`}
                     >
@@ -291,7 +291,7 @@ export default function CoinDetailPage() {
                     <button
                       onClick={() => setChartType('candlestick')}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${chartType === 'candlestick'
-                          ? 'bg-[#03AAC7] text-white'
+                          ? 'bg-[#FCD535] text-white'
                           : 'bg-[#1B1B1D]/50 text-[#AAB0C0] hover:bg-[#1B1B1D]/70 border border-[#2B2F36]'
                         }`}
                     >
@@ -308,7 +308,7 @@ export default function CoinDetailPage() {
                         key={interval.key}
                         onClick={() => setSelectedInterval(interval.key)}
                         className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${selectedInterval === interval.key
-                            ? 'bg-[#03AAC7] text-white'
+                            ? 'bg-[#FCD535] text-white'
                             : 'bg-[#1B1B1D]/50 text-[#AAB0C0] hover:bg-[#1B1B1D]/70 border border-[#2B2F36]'
                           }`}
                       >
@@ -327,7 +327,7 @@ export default function CoinDetailPage() {
                       key={key}
                       onClick={() => setShowIndicators(prev => ({ ...prev, [key]: !enabled }))}
                       className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${enabled
-                          ? 'bg-[#03AAC7]/20 text-[#03AAC7] border border-[#03AAC7]/30'
+                          ? 'bg-[#FCD535]/20 text-[#FCD535] border border-[#FCD535]/30'
                           : 'bg-[#1B1B1D]/50 text-[#7F8C8D] hover:text-[#AAB0C0] border border-[#2B2F36]'
                         }`}
                     >
@@ -352,7 +352,7 @@ export default function CoinDetailPage() {
                     {loading && !klineData[selectedInterval] ? (
                       <div className="h-[320px] flex items-center justify-center">
                         <div className="text-center">
-                          <RefreshCw className="w-8 h-8 text-[#03AAC7] animate-spin mx-auto mb-3" />
+                          <RefreshCw className="w-8 h-8 text-[#FCD535] animate-spin mx-auto mb-3" />
                           <p className="text-[#7F8C8D]">Loading chart data...</p>
                         </div>
                       </div>
@@ -389,7 +389,7 @@ export default function CoinDetailPage() {
               >
                 <div className="bg-[#1B1B1D] rounded-xl p-4 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)] min-h-[88px] flex flex-col justify-center">
                   <div className="flex items-center space-x-2 mb-2">
-                    <TrendingUp className="w-4 h-4 text-[#03AAC7]" />
+                    <TrendingUp className="w-4 h-4 text-[#FCD535]" />
                     <span className="text-[#7F8C8D] text-sm">24H High</span>
                   </div>
                   <div className="text-xl font-bold text-white">
@@ -409,7 +409,7 @@ export default function CoinDetailPage() {
 
                 <div className="bg-[#1B1B1D] rounded-xl p-4 border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.2)] min-h-[88px] flex flex-col justify-center">
                   <div className="flex items-center space-x-2 mb-2">
-                    <Volume2 className="w-4 h-4 text-[#03AAC7]" />
+                    <Volume2 className="w-4 h-4 text-[#FCD535]" />
                     <span className="text-[#7F8C8D] text-sm">24H Volume</span>
                   </div>
                   <div className="text-xl font-bold text-white">
@@ -446,7 +446,7 @@ export default function CoinDetailPage() {
                     <div className="text-center">
                       <div className="text-xs text-[#7F8C8D] mb-1">RSI (14)</div>
                       <div className={`font-semibold ${technicalIndicators.rsi > 70 ? 'text-[#F43F5E]' :
-                          technicalIndicators.rsi < 30 ? 'text-[#03AAC7]' :
+                          technicalIndicators.rsi < 30 ? 'text-[#FCD535]' :
                             'text-[#AAB0C0]'
                         }`}>
                         {technicalIndicators.rsi.toFixed(1)}
@@ -475,7 +475,7 @@ export default function CoinDetailPage() {
                   {technicalIndicators.macd && (
                     <div className="text-center">
                       <div className="text-xs text-[#7F8C8D] mb-1">MACD</div>
-                      <div className={`font-semibold ${technicalIndicators.macd.histogram > 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'
+                      <div className={`font-semibold ${technicalIndicators.macd.histogram > 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]'
                         }`}>
                         {technicalIndicators.macd.macd.toFixed(4)}
                       </div>
@@ -499,21 +499,21 @@ export default function CoinDetailPage() {
                   onClick={toggleWatchlist}
                   className={`flex items-center justify-center space-x-3 px-6 py-4 rounded-xl font-medium transition-colors ${watchlist.has(symbol)
                       ? 'bg-[#F39C12]/10 text-[#F39C12] border border-[#F39C12]/30 hover:bg-[#F39C12]/20'
-                      : 'bg-[#03AAC7]/10 text-[#03AAC7] border border-[#03AAC7]/30 hover:bg-[#03AAC7]/20'
+                      : 'bg-[#FCD535]/10 text-[#FCD535] border border-[#FCD535]/30 hover:bg-[#FCD535]/20'
                     }`}
                 >
                   <Star className={`w-5 h-5 ${watchlist.has(symbol) ? 'fill-current' : ''}`} />
                   <span>{watchlist.has(symbol) ? 'Remove from Watchlist' : 'Add to Watchlist'}</span>
                 </button>
 
-                <button className="flex items-center justify-center space-x-3 px-6 py-4 bg-[#1B1B1D]/50 text-[#AAB0C0] hover:text-white border border-[#2B2F36] hover:border-[#03AAC7]/50 rounded-xl font-medium transition-colors">
+                <button className="flex items-center justify-center space-x-3 px-6 py-4 bg-[#1B1B1D]/50 text-[#AAB0C0] hover:text-white border border-[#2B2F36] hover:border-[#FCD535]/50 rounded-xl font-medium transition-colors">
                   <Bell className="w-5 h-5" />
                   <span>Set Price Alert</span>
                 </button>
 
                 <button
                   onClick={() => window.open('https://accounts.binance.com/register?ref=132056476', '_blank')}
-                  className="flex items-center justify-center space-x-3 px-6 py-4 bg-[#03AAC7] hover:from-[#5A2DE3] hover:to-[#7A4CFF] text-white rounded-xl font-medium transition-all"
+                  className="flex items-center justify-center space-x-3 px-6 py-4 bg-[#FCD535] hover:from-[#5A2DE3] hover:to-[#7A4CFF] text-white rounded-xl font-medium transition-all"
                 >
                   <ExternalLink className="w-5 h-5" />
                   <span>Trade on Binance</span>

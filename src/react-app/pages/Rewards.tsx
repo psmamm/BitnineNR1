@@ -167,7 +167,7 @@ export default function RewardsPage() {
     switch (status) {
       case 'completed': return <CheckCircle2 className="w-5 h-5 text-[#10B981]" />;
       case 'locked': return <Clock className="w-5 h-5 text-[#6B7280]" />;
-      default: return <Target className="w-5 h-5 text-[#03AAC7]" />;
+      default: return <Target className="w-5 h-5 text-[#FCD535]" />;
     }
   };
 
@@ -190,10 +190,10 @@ export default function RewardsPage() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-br from-[#03AAC7]/20 to-[#03AAC7]/5 rounded-xl border border-[#03AAC7]/30 p-5"
+            className="bg-gradient-to-br from-[#FCD535]/20 to-[#FCD535]/5 rounded-xl border border-[#FCD535]/30 p-5"
           >
             <div className="flex items-center gap-2 mb-2">
-              <Coins className="w-5 h-5 text-[#03AAC7]" />
+              <Coins className="w-5 h-5 text-[#FCD535]" />
               <span className="text-[#9CA3AF] text-sm">Current Points</span>
             </div>
             <div className="text-3xl font-bold text-white">{userPoints.toLocaleString()}</div>
@@ -251,7 +251,7 @@ export default function RewardsPage() {
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
               className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
                 activeTab === tab.id
-                  ? 'text-[#03AAC7] border-[#03AAC7]'
+                  ? 'text-[#FCD535] border-[#FCD535]'
                   : 'text-[#6B7280] border-transparent hover:text-white'
               }`}
             >
@@ -277,7 +277,7 @@ export default function RewardsPage() {
                   onClick={() => setActiveCategory(cat.id as TaskCategory | 'all')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     activeCategory === cat.id
-                      ? 'bg-[#03AAC7] text-[#151517]'
+                      ? 'bg-[#FCD535] text-[#151517]'
                       : 'bg-[#1B1B1D] text-[#9CA3AF] hover:text-white'
                   }`}
                 >
@@ -314,7 +314,7 @@ export default function RewardsPage() {
                           </div>
                           <div className="w-24 h-1.5 bg-[#252629] rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-[#03AAC7] rounded-full"
+                              className="h-full bg-[#FCD535] rounded-full"
                               style={{ width: `${(task.progress / task.maxProgress) * 100}%` }}
                             />
                           </div>
@@ -328,7 +328,7 @@ export default function RewardsPage() {
                         <span className="text-[#6B7280] text-xs">points</span>
                       </div>
                       {task.status === 'available' && (
-                        <button className="px-4 py-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-medium text-sm transition-colors">
+                        <button className="px-4 py-2 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg font-medium text-sm transition-colors">
                           Claim
                         </button>
                       )}
@@ -379,7 +379,7 @@ export default function RewardsPage() {
                       disabled={!reward.available}
                       className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
                         reward.available
-                          ? 'bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517]'
+                          ? 'bg-[#FCD535] hover:bg-[#FFE066] text-[#151517]'
                           : 'bg-[#252629] text-[#6B7280] cursor-not-allowed'
                       }`}
                     >

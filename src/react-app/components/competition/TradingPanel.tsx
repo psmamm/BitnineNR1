@@ -269,7 +269,7 @@ export function TradingPanel({
                         <Button
                             variant="default"
                             onClick={() => onExecuteTrade('Long')}
-                            className="w-full h-14 bg-gradient-to-r from-[#0ecb81] to-[#03AAC7] hover:from-[#25e09b] hover:to-[#26BFD4] text-white font-bold text-base rounded-xl shadow-lg shadow-[#0ecb81]/30 hover:shadow-[#0ecb81]/50 transition-all duration-300 border-0"
+                            className="w-full h-14 bg-gradient-to-r from-[#0ecb81] to-[#FCD535] hover:from-[#25e09b] hover:to-[#FFE066] text-white font-bold text-base rounded-xl shadow-lg shadow-[#0ecb81]/30 hover:shadow-[#0ecb81]/50 transition-all duration-300 border-0"
                             disabled={!gameStarted || gameOver || exchangeOutage}
                         >
                             Open Long

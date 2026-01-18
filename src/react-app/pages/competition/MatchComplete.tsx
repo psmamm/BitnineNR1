@@ -63,7 +63,7 @@ export default function MatchCompletePage() {
             <DashboardLayout>
                 <div className="min-h-screen bg-[#1B1B1D] flex items-center justify-center">
                     <div className="text-center">
-                        <div className="w-12 h-12 border-4 border-[#03AAC7]/30 border-t-[#03AAC7] rounded-full animate-spin mx-auto mb-4" />
+                        <div className="w-12 h-12 border-4 border-[#FCD535]/30 border-t-[#FCD535] rounded-full animate-spin mx-auto mb-4" />
                         <p className="text-gray-400">Loading match results...</p>
                     </div>
                 </div>
@@ -79,7 +79,7 @@ export default function MatchCompletePage() {
                         <p className="text-gray-400 mb-4">Match not found</p>
                         <button
                             onClick={() => navigate('/competition')}
-                            className="text-[#03AAC7] hover:text-[#03AAC7]"
+                            className="text-[#FCD535] hover:text-[#FCD535]"
                         >
                             Back to Competition
                         </button>
@@ -124,7 +124,7 @@ export default function MatchCompletePage() {
     };
 
     const youWon = matchData.winner_id === userId;
-    const divisionColor = eloData ? getDivisionColor(eloData.division) : '#03AAC7';
+    const divisionColor = eloData ? getDivisionColor(eloData.division) : '#FCD535';
 
     return (
         <DashboardLayout>
@@ -143,7 +143,7 @@ export default function MatchCompletePage() {
                             }`}
                         >
                             <div className="flex items-center justify-between mb-4">
-                                <div className="w-16 h-16 bg-[#03AAC7]/20 rounded-full flex items-center justify-center text-2xl">
+                                <div className="w-16 h-16 bg-[#FCD535]/20 rounded-full flex items-center justify-center text-2xl">
                                     {user?.displayName?.charAt(0) || user?.email?.charAt(0) || '👤'}
                                 </div>
                                 <div className="text-right">
@@ -247,7 +247,7 @@ export default function MatchCompletePage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => navigate('/competition')}
-                            className="bg- from-[#03AAC7] to-[#03AAC7] hover:from-[#5A2DE4] hover:to-[#7B4CE6] text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2"
+                            className="bg- from-[#FCD535] to-[#FCD535] hover:from-[#5A2DE4] hover:to-[#7B4CE6] text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2"
                         >
                             <Trophy className="w-5 h-5" />
                             New Ranked Match
@@ -256,7 +256,7 @@ export default function MatchCompletePage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => navigate('/competition/play?type=practice')}
-                            className="bg-[#1B1B1D] border border-[#2B2F36] hover:border-[#03AAC7]/50 text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2"
+                            className="bg-[#1B1B1D] border border-[#2B2F36] hover:border-[#FCD535]/50 text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2"
                         >
                             <Wrench className="w-5 h-5" />
                             New Practice Match

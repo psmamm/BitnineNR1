@@ -8,7 +8,7 @@ import { cn } from "@/react-app/lib/utils"
  * Colors:
  * - Background: #252629 (surface)
  * - Border: #2B2F36
- * - Focus border: #03AAC7 (cyan)
+ * - Focus border: #FCD535 (cyan)
  * - Text: #FFFFFF
  * - Placeholder: #6B7280
  */
@@ -19,22 +19,22 @@ const inputVariants = cva(
     variants: {
       variant: {
         // Default input - Bitget style
-        default: "bg-[#252629] border border-[#2B2F36] text-white focus:border-[#03AAC7] focus:outline-none",
+        default: "bg-[#252629] border border-[#2B2F36] text-white focus:border-[#FCD535] focus:outline-none",
 
         // Ghost - No border until focus
         ghost: "bg-transparent border-transparent text-white focus:bg-[#252629] focus:border-[#2B2F36] focus:outline-none",
 
         // Filled - Solid background
-        filled: "bg-[#252629] border border-transparent text-white focus:border-[#03AAC7] focus:outline-none",
+        filled: "bg-[#252629] border border-transparent text-white focus:border-[#FCD535] focus:outline-none",
 
         // Outline - Border only
-        outline: "bg-transparent border border-[#2B2F36] text-white focus:border-[#03AAC7] focus:outline-none",
+        outline: "bg-transparent border border-[#2B2F36] text-white focus:border-[#FCD535] focus:outline-none",
 
         // Error state
         error: "bg-[#252629] border border-[#F43F5E]/50 text-white focus:border-[#F43F5E] focus:outline-none",
 
         // Success state
-        success: "bg-[#252629] border border-[#03AAC7]/50 text-white focus:border-[#03AAC7] focus:outline-none",
+        success: "bg-[#252629] border border-[#FCD535]/50 text-white focus:border-[#FCD535] focus:outline-none",
       },
       inputSize: {
         sm: "h-8 px-3 text-xs",
@@ -103,9 +103,9 @@ const textareaVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-[#252629] border border-[#2B2F36] text-white focus:border-[#03AAC7] focus:outline-none",
+        default: "bg-[#252629] border border-[#2B2F36] text-white focus:border-[#FCD535] focus:outline-none",
         ghost: "bg-transparent border-transparent text-white focus:bg-[#252629] focus:border-[#2B2F36] focus:outline-none",
-        filled: "bg-[#252629] border border-transparent text-white focus:border-[#03AAC7] focus:outline-none",
+        filled: "bg-[#252629] border border-transparent text-white focus:border-[#FCD535] focus:outline-none",
       },
     },
     defaultVariants: {

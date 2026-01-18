@@ -585,7 +585,7 @@ export default function SettingsPage() {
                     onClick={() => setActiveSection(item.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors ${
                       activeSection === item.id
-                        ? "bg-[#252629] text-[#03AAC7] border-l-2 border-[#03AAC7]"
+                        ? "bg-[#252629] text-[#FCD535] border-l-2 border-[#FCD535]"
                         : "text-[#9CA3AF] hover:bg-[#252629] hover:text-white border-l-2 border-transparent"
                     }`}
                   >
@@ -631,7 +631,7 @@ export default function SettingsPage() {
                         <button
                           onClick={handleAvatarClick}
                           disabled={isSavingProfile}
-                          className="absolute -bottom-1 -right-1 w-7 h-7 bg-[#03AAC7] rounded-lg flex items-center justify-center hover:bg-[#26BFD4] transition-colors disabled:opacity-50"
+                          className="absolute -bottom-1 -right-1 w-7 h-7 bg-[#FCD535] rounded-lg flex items-center justify-center hover:bg-[#FFE066] transition-colors disabled:opacity-50"
                         >
                           {isSavingProfile ? (
                             <Loader2 className="w-4 h-4 text-[#151517] animate-spin" />
@@ -648,7 +648,7 @@ export default function SettingsPage() {
                             {user?.displayName || user?.email?.split('@')[0] || "Trader"}
                           </h2>
                           {/* Verified Badge */}
-                          <span className="px-2.5 py-1 bg-[#03AAC7]/10 text-[#03AAC7] text-xs font-medium rounded-full flex items-center gap-1">
+                          <span className="px-2.5 py-1 bg-[#FCD535]/10 text-[#FCD535] text-xs font-medium rounded-full flex items-center gap-1">
                             <Check className="w-3 h-3" />
                             Verified
                           </span>
@@ -677,9 +677,9 @@ export default function SettingsPage() {
 
                     {/* Success/Error Messages */}
                     {profileSaved && (
-                      <div className="mt-4 p-3 bg-[#03AAC7]/10 border border-[#03AAC7]/20 rounded-lg flex items-center gap-2">
-                        <Check className="w-4 h-4 text-[#03AAC7]" />
-                        <span className="text-[#03AAC7] text-sm">Profile updated successfully!</span>
+                      <div className="mt-4 p-3 bg-[#FCD535]/10 border border-[#FCD535]/20 rounded-lg flex items-center gap-2">
+                        <Check className="w-4 h-4 text-[#FCD535]" />
+                        <span className="text-[#FCD535] text-sm">Profile updated successfully!</span>
                       </div>
                     )}
                     {profileError && (
@@ -702,7 +702,7 @@ export default function SettingsPage() {
                           value={displayName}
                           onChange={(e) => setDisplayName(e.target.value)}
                           placeholder="Enter your name"
-                          className="w-full px-4 py-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors"
+                          className="w-full px-4 py-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#FCD535] focus:outline-none transition-colors"
                         />
                       </div>
                       <div>
@@ -720,7 +720,7 @@ export default function SettingsPage() {
                       <button
                         onClick={handleSaveProfile}
                         disabled={isSavingProfile || displayName === (user?.displayName || "")}
-                        className="px-6 py-2.5 bg-[#03AAC7] text-[#151517] rounded-lg font-medium hover:bg-[#26BFD4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="px-6 py-2.5 bg-[#FCD535] text-[#151517] rounded-lg font-medium hover:bg-[#FFE066] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                       >
                         {isSavingProfile ? (
                           <>
@@ -762,7 +762,7 @@ export default function SettingsPage() {
                           Email verification codes help guarantee account and transaction security.
                         </p>
                         <div className="flex items-center gap-2">
-                          <button className="text-[#03AAC7] text-sm font-medium hover:text-[#26BFD4] transition-colors">
+                          <button className="text-[#FCD535] text-sm font-medium hover:text-[#FFE066] transition-colors">
                             Edit
                           </button>
                         </div>
@@ -772,14 +772,14 @@ export default function SettingsPage() {
                       <div className="bg-[#1B1B1D] rounded-xl border border-[#2B2F36] p-5 flex flex-col">
                         <div className="flex items-start justify-between mb-4">
                           <div className="w-10 h-10 rounded-lg bg-[#252629] flex items-center justify-center">
-                            <Smartphone className="w-5 h-5 text-[#03AAC7]" />
+                            <Smartphone className="w-5 h-5 text-[#FCD535]" />
                           </div>
                           <span className={`px-2.5 py-1 rounded-full text-xs flex items-center gap-1.5 ${
                             twoFactorEnabled
-                              ? "bg-[#03AAC7]/10 text-[#03AAC7]"
+                              ? "bg-[#FCD535]/10 text-[#FCD535]"
                               : "bg-[#252629] text-[#6B7280]"
                           }`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${twoFactorEnabled ? "bg-[#03AAC7]" : "bg-[#6B7280]"}`} />
+                            <span className={`w-1.5 h-1.5 rounded-full ${twoFactorEnabled ? "bg-[#FCD535]" : "bg-[#6B7280]"}`} />
                             {twoFactorEnabled ? "Enabled" : "Disabled"}
                           </span>
                         </div>
@@ -792,7 +792,7 @@ export default function SettingsPage() {
                             <>
                               <button
                                 onClick={() => setShow2FAModal(true)}
-                                className="text-[#03AAC7] text-sm font-medium hover:text-[#26BFD4] transition-colors"
+                                className="text-[#FCD535] text-sm font-medium hover:text-[#FFE066] transition-colors"
                               >
                                 Edit
                               </button>
@@ -822,8 +822,8 @@ export default function SettingsPage() {
                           <div className="w-10 h-10 rounded-lg bg-[#252629] flex items-center justify-center">
                             <Lock className="w-5 h-5 text-[#9CA3AF]" />
                           </div>
-                          <span className="px-2.5 py-1 bg-[#03AAC7]/10 rounded-full text-xs text-[#03AAC7] flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#03AAC7]" />
+                          <span className="px-2.5 py-1 bg-[#FCD535]/10 rounded-full text-xs text-[#FCD535] flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#FCD535]" />
                             Enabled
                           </span>
                         </div>
@@ -834,7 +834,7 @@ export default function SettingsPage() {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => setShowPasswordModal(true)}
-                            className="text-[#03AAC7] text-sm font-medium hover:text-[#26BFD4] transition-colors"
+                            className="text-[#FCD535] text-sm font-medium hover:text-[#FFE066] transition-colors"
                           >
                             Edit
                           </button>
@@ -855,10 +855,10 @@ export default function SettingsPage() {
                           </div>
                           <span className={`px-2.5 py-1 rounded-full text-xs flex items-center gap-1.5 ${
                             antiPhishingCode
-                              ? "bg-[#03AAC7]/10 text-[#03AAC7]"
+                              ? "bg-[#FCD535]/10 text-[#FCD535]"
                               : "bg-[#252629] text-[#6B7280]"
                           }`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${antiPhishingCode ? "bg-[#03AAC7]" : "bg-[#6B7280]"}`} />
+                            <span className={`w-1.5 h-1.5 rounded-full ${antiPhishingCode ? "bg-[#FCD535]" : "bg-[#6B7280]"}`} />
                             {antiPhishingCode ? "Enabled" : "Disabled"}
                           </span>
                         </div>
@@ -904,8 +904,8 @@ export default function SettingsPage() {
                           <div className="w-10 h-10 rounded-lg bg-[#252629] flex items-center justify-center">
                             <RefreshCw className="w-5 h-5 text-[#9CA3AF]" />
                           </div>
-                          <span className="px-2.5 py-1 bg-[#03AAC7]/10 rounded-full text-xs text-[#03AAC7] flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#03AAC7]" />
+                          <span className="px-2.5 py-1 bg-[#FCD535]/10 rounded-full text-xs text-[#FCD535] flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#FCD535]" />
                             Enabled
                           </span>
                         </div>
@@ -1019,7 +1019,7 @@ export default function SettingsPage() {
                       </div>
                       <button
                         onClick={() => setShowExchangeModal(true)}
-                        className="px-4 py-2 bg-[#03AAC7] text-[#151517] rounded-lg font-medium hover:bg-[#26BFD4] transition-colors flex items-center gap-2"
+                        className="px-4 py-2 bg-[#FCD535] text-[#151517] rounded-lg font-medium hover:bg-[#FFE066] transition-colors flex items-center gap-2"
                       >
                         <Key className="w-4 h-4" />
                         Add Exchange
@@ -1054,7 +1054,7 @@ export default function SettingsPage() {
                             <div className="flex items-center gap-4">
                               {/* Exchange Logo */}
                               <div className="w-12 h-12 bg-[#2B2F36] rounded-xl flex items-center justify-center">
-                                <span className="text-xl font-bold text-[#03AAC7]">
+                                <span className="text-xl font-bold text-[#FCD535]">
                                   {(connection.exchange_name || connection.exchange_id).charAt(0).toUpperCase()}
                                 </span>
                               </div>
@@ -1064,7 +1064,7 @@ export default function SettingsPage() {
                                     {connection.exchange_name || connection.exchange_id.charAt(0).toUpperCase() + connection.exchange_id.slice(1)}
                                   </h4>
                                   {connection.is_active !== false && (
-                                    <span className="w-5 h-5 bg-[#03AAC7] rounded-full flex items-center justify-center">
+                                    <span className="w-5 h-5 bg-[#FCD535] rounded-full flex items-center justify-center">
                                       <Check className="w-3 h-3 text-[#151517]" />
                                     </span>
                                   )}
@@ -1148,7 +1148,7 @@ export default function SettingsPage() {
                           onClick={() => handleNotificationToggle(item.key)}
                           className={`relative w-14 h-7 rounded-full transition-all duration-300 ${
                             notifications[item.key]
-                              ? "bg-[#03AAC7] shadow-[0_0_10px_rgba(0,217,200,0.3)]"
+                              ? "bg-[#FCD535] shadow-[0_0_10px_rgba(0,217,200,0.3)]"
                               : "bg-[#3A3E45]"
                           }`}
                         >
@@ -1210,9 +1210,9 @@ export default function SettingsPage() {
 
                     {/* Success/Error Messages */}
                     {bulkDeleteSuccess && (
-                      <div className="mb-4 p-3 bg-[#03AAC7]/10 border border-[#03AAC7]/20 rounded-lg flex items-center gap-2">
-                        <Check className="w-4 h-4 text-[#03AAC7]" />
-                        <span className="text-[#03AAC7] text-sm">{bulkDeleteSuccess}</span>
+                      <div className="mb-4 p-3 bg-[#FCD535]/10 border border-[#FCD535]/20 rounded-lg flex items-center gap-2">
+                        <Check className="w-4 h-4 text-[#FCD535]" />
+                        <span className="text-[#FCD535] text-sm">{bulkDeleteSuccess}</span>
                       </div>
                     )}
                     {bulkDeleteError && (
@@ -1329,9 +1329,9 @@ export default function SettingsPage() {
                 </div>
 
                 {passwordResetSent && (
-                  <div className="p-3 bg-[#03AAC7]/10 border border-[#03AAC7]/20 rounded-lg flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#03AAC7]" />
-                    <span className="text-[#03AAC7] text-sm">Password reset email sent! Check your inbox.</span>
+                  <div className="p-3 bg-[#FCD535]/10 border border-[#FCD535]/20 rounded-lg flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#FCD535]" />
+                    <span className="text-[#FCD535] text-sm">Password reset email sent! Check your inbox.</span>
                   </div>
                 )}
 
@@ -1352,7 +1352,7 @@ export default function SettingsPage() {
                 <button
                   onClick={handlePasswordReset}
                   disabled={passwordResetLoading || passwordResetSent}
-                  className="flex-1 px-4 py-2.5 bg-[#03AAC7] rounded-lg text-[#151517] font-medium hover:bg-[#26BFD4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2.5 bg-[#FCD535] rounded-lg text-[#151517] font-medium hover:bg-[#FFE066] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {passwordResetLoading ? (
                     <>
@@ -1398,8 +1398,8 @@ export default function SettingsPage() {
               <div className="p-6 border-b border-[#2B2F36]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#03AAC7]/10 flex items-center justify-center">
-                      <Smartphone className="w-5 h-5 text-[#03AAC7]" />
+                    <div className="w-10 h-10 rounded-lg bg-[#FCD535]/10 flex items-center justify-center">
+                      <Smartphone className="w-5 h-5 text-[#FCD535]" />
                     </div>
                     <div>
                       <h2 className="text-lg font-semibold text-white">Google Authenticator</h2>
@@ -1430,15 +1430,15 @@ export default function SettingsPage() {
                       <h4 className="text-white font-medium mb-2">Why use 2FA?</h4>
                       <ul className="space-y-2 text-[#9CA3AF] text-sm">
                         <li className="flex items-center gap-2">
-                          <Check className="w-4 h-4 text-[#03AAC7]" />
+                          <Check className="w-4 h-4 text-[#FCD535]" />
                           Protect your account from unauthorized access
                         </li>
                         <li className="flex items-center gap-2">
-                          <Check className="w-4 h-4 text-[#03AAC7]" />
+                          <Check className="w-4 h-4 text-[#FCD535]" />
                           Secure withdrawals and sensitive operations
                         </li>
                         <li className="flex items-center gap-2">
-                          <Check className="w-4 h-4 text-[#03AAC7]" />
+                          <Check className="w-4 h-4 text-[#FCD535]" />
                           Works with Google Authenticator, Microsoft Authenticator, or Authy
                         </li>
                       </ul>
@@ -1453,9 +1453,9 @@ export default function SettingsPage() {
                 {/* Already Enabled View */}
                 {twoFactorStep === "intro" && twoFactorEnabled && (
                   <div className="space-y-4">
-                    <div className="p-3 bg-[#03AAC7]/10 border border-[#03AAC7]/20 rounded-lg flex items-center gap-2">
-                      <Check className="w-4 h-4 text-[#03AAC7]" />
-                      <span className="text-[#03AAC7] text-sm">Two-factor authentication is enabled</span>
+                    <div className="p-3 bg-[#FCD535]/10 border border-[#FCD535]/20 rounded-lg flex items-center gap-2">
+                      <Check className="w-4 h-4 text-[#FCD535]" />
+                      <span className="text-[#FCD535] text-sm">Two-factor authentication is enabled</span>
                     </div>
                     <div className="p-4 bg-[#252629] rounded-lg">
                       <p className="text-[#9CA3AF] text-sm">
@@ -1504,7 +1504,7 @@ export default function SettingsPage() {
                           />
                         ) : (
                           <div className="w-48 h-48 bg-[#252629] rounded-lg flex items-center justify-center">
-                            <Loader2 className="w-8 h-8 text-[#03AAC7] animate-spin" />
+                            <Loader2 className="w-8 h-8 text-[#FCD535] animate-spin" />
                           </div>
                         )}
                       </div>
@@ -1514,7 +1514,7 @@ export default function SettingsPage() {
                     <div className="p-4 bg-[#252629] rounded-lg">
                       <p className="text-[#6B7280] text-xs mb-2">Can't scan? Enter this code manually:</p>
                       <div className="flex items-center gap-2">
-                        <code className="flex-1 px-3 py-2 bg-[#151517] rounded-lg text-[#03AAC7] font-mono text-sm break-all">
+                        <code className="flex-1 px-3 py-2 bg-[#151517] rounded-lg text-[#FCD535] font-mono text-sm break-all">
                           {twoFactorSecret}
                         </code>
                         <button
@@ -1546,7 +1546,7 @@ export default function SettingsPage() {
                         }}
                         placeholder="000000"
                         maxLength={6}
-                        className="w-full px-4 py-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-center text-2xl font-mono tracking-[0.5em] placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors"
+                        className="w-full px-4 py-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-center text-2xl font-mono tracking-[0.5em] placeholder-[#6B7280] focus:border-[#FCD535] focus:outline-none transition-colors"
                       />
                     </div>
 
@@ -1596,8 +1596,8 @@ export default function SettingsPage() {
                 {/* Success Step */}
                 {twoFactorStep === "success" && (
                   <div className="space-y-4 text-center">
-                    <div className="w-16 h-16 mx-auto bg-[#03AAC7]/10 rounded-full flex items-center justify-center">
-                      <Check className="w-8 h-8 text-[#03AAC7]" />
+                    <div className="w-16 h-16 mx-auto bg-[#FCD535]/10 rounded-full flex items-center justify-center">
+                      <Check className="w-8 h-8 text-[#FCD535]" />
                     </div>
                     <div>
                       <h3 className="text-white text-lg font-semibold">2FA Enabled Successfully!</h3>
@@ -1623,7 +1623,7 @@ export default function SettingsPage() {
                     <button
                       onClick={handleStart2FASetup}
                       disabled={twoFactorLoading}
-                      className="flex-1 px-4 py-2.5 bg-[#03AAC7] rounded-lg text-[#151517] font-medium hover:bg-[#26BFD4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="flex-1 px-4 py-2.5 bg-[#FCD535] rounded-lg text-[#151517] font-medium hover:bg-[#FFE066] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {twoFactorLoading ? (
                         <>
@@ -1673,7 +1673,7 @@ export default function SettingsPage() {
                     </button>
                     <button
                       onClick={() => setTwoFactorStep("verify")}
-                      className="flex-1 px-4 py-2.5 bg-[#03AAC7] rounded-lg text-[#151517] font-medium hover:bg-[#26BFD4] transition-colors"
+                      className="flex-1 px-4 py-2.5 bg-[#FCD535] rounded-lg text-[#151517] font-medium hover:bg-[#FFE066] transition-colors"
                     >
                       Next
                     </button>
@@ -1691,7 +1691,7 @@ export default function SettingsPage() {
                     <button
                       onClick={handleVerify2FACode}
                       disabled={twoFactorVerifyCode.length !== 6 || twoFactorLoading}
-                      className="flex-1 px-4 py-2.5 bg-[#03AAC7] rounded-lg text-[#151517] font-medium hover:bg-[#26BFD4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="flex-1 px-4 py-2.5 bg-[#FCD535] rounded-lg text-[#151517] font-medium hover:bg-[#FFE066] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {twoFactorLoading ? (
                         <>
@@ -1708,7 +1708,7 @@ export default function SettingsPage() {
                 {twoFactorStep === "backup" && (
                   <button
                     onClick={handleComplete2FASetup}
-                    className="w-full px-4 py-2.5 bg-[#03AAC7] rounded-lg text-[#151517] font-medium hover:bg-[#26BFD4] transition-colors"
+                    className="w-full px-4 py-2.5 bg-[#FCD535] rounded-lg text-[#151517] font-medium hover:bg-[#FFE066] transition-colors"
                   >
                     I've Saved My Backup Codes
                   </button>
@@ -1717,7 +1717,7 @@ export default function SettingsPage() {
                 {twoFactorStep === "success" && (
                   <button
                     onClick={handleClose2FAModal}
-                    className="w-full px-4 py-2.5 bg-[#03AAC7] rounded-lg text-[#151517] font-medium hover:bg-[#26BFD4] transition-colors"
+                    className="w-full px-4 py-2.5 bg-[#FCD535] rounded-lg text-[#151517] font-medium hover:bg-[#FFE066] transition-colors"
                   >
                     Done
                   </button>
@@ -1769,7 +1769,7 @@ export default function SettingsPage() {
                     onChange={(e) => setAntiPhishingInput(e.target.value)}
                     placeholder="Enter a memorable code (e.g., MySecret123)"
                     maxLength={20}
-                    className="w-full px-4 py-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#FCD535] focus:outline-none transition-colors"
                   />
                   <p className="text-[#6B7280] text-xs mt-2">
                     Maximum 20 characters. Use letters and numbers.
@@ -1777,9 +1777,9 @@ export default function SettingsPage() {
                 </div>
 
                 {antiPhishingSaved && (
-                  <div className="p-3 bg-[#03AAC7]/10 border border-[#03AAC7]/20 rounded-lg flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#03AAC7]" />
-                    <span className="text-[#03AAC7] text-sm">Anti-phishing code saved!</span>
+                  <div className="p-3 bg-[#FCD535]/10 border border-[#FCD535]/20 rounded-lg flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#FCD535]" />
+                    <span className="text-[#FCD535] text-sm">Anti-phishing code saved!</span>
                   </div>
                 )}
 
@@ -1808,7 +1808,7 @@ export default function SettingsPage() {
                 <button
                   onClick={handleSaveAntiPhishing}
                   disabled={!antiPhishingInput.trim() || antiPhishingSaved || antiPhishingLoading}
-                  className="flex-1 px-4 py-2.5 bg-[#03AAC7] rounded-lg text-[#151517] font-medium hover:bg-[#26BFD4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2.5 bg-[#FCD535] rounded-lg text-[#151517] font-medium hover:bg-[#FFE066] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {antiPhishingLoading ? (
                     <>

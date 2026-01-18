@@ -106,18 +106,18 @@ export default function MatchmakingPage() {
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
                                     transition={{ delay: 0.2, type: "spring" }}
-                                    className="bg-[#03AAC7]/20 p-6 rounded-full w-fit mx-auto mb-6"
+                                    className="bg-[#FCD535]/20 p-6 rounded-full w-fit mx-auto mb-6"
                                 >
-                                    <Gamepad2 className="w-12 h-12 text-[#03AAC7]" />
+                                    <Gamepad2 className="w-12 h-12 text-[#FCD535]" />
                                 </motion.div>
-                                <h2 className="text-3xl font-bold mb-2 text-[#03AAC7]">Match Found!</h2>
+                                <h2 className="text-3xl font-bold mb-2 text-[#FCD535]">Match Found!</h2>
                                 <p className="text-gray-400 mb-6">Loading match, please wait...</p>
                                 <div className="flex justify-center">
                                     <motion.div
                                         animate={{ rotate: 360 }}
                                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                                     >
-                                        <Zap className="w-6 h-6 text-[#03AAC7]" />
+                                        <Zap className="w-6 h-6 text-[#FCD535]" />
                                     </motion.div>
                                 </div>
                             </motion.div>

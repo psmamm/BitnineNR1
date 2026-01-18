@@ -123,8 +123,8 @@ export function CreateBotModal({ isOpen, onClose, onCreateBot }: CreateBotModalP
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-zinc-800">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-[#03AAC7]/10 rounded-xl flex items-center justify-center">
-                  <Bot className="w-5 h-5 text-[#03AAC7]" />
+                <div className="w-10 h-10 bg-[#FCD535]/10 rounded-xl flex items-center justify-center">
+                  <Bot className="w-5 h-5 text-[#FCD535]" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-white">Create Trading Bot</h2>
@@ -142,8 +142,8 @@ export function CreateBotModal({ isOpen, onClose, onCreateBot }: CreateBotModalP
             {/* Progress Bar */}
             <div className="px-6 pt-4">
               <div className="flex gap-2">
-                <div className={`flex-1 h-1 rounded-full ${step >= 1 ? 'bg-[#03AAC7]' : 'bg-zinc-700'}`} />
-                <div className={`flex-1 h-1 rounded-full ${step >= 2 ? 'bg-[#03AAC7]' : 'bg-zinc-700'}`} />
+                <div className={`flex-1 h-1 rounded-full ${step >= 1 ? 'bg-[#FCD535]' : 'bg-zinc-700'}`} />
+                <div className={`flex-1 h-1 rounded-full ${step >= 2 ? 'bg-[#FCD535]' : 'bg-zinc-700'}`} />
               </div>
             </div>
 
@@ -161,7 +161,7 @@ export function CreateBotModal({ isOpen, onClose, onCreateBot }: CreateBotModalP
                   <div>
                     <label className="block text-sm font-medium text-zinc-300 mb-2">
                       <div className="flex items-center gap-2">
-                        <Bot className="w-4 h-4 text-[#03AAC7]" />
+                        <Bot className="w-4 h-4 text-[#FCD535]" />
                         Bot Name
                       </div>
                     </label>
@@ -170,7 +170,7 @@ export function CreateBotModal({ isOpen, onClose, onCreateBot }: CreateBotModalP
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="e.g., BTC Grid Bot"
-                      className={`w-full px-4 py-3 bg-zinc-800 border ${errors.name ? 'border-red-500' : 'border-zinc-700'} rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#03AAC7] transition-colors`}
+                      className={`w-full px-4 py-3 bg-zinc-800 border ${errors.name ? 'border-red-500' : 'border-zinc-700'} rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#FCD535] transition-colors`}
                     />
                     {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
                   </div>
@@ -179,7 +179,7 @@ export function CreateBotModal({ isOpen, onClose, onCreateBot }: CreateBotModalP
                   <div>
                     <label className="block text-sm font-medium text-zinc-300 mb-2">
                       <div className="flex items-center gap-2">
-                        <Zap className="w-4 h-4 text-[#03AAC7]" />
+                        <Zap className="w-4 h-4 text-[#FCD535]" />
                         Trading Strategy
                       </div>
                     </label>
@@ -191,15 +191,15 @@ export function CreateBotModal({ isOpen, onClose, onCreateBot }: CreateBotModalP
                           onClick={() => setFormData({ ...formData, strategy: strategy.id })}
                           className={`flex items-start gap-3 p-3 rounded-xl border transition-all text-left ${
                             formData.strategy === strategy.id
-                              ? 'bg-[#03AAC7]/10 border-[#03AAC7] text-white'
+                              ? 'bg-[#FCD535]/10 border-[#FCD535] text-white'
                               : 'bg-zinc-800/50 border-zinc-700 text-zinc-300 hover:border-zinc-600'
                           }`}
                         >
                           <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center mt-0.5 ${
-                            formData.strategy === strategy.id ? 'border-[#03AAC7]' : 'border-zinc-600'
+                            formData.strategy === strategy.id ? 'border-[#FCD535]' : 'border-zinc-600'
                           }`}>
                             {formData.strategy === strategy.id && (
-                              <div className="w-2 h-2 rounded-full bg-[#03AAC7]" />
+                              <div className="w-2 h-2 rounded-full bg-[#FCD535]" />
                             )}
                           </div>
                           <div>
@@ -216,14 +216,14 @@ export function CreateBotModal({ isOpen, onClose, onCreateBot }: CreateBotModalP
                   <div>
                     <label className="block text-sm font-medium text-zinc-300 mb-2">
                       <div className="flex items-center gap-2">
-                        <Target className="w-4 h-4 text-[#03AAC7]" />
+                        <Target className="w-4 h-4 text-[#FCD535]" />
                         Trading Pair
                       </div>
                     </label>
                     <select
                       value={formData.symbol}
                       onChange={(e) => setFormData({ ...formData, symbol: e.target.value })}
-                      className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-[#03AAC7] transition-colors"
+                      className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-[#FCD535] transition-colors"
                     >
                       {SYMBOLS.map((symbol) => (
                         <option key={symbol} value={symbol}>{symbol}</option>
@@ -253,7 +253,7 @@ export function CreateBotModal({ isOpen, onClose, onCreateBot }: CreateBotModalP
                       type="number"
                       value={formData.maxPositionSize}
                       onChange={(e) => setFormData({ ...formData, maxPositionSize: Number(e.target.value) })}
-                      className={`w-full px-4 py-3 bg-zinc-800 border ${errors.maxPositionSize ? 'border-red-500' : 'border-zinc-700'} rounded-xl text-white focus:outline-none focus:border-[#03AAC7] transition-colors`}
+                      className={`w-full px-4 py-3 bg-zinc-800 border ${errors.maxPositionSize ? 'border-red-500' : 'border-zinc-700'} rounded-xl text-white focus:outline-none focus:border-[#FCD535] transition-colors`}
                     />
                     {errors.maxPositionSize && <p className="text-red-400 text-xs mt-1">{errors.maxPositionSize}</p>}
                   </div>
@@ -268,7 +268,7 @@ export function CreateBotModal({ isOpen, onClose, onCreateBot }: CreateBotModalP
                         type="number"
                         value={formData.stopLoss}
                         onChange={(e) => setFormData({ ...formData, stopLoss: Number(e.target.value) })}
-                        className={`w-full px-4 py-3 bg-zinc-800 border ${errors.stopLoss ? 'border-red-500' : 'border-zinc-700'} rounded-xl text-white focus:outline-none focus:border-[#03AAC7] transition-colors`}
+                        className={`w-full px-4 py-3 bg-zinc-800 border ${errors.stopLoss ? 'border-red-500' : 'border-zinc-700'} rounded-xl text-white focus:outline-none focus:border-[#FCD535] transition-colors`}
                       />
                       {errors.stopLoss && <p className="text-red-400 text-xs mt-1">{errors.stopLoss}</p>}
                     </div>
@@ -282,7 +282,7 @@ export function CreateBotModal({ isOpen, onClose, onCreateBot }: CreateBotModalP
                         type="number"
                         value={formData.takeProfit}
                         onChange={(e) => setFormData({ ...formData, takeProfit: Number(e.target.value) })}
-                        className={`w-full px-4 py-3 bg-zinc-800 border ${errors.takeProfit ? 'border-red-500' : 'border-zinc-700'} rounded-xl text-white focus:outline-none focus:border-[#03AAC7] transition-colors`}
+                        className={`w-full px-4 py-3 bg-zinc-800 border ${errors.takeProfit ? 'border-red-500' : 'border-zinc-700'} rounded-xl text-white focus:outline-none focus:border-[#FCD535] transition-colors`}
                       />
                       {errors.takeProfit && <p className="text-red-400 text-xs mt-1">{errors.takeProfit}</p>}
                     </div>
@@ -296,7 +296,7 @@ export function CreateBotModal({ isOpen, onClose, onCreateBot }: CreateBotModalP
                         type="number"
                         value={formData.riskPerTrade}
                         onChange={(e) => setFormData({ ...formData, riskPerTrade: Number(e.target.value) })}
-                        className={`w-full px-4 py-3 bg-zinc-800 border ${errors.riskPerTrade ? 'border-red-500' : 'border-zinc-700'} rounded-xl text-white focus:outline-none focus:border-[#03AAC7] transition-colors`}
+                        className={`w-full px-4 py-3 bg-zinc-800 border ${errors.riskPerTrade ? 'border-red-500' : 'border-zinc-700'} rounded-xl text-white focus:outline-none focus:border-[#FCD535] transition-colors`}
                       />
                       {errors.riskPerTrade && <p className="text-red-400 text-xs mt-1">{errors.riskPerTrade}</p>}
                     </div>
@@ -305,7 +305,7 @@ export function CreateBotModal({ isOpen, onClose, onCreateBot }: CreateBotModalP
                   {/* Summary */}
                   <div className="p-4 bg-zinc-800/50 border border-zinc-700 rounded-xl">
                     <div className="flex items-center gap-2 text-white mb-3">
-                      <TrendingUp className="w-4 h-4 text-[#03AAC7]" />
+                      <TrendingUp className="w-4 h-4 text-[#FCD535]" />
                       <span className="font-medium">Bot Summary</span>
                     </div>
                     <div className="grid grid-cols-2 gap-3 text-sm">
@@ -338,7 +338,7 @@ export function CreateBotModal({ isOpen, onClose, onCreateBot }: CreateBotModalP
                   <Button variant="outline" onClick={handleClose}>
                     Cancel
                   </Button>
-                  <Button onClick={handleNext} className="bg-[#03AAC7] hover:bg-[#00A89C]">
+                  <Button onClick={handleNext} className="bg-[#FCD535] hover:bg-[#00A89C]">
                     Next Step
                   </Button>
                 </>
@@ -350,7 +350,7 @@ export function CreateBotModal({ isOpen, onClose, onCreateBot }: CreateBotModalP
                   <Button
                     onClick={handleSubmit}
                     disabled={loading}
-                    className="bg-[#03AAC7] hover:bg-[#00A89C]"
+                    className="bg-[#FCD535] hover:bg-[#00A89C]"
                   >
                     {loading ? (
                       <>

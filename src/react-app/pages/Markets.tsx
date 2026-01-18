@@ -399,7 +399,7 @@ export default function MarketsPage() {
     if (percent === undefined || percent === null) return 'text-[#7F8C8D]';
     const num = typeof percent === 'string' ? parseFloat(percent) : percent;
     if (isNaN(num)) return 'text-[#7F8C8D]';
-    return num >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]';
+    return num >= 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]';
   };
 
 
@@ -434,7 +434,7 @@ export default function MarketsPage() {
                         setSearchFocus(true);
                         setTimeout(() => searchInputRef.current?.focus(), 0);
                       }}
-                      className="flex items-center justify-center w-10 h-10 bg-[#1B1B1D]/50 border border-[#2B2F36] hover:border-[#03AAC7]/50 rounded-lg text-[#7F8C8D] hover:text-white transition-all"
+                      className="flex items-center justify-center w-10 h-10 bg-[#1B1B1D]/50 border border-[#2B2F36] hover:border-[#FCD535]/50 rounded-lg text-[#7F8C8D] hover:text-white transition-all"
                     >
                       <Search className="w-4 h-4" />
               </button>
@@ -452,7 +452,7 @@ export default function MarketsPage() {
                             setSearchFocus(false);
                           }
                         }}
-                        className="w-64 pl-10 pr-10 py-2 bg-[#1B1B1D]/50 border border-[#03AAC7]/50 rounded-lg text-white placeholder-[#7F8C8D] focus:outline-none transition-all text-sm"
+                        className="w-64 pl-10 pr-10 py-2 bg-[#1B1B1D]/50 border border-[#FCD535]/50 rounded-lg text-white placeholder-[#7F8C8D] focus:outline-none transition-all text-sm"
                         autoFocus
                 />
                 {filters.search && (
@@ -481,7 +481,7 @@ export default function MarketsPage() {
               <div className="overflow-x-auto">
           {loading && Object.keys(enhancedData).length === 0 ? (
             <div className="p-12 text-center">
-              <div className="w-16 h-16 border-4 border-[#03AAC7] border-t-transparent rounded-full animate-spin mx-auto mb-6" />
+              <div className="w-16 h-16 border-4 border-[#FCD535] border-t-transparent rounded-full animate-spin mx-auto mb-6" />
               <h3 className="text-xl font-semibold text-white mb-2">Loading Market Data</h3>
               <p className="text-[#7F8C8D]">Fetching real-time data from Binance...</p>
             </div>
@@ -497,15 +497,15 @@ export default function MarketsPage() {
               <p className="text-[#7F8C8D] mb-6">{error}</p>
               <button
                 onClick={refetch}
-                className="px-6 py-3 bg-[#03AAC7] hover:bg-[#26BFD4] text-white rounded-lg font-medium transition-colors"
+                className="px-6 py-3 bg-[#FCD535] hover:bg-[#FFE066] text-white rounded-lg font-medium transition-colors"
               >
                 Retry
               </button>
             </div>
           ) : paginatedData.length === 0 ? (
             <div className="p-12 text-center">
-              <div className="w-16 h-16 bg-[#03AAC7]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Search className="w-8 h-8 text-[#03AAC7]" />
+              <div className="w-16 h-16 bg-[#FCD535]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Search className="w-8 h-8 text-[#FCD535]" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">No Markets Found</h3>
               <p className="text-[#7F8C8D] mb-6">Try adjusting your search or filters</p>
@@ -513,7 +513,7 @@ export default function MarketsPage() {
                     onClick={() => {
                       setFilters(prev => ({ ...prev, search: '', quoteAssets: ['USDT'] }));
                     }}
-                className="px-6 py-3 bg-[#03AAC7] hover:bg-[#26BFD4] text-white rounded-lg font-medium transition-colors"
+                className="px-6 py-3 bg-[#FCD535] hover:bg-[#FFE066] text-white rounded-lg font-medium transition-colors"
               >
                 Clear Filters
               </button>
@@ -778,7 +778,7 @@ export default function MarketsPage() {
                               onClick={() => setCurrentPage(page)}
                                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                                     currentPage === page
-                                ? 'bg-[#03AAC7] text-white shadow-lg'
+                                ? 'bg-[#FCD535] text-white shadow-lg'
                                 : 'text-[#AAB0C0] hover:bg-[#1B1B1D]/50'
                                 }`}
                             >

@@ -139,7 +139,7 @@ export default function AssetsPage() {
                           onClick={() => navigate(item.path)}
                           className={`w-full text-left px-4 py-2 text-sm transition-colors ${
                             location.pathname === item.path
-                              ? 'text-[#03AAC7]'
+                              ? 'text-[#FCD535]'
                               : 'text-[#9CA3AF] hover:text-white'
                           }`}
                         >
@@ -180,7 +180,7 @@ export default function AssetsPage() {
                 <div className="relative">
                   {/* Wallet illustration */}
                   <div className="w-32 h-24 bg-gradient-to-br from-[#252629] to-[#2B2F36] rounded-xl border border-[#3A3E45] shadow-xl flex items-center justify-center">
-                    <Wallet className="w-12 h-12 text-[#03AAC7]" />
+                    <Wallet className="w-12 h-12 text-[#FCD535]" />
                   </div>
                   {/* Floating coins */}
                   <div className="absolute -top-4 -right-4 w-10 h-10 bg-[#F7931A] rounded-full flex items-center justify-center text-white font-bold shadow-lg">
@@ -189,7 +189,7 @@ export default function AssetsPage() {
                   <div className="absolute -bottom-2 -left-6 w-8 h-8 bg-[#627EEA] rounded-full flex items-center justify-center text-white font-bold shadow-lg">
                     Ξ
                   </div>
-                  <div className="absolute top-0 -left-8 w-6 h-6 bg-[#03AAC7] rounded-full flex items-center justify-center text-[#151517] font-bold text-xs shadow-lg">
+                  <div className="absolute top-0 -left-8 w-6 h-6 bg-[#FCD535] rounded-full flex items-center justify-center text-[#151517] font-bold text-xs shadow-lg">
                     $
                   </div>
                 </div>
@@ -214,7 +214,7 @@ export default function AssetsPage() {
                   <span className="text-[#6B7280] text-xs">Crypto Loans</span>
                 </div>
                 <div className="w-12 h-12 bg-[#252629] rounded-lg flex items-center justify-center">
-                  <Percent className="w-6 h-6 text-[#03AAC7]" />
+                  <Percent className="w-6 h-6 text-[#FCD535]" />
                 </div>
               </div>
             </motion.div>
@@ -234,7 +234,7 @@ export default function AssetsPage() {
                   <span className="text-[#6B7280] text-xs">Savings</span>
                 </div>
                 <div className="w-12 h-12 bg-[#252629] rounded-lg flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6 text-[#03AAC7]" />
+                  <BarChart3 className="w-6 h-6 text-[#FCD535]" />
                 </div>
               </div>
             </motion.div>
@@ -280,7 +280,7 @@ export default function AssetsPage() {
                   <div className="flex items-center gap-2">
                     <span className="text-white font-medium">{product.coin}</span>
                     {product.isNew && (
-                      <span className="px-1.5 py-0.5 bg-[#03AAC7]/20 text-[#03AAC7] text-[10px] font-medium rounded">
+                      <span className="px-1.5 py-0.5 bg-[#FCD535]/20 text-[#FCD535] text-[10px] font-medium rounded">
                         New
                       </span>
                     )}
@@ -291,7 +291,7 @@ export default function AssetsPage() {
                   {product.apr} <span className="text-[#6B7280] text-xs">APR</span>
                 </div>
                 <div className="text-right">
-                  <button className="text-[#03AAC7] hover:text-[#26BFD4] text-sm font-medium transition-colors">
+                  <button className="text-[#FCD535] hover:text-[#FFE066] text-sm font-medium transition-colors">
                     Subscribe
                   </button>
                 </div>
@@ -314,7 +314,7 @@ export default function AssetsPage() {
                 <div>
                   <h4 className="text-white font-semibold mb-1">$400 million Protection Fund</h4>
                   <p className="text-[#9CA3AF] text-sm mb-2">Your security, our priority</p>
-                  <button className="text-[#03AAC7] hover:text-[#26BFD4] text-sm font-medium transition-colors flex items-center gap-1">
+                  <button className="text-[#FCD535] hover:text-[#FFE066] text-sm font-medium transition-colors flex items-center gap-1">
                     View more <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -328,7 +328,7 @@ export default function AssetsPage() {
                 <div>
                   <h4 className="text-white font-semibold mb-1">Proof of Reserves</h4>
                   <p className="text-[#9CA3AF] text-sm mb-2">1:1 reserve of all users' funds on our platform</p>
-                  <button className="text-[#03AAC7] hover:text-[#26BFD4] text-sm font-medium transition-colors flex items-center gap-1">
+                  <button className="text-[#FCD535] hover:text-[#FFE066] text-sm font-medium transition-colors flex items-center gap-1">
                     View my audit <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>

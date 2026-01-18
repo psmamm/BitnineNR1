@@ -198,13 +198,13 @@ export default function DashboardPage() {
                       <span className="text-[#9CA3AF] text-sm font-mono">{userUID}</span>
                       <button onClick={copyUID} className="p-1 hover:bg-[#252629] rounded transition-colors">
                         {copiedUID ? (
-                          <Check className="w-3.5 h-3.5 text-[#03AAC7]" />
+                          <Check className="w-3.5 h-3.5 text-[#FCD535]" />
                         ) : (
                           <Copy className="w-3.5 h-3.5 text-[#6B7280]" />
                         )}
                       </button>
                     </div>
-                    <span className="px-2 py-0.5 bg-[#03AAC7]/10 text-[#03AAC7] text-xs font-medium rounded-full flex items-center gap-1">
+                    <span className="px-2 py-0.5 bg-[#FCD535]/10 text-[#FCD535] text-xs font-medium rounded-full flex items-center gap-1">
                       <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       </svg>
@@ -246,11 +246,11 @@ export default function DashboardPage() {
             >
               <div className="flex items-center justify-between">
                 <span className="text-[#9CA3AF] text-sm">Total P&L</span>
-                <div className="w-10 h-10 rounded-full bg-[#03AAC7]/10 flex items-center justify-center">
-                  <DollarSign className="w-5 h-5 text-[#03AAC7]" />
+                <div className="w-10 h-10 rounded-full bg-[#FCD535]/10 flex items-center justify-center">
+                  <DollarSign className="w-5 h-5 text-[#FCD535]" />
                 </div>
               </div>
-              <div className={`text-2xl font-semibold mt-3 ${metrics.totalPnl >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
+              <div className={`text-2xl font-semibold mt-3 ${metrics.totalPnl >= 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]'}`}>
                 {loading ? '...' : showBalance ? formatCurrency(metrics.totalPnl) : '****'}
               </div>
               <div className="text-[#6B7280] text-sm mt-1">
@@ -267,8 +267,8 @@ export default function DashboardPage() {
             >
               <div className="flex items-center justify-between">
                 <span className="text-[#9CA3AF] text-sm">Win Rate</span>
-                <div className="w-10 h-10 rounded-full bg-[#03AAC7]/10 flex items-center justify-center">
-                  <Target className="w-5 h-5 text-[#03AAC7]" />
+                <div className="w-10 h-10 rounded-full bg-[#FCD535]/10 flex items-center justify-center">
+                  <Target className="w-5 h-5 text-[#FCD535]" />
                 </div>
               </div>
               <div className="text-2xl font-semibold text-white mt-3">
@@ -288,8 +288,8 @@ export default function DashboardPage() {
             >
               <div className="flex items-center justify-between">
                 <span className="text-[#9CA3AF] text-sm">Profit Factor</span>
-                <div className="w-10 h-10 rounded-full bg-[#03AAC7]/10 flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-[#03AAC7]" />
+                <div className="w-10 h-10 rounded-full bg-[#FCD535]/10 flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-[#FCD535]" />
                 </div>
               </div>
               <div className="text-2xl font-semibold text-white mt-3">
@@ -309,8 +309,8 @@ export default function DashboardPage() {
             >
               <div className="flex items-center justify-between">
                 <span className="text-[#9CA3AF] text-sm">Open Positions</span>
-                <div className="w-10 h-10 rounded-full bg-[#03AAC7]/10 flex items-center justify-center">
-                  <Activity className="w-5 h-5 text-[#03AAC7]" />
+                <div className="w-10 h-10 rounded-full bg-[#FCD535]/10 flex items-center justify-center">
+                  <Activity className="w-5 h-5 text-[#FCD535]" />
                 </div>
               </div>
               <div className="text-2xl font-semibold text-white mt-3">
@@ -335,7 +335,7 @@ export default function DashboardPage() {
                 <h2 className="text-lg font-medium text-white">Recent Trades</h2>
                 <button
                   onClick={() => navigate('/journal')}
-                  className="text-sm text-[#03AAC7] hover:text-[#26BFD4] transition-colors flex items-center gap-1"
+                  className="text-sm text-[#FCD535] hover:text-[#FFE066] transition-colors flex items-center gap-1"
                 >
                   View All
                   <ChevronRight className="w-4 h-4" />
@@ -344,7 +344,7 @@ export default function DashboardPage() {
 
               {loading ? (
                 <div className="p-8 text-center">
-                  <div className="w-8 h-8 border-2 border-[#2B2F36] border-t-[#03AAC7] rounded-full animate-spin mx-auto" />
+                  <div className="w-8 h-8 border-2 border-[#2B2F36] border-t-[#FCD535] rounded-full animate-spin mx-auto" />
                 </div>
               ) : recentTrades.length === 0 ? (
                 <div className="p-12 text-center">
@@ -355,7 +355,7 @@ export default function DashboardPage() {
                   <p className="text-[#9CA3AF] text-sm mb-4">Start tracking your trades to see your performance</p>
                   <button
                     onClick={() => navigate('/journal')}
-                    className="px-4 py-2 bg-[#03AAC7] text-[#151517] rounded-lg font-medium hover:bg-[#26BFD4] transition-colors"
+                    className="px-4 py-2 bg-[#FCD535] text-[#151517] rounded-lg font-medium hover:bg-[#FFE066] transition-colors"
                   >
                     Add Your First Trade
                   </button>
@@ -366,10 +366,10 @@ export default function DashboardPage() {
                     <div key={trade.id} className="p-4 flex items-center justify-between hover:bg-[#252629] transition-colors">
                       <div className="flex items-center gap-4">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          trade.direction === 'long' ? 'bg-[#03AAC7]/10' : 'bg-[#F43F5E]/10'
+                          trade.direction === 'long' ? 'bg-[#FCD535]/10' : 'bg-[#F43F5E]/10'
                         }`}>
                           {trade.direction === 'long' ? (
-                            <TrendingUp className="w-5 h-5 text-[#03AAC7]" />
+                            <TrendingUp className="w-5 h-5 text-[#FCD535]" />
                           ) : (
                             <TrendingDown className="w-5 h-5 text-[#F43F5E]" />
                           )}
@@ -379,7 +379,7 @@ export default function DashboardPage() {
                             <span className="text-white font-medium">{trade.symbol}</span>
                             <span className={`text-xs px-1.5 py-0.5 rounded ${
                               trade.direction === 'long'
-                                ? 'bg-[#03AAC7]/10 text-[#03AAC7]'
+                                ? 'bg-[#FCD535]/10 text-[#FCD535]'
                                 : 'bg-[#F43F5E]/10 text-[#F43F5E]'
                             }`}>
                               {trade.direction.toUpperCase()}
@@ -390,11 +390,11 @@ export default function DashboardPage() {
                       </div>
                       <div className="text-right">
                         {trade.is_closed && trade.pnl !== null ? (
-                          <div className={`font-semibold ${(trade.pnl ?? 0) >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
+                          <div className={`font-semibold ${(trade.pnl ?? 0) >= 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]'}`}>
                             {(trade.pnl ?? 0) >= 0 ? '+' : ''}{showBalance ? formatCurrency(trade.pnl ?? 0) : '****'}
                           </div>
                         ) : (
-                          <span className="px-2 py-1 bg-[#03AAC7]/10 text-[#03AAC7] text-xs font-medium rounded">
+                          <span className="px-2 py-1 bg-[#FCD535]/10 text-[#FCD535] text-xs font-medium rounded">
                             Open
                           </span>
                         )}
@@ -418,7 +418,7 @@ export default function DashboardPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-[#9CA3AF] text-sm">Avg. Win</span>
-                    <span className="text-[#03AAC7] font-medium">{showBalance ? formatCurrency(metrics.avgWin) : '****'}</span>
+                    <span className="text-[#FCD535] font-medium">{showBalance ? formatCurrency(metrics.avgWin) : '****'}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-[#9CA3AF] text-sm">Avg. Loss</span>
@@ -447,8 +447,8 @@ export default function DashboardPage() {
                     onClick={() => navigate('/journal')}
                     className="w-full flex items-center gap-3 p-3 bg-[#252629] rounded-lg hover:bg-[#222226] transition-colors text-left"
                   >
-                    <div className="w-10 h-10 rounded-full bg-[#03AAC7]/10 flex items-center justify-center">
-                      <BookOpen className="w-5 h-5 text-[#03AAC7]" />
+                    <div className="w-10 h-10 rounded-full bg-[#FCD535]/10 flex items-center justify-center">
+                      <BookOpen className="w-5 h-5 text-[#FCD535]" />
                     </div>
                     <div>
                       <span className="text-white font-medium block">Trade Journal</span>
@@ -459,8 +459,8 @@ export default function DashboardPage() {
                     onClick={() => navigate('/reports')}
                     className="w-full flex items-center gap-3 p-3 bg-[#252629] rounded-lg hover:bg-[#222226] transition-colors text-left"
                   >
-                    <div className="w-10 h-10 rounded-full bg-[#03AAC7]/10 flex items-center justify-center">
-                      <PieChart className="w-5 h-5 text-[#03AAC7]" />
+                    <div className="w-10 h-10 rounded-full bg-[#FCD535]/10 flex items-center justify-center">
+                      <PieChart className="w-5 h-5 text-[#FCD535]" />
                     </div>
                     <div>
                       <span className="text-white font-medium block">Analytics</span>
@@ -471,8 +471,8 @@ export default function DashboardPage() {
                     onClick={() => navigate('/strategies')}
                     className="w-full flex items-center gap-3 p-3 bg-[#252629] rounded-lg hover:bg-[#222226] transition-colors text-left"
                   >
-                    <div className="w-10 h-10 rounded-full bg-[#03AAC7]/10 flex items-center justify-center">
-                      <Zap className="w-5 h-5 text-[#03AAC7]" />
+                    <div className="w-10 h-10 rounded-full bg-[#FCD535]/10 flex items-center justify-center">
+                      <Zap className="w-5 h-5 text-[#FCD535]" />
                     </div>
                     <div>
                       <span className="text-white font-medium block">Strategies</span>

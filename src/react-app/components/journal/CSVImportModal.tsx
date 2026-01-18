@@ -256,8 +256,8 @@ export default function CSVImportModal({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-[#2B2F36]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#03AAC7]/10 rounded-xl flex items-center justify-center">
-                <FileUp className="w-5 h-5 text-[#03AAC7]" />
+              <div className="w-10 h-10 bg-[#FCD535]/10 rounded-xl flex items-center justify-center">
+                <FileUp className="w-5 h-5 text-[#FCD535]" />
               </div>
               <div>
                 <h2 className={`text-xl font-semibold ${getTextColor(theme, 'primary')}`}>
@@ -296,7 +296,7 @@ export default function CSVImportModal({
                   onClick={() => fileInputRef.current?.click()}
                   className={`relative border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${
                     dragActive
-                      ? 'border-[#03AAC7] bg-[#03AAC7]/10'
+                      ? 'border-[#FCD535] bg-[#FCD535]/10'
                       : `${getCardBorder(theme)} ${getHoverBg(theme)}`
                   }`}
                 >
@@ -310,7 +310,7 @@ export default function CSVImportModal({
 
                   {loading ? (
                     <div className="flex flex-col items-center gap-4">
-                      <Loader2 className="w-12 h-12 text-[#03AAC7] animate-spin" />
+                      <Loader2 className="w-12 h-12 text-[#FCD535] animate-spin" />
                       <p className={getTextColor(theme, 'secondary')}>Processing file...</p>
                     </div>
                   ) : (
@@ -337,7 +337,7 @@ export default function CSVImportModal({
                         key={broker.id}
                         className={`flex items-center gap-2 p-2 ${getCardBg(theme)} rounded-lg border ${getCardBorder(theme)}`}
                       >
-                        <FileText className="w-4 h-4 text-[#03AAC7]" />
+                        <FileText className="w-4 h-4 text-[#FCD535]" />
                         <span className={`text-sm ${getTextColor(theme, 'secondary')}`}>
                           {broker.name}
                         </span>
@@ -366,7 +366,7 @@ export default function CSVImportModal({
                 {/* File Info */}
                 <div className={`flex items-center justify-between p-4 ${getCardBg(theme)} rounded-xl border ${getCardBorder(theme)}`}>
                   <div className="flex items-center gap-3">
-                    <FileText className="w-8 h-8 text-[#03AAC7]" />
+                    <FileText className="w-8 h-8 text-[#FCD535]" />
                     <div>
                       <p className={`font-medium ${getTextColor(theme, 'primary')}`}>{fileName}</p>
                       <p className={`text-sm ${getTextColor(theme, 'muted')}`}>
@@ -396,7 +396,7 @@ export default function CSVImportModal({
                         onClick={() => setSelectedAssetType(type)}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                           selectedAssetType === type
-                            ? 'bg-[#03AAC7] text-white'
+                            ? 'bg-[#FCD535] text-white'
                             : `${getCardBg(theme)} ${getTextColor(theme, 'secondary')} hover:text-white`
                         }`}
                       >
@@ -423,7 +423,7 @@ export default function CSVImportModal({
                       {preview.preview.map((trade, index) => (
                         <tr key={index} className={`border-b ${getCardBorder(theme)}`}>
                           <td className={`py-2 ${getTextColor(theme, 'primary')}`}>{trade.symbol}</td>
-                          <td className={`py-2 ${trade.side === 'buy' || trade.side === 'long' ? 'text-[#03AAC7]' : 'text-[#F43F5E]'}`}>
+                          <td className={`py-2 ${trade.side === 'buy' || trade.side === 'long' ? 'text-[#FCD535]' : 'text-[#F43F5E]'}`}>
                             {trade.side.toUpperCase()}
                           </td>
                           <td className={`py-2 text-right ${getTextColor(theme, 'secondary')}`}>
@@ -437,7 +437,7 @@ export default function CSVImportModal({
                           </td>
                           <td className={`py-2 text-right ${
                             trade.realizedPnl
-                              ? trade.realizedPnl >= 0 ? 'text-[#03AAC7]' : 'text-[#F43F5E]'
+                              ? trade.realizedPnl >= 0 ? 'text-[#FCD535]' : 'text-[#F43F5E]'
                               : getTextColor(theme, 'muted')
                           }`}>
                             {trade.realizedPnl ? `$${trade.realizedPnl.toFixed(2)}` : '-'}
@@ -485,7 +485,7 @@ export default function CSVImportModal({
             {/* Step 3: Importing */}
             {step === 'importing' && (
               <div className="py-12 text-center">
-                <Loader2 className="w-16 h-16 mx-auto mb-6 text-[#03AAC7] animate-spin" />
+                <Loader2 className="w-16 h-16 mx-auto mb-6 text-[#FCD535] animate-spin" />
                 <h3 className={`text-xl font-semibold mb-2 ${getTextColor(theme, 'primary')}`}>
                   Importing Trades...
                 </h3>
@@ -501,9 +501,9 @@ export default function CSVImportModal({
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="w-20 h-20 mx-auto mb-6 bg-[#03AAC7]/20 rounded-full flex items-center justify-center"
+                  className="w-20 h-20 mx-auto mb-6 bg-[#FCD535]/20 rounded-full flex items-center justify-center"
                 >
-                  <Check className="w-10 h-10 text-[#03AAC7]" />
+                  <Check className="w-10 h-10 text-[#FCD535]" />
                 </motion.div>
                 <h3 className={`text-xl font-semibold mb-2 ${getTextColor(theme, 'primary')}`}>
                   Import Complete!
@@ -545,7 +545,7 @@ export default function CSVImportModal({
                   <button
                     onClick={handleImport}
                     disabled={!preview?.totalTrades}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-[#03AAC7] hover:bg-[#5A2DE4] text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-[#FCD535] hover:bg-[#5A2DE4] text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Import {preview?.totalTrades || 0} Trades
                     <ChevronRight className="w-4 h-4" />
@@ -555,7 +555,7 @@ export default function CSVImportModal({
                 <div className="w-full">
                   <button
                     onClick={handleClose}
-                    className="w-full px-6 py-2.5 bg-[#03AAC7] hover:bg-[#5A2DE4] text-white font-medium rounded-xl transition-colors"
+                    className="w-full px-6 py-2.5 bg-[#FCD535] hover:bg-[#5A2DE4] text-white font-medium rounded-xl transition-colors"
                   >
                     Done
                   </button>

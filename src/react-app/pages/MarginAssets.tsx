@@ -135,7 +135,7 @@ export default function MarginAssetsPage() {
             </button>
             <button
               onClick={() => navigate('/transfer')}
-              className="px-4 py-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg font-medium transition-colors flex items-center gap-2"
             >
               <ArrowDownRight className="w-4 h-4" />
               Transfer In
@@ -256,7 +256,7 @@ export default function MarginAssetsPage() {
               placeholder="Search assets..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-64 pl-10 pr-4 py-2 bg-[#1B1B1D] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none text-sm"
+              className="w-64 pl-10 pr-4 py-2 bg-[#1B1B1D] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#FCD535] focus:outline-none text-sm"
             />
           </div>
           <label className="flex items-center gap-2 cursor-pointer">
@@ -264,7 +264,7 @@ export default function MarginAssetsPage() {
               type="checkbox"
               checked={hideSmallBalances}
               onChange={(e) => setHideSmallBalances(e.target.checked)}
-              className="w-4 h-4 rounded border-[#2B2F36] bg-[#1B1B1D] text-[#03AAC7] focus:ring-[#03AAC7] focus:ring-offset-0"
+              className="w-4 h-4 rounded border-[#2B2F36] bg-[#1B1B1D] text-[#FCD535] focus:ring-[#FCD535] focus:ring-offset-0"
             />
             <span className="text-[#9CA3AF] text-sm">Hide small balances</span>
           </label>
@@ -326,7 +326,7 @@ export default function MarginAssetsPage() {
                   </td>
                   <td className="text-center py-4 px-6">
                     <div className="flex items-center justify-center gap-2">
-                      <button className="px-3 py-1.5 text-[#03AAC7] hover:bg-[#03AAC7]/10 rounded text-sm font-medium transition-colors">
+                      <button className="px-3 py-1.5 text-[#FCD535] hover:bg-[#FCD535]/10 rounded text-sm font-medium transition-colors">
                         Borrow
                       </button>
                       <button className="px-3 py-1.5 text-[#9CA3AF] hover:text-white hover:bg-[#252629] rounded text-sm transition-colors">
@@ -350,7 +350,7 @@ export default function MarginAssetsPage() {
                   </p>
                   <button
                     onClick={() => navigate('/settings')}
-                    className="px-4 py-2 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-lg font-medium transition-colors"
+                    className="px-4 py-2 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-lg font-medium transition-colors"
                   >
                     Connect Exchange
                   </button>

@@ -48,7 +48,7 @@ export function IndicatorsPanel({
                         {/* Header */}
                         <div className="flex items-center justify-between p-4 border-b border-white/10">
                             <div className="flex items-center gap-2">
-                                <BarChart3 className="w-5 h-5 text-[#03AAC7]" />
+                                <BarChart3 className="w-5 h-5 text-[#FCD535]" />
                                 <h3 className="text-lg font-semibold text-white">Indicators</h3>
                             </div>
                             <button
@@ -76,12 +76,12 @@ export function IndicatorsPanel({
                                                     key={indicator.id}
                                                     onClick={() => onIndicatorToggle(indicator.id)}
                                                     className={`w-full flex items-center justify-between p-3 rounded-lg transition-all ${indicator.enabled
-                                                            ? 'bg-[#03AAC7]/20 border border-[#03AAC7]/50'
+                                                            ? 'bg-[#FCD535]/20 border border-[#FCD535]/50'
                                                             : 'bg-[#1B1B1D] border border-white/5 hover:border-white/20'
                                                         }`}
                                                 >
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`${indicator.enabled ? 'text-[#03AAC7]' : 'text-[#7F8C8D]'}`}>
+                                                        <div className={`${indicator.enabled ? 'text-[#FCD535]' : 'text-[#7F8C8D]'}`}>
                                                             {indicator.icon}
                                                         </div>
                                                         <span className={`text-sm font-medium ${indicator.enabled ? 'text-white' : 'text-[#6B7280]'}`}>
@@ -89,7 +89,7 @@ export function IndicatorsPanel({
                                                         </span>
                                                     </div>
                                                     <div className={`w-4 h-4 rounded-full border-2 ${indicator.enabled
-                                                            ? 'bg-[#03AAC7] border-[#03AAC7]'
+                                                            ? 'bg-[#FCD535] border-[#FCD535]'
                                                             : 'border-[#7F8C8D]'
                                                         }`}>
                                                         {indicator.enabled && (

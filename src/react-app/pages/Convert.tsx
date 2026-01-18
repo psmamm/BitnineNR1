@@ -103,7 +103,7 @@ export default function ConvertPage() {
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#03AAC7] focus:outline-none text-sm"
+                  className="w-full pl-9 pr-3 py-2 bg-[#252629] border border-[#2B2F36] rounded-lg text-white placeholder-[#6B7280] focus:border-[#FCD535] focus:outline-none text-sm"
                 />
               </div>
             </div>
@@ -117,7 +117,7 @@ export default function ConvertPage() {
                     setSearchQuery('');
                   }}
                   className={`w-full flex items-center justify-between p-2 rounded-lg transition-colors ${
-                    selected === coin.symbol ? 'bg-[#03AAC7]/10' : 'hover:bg-[#252629]'
+                    selected === coin.symbol ? 'bg-[#FCD535]/10' : 'hover:bg-[#252629]'
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -186,7 +186,7 @@ export default function ConvertPage() {
                     onClick={() => setSlippage(value)}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
                       slippage === value
-                        ? 'bg-[#03AAC7] text-[#151517]'
+                        ? 'bg-[#FCD535] text-[#151517]'
                         : 'bg-[#252629] text-white hover:bg-[#2B2F36]'
                     }`}
                   >
@@ -198,7 +198,7 @@ export default function ConvertPage() {
                     type="number"
                     value={slippage}
                     onChange={(e) => setSlippage(e.target.value)}
-                    className="w-full py-2 px-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm text-center focus:border-[#03AAC7] focus:outline-none"
+                    className="w-full py-2 px-3 bg-[#252629] border border-[#2B2F36] rounded-lg text-white text-sm text-center focus:border-[#FCD535] focus:outline-none"
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] text-sm">%</span>
                 </div>
@@ -239,7 +239,7 @@ export default function ConvertPage() {
               <div className="flex justify-end">
                 <button
                   onClick={() => setFromAmount(String(fromCoinData?.balance || 0))}
-                  className="text-[#03AAC7] text-xs font-medium hover:text-[#26BFD4]"
+                  className="text-[#FCD535] text-xs font-medium hover:text-[#FFE066]"
                 >
                   MAX
                 </button>
@@ -253,7 +253,7 @@ export default function ConvertPage() {
                   onClick={swapCoins}
                   className="w-10 h-10 bg-[#252629] hover:bg-[#2B2F36] border-4 border-[#151517] rounded-full flex items-center justify-center transition-colors"
                 >
-                  <ArrowDownUp className="w-4 h-4 text-[#03AAC7]" />
+                  <ArrowDownUp className="w-4 h-4 text-[#FCD535]" />
                 </button>
               </div>
             </div>
@@ -320,7 +320,7 @@ export default function ConvertPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             disabled={!fromAmount || parseFloat(fromAmount) <= 0}
-            className="w-full py-3.5 bg-[#03AAC7] hover:bg-[#26BFD4] text-[#151517] rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3.5 bg-[#FCD535] hover:bg-[#FFE066] text-[#151517] rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Convert
           </motion.button>

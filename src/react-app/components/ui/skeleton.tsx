@@ -7,7 +7,7 @@ import { cn } from "@/react-app/lib/utils"
  * Colors:
  * - Skeleton bg: #252629
  * - Progress bar track: #2B2F36
- * - Progress bar fill: #03AAC7 (teal)
+ * - Progress bar fill: #FCD535 (teal)
  */
 
 // Basic Skeleton
@@ -121,7 +121,7 @@ function Spinner({ size = "md", className }: SpinnerProps) {
   return (
     <div
       className={cn(
-        "rounded-full border-[#2B2F36] border-t-[#03AAC7] animate-spin",
+        "rounded-full border-[#2B2F36] border-t-[#FCD535] animate-spin",
         sizeClasses[size],
         className
       )}
@@ -182,8 +182,8 @@ function ProgressBar({
   const percentage = Math.min(100, Math.max(0, (value / max) * 100))
 
   const variantClasses = {
-    default: "bg-[#03AAC7]",
-    success: "bg-[#03AAC7]",
+    default: "bg-[#FCD535]",
+    success: "bg-[#FCD535]",
     danger: "bg-[#F43F5E]",
     warning: "bg-[#F59E0B]",
   }
@@ -216,8 +216,8 @@ interface PulseDotProps {
 
 function PulseDot({ color = "default", className }: PulseDotProps) {
   const colorClasses = {
-    default: "bg-[#03AAC7]",
-    success: "bg-[#03AAC7]",
+    default: "bg-[#FCD535]",
+    success: "bg-[#FCD535]",
     danger: "bg-[#F43F5E]",
     warning: "bg-[#F59E0B]",
   }

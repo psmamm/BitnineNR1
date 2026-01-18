@@ -168,7 +168,7 @@ export default function TradingViewWidget({
           className="absolute inset-0 flex items-center justify-center bg-[#1B1B1D]/80 z-10 rounded-xl"
         >
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-[#03AAC7] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#FCD535] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <div className="text-white font-semibold mb-2">Loading TradingView Chart</div>
             <div className="text-[#7F8C8D] text-sm">Professional trading analysis for {symbol}</div>
           </div>
@@ -275,7 +275,7 @@ export function TradingViewMiniChart({
           className="absolute inset-0 bg-[#1B1B1D]/30 rounded flex items-center justify-center"
           style={{ width: `${width}px`, height: `${height}px` }}
         >
-          <div className="w-4 h-4 border-2 border-[#03AAC7] border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-4 h-4 border-2 border-[#FCD535] border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
       <div
