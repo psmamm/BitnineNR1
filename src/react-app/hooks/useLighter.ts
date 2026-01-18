@@ -85,6 +85,7 @@ export interface LighterState {
   isLoading: boolean;
   needsSetup: boolean;
   account: LighterAccountInfo | null;
+  isFallbackMode: boolean;
 
   // Balances
   balance: number;
@@ -177,6 +178,7 @@ export function useLighter(initialSymbol: string = 'BTC-USD'): UseLighterResult 
     orderbook: rawOrderbook,
     isLoading: orderbookLoading,
     error: orderbookError,
+    isFallbackMode,
   } = useLighterOrderbook(selectedSymbol);
 
   // Extract orderbook data
@@ -372,6 +374,7 @@ export function useLighter(initialSymbol: string = 'BTC-USD'): UseLighterResult 
     isLoading: balanceLoading || positionsLoading || ordersLoading || orderbookLoading || marketsLoading,
     needsSetup,
     account,
+    isFallbackMode,
 
     // Balances
     balance: account?.totalValue || 0,
