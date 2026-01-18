@@ -15,11 +15,11 @@ export default {
     },
     extend: {
       // ===========================================
-      // BITGET EXACT DESIGN SYSTEM (2026)
-      // Colors extracted from Bitget UI analysis
+      // BINANCE-INSPIRED DESIGN SYSTEM
+      // Professional, Clean, Minimal
       // ===========================================
       colors: {
-        // Semantic colors (shadcn-ui compatible)
+        // shadcn/ui semantic colors
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -62,80 +62,73 @@ export default {
         },
 
         // ===========================================
-        // BITGET EXACT COLORS
+        // BINANCE COLOR PALETTE
         // ===========================================
-        
-        // Dark Mode Backgrounds
-        bitget: {
-          // Page background
-          'bg': '#0D0D0E',
-          'bg-page': '#0D0D0E',
-          // Card background
-          'bg-card': '#16171A',
-          // Input/Surface background
-          'bg-input': '#1F2024',
-          // Button background
-          'bg-button': '#2B2E33',
-          'bg-button-hover': '#363A40',
-          // Hover states
-          'bg-hover': '#1A1A1C',
-          
-          // Borders
-          'border': '#3A3D42',
-          'border-light': '#E5E7EB',
-          'border-strong': '#D1D5DB',
-          
-          // Text - Dark Mode
-          'text': '#FFFFFF',
-          'text-secondary': '#72757A',
-          'text-muted': '#5A5D63',
-          
-          // Text - Light Mode
-          'text-light': '#1F2937',
-          'text-secondary-light': '#6B7280',
-          'text-muted-light': '#9CA3AF',
-          
-          // Accent Colors
-          'green': '#00B87A',
-          'teal': '#00B8A9',
-          'green-dark': '#1E8A6E',
-          'orange': '#E67E22',
-          'red': '#F04B4B',
-          'gold': '#F0B90B',
-          
-          // Badge backgrounds
-          'badge-enabled': '#1A2E1A',
-          'badge-enabled-light': '#E6F7F1',
-          'badge-disabled': '#2B2E33',
-          'badge-disabled-light': '#F3F4F6',
+
+        // Backgrounds
+        surface: {
+          DEFAULT: '#1E2026',
+          dark: '#0B0E11',
+          light: '#2B3139',
+          hover: '#363C46',
         },
 
-        // Status colors
+        // Primary Accent - Binance Yellow
+        brand: {
+          DEFAULT: '#FCD535',
+          hover: '#FFE066',
+          muted: 'rgba(252, 213, 53, 0.1)',
+        },
+
+        // Trading Colors
+        profit: {
+          DEFAULT: '#0ECB81',
+          hover: '#2ED47A',
+          muted: 'rgba(14, 203, 129, 0.1)',
+        },
+
+        loss: {
+          DEFAULT: '#F6465D',
+          hover: '#FF6B7A',
+          muted: 'rgba(246, 70, 93, 0.1)',
+        },
+
+        // Info Blue
+        info: {
+          DEFAULT: '#1E88E5',
+          hover: '#42A5F5',
+          muted: 'rgba(30, 136, 229, 0.1)',
+        },
+
+        // Text colors
+        'text-primary': '#EAECEF',
+        'text-secondary': '#848E9C',
+        'text-tertiary': '#5E6673',
+        'text-disabled': '#474D57',
+
+        // Border colors
+        'border-default': '#2B3139',
+        'border-hover': '#3D4654',
+
+        // Legacy support - map old names
         success: {
-          DEFAULT: '#00B87A',
-          light: '#E6F7F1',
-          dark: '#1A2E1A',
+          DEFAULT: '#0ECB81',
+          light: 'rgba(14, 203, 129, 0.1)',
         },
 
         danger: {
-          DEFAULT: '#F04B4B',
-          light: '#FEE2E2',
-          dark: '#2E1A1A',
+          DEFAULT: '#F6465D',
+          light: 'rgba(246, 70, 93, 0.1)',
         },
 
         warning: {
-          DEFAULT: '#E67E22',
-          light: '#FEF3E7',
-          dark: '#2E251A',
+          DEFAULT: '#F0B90B',
+          light: 'rgba(240, 185, 11, 0.1)',
         },
-
-        // Profit/Loss
-        profit: '#00B87A',
-        loss: '#F04B4B',
       },
 
       // ===========================================
-      // BORDER RADIUS - Bitget Style
+      // BORDER RADIUS
       // ===========================================
       borderRadius: {
         'none': '0px',
@@ -144,7 +137,7 @@ export default {
         'md': '8px',
         'lg': '12px',
         'xl': '16px',
-        '2xl': '32px',
+        '2xl': '24px',
         'full': '9999px',
       },
 
@@ -152,23 +145,23 @@ export default {
       // TYPOGRAPHY
       // ===========================================
       fontSize: {
-        'xs': ["0.75rem", { lineHeight: "1rem" }],        // 12px
-        'sm': ["0.8125rem", { lineHeight: "1.25rem" }],   // 13px
-        'base': ["0.875rem", { lineHeight: "1.375rem" }], // 14px
-        'lg': ["1rem", { lineHeight: "1.5rem" }],         // 16px
-        'xl': ["1.125rem", { lineHeight: "1.75rem" }],    // 18px
-        '2xl': ["1.25rem", { lineHeight: "1.75rem" }],    // 20px
-        '3xl': ["1.5rem", { lineHeight: "2rem" }],        // 24px
-        '4xl': ["1.875rem", { lineHeight: "2.25rem" }],   // 30px
-        '5xl': ["2.25rem", { lineHeight: "2.5rem" }],     // 36px
-        '6xl': ["3rem", { lineHeight: "1" }],             // 48px
+        'xs': ["0.75rem", { lineHeight: "1rem" }],
+        'sm': ["0.8125rem", { lineHeight: "1.25rem" }],
+        'base': ["0.875rem", { lineHeight: "1.375rem" }],
+        'lg': ["1rem", { lineHeight: "1.5rem" }],
+        'xl': ["1.125rem", { lineHeight: "1.75rem" }],
+        '2xl': ["1.25rem", { lineHeight: "1.75rem" }],
+        '3xl': ["1.5rem", { lineHeight: "2rem" }],
+        '4xl': ["1.875rem", { lineHeight: "2.25rem" }],
+        '5xl': ["2.25rem", { lineHeight: "2.5rem" }],
+        '6xl': ["3rem", { lineHeight: "1" }],
       },
 
       // ===========================================
       // FONT FAMILY
       // ===========================================
       fontFamily: {
-        sans: ['DM Sans', 'Arial', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
         mono: ['JetBrains Mono', 'SF Mono', 'Fira Code', 'monospace'],
       },
 
@@ -176,13 +169,14 @@ export default {
       // SHADOWS
       // ===========================================
       boxShadow: {
-        'sm': '0 1px 2px rgba(0, 0, 0, 0.05)',
-        'DEFAULT': '0 1px 3px rgba(0, 0, 0, 0.1)',
-        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-        'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-        'dropdown': '0 4px 12px rgba(0, 0, 0, 0.15)',
-        'card': '0 1px 3px rgba(0, 0, 0, 0.1)',
+        'sm': '0 1px 2px rgba(0, 0, 0, 0.3)',
+        'DEFAULT': '0 2px 4px rgba(0, 0, 0, 0.3)',
+        'md': '0 4px 6px rgba(0, 0, 0, 0.4)',
+        'lg': '0 10px 15px rgba(0, 0, 0, 0.5)',
+        'xl': '0 20px 25px rgba(0, 0, 0, 0.5)',
+        'glow-yellow': '0 0 20px rgba(252, 213, 53, 0.3)',
+        'glow-green': '0 0 20px rgba(14, 203, 129, 0.3)',
+        'glow-red': '0 0 20px rgba(246, 70, 93, 0.3)',
         'none': 'none',
       },
 
@@ -194,8 +188,9 @@ export default {
         'slide-up': 'slideUp 0.2s ease-out',
         'slide-down': 'slideDown 0.2s ease-out',
         'scale-in': 'scaleIn 0.15s ease-out',
-        'shimmer': 'shimmer 2s linear infinite',
-        'spin': 'spin 1s linear infinite',
+        'shimmer': 'shimmer 1.5s infinite',
+        'spin': 'spin 0.8s linear infinite',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
 
       keyframes: {
@@ -219,10 +214,15 @@ export default {
           from: { backgroundPosition: '-200% 0' },
           to: { backgroundPosition: '200% 0' },
         },
-        spin: {
-          from: { transform: 'rotate(0deg)' },
-          to: { transform: 'rotate(360deg)' },
-        },
+      },
+
+      // ===========================================
+      // SPACING (8px grid)
+      // ===========================================
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+        '128': '32rem',
       },
 
       // ===========================================
