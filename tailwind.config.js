@@ -15,8 +15,8 @@ export default {
     },
     extend: {
       // ===========================================
-      // BITGET-INSPIRED DESIGN SYSTEM (2026)
-      // Minimal Colors: Dark + Teal + White
+      // BITGET EXACT DESIGN SYSTEM (2026)
+      // Colors extracted from Bitget UI analysis
       // ===========================================
       colors: {
         // Semantic colors (shadcn-ui compatible)
@@ -26,109 +26,116 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
 
-        // Primary - CYAN (Bitget Style)
         primary: {
-          DEFAULT: '#03AAC7',
-          foreground: '#151517',
-          hover: '#26BFD4',
-          muted: 'rgba(3, 170, 199, 0.1)',
-          glow: 'rgba(3, 170, 199, 0.3)',
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
 
-        // Secondary - Dark with border
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
 
-        // Destructive / Danger
         destructive: {
-          DEFAULT: '#F43F5E',
-          foreground: '#FFFFFF',
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
 
-        // Muted
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
         },
 
-        // Accent - Same as Primary (Cyan)
         accent: {
-          DEFAULT: '#03AAC7',
-          foreground: '#151517',
-          hover: '#26BFD4',
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
 
-        // Popover
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
         },
 
-        // Card
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
 
         // ===========================================
-        // BITGET DARK BACKGROUNDS (STRICT!)
+        // BITGET EXACT COLORS
         // ===========================================
-        dark: {
-          base: '#151517',        // Main background (Bitget: rgb(21,21,23))
-          elevated: '#1B1B1D',    // Cards, Panels (Bitget: rgb(27,27,29))
-          surface: '#252629',     // Inputs, Dropdowns (Bitget: rgb(37,38,41))
-          hover: '#2B2F36',       // Hover states
-          border: '#2B2F36',      // All borders
-          subtle: '#3A3E45',      // Hover borders
-        },
-
-        // Bitget specific colors
+        
+        // Dark Mode Backgrounds
         bitget: {
-          bg: '#151517',
-          card: '#1B1B1D',
-          input: '#252629',
-          border: '#2B2F36',
-          'border-hover': '#3A3E45',
-          accent: '#03AAC7',
-          'accent-hover': '#26BFD4',
+          // Page background
+          'bg': '#0D0D0E',
+          'bg-page': '#0D0D0E',
+          // Card background
+          'bg-card': '#16171A',
+          // Input/Surface background
+          'bg-input': '#1F2024',
+          // Button background
+          'bg-button': '#2B2E33',
+          'bg-button-hover': '#363A40',
+          // Hover states
+          'bg-hover': '#1A1A1C',
+          
+          // Borders
+          'border': '#3A3D42',
+          'border-light': '#E5E7EB',
+          'border-strong': '#D1D5DB',
+          
+          // Text - Dark Mode
+          'text': '#FFFFFF',
+          'text-secondary': '#72757A',
+          'text-muted': '#5A5D63',
+          
+          // Text - Light Mode
+          'text-light': '#1F2937',
+          'text-secondary-light': '#6B7280',
+          'text-muted-light': '#9CA3AF',
+          
+          // Accent Colors
+          'green': '#00B87A',
+          'teal': '#00B8A9',
+          'green-dark': '#1E8A6E',
+          'orange': '#E67E22',
+          'red': '#F04B4B',
+          'gold': '#F0B90B',
+          
+          // Badge backgrounds
+          'badge-enabled': '#1A2E1A',
+          'badge-enabled-light': '#E6F7F1',
+          'badge-disabled': '#2B2E33',
+          'badge-disabled-light': '#F3F4F6',
         },
 
-        // Text colors
-        text: {
-          primary: '#FFFFFF',
-          secondary: '#9CA3AF',
-          muted: '#6B7280',
-          disabled: '#4B5563',
-        },
-
-        // Status colors (sparingly used!)
+        // Status colors
         success: {
-          light: '#34D399',
-          DEFAULT: '#03AAC7',     // Same as accent
-          dark: '#028BA3',
+          DEFAULT: '#00B87A',
+          light: '#E6F7F1',
+          dark: '#1A2E1A',
         },
 
         danger: {
-          light: '#FB7185',
-          DEFAULT: '#F43F5E',
-          dark: '#E11D48',
+          DEFAULT: '#F04B4B',
+          light: '#FEE2E2',
+          dark: '#2E1A1A',
         },
 
         warning: {
-          light: '#FBBF24',
-          DEFAULT: '#F59E0B',
-          dark: '#D97706',
+          DEFAULT: '#E67E22',
+          light: '#FEF3E7',
+          dark: '#2E251A',
         },
 
-        // Profit/Loss - ONLY use for trading data
-        profit: '#03AAC7',        // Cyan (same as accent)
-        loss: '#F43F5E',          // Red
+        // Profit/Loss
+        profit: '#00B87A',
+        loss: '#F04B4B',
       },
 
       // ===========================================
-      // BORDER RADIUS - Bitget Style (4, 8, 12, 16, 32)
+      // BORDER RADIUS - Bitget Style
       // ===========================================
       borderRadius: {
         'none': '0px',
@@ -142,206 +149,91 @@ export default {
       },
 
       // ===========================================
-      // TYPOGRAPHY - Premium Font Sizes
+      // TYPOGRAPHY
       // ===========================================
       fontSize: {
-        xs: ["0.75rem", { lineHeight: "1rem" }],
-        sm: ["0.8125rem", { lineHeight: "1.25rem" }],
-        base: ["0.875rem", { lineHeight: "1.375rem" }],
-        lg: ["1rem", { lineHeight: "1.5rem" }],
-        xl: ["1.125rem", { lineHeight: "1.75rem" }],
-        "2xl": ["1.25rem", { lineHeight: "1.75rem" }],
-        "3xl": ["1.5rem", { lineHeight: "2rem" }],
-        "4xl": ["1.875rem", { lineHeight: "2.25rem" }],
-        "5xl": ["2.25rem", { lineHeight: "2.5rem" }],
-        "6xl": ["3rem", { lineHeight: "1" }],
-        "7xl": ["3.75rem", { lineHeight: "1" }],
+        'xs': ["0.75rem", { lineHeight: "1rem" }],        // 12px
+        'sm': ["0.8125rem", { lineHeight: "1.25rem" }],   // 13px
+        'base': ["0.875rem", { lineHeight: "1.375rem" }], // 14px
+        'lg': ["1rem", { lineHeight: "1.5rem" }],         // 16px
+        'xl': ["1.125rem", { lineHeight: "1.75rem" }],    // 18px
+        '2xl': ["1.25rem", { lineHeight: "1.75rem" }],    // 20px
+        '3xl': ["1.5rem", { lineHeight: "2rem" }],        // 24px
+        '4xl': ["1.875rem", { lineHeight: "2.25rem" }],   // 30px
+        '5xl': ["2.25rem", { lineHeight: "2.5rem" }],     // 36px
+        '6xl': ["3rem", { lineHeight: "1" }],             // 48px
       },
 
       // ===========================================
-      // FONT FAMILY - Bitget Style (DM Sans as Pulse alternative)
+      // FONT FAMILY
       // ===========================================
       fontFamily: {
-        sans: ['DM Sans', 'Arial', 'Inter', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans: ['DM Sans', 'Arial', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         mono: ['JetBrains Mono', 'SF Mono', 'Fira Code', 'monospace'],
-        display: ['DM Sans', 'Cal Sans', 'Inter', 'sans-serif'],
       },
 
       // ===========================================
-      // SHADOWS - Bitget Style (Subtle)
+      // SHADOWS
       // ===========================================
       boxShadow: {
-        'soft-sm': '0 1px 2px rgba(0, 0, 0, 0.3)',
-        'soft-md': '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2)',
-        'soft-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.2)',
-        'soft-xl': '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3)',
-        'soft-2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.6)',
-        // Glow shadows - CYAN (Bitget accent)
-        'glow': '0 0 20px rgba(3, 170, 199, 0.3)',
-        'glow-sm': '0 0 10px rgba(3, 170, 199, 0.2)',
-        'glow-lg': '0 0 40px rgba(3, 170, 199, 0.4)',
-        'glow-success': '0 0 20px rgba(3, 170, 199, 0.3)',
-        'glow-danger': '0 0 20px rgba(244, 63, 94, 0.3)',
-        'glow-warning': '0 0 20px rgba(245, 158, 11, 0.3)',
-        // Card elevation - Bitget style
-        'card': '0 4px 20px rgba(0, 0, 0, 0.4)',
-        'card-hover': '0 8px 30px rgba(0, 0, 0, 0.5)',
-        // Dropdown shadow
-        'dropdown': '0 10px 40px rgba(0, 0, 0, 0.5)',
+        'sm': '0 1px 2px rgba(0, 0, 0, 0.05)',
+        'DEFAULT': '0 1px 3px rgba(0, 0, 0, 0.1)',
+        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+        'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+        'dropdown': '0 4px 12px rgba(0, 0, 0, 0.15)',
+        'card': '0 1px 3px rgba(0, 0, 0, 0.1)',
+        'none': 'none',
       },
 
       // ===========================================
-      // BACKDROP BLUR
-      // ===========================================
-      backdropBlur: {
-        xs: '2px',
-        '2xl': '24px',
-        '3xl': '40px',
-      },
-
-      // ===========================================
-      // ANIMATIONS - Butter Smooth
+      // ANIMATIONS
       // ===========================================
       animation: {
-        // Fade animations
-        'fade-in': 'fadeIn 0.3s ease-out',
-        'fade-out': 'fadeOut 0.3s ease-out',
-
-        // Slide animations
-        'slide-up': 'slideUp 0.3s ease-out',
-        'slide-down': 'slideDown 0.3s ease-out',
-        'slide-left': 'slideLeft 0.3s ease-out',
-        'slide-right': 'slideRight 0.3s ease-out',
-
-        // Scale animations
-        'scale-in': 'scaleIn 0.2s ease-out',
-        'scale-out': 'scaleOut 0.2s ease-out',
-
-        // Glow pulse
-        'glow-pulse': 'glowPulse 2s ease-in-out infinite',
-
-        // Shimmer loading
+        'fade-in': 'fadeIn 0.2s ease-out',
+        'slide-up': 'slideUp 0.2s ease-out',
+        'slide-down': 'slideDown 0.2s ease-out',
+        'scale-in': 'scaleIn 0.15s ease-out',
         'shimmer': 'shimmer 2s linear infinite',
-
-        // Number count up
-        'count-up': 'countUp 0.4s ease-out',
-
-        // Bounce subtle
-        'bounce-subtle': 'bounceSubtle 0.5s ease-out',
-
-        // Spin slow
-        'spin-slow': 'spin 3s linear infinite',
-
-        // Float
-        'float': 'float 3s ease-in-out infinite',
-
-        // Pulse soft
-        'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
+        'spin': 'spin 1s linear infinite',
       },
 
-      // ===========================================
-      // KEYFRAMES
-      // ===========================================
       keyframes: {
         fadeIn: {
           from: { opacity: '0' },
           to: { opacity: '1' },
         },
-        fadeOut: {
-          from: { opacity: '1' },
-          to: { opacity: '0' },
-        },
         slideUp: {
-          from: { opacity: '0', transform: 'translateY(10px)' },
+          from: { opacity: '0', transform: 'translateY(8px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
         },
         slideDown: {
-          from: { opacity: '0', transform: 'translateY(-10px)' },
+          from: { opacity: '0', transform: 'translateY(-8px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
-        },
-        slideLeft: {
-          from: { opacity: '0', transform: 'translateX(10px)' },
-          to: { opacity: '1', transform: 'translateX(0)' },
-        },
-        slideRight: {
-          from: { opacity: '0', transform: 'translateX(-10px)' },
-          to: { opacity: '1', transform: 'translateX(0)' },
         },
         scaleIn: {
           from: { opacity: '0', transform: 'scale(0.95)' },
           to: { opacity: '1', transform: 'scale(1)' },
         },
-        scaleOut: {
-          from: { opacity: '1', transform: 'scale(1)' },
-          to: { opacity: '0', transform: 'scale(0.95)' },
-        },
-        glowPulse: {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(3, 170, 199, 0.3)' },
-          '50%': { boxShadow: '0 0 40px rgba(3, 170, 199, 0.5)' },
-        },
         shimmer: {
           from: { backgroundPosition: '-200% 0' },
           to: { backgroundPosition: '200% 0' },
         },
-        countUp: {
-          from: { opacity: '0', transform: 'translateY(10px)' },
-          to: { opacity: '1', transform: 'translateY(0)' },
-        },
-        bounceSubtle: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-5px)' },
-        },
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-10px)' },
-        },
-        pulseSoft: {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0.7' },
+        spin: {
+          from: { transform: 'rotate(0deg)' },
+          to: { transform: 'rotate(360deg)' },
         },
       },
 
       // ===========================================
-      // TRANSITION TIMING FUNCTIONS
-      // ===========================================
-      transitionTimingFunction: {
-        'ease-smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
-        'ease-out-back': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-        'ease-in-out-soft': 'cubic-bezier(0.4, 0, 0.2, 1)',
-        'ease-spring': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-        'ease-apple': 'cubic-bezier(0.25, 0.1, 0.25, 1)',
-      },
-
-      // ===========================================
-      // TRANSITION DURATION
+      // TRANSITIONS
       // ===========================================
       transitionDuration: {
         '0': '0ms',
-        '50': '50ms',
         '100': '100ms',
         '150': '150ms',
         '200': '200ms',
-        '250': '250ms',
         '300': '300ms',
-        '400': '400ms',
-        '500': '500ms',
-      },
-
-      // ===========================================
-      // BACKGROUND IMAGE - Bitget Gradients
-      // ===========================================
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        // Bitget-style gradients (subtle, not flashy)
-        'gradient-primary': 'linear-gradient(135deg, #03AAC7 0%, #028BA3 100%)',
-        'gradient-profit': 'linear-gradient(135deg, #03AAC7 0%, #028BA3 100%)',
-        'gradient-loss': 'linear-gradient(135deg, #F43F5E 0%, #E11D48 100%)',
-        'gradient-card': 'linear-gradient(135deg, #252629 0%, #1B1B1D 100%)',
-        'gradient-glow': 'radial-gradient(circle, rgba(3, 170, 199, 0.1) 0%, transparent 70%)',
-        'shimmer-gradient': 'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)',
-        // Promo card gradient
-        'gradient-promo': 'linear-gradient(135deg, #252629 0%, #1B1B1D 100%)',
       },
     },
   },

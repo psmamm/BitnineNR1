@@ -130,19 +130,19 @@ export default function DashboardPage() {
     return traderQuotes[Math.floor(Math.random() * traderQuotes.length)];
   });
 
-  // Get time-based greeting with modern emojis
+  // Get time-based greeting with 3D icons
   const getTimeBasedGreeting = () => {
     const hour = new Date().getHours();
     const userName = user?.displayName?.split(' ')[0] || user?.email?.split('@')[0] || 'Trader';
     
     if (hour >= 5 && hour < 12) {
-      return { greeting: 'Good Morning', emoji: '☀️', userName };
+      return { greeting: 'Good Morning', icon: '/icons/sun.png', userName };
     } else if (hour >= 12 && hour < 17) {
-      return { greeting: 'Good Afternoon', emoji: '☀️', userName };
+      return { greeting: 'Good Afternoon', icon: '/icons/sun-cloudy.png', userName };
     } else if (hour >= 17 && hour < 22) {
-      return { greeting: 'Good Evening', emoji: '🌙', userName };
+      return { greeting: 'Good Evening', icon: '/icons/moon.png', userName };
     } else {
-      return { greeting: 'Good Night', emoji: '🌙', userName };
+      return { greeting: 'Good Night', icon: '/icons/moon.png', userName };
     }
   };
 
@@ -153,10 +153,15 @@ export default function DashboardPage() {
       <div className="min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
-          {/* Bitget Welcome Header */}
+          {/* Welcome Header with 3D Icon */}
           <div className="space-y-1">
-            <h1 className="text-2xl font-semibold text-white flex items-center gap-2">
-              {timeGreeting.greeting}, {timeGreeting.userName}! <span className="text-2xl">{timeGreeting.emoji}</span>
+            <h1 className="text-2xl font-semibold text-white flex items-center gap-3">
+              {timeGreeting.greeting}, {timeGreeting.userName}!
+              <img 
+                src={timeGreeting.icon} 
+                alt="" 
+                className="w-8 h-8 object-contain"
+              />
             </h1>
             <p className="text-[#9CA3AF] text-sm">{motivationalQuote}</p>
           </div>
