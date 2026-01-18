@@ -151,9 +151,9 @@ export async function calculateBybitPositionSize(
   entryPrice: number,
   stopLossPrice: number,
   leverage: number,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   _marginMode: 'isolated' | 'cross',
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   _symbol: string
 ): Promise<BybitPositionSizeResult> {
   // Get available balance

@@ -33,7 +33,7 @@ import {
 // IB API Types
 // ============================================================================
 
-interface IBAccount {
+interface _IBAccount {
   id: string;
   accountId: string;
   accountVan: string;
@@ -173,7 +173,7 @@ export class InteractiveBrokersAdapter extends BaseBroker {
     this.setConnected(false);
   }
 
-  async testConnection(credentials: BrokerCredentials): Promise<ConnectionTestResult> {
+  async testConnection(_credentials: BrokerCredentials): Promise<ConnectionTestResult> {
     try {
       const response = await this.authenticatedRequest('/iserver/accounts');
       const data = response as { accounts: string[]; selectedAccount: string };

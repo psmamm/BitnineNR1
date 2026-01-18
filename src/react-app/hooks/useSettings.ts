@@ -71,7 +71,7 @@ export function useSettings() {
           try {
             const parsed = JSON.parse(savedSettings);
             setSettings(prev => ({ ...prev, ...parsed }));
-          } catch (error) {
+          } catch (_error) {
             console.warn('Failed to parse saved settings');
           }
         }
@@ -232,7 +232,7 @@ export function useSettings() {
           } else {
             resolve({ success: false, error: 'Invalid settings file format' });
           }
-        } catch (error) {
+        } catch (_error) {
           resolve({ success: false, error: 'Failed to parse settings file' });
         }
       };

@@ -43,7 +43,7 @@ interface ChatMessage {
 }
 
 export function useTournaments(status?: string) {
-    const { } = useAuth();
+    useAuth();
     const [tournaments, setTournaments] = useState<Tournament[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);

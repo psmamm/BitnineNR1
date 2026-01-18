@@ -202,7 +202,7 @@ export class BinanceExchange extends ExchangeInterface {
     return this.hmacSha256(queryString, this.credentials.apiSecret);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   protected getAuthHeaders(_timestamp: string, _signature: string): Record<string, string> {
     return {
       'Content-Type': 'application/json',
@@ -785,9 +785,9 @@ export class BinanceExchange extends ExchangeInterface {
     entryPrice: number,
     stopLossPrice: number,
     leverage: number = 1,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _marginMode: MarginMode = 'cross',
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _symbol?: string
   ): Promise<PositionSizeResult> {
     const balance = await this.getBalance();

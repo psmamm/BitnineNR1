@@ -129,16 +129,16 @@ export class KrakenExchange extends ExchangeInterface {
   protected async createSignature(
     _method: string,
     endpoint: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _timestamp: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _params?: Record<string, string>
   ): Promise<string> {
     // Kraken uses a different signature method, handled in makeAuthRequest
     return endpoint;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   protected getAuthHeaders(_timestamp: string, _signature: string): Record<string, string> {
     return {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -294,7 +294,7 @@ export class KrakenExchange extends ExchangeInterface {
     symbol?: string,
     startTime?: number,
     endTime?: number,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _limit?: number
   ): Promise<Trade[]> {
     const params: Record<string, string> = {};
@@ -376,7 +376,7 @@ export class KrakenExchange extends ExchangeInterface {
     return orders;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   async getOrder(orderId: string, _symbol?: string): Promise<Order> {
     const result = await this.makeAuthRequest<Record<string, KrakenOrderInfo>>(
       '/0/private/QueryOrders',
@@ -484,7 +484,7 @@ export class KrakenExchange extends ExchangeInterface {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   async cancelOrder(orderId: string, _symbol?: string): Promise<boolean> {
     const result = await this.makeAuthRequest<{ count: number }>(
       '/0/private/CancelOrder',
@@ -498,7 +498,7 @@ export class KrakenExchange extends ExchangeInterface {
   // Positions
   // ============================================================================
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   async getPositions(_symbol?: string): Promise<Position[]> {
     const balance = await this.getBalance();
 
@@ -613,9 +613,9 @@ export class KrakenExchange extends ExchangeInterface {
     entryPrice: number,
     stopLossPrice: number,
     leverage: number = 1,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _marginMode: MarginMode = 'cross',
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _symbol?: string
   ): Promise<PositionSizeResult> {
     const balance = await this.getBalance();

@@ -176,7 +176,7 @@ export function useWalletTransactions() {
               type: 'swap' as const,
               chain: 'solana',
             };
-          } catch (e) {
+          } catch (_e) {
             return null;
           }
         })

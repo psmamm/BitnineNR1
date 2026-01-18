@@ -175,7 +175,7 @@ export class CoinbaseExchange extends ExchangeInterface {
     method: string,
     endpoint: string,
     timestamp: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _params?: Record<string, string>
   ): Promise<string> {
     const message = `${timestamp}${method}${endpoint}`;
@@ -363,7 +363,7 @@ export class CoinbaseExchange extends ExchangeInterface {
     return data.orders.map(order => this.mapCoinbaseOrder(order));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   async getOrder(orderId: string, _symbol?: string): Promise<Order> {
     const timestamp = Math.floor(Date.now() / 1000).toString();
     const endpoint = `/api/v3/brokerage/orders/historical/${orderId}`;
@@ -507,7 +507,7 @@ export class CoinbaseExchange extends ExchangeInterface {
     return this.mapCoinbaseOrder(data.order);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   async cancelOrder(orderId: string, _symbol?: string): Promise<boolean> {
     const timestamp = Math.floor(Date.now() / 1000).toString();
     const endpoint = '/api/v3/brokerage/orders/batch_cancel';
@@ -540,7 +540,7 @@ export class CoinbaseExchange extends ExchangeInterface {
   // Positions (Spot only - represented by balances)
   // ============================================================================
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   async getPositions(_symbol?: string): Promise<Position[]> {
     const balance = await this.getBalance();
 
@@ -671,9 +671,9 @@ export class CoinbaseExchange extends ExchangeInterface {
     entryPrice: number,
     stopLossPrice: number,
     leverage: number = 1,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _marginMode: MarginMode = 'cross',
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _symbol?: string
   ): Promise<PositionSizeResult> {
     const balance = await this.getBalance();

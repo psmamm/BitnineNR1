@@ -55,7 +55,7 @@ debugWhaleRouter.get('/debug', async (c) => {
     }
 
     // Test API connectivity
-    let apiTestResults: ApiTestResult[] = [];
+    const apiTestResults: ApiTestResult[] = [];
     
     // Test Ethereum API
     if (c.env.ETHERSCAN_API_KEY) {

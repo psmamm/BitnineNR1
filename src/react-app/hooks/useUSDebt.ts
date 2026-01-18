@@ -109,7 +109,7 @@ export function useUSDebt() {
         setDebtData(data);
         setLoading(false);
         setError(null);
-      } catch (err) {
+      } catch (_err) {
         setError('Failed to calculate debt data');
         setLoading(false);
       }

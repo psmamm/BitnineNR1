@@ -148,8 +148,8 @@ export class HyperliquidAdapter extends BaseBroker {
   async testConnection(credentials: BrokerCredentials): Promise<ConnectionTestResult> {
     try {
       // For Hyperliquid, the API key is actually the wallet address
-      // We test by fetching user state
-      const userState = await this.fetchUserState(credentials.apiKey);
+      // We test by fetching user state - just verify it doesn't throw
+      await this.fetchUserState(credentials.apiKey);
 
       return {
         success: true,

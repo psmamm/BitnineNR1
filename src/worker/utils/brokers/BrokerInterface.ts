@@ -209,7 +209,7 @@ export abstract class BrokerParser {
 
   protected parseDate(
     value: string | undefined,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _format?: string
   ): Date | undefined {
     if (!value) return undefined;

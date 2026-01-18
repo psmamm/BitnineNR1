@@ -195,7 +195,7 @@ export class OKXExchange extends ExchangeInterface {
     method: string,
     endpoint: string,
     timestamp: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _params?: Record<string, string>
   ): Promise<string> {
     const prehash = timestamp + method + endpoint;
@@ -653,9 +653,9 @@ export class OKXExchange extends ExchangeInterface {
     entryPrice: number,
     stopLossPrice: number,
     leverage: number = 1,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _marginMode: MarginMode = 'cross',
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _symbol?: string
   ): Promise<PositionSizeResult> {
     const balance = await this.getBalance();

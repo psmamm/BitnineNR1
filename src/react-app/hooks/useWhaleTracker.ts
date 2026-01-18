@@ -132,7 +132,7 @@ export function useWhaleTracker() {
               }
             });
           }
-        } catch (err) {
+        } catch (_err) {
           // Ignore parse errors for heartbeat messages
         }
       };

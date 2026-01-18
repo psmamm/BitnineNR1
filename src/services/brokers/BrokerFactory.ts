@@ -45,7 +45,7 @@ const activeInstances: Map<string, IBroker> = new Map();
 export function getSupportedBrokers(): BrokerMetadata[] {
   const brokers: BrokerMetadata[] = [];
 
-  for (const [id, BrokerClass] of brokerRegistry) {
+  for (const [_id, BrokerClass] of brokerRegistry) {
     const instance = new BrokerClass();
     brokers.push(instance.metadata);
   }
