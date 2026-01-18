@@ -56,15 +56,6 @@ export default function QuickAddTradeModal({ isOpen, onClose, onSuccess }: Quick
     setError(null);
   };
 
-  // Handle voice transcription complete
-  const handleTranscriptionComplete = (text: string, audioUrl: string) => {
-    setFormData(prev => ({
-      ...prev,
-      voice_transcription: prev.voice_transcription ? `${prev.voice_transcription}\n${text}` : text,
-    }));
-    setVoiceNoteUrl(audioUrl);
-    showToast('Voice note transcribed! 🎤');
-  };
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {

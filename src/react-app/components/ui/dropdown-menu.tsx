@@ -71,7 +71,7 @@ interface DropdownMenuTriggerProps extends React.ButtonHTMLAttributes<HTMLButton
 }
 
 const DropdownMenuTrigger = React.forwardRef<HTMLButtonElement, DropdownMenuTriggerProps>(
-  ({ className, children, asChild, ...props }, ref) => {
+  ({ className, children, ...props }, ref) => {
     const { open, setOpen } = useDropdown()
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -151,7 +151,6 @@ const DropdownMenuContent = React.forwardRef<HTMLDivElement, DropdownMenuContent
     return (
       <div
         ref={(node) => {
-          // @ts-ignore
           contentRef.current = node
           if (typeof ref === "function") ref(node)
           else if (ref) ref.current = node

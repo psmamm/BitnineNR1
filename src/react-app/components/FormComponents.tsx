@@ -349,7 +349,6 @@ interface ModernDateInputProps extends Omit<React.InputHTMLAttributes<HTMLInputE
     value: string;
     onChange: (value: string) => void;
     error?: string;
-    placeholder?: string;
 }
 
 // Modern Date Input with Calendar Picker
@@ -357,7 +356,6 @@ export const ModernDateInput = ({
     value,
     onChange,
     error,
-    placeholder,
     ...props
 }: ModernDateInputProps) => {
     const [showCalendar, setShowCalendar] = useState(false);

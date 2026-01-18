@@ -32,7 +32,6 @@ interface MarketEvent {
 interface ChartPanelProps {
     allCandles: CandlestickData[];
     replayIndex: number;
-    currentPrice: number;
     positions: Position[];
     activeEvent: MarketEvent | null;
     onChartReady?: (seriesRef: React.MutableRefObject<ISeriesApi<"Candlestick"> | null>) => void;
@@ -41,7 +40,6 @@ interface ChartPanelProps {
 export function ChartPanel({
     allCandles,
     replayIndex,
-    currentPrice: _currentPrice,
     positions,
     activeEvent,
     onChartReady,

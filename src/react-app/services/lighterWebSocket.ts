@@ -31,8 +31,9 @@ interface LighterWebSocketMessage {
 
 const WS_URL = 'wss://mainnet.zklighter.elliot.ai/ws';
 const RECONNECT_DELAYS = [1000, 2000, 5000, 10000, 30000];
-const MAX_RECONNECT_ATTEMPTS = 10;
+const MAX_RECONNECT_ATTEMPTS = 5;
 const PING_INTERVAL = 30000;
+const CONNECTION_TIMEOUT = 10000; // 10 second connection timeout
 
 class LighterWebSocketService {
   private ws: WebSocket | null = null;
@@ -40,8 +41,11 @@ class LighterWebSocketService {
   private reconnectAttempt = 0;
   private reconnectTimer: number | null = null;
   private pingTimer: number | null = null;
+  private connectionTimeoutTimer: number | null = null;
   private isConnecting = false;
   private connectionPromise: Promise<void> | null = null;
+  private connectionFailed = false;
+  private errorCallbacks: Set<(error: string) => void> = new Set();
 
   /**
    * Get subscription key for a channel/symbol combination
@@ -54,6 +58,12 @@ class LighterWebSocketService {
    * Connect to WebSocket server
    */
   async connect(): Promise<void> {
+    // If connection has permanently failed, don't retry
+    if (this.connectionFailed) {
+      console.log('[LighterWS] Connection previously failed, using fallback mode');
+      return Promise.resolve();
+    }
+
     if (this.ws?.readyState === WebSocket.OPEN) {
       return;
     }
@@ -68,10 +78,23 @@ class LighterWebSocketService {
         console.log('[LighterWS] Connecting to', WS_URL);
         this.ws = new WebSocket(WS_URL);
 
+        // Set connection timeout
+        this.connectionTimeoutTimer = window.setTimeout(() => {
+          if (this.ws?.readyState !== WebSocket.OPEN) {
+            console.error('[LighterWS] Connection timeout after', CONNECTION_TIMEOUT, 'ms');
+            this.ws?.close();
+            this.isConnecting = false;
+            this.notifyError('Connection timeout - server may be unreachable');
+            reject(new Error('Connection timeout'));
+          }
+        }, CONNECTION_TIMEOUT);
+
         this.ws.onopen = () => {
           console.log('[LighterWS] Connected');
+          this.clearConnectionTimeout();
           this.isConnecting = false;
           this.reconnectAttempt = 0;
+          this.connectionFailed = false;
 
           // Start ping interval
           this.startPing();
@@ -93,23 +116,67 @@ class LighterWebSocketService {
 
         this.ws.onerror = (err) => {
           console.error('[LighterWS] Error:', err);
+          this.clearConnectionTimeout();
           this.isConnecting = false;
+          this.notifyError('WebSocket connection error');
           reject(err);
         };
 
         this.ws.onclose = () => {
           console.log('[LighterWS] Disconnected');
+          this.clearConnectionTimeout();
           this.isConnecting = false;
           this.stopPing();
           this.scheduleReconnect();
         };
       } catch (err) {
+        this.clearConnectionTimeout();
         this.isConnecting = false;
         reject(err);
       }
     });
 
     return this.connectionPromise;
+  }
+
+  /**
+   * Clear connection timeout timer
+   */
+  private clearConnectionTimeout(): void {
+    if (this.connectionTimeoutTimer) {
+      clearTimeout(this.connectionTimeoutTimer);
+      this.connectionTimeoutTimer = null;
+    }
+  }
+
+  /**
+   * Notify error callbacks
+   */
+  private notifyError(message: string): void {
+    this.errorCallbacks.forEach(callback => {
+      try {
+        callback(message);
+      } catch (err) {
+        console.error('[LighterWS] Error callback failed:', err);
+      }
+    });
+  }
+
+  /**
+   * Register error callback
+   */
+  onError(callback: (error: string) => void): () => void {
+    this.errorCallbacks.add(callback);
+    return () => {
+      this.errorCallbacks.delete(callback);
+    };
+  }
+
+  /**
+   * Check if connection has failed permanently
+   */
+  hasConnectionFailed(): boolean {
+    return this.connectionFailed;
   }
 
   /**
@@ -314,7 +381,9 @@ class LighterWebSocketService {
    */
   private scheduleReconnect(): void {
     if (this.reconnectAttempt >= MAX_RECONNECT_ATTEMPTS) {
-      console.error('[LighterWS] Max reconnect attempts reached');
+      console.error('[LighterWS] Max reconnect attempts reached, switching to fallback mode');
+      this.connectionFailed = true;
+      this.notifyError('WebSocket connection failed - using limited connectivity mode');
       return;
     }
 
@@ -322,7 +391,7 @@ class LighterWebSocketService {
       RECONNECT_DELAYS[this.reconnectAttempt] ||
       RECONNECT_DELAYS[RECONNECT_DELAYS.length - 1];
 
-    console.log(`[LighterWS] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempt + 1})`);
+    console.log(`[LighterWS] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempt + 1}/${MAX_RECONNECT_ATTEMPTS})`);
 
     this.reconnectTimer = window.setTimeout(() => {
       this.reconnectAttempt++;
@@ -330,6 +399,14 @@ class LighterWebSocketService {
         console.error('[LighterWS] Reconnect failed:', err);
       });
     }, delay);
+  }
+
+  /**
+   * Reset connection failure state to allow retry
+   */
+  resetConnectionFailure(): void {
+    this.connectionFailed = false;
+    this.reconnectAttempt = 0;
   }
 
   /**

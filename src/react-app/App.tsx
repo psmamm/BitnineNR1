@@ -139,6 +139,14 @@ const TransferPage = lazy(() => import("@/react-app/pages/Transfer"));
 const CopyTradingPage = lazy(() => import("@/react-app/pages/CopyTrading"));
 const BitcoinHalvingPage = lazy(() => import("@/react-app/pages/BitcoinHalving"));
 const OrderHeatmapPage = lazy(() => import("@/react-app/pages/OrderHeatmap"));
+const ConvertPage = lazy(() => import("@/react-app/pages/Convert"));
+const LaunchpadPage = lazy(() => import("@/react-app/pages/Launchpad"));
+const SpotAssetsPage = lazy(() => import("@/react-app/pages/SpotAssets"));
+const MarginAssetsPage = lazy(() => import("@/react-app/pages/MarginAssets"));
+const FuturesAssetsPage = lazy(() => import("@/react-app/pages/FuturesAssets"));
+const RewardsPage = lazy(() => import("@/react-app/pages/Rewards"));
+const VouchersPage = lazy(() => import("@/react-app/pages/Vouchers"));
+const NotFoundPage = lazy(() => import("@/react-app/pages/NotFound"));
 
 
 export default function App() {
@@ -341,6 +349,43 @@ export default function App() {
                           <OrderHeatmapPage />
                         </ProtectedRoute>
                       } />
+                      <Route path="/convert" element={
+                        <ProtectedRoute>
+                          <ConvertPage />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/launchpad" element={
+                        <ProtectedRoute>
+                          <LaunchpadPage />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/spot-assets" element={
+                        <ProtectedRoute>
+                          <SpotAssetsPage />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/margin-assets" element={
+                        <ProtectedRoute>
+                          <MarginAssetsPage />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/futures-assets" element={
+                        <ProtectedRoute>
+                          <FuturesAssetsPage />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/rewards" element={
+                        <ProtectedRoute>
+                          <RewardsPage />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/vouchers" element={
+                        <ProtectedRoute>
+                          <VouchersPage />
+                        </ProtectedRoute>
+                      } />
+                      {/* 404 Catch-all - Must be last */}
+                      <Route path="*" element={<NotFoundPage />} />
 
                     </Routes>
                   </LayoutProbe>

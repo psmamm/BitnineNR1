@@ -254,7 +254,7 @@ export const toast = {
 }
 
 // Toaster component (wrapper for ToastProvider with default settings)
-export const Toaster = ({ position: _position = "bottom-right" }: { position?: ToastProviderProps["position"] }) => {
+export const Toaster = () => {
   return null // The actual rendering is done by ToastProvider
 }
 

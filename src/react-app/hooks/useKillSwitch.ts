@@ -98,10 +98,26 @@ export function useKillSwitch(input: KillSwitchInput = {}) {
   }, [equity.startingCapital, equity.currentEquity, dailyStats, input.calculatedRisk, input.currentDailyLoss, input.totalLoss]);
 
   /**
-   * Validates if a trade can be executed
+   * Validates if a trade can be executed based on current kill switch state
+   * Note: This uses the current killSwitch state rather than creating a new hook call
    */
   const validateTrade = (calculatedRisk: number): KillSwitchResult => {
-    return useKillSwitch({ calculatedRisk }).killSwitch;
+    const startingCapital = equity.startingCapital || 10000;
+    const mdlLimit = startingCapital * MDL_PERCENT;
+
+    const dailyLoss = killSwitch.currentDailyLoss;
+    const wouldExceedMDL = dailyLoss + calculatedRisk >= mdlLimit;
+
+    if (wouldExceedMDL && calculatedRisk > 0) {
+      return {
+        ...killSwitch,
+        isBlocked: true,
+        reason: `This trade would exceed MDL limit. Current daily loss: $${dailyLoss.toFixed(2)}, Proposed risk: $${calculatedRisk.toFixed(2)}, Limit: $${mdlLimit.toFixed(2)}`,
+        canTrade: false
+      };
+    }
+
+    return killSwitch;
   };
 
   return {

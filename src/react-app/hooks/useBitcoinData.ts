@@ -102,7 +102,7 @@ export function useBitcoinData() {
           currentHeight = await blockstreamResponse.json();
           console.log('Blockstream height:', currentHeight);
         }
-      } catch (e) {
+      } catch {
         console.log('Blockstream API failed, trying alternatives...');
       }
 
@@ -116,7 +116,7 @@ export function useBitcoinData() {
             currentHeight = await blockchainResponse.json();
             console.log('Blockchain.info height:', currentHeight);
           }
-        } catch (e) {
+        } catch {
           console.log('Blockchain.info API failed, trying mempool...');
         }
       }
@@ -131,7 +131,7 @@ export function useBitcoinData() {
             currentHeight = await mempoolResponse.json();
             console.log('Mempool height:', currentHeight);
           }
-        } catch (e) {
+        } catch {
           console.log('Mempool API failed');
         }
       }
@@ -162,7 +162,7 @@ export function useBitcoinData() {
             mempoolStats = hashrates[hashrates.length - 1];
           }
         }
-      } catch (e) {
+      } catch {
         console.log('Mining stats not available');
       }
 
@@ -186,7 +186,7 @@ export function useBitcoinData() {
             }
           }
         }
-      } catch (e) {
+      } catch {
         console.log('Could not get recent blocks, using default block time');
       }
 

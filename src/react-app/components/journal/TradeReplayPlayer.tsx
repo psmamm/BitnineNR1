@@ -82,7 +82,6 @@ interface TradeReplayPlayerProps {
   trade: Trade;
   replay: ReplayData | null;
   onAddNote?: (note: Omit<Note, 'id'>) => Promise<void>;
-  onAddAnnotation?: (annotation: Omit<Annotation, 'id'>) => Promise<void>;
   onRequestAIAnalysis?: () => Promise<void>;
   onWhatIf?: (exitTimestamp: number, exitPrice: number) => Promise<void>;
 }
@@ -111,11 +110,9 @@ export function TradeReplayPlayer({
   trade,
   replay,
   onAddNote,
-  onAddAnnotation: _onAddAnnotation,
   onRequestAIAnalysis,
   onWhatIf,
 }: TradeReplayPlayerProps) {
-  // Note: _onAddAnnotation is reserved for future drawing tool implementation
   // Playback state
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);

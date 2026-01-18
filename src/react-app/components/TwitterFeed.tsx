@@ -15,15 +15,7 @@ interface TwitterPost {
   retweets?: number;
 }
 
-interface TwitterFeedProps {
-  accounts: Array<{
-    username: string;
-    displayName: string;
-    avatar: string;
-  }>;
-}
-
-export default function TwitterFeed({}: TwitterFeedProps) {
+export default function TwitterFeed() {
   const [posts, setPosts] = useState<TwitterPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

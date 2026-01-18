@@ -25,7 +25,7 @@ export function useDataExport() {
       let data;
       try {
         data = JSON.parse(text);
-      } catch (error) {
+      } catch {
         // If JSON parsing fails, try to handle as CSV
         return { success: false, error: 'Currently only JSON import is supported' };
       }

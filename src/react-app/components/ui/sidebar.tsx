@@ -239,7 +239,7 @@ const SidebarDivider = React.forwardRef<
 SidebarDivider.displayName = "SidebarDivider"
 
 // Sidebar Toggle Button
-interface SidebarToggleProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+type SidebarToggleProps = React.ButtonHTMLAttributes<HTMLButtonElement>
 
 const SidebarToggle = React.forwardRef<HTMLButtonElement, SidebarToggleProps>(
   ({ className, ...props }, ref) => {

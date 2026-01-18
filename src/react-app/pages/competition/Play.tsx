@@ -742,10 +742,8 @@ export default function CompetitionPage() {
                             <FutureChart
                                 historicalCandles={allCandles.slice(0, replayIndex)}
                                 futureCandles={futureCandles}
-                                currentPrice={currentPrice}
                                 positions={positions}
                                 activeEvent={activeEvent}
-                                activeIndicators={indicators.filter(ind => ind.enabled).map(ind => ind.id)}
                             />
                         )}
                     </div>

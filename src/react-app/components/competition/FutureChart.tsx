@@ -31,19 +31,15 @@ interface MarketEvent {
 interface FutureChartProps {
     historicalCandles: CandlestickData[];
     futureCandles: CandlestickData[];
-    currentPrice?: number;
     positions: Position[];
     activeEvent: MarketEvent | null;
-    activeIndicators?: string[];
 }
 
 export function FutureChart({
     historicalCandles,
     futureCandles,
-    currentPrice: _currentPrice,
     positions,
     activeEvent,
-    activeIndicators: _activeIndicators,
 }: FutureChartProps) {
     const chartContainerRef = useRef<HTMLDivElement>(null);
     const chartRef = useRef<IChartApi | null>(null);
